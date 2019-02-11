@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.*;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,12 +75,13 @@ public class LoadODI extends HttpServlet {
 //            out.println("</table>");
             out.print("<table class=\"table table-striped\">\n"
                     + "            <tr class=\"thead-dark\">\n"
-                    +"<th colspan=\"3\" >"
+                    +"<th colspan=\"4\" >"
                     + "<th colspan=\"6\">1st Inning  "
                     + "<th colspan=\"6\">2nd Inning  "
                     + "<th colspan=\"4\"> Result "
                     +"</tr>"
                     + "            <tr class=\"thead-dark\" >\n"
+                    + "                <th>Date"
                     + "                <th>Home\n"
                     + "                <th>Away\n"
                     + "                <th>Toss\n"
@@ -120,8 +124,11 @@ public class LoadODI extends HttpServlet {
                 Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=2;id=" + y + ";type=year").get();
 
                 Elements rows = matches.getElementsByClass("data1");
-                for (Element row : rows) {
-                    Elements cols = row.getElementsByClass("data-link");
+                
+                for (int i = (rows.size() - 1); i >= 0; i--) {
+                    Element m = rows.get(i);
+                    Elements cols = m.getElementsByClass("data-link");
+                    
                     String matchLink = cols.last().attr("href");
                     matchLinks.add(matchLink);
                 }
@@ -135,6 +142,21 @@ public class LoadODI extends HttpServlet {
                 String[] splitUrl = matchUrl.split("/");
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                
+                Date matchDate = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("D month Yr");
+                Elements mDetailsTable = matchPage.getElementsByClass("match-detail--item");
+                for(Element row: mDetailsTable){
+                    if(row.select("h4").text().equals("Match days")){
+                        String[] parts = row.select("span").text().split(" ");
+                        try {
+                            System.out.println(parts[0] +" "+ parts[1] +" "+ parts[2]);
+                            matchDate = sdf.parse(parts[0] +" "+ parts[1] +" "+ parts[2]);
+                        } catch (ParseException ex) {
+                            Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
@@ -178,6 +200,7 @@ public class LoadODI extends HttpServlet {
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
 
                 out.print("<tr data-href=\""+ url +"\">");
+                    out.print("<td> " + matchDate.toString());
                     out.print("<td>" + homeTeamName + " ("+ homeTeamId + ")");
                     out.print("<td>" + awayTeamName + " ("+ awayTeamId + ")");
                     out.print("<td>" + tossResult);
@@ -268,7 +291,7 @@ public class LoadODI extends HttpServlet {
                 
                 out.print("<td>" + homeScore);
                 out.print("<td>" + awayScore);
-                out.print("<td><a href=\""+ url +"\"" + winnerName);
+                out.print("<td><a href=\""+ url +"\" >" + winnerName + " </a>");
 
                 out.print("<td>" + groundName);
             }
