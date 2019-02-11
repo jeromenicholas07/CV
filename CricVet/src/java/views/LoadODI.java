@@ -7,10 +7,20 @@ package views;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.jsoup.*;
+import org.jsoup.select.*;
+import org.jsoup.nodes.*;
+import org.apache.http.client.utils.*;
 
 /**
  *
@@ -35,12 +45,34 @@ public class LoadODI extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoadODI</title>");            
+            out.println("<title>Servlet LoadODI</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet LoadODI at " + request.getContextPath() + "</h1>");
+            out.print("<table><tr><th>ODI Teams</tr>");
+
+            Document doc = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/index.html").get();
+            Element teamListContainer = doc.getElementById("recteam");
+            Elements teams = teamListContainer.getElementsByClass("RecordLinks");
+
+            for(Element e : teams) {
+
+                String op;
+
+                URL url = new URL(e.absUrl("href"));
+
+                List<org.apache.http.NameValuePair> params = URLEncodedUtils.parse(url.toURI(), Charset.forName("UTF-8"));
+
+                String id = params.get(0).getValue();
+
+                out.print("<tr><td> <a href='/CricVet/teamInfo.jsp?id=" + id + "&team=" + e.text() + "' >" + e.text() + "</a>");
+            }
+
+            out.println("</table>");
             out.println("</body>");
             out.println("</html>");
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
