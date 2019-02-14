@@ -12,6 +12,8 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,17 +77,16 @@ public class LoadODI extends HttpServlet {
 //            out.println("</table>");
             out.print("<table class=\"table table-striped\">\n"
                     + "            <tr class=\"thead-dark\">\n"
-                    +"<th colspan=\"4\" >"
+                    + "<th colspan=\"4\" >"
                     + "<th colspan=\"6\">1st Inning  "
                     + "<th colspan=\"6\">2nd Inning  "
                     + "<th colspan=\"4\"> Result "
-                    +"</tr>"
+                    + "</tr>"
                     + "            <tr class=\"thead-dark\" >\n"
                     + "                <th>Date"
                     + "                <th>Home\n"
                     + "                <th>Away\n"
                     + "                <th>Toss\n"
-                    
                     + "                <th>First Over                \n"
                     + "                <th>10 overs\n"
                     + "                <th>Last 10 overs\n"
@@ -93,8 +94,6 @@ public class LoadODI extends HttpServlet {
                     + "                <th>Fours\n"
                     + "                <th>Sixes\n"
                     + "\n"
-                    
-                    
                     + "                <th>First Over                \n"
                     + "                <th>10 overs\n"
                     + "                <th>Last 10 overs\n"
@@ -102,7 +101,6 @@ public class LoadODI extends HttpServlet {
                     + "                <th>Fours\n"
                     + "                <th>Sixes\n"
                     + "\n"
-                    
                     + "                    <!--                <th>No. of sixes (Batting)\n"
                     + "                                    <th>No. of sixes (Bowling)-->\n"
                     + "\n"
@@ -124,17 +122,22 @@ public class LoadODI extends HttpServlet {
                 Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=2;id=" + y + ";type=year").get();
 
                 Elements rows = matches.getElementsByClass("data1");
-                
+
                 for (int i = (rows.size() - 1); i >= 0; i--) {
                     Element m = rows.get(i);
                     Elements cols = m.getElementsByClass("data-link");
-                    
+
                     String matchLink = cols.last().attr("href");
                     matchLinks.add(matchLink);
                 }
             }
 
+            int count = 0;
             for (String matchLink : matchLinks) {
+                count++;
+                if (count == 5) {
+                    break;
+                }
                 String url = baseUrl + matchLink;
 
                 Document matchPage = Jsoup.connect(url).followRedirects(true).get();
@@ -142,20 +145,18 @@ public class LoadODI extends HttpServlet {
                 String[] splitUrl = matchUrl.split("/");
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+
+                LocalDate matchDate = LocalDate.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
                 
-                Date matchDate = new Date();
-                SimpleDateFormat sdf = new SimpleDateFormat("D month Yr");
-                Elements mDetailsTable = matchPage.getElementsByClass("match-detail--item");
-                for(Element row: mDetailsTable){
-                    if(row.select("h4").text().equals("Match days")){
-                        String[] parts = row.select("span").text().split(" ");
-                        try {
-                            System.out.println(parts[0] +" "+ parts[1] +" "+ parts[2]);
-                            matchDate = sdf.parse(parts[0] +" "+ parts[1] +" "+ parts[2]);
-                        } catch (ParseException ex) {
-                            Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
+                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
+                String[] parts = matchDateElement.text().split(",");
+                String matchDateString = parts[parts.length-1];
+                try {
+                    matchDate = LocalDate.parse(matchDateString.trim(), df);
+                } catch (DateTimeParseException ex) {
+                    out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
@@ -199,18 +200,12 @@ public class LoadODI extends HttpServlet {
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
 
-                out.print("<tr data-href=\""+ url +"\">");
-                    out.print("<td> " + matchDate.toString());
-                    out.print("<td>" + homeTeamName + " ("+ homeTeamId + ")");
-                    out.print("<td>" + awayTeamName + " ("+ awayTeamId + ")");
-                    out.print("<td>" + tossResult);
-                
-                
-                
-                
-                
-                
-                
+                out.print("<tr data-href=\"" + url + "\">");
+                out.print("<td> " + matchDate.format(df));
+                out.print("<td>" + homeTeamName + " (" + homeTeamId + ")");
+                out.print("<td>" + awayTeamName + " (" + awayTeamId + ")");
+                out.print("<td>" + tossResult);
+
                 for (int inning = 1; inning <= 2; inning++) {
 
                     List<JSONObject> ballList = new ArrayList<>();
@@ -224,8 +219,8 @@ public class LoadODI extends HttpServlet {
                     for (int i = 1; i <= pageCount; i++) {
                         String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
                                 + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period="+ inning +"&section=cricinfo";
-                        
+                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
+
                         String body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                         JSONObject jObj = new JSONObject(body);
                         //                    out.print("<td> " + i + "(" + jObj.getJSONObject("commentary").getInt("pageIndex")+")");
@@ -244,6 +239,9 @@ public class LoadODI extends HttpServlet {
                             if (jItem.getJSONObject("over").getInt("unique") < 10) {
                                 tenOverScore += jItem.getInt("scoreValue");
                             }
+                            if (jItem.getJSONObject("over").getInt("unique") >= 40 && jItem.getJSONObject("over").getInt("unique") <= 50) {
+                                lastTenOverScore += jItem.getInt("scoreValue");
+                            }
 
                             if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -257,20 +255,18 @@ public class LoadODI extends HttpServlet {
                         }
                     }
 
-                    JSONObject lastBall = ballList.get(ballList.size() - 1);
-                    float lastBallOverNo = lastBall.getJSONObject("over").getFloat("unique");
-                    float lastTenCounter = lastBallOverNo - 10;
-                    if (lastTenCounter <= 0) {
-                        lastTenOverScore = -1;
-                    } else {
-                        for(JSONObject jItem : ballList) {
-                            if (jItem.getJSONObject("over").getFloat("unique") >= lastTenCounter) {
-                                lastTenOverScore += jItem.getInt("scoreValue");
-                            }
-                        }
-                    }
-
-                    
+//                    JSONObject lastBall = ballList.get(ballList.size() - 1);
+//                    float lastBallOverNo = lastBall.getJSONObject("over").getFloat("unique");
+//                    float lastTenCounter = lastBallOverNo - 10;
+//                    if (lastTenCounter <= 0) {
+//                        lastTenOverScore = -1;
+//                    } else {
+//                        for(JSONObject jItem : ballList) {
+//                            if (jItem.getJSONObject("over").getFloat("unique") >= lastTenCounter) {
+//                                lastTenOverScore += jItem.getInt("scoreValue");
+//                            }
+//                        }
+//                    }
                     out.print("<td>" + firstOverScore);
                     out.print("<td>" + tenOverScore);
                     out.print("<td>" + lastTenOverScore);
@@ -278,22 +274,23 @@ public class LoadODI extends HttpServlet {
                     out.print("<td>" + fourCount);
                     out.print("<td>" + sixCount);
                 }
-                
-                
+
                 String homeScore = home.select("div.cscore_score").get(0).text();
                 String awayScore = away.select("div.cscore_score").get(0).text();
 
+                Elements winner = matchPage.getElementsByClass("cscore_notes");
+                String winnerName = winner.select("span").first().text();
+                
                 Elements ground = matchPage.getElementsByClass("stadium-details");
                 Elements sp = ground.select("span");
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String winnerName = winner.select("span").get(0).text();
                 String groundName = sp.text();
+                String groundLink = ground.select("a").first().attr("href");
                 
                 out.print("<td>" + homeScore);
                 out.print("<td>" + awayScore);
-                out.print("<td><a href=\""+ url +"\" >" + winnerName + " </a>");
+                out.print("<td><a href=\"" + url + "\" >" + winnerName + " </a>");
 
-                out.print("<td>" + groundName);
+                out.print("<td><a href=\"" + groundLink + "\" >" + groundName +"</a>");
             }
 
 //            out.println("<h1>" + matchLinks);
