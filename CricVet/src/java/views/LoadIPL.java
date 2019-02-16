@@ -7,32 +7,29 @@ package views;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.*;
-import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.jsoup.*;
-import org.jsoup.select.*;
-import org.jsoup.nodes.*;
-import org.apache.http.client.utils.*;
-import org.json.*;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  *
  * @author DELL
  */
-public class LoadODI extends HttpServlet {
+public class LoadIPL extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -51,30 +48,13 @@ public class LoadODI extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoadODI</title>");
-            out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");
+            out.println("<title>Servlet Load IPL</title>");
+            out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");        
             out.println("</head>");
             out.println("<body>");
+//            out.println("<h1>Servlet LoadIPL at " + request.getContextPath() + "</h1>");
 
-//            out.print("<table class=\"table table-striped\"><tr class=\"thead-dark\"><th>ODI Teams</tr>");
-//
-//            //getting page with list of ODI teams
-//            Document doc = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/index.html").get();
-//            Element teamListContainer = doc.getElementById("recteam");
-//            Elements teams = teamListContainer.getElementsByClass("RecordLinks");//container with ODI teams
-//
-//            for (Element team : teams) {    //loop for every team
-//
-//                URL url = new URL(team.absUrl("href"));
-//                List<org.apache.http.NameValuePair> params = URLEncodedUtils.parse(url.toURI(), Charset.forName("UTF-8"));
-//
-//                String id = params.get(0).getValue();   //#todo
-//                String teamName = team.text();     //#todo
-//
-////                out.print("<tr><td> <a href='/CricVet/teamInfo.jsp?id=" + id + "&team=" + e.text() + "' >" + e.text() + "</a>");
-//            }
-//
-//            out.println("</table>");
+
             out.print("<table class=\"table table-striped\">\n"
                     + "            <tr class=\"thead-dark\">\n"
                     + "<th colspan=\"4\" >"
@@ -118,12 +98,11 @@ public class LoadODI extends HttpServlet {
             List<String> matchLinks = new ArrayList<>();
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
-            for (int y = year; y >= 2019; y--) {
-                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=2;id=" + y + ";type=year").get();
+            for (int y = year; y >= 2018; y--) {
+                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id="+ y +";trophy=117;type=season").get();
                 if(matches==null && matches.getElementsByClass("data1").first() == null){
                     continue;
                 }
-                
                 Elements rows = matches.getElementsByClass("data1");
 
                 for (int i = (rows.size() - 1); i >= 0; i--) {
@@ -134,12 +113,13 @@ public class LoadODI extends HttpServlet {
                     matchLinks.add(matchLink);
                 }
             }
-
+            out.print("<h2>successful until here " + matchLinks.size());
             int count = 0;
             for (String matchLink : matchLinks) {
                 count++;
+                out.print("<h2>successful until here " + count);
                 if (count == 5) {
-                    break;
+//                    break;
                 }
                 String url = baseUrl + matchLink;
 
@@ -161,7 +141,7 @@ public class LoadODI extends HttpServlet {
                     out.print("<h1> error parsing date:" + matchDateString);
                     Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
 
@@ -193,9 +173,27 @@ public class LoadODI extends HttpServlet {
                 Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 String tossResult = detailsColumn.get(1).text();
+                
+                
+                
+                int seriesPos = 0;
+                for (int i = 0; i < splitUrl.length; i++) {
+                    if (splitUrl[i].equals("series")) {
+                        seriesPos = i + 1;
+                        break;
+                    }
+                }
+                
+                int eventNoPos = 0;
+                for (int i = 0; i < splitUrl.length; i++) {
+                    if (splitUrl[i].equals("scorecard")) {
+                        eventNoPos = i + 1;
+                        break;
+                    }
+                }
 
-                String seriesNo = splitUrl[4];
-                String eventNo = splitUrl[6];
+                String seriesNo = splitUrl[seriesPos];
+                String eventNo = splitUrl[eventNoPos];
 
                 String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -296,13 +294,10 @@ public class LoadODI extends HttpServlet {
                 out.print("<td><a href=\"" + groundLink + "\" >" + groundName +"</a>");
             }
 
-//            out.println("<h1>" + matchLinks);
+
             out.println("</body>");
             out.println("</html>");
         }
-//        catch (URISyntaxException ex) {
-//            Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

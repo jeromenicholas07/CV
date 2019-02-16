@@ -4,9 +4,17 @@
         <servlet-name>LoadODI</servlet-name>
         <servlet-class>views.LoadODI</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoadIPL</servlet-name>
+        <servlet-class>views.LoadIPL</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadODI</servlet-name>
         <url-pattern>/LoadODI</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadIPL</servlet-name>
+        <url-pattern>/LoadIPL</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
