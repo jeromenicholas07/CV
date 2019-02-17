@@ -29,7 +29,7 @@ import org.jsoup.select.Elements;
  *
  * @author DELL
  */
-public class LoadIPL extends HttpServlet {
+public class LoadBBL extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,11 +49,10 @@ public class LoadIPL extends HttpServlet {
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet Load IPL</title>");
-            out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");        
+            out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");
             out.println("</head>");
             out.println("<body>");
 //            out.println("<h1>Servlet LoadIPL at " + request.getContextPath() + "</h1>");
-
 
             out.print("<table class=\"table table-striped\">\n"
                     + "            <tr class=\"thead-dark\">\n"
@@ -99,8 +98,8 @@ public class LoadIPL extends HttpServlet {
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
             for (int y = year; y >= 2018; y--) {
-                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id="+ y +";trophy=117;type=season").get();
-                if(matches==null && matches.getElementsByClass("data1").first() == null){
+                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y-1) +"%2F"+ (y%100) + ";trophy=158;type=season").get();
+                if (matches == null && matches.getElementsByClass("data1").first() == null) {
                     continue;
                 }
                 Elements rows = matches.getElementsByClass("data1");
@@ -131,17 +130,17 @@ public class LoadIPL extends HttpServlet {
 
                 LocalDate matchDate = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
+
                 Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
                 String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length-1];
+                String matchDateString = parts[parts.length - 1];
                 try {
                     matchDate = LocalDate.parse(matchDateString.trim(), df);
                 } catch (DateTimeParseException ex) {
                     out.print("<h1> error parsing date:" + matchDateString);
                     Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
 
@@ -173,9 +172,7 @@ public class LoadIPL extends HttpServlet {
                 Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 String tossResult = detailsColumn.get(1).text();
-                
-                
-                
+
                 int seriesPos = 0;
                 for (int i = 0; i < splitUrl.length; i++) {
                     if (splitUrl[i].equals("series")) {
@@ -183,7 +180,7 @@ public class LoadIPL extends HttpServlet {
                         break;
                     }
                 }
-                
+
                 int eventNoPos = 0;
                 for (int i = 0; i < splitUrl.length; i++) {
                     if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
@@ -281,19 +278,18 @@ public class LoadIPL extends HttpServlet {
 
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String winnerName = winner.select("span").first().text();
-                
+
                 Elements ground = matchPage.getElementsByClass("stadium-details");
                 Elements sp = ground.select("span");
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
-                
+
                 out.print("<td>" + homeScore);
                 out.print("<td>" + awayScore);
                 out.print("<td><a href=\"" + url + "\" >" + winnerName + " </a>");
 
-                out.print("<td><a href=\"" + groundLink + "\" >" + groundName +"</a>");
+                out.print("<td><a href=\"" + groundLink + "\" >" + groundName + "</a>");
             }
-
 
             out.println("</body>");
             out.println("</html>");

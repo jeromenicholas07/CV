@@ -29,7 +29,7 @@ import org.jsoup.select.Elements;
  *
  * @author DELL
  */
-public class LoadIPL extends HttpServlet {
+public class LoadT20I extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,12 +48,11 @@ public class LoadIPL extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Load IPL</title>");
-            out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");        
+            out.println("<title>Servlet Load T20 Internationals</title>");
+            out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");
             out.println("</head>");
             out.println("<body>");
 //            out.println("<h1>Servlet LoadIPL at " + request.getContextPath() + "</h1>");
-
 
             out.print("<table class=\"table table-striped\">\n"
                     + "            <tr class=\"thead-dark\">\n"
@@ -68,14 +67,14 @@ public class LoadIPL extends HttpServlet {
                     + "                <th>Away\n"
                     + "                <th>Toss\n"
                     + "                <th>First Over                \n"
-                    + "                <th>6 overs\n"
+                    + "                <th>5 overs\n"
                     + "                <th>Last 5 overs\n"
                     + "                <th>First wicket  <!--(After how many runs did the first wicket fall)-->\n"
                     + "                <th>Fours\n"
                     + "                <th>Sixes\n"
                     + "\n"
                     + "                <th>First Over                \n"
-                    + "                <th>6 overs\n"
+                    + "                <th>5 overs\n"
                     + "                <th>Last 5 overs\n"
                     + "                <th>First wicket  <!--(After how many runs did the first wicket fall)-->\n"
                     + "                <th>Fours\n"
@@ -99,8 +98,8 @@ public class LoadIPL extends HttpServlet {
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
             for (int y = year; y >= 2018; y--) {
-                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id="+ y +";trophy=117;type=season").get();
-                if(matches==null && matches.getElementsByClass("data1").first() == null){
+                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=3;id=" + y + ";type=year").get();
+                if (matches == null && matches.getElementsByClass("data1").first() == null) {
                     continue;
                 }
                 Elements rows = matches.getElementsByClass("data1");
@@ -118,7 +117,7 @@ public class LoadIPL extends HttpServlet {
             for (String matchLink : matchLinks) {
                 count++;
                 out.print("<h2>successful until here " + count);
-                if (count == 3) {
+                if (count == 18) {
                     break;
                 }
                 String url = baseUrl + matchLink;
@@ -131,17 +130,17 @@ public class LoadIPL extends HttpServlet {
 
                 LocalDate matchDate = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
+
                 Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
                 String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length-1];
+                String matchDateString = parts[parts.length - 1];
                 try {
                     matchDate = LocalDate.parse(matchDateString.trim(), df);
                 } catch (DateTimeParseException ex) {
                     out.print("<h1> error parsing date:" + matchDateString);
                     Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
 
@@ -173,9 +172,7 @@ public class LoadIPL extends HttpServlet {
                 Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 String tossResult = detailsColumn.get(1).text();
-                
-                
-                
+
                 int seriesPos = 0;
                 for (int i = 0; i < splitUrl.length; i++) {
                     if (splitUrl[i].equals("series")) {
@@ -183,7 +180,7 @@ public class LoadIPL extends HttpServlet {
                         break;
                     }
                 }
-                
+
                 int eventNoPos = 0;
                 for (int i = 0; i < splitUrl.length; i++) {
                     if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
@@ -211,7 +208,7 @@ public class LoadIPL extends HttpServlet {
 
                     List<JSONObject> ballList = new ArrayList<>();
                     int firstOverScore = 0;
-                    int sixOverScore = 0;
+                    int fiveOverScore = 0;
                     int lastFiveOverScore = 0;
                     int firstWicketScore = -1;
                     int fourCount = 0;
@@ -237,8 +234,8 @@ public class LoadIPL extends HttpServlet {
 //                                out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
 //                                out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
                             }
-                            if (jItem.getJSONObject("over").getInt("unique") < 6) {
-                                sixOverScore += jItem.getInt("scoreValue");
+                            if (jItem.getJSONObject("over").getInt("unique") < 5) {
+                                fiveOverScore += jItem.getInt("scoreValue");
                             }
                             if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                                 lastFiveOverScore += jItem.getInt("scoreValue");
@@ -269,7 +266,7 @@ public class LoadIPL extends HttpServlet {
 //                        }
 //                    }
                     out.print("<td>" + firstOverScore);
-                    out.print("<td>" + sixOverScore);
+                    out.print("<td>" + fiveOverScore);
                     out.print("<td>" + lastFiveOverScore);
                     out.print("<td>" + firstWicketScore);
                     out.print("<td>" + fourCount);
@@ -281,36 +278,36 @@ public class LoadIPL extends HttpServlet {
 
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String winnerName = winner.select("span").first().text();
-                
+
                 Elements ground = matchPage.getElementsByClass("stadium-details");
                 Elements sp = ground.select("span");
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
-                
+
                 out.print("<td>" + homeScore);
                 out.print("<td>" + awayScore);
                 out.print("<td><a href=\"" + url + "\" >" + winnerName + " </a>");
 
-                out.print("<td><a href=\"" + groundLink + "\" >" + groundName +"</a>");
+                out.print("<td><a href=\"" + groundLink + "\" >" + groundName + "</a>");
             }
-
 
             out.println("</body>");
             out.println("</html>");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+/**
+ * Handles the HTTP <code>GET</code> method.
+ *
+ * @param request servlet request
+ * @param response servlet response
+ * @throws ServletException if a servlet-specific error occurs
+ * @throws IOException if an I/O error occurs
+ */
+@Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -324,7 +321,7 @@ public class LoadIPL extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -335,7 +332,7 @@ public class LoadIPL extends HttpServlet {
      * @return a String containing servlet description
      */
     @Override
-    public String getServletInfo() {
+        public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 

@@ -194,8 +194,26 @@ public class LoadODI extends HttpServlet {
                 Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 String tossResult = detailsColumn.get(1).text();
 
-                String seriesNo = splitUrl[4];
-                String eventNo = splitUrl[6];
+                
+                
+                int seriesPos = 0;
+                for (int i = 0; i < splitUrl.length; i++) {
+                    if (splitUrl[i].equals("series")) {
+                        seriesPos = i + 1;
+                        break;
+                    }
+                }
+                
+                int eventNoPos = 0;
+                for (int i = 0; i < splitUrl.length; i++) {
+                    if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
+                        eventNoPos = i + 1;
+                        break;
+                    }
+                }
+
+                String seriesNo = splitUrl[seriesPos];
+                String eventNo = splitUrl[eventNoPos];
 
                 String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
