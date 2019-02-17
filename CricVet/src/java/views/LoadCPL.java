@@ -29,7 +29,7 @@ import org.jsoup.select.Elements;
  *
  * @author DELL
  */
-public class LoadBBL extends HttpServlet {
+public class LoadCPL extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -48,7 +48,7 @@ public class LoadBBL extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet Load BBL</title>");
+            out.println("<title>Servlet Load CPL</title>");
             out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");
             out.println("</head>");
             out.println("<body>");
@@ -98,7 +98,7 @@ public class LoadBBL extends HttpServlet {
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
             for (int y = year; y >= 2018; y--) {
-                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y-1) +"%2F"+ (y%100) + ";trophy=158;type=season").get();
+                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=748;type=season").get();
                 if (matches == null && matches.getElementsByClass("data1").first() == null) {
                     continue;
                 }
