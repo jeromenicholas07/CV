@@ -3,7 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package views;
+package DataFetch;
+
+/**
+ *
+ * @author DELL
+ */
+
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,76 +30,23 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import views.LoadODI;
+import Models.*;
+import Database.*;
+import java.sql.SQLException;
 
-/**
- *
- * @author DELL
- */
-public class LoadT20I extends HttpServlet {
+import java.util.concurrent.ThreadLocalRandom;
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Load T20 Internationals</title>");
-            out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");
-            out.println("</head>");
-            out.println("<body>");
-//            out.println("<h1>Servlet LoadIPL at " + request.getContextPath() + "</h1>");
 
-            out.print("<table class=\"table table-striped\">\n"
-                    + "            <tr class=\"thead-dark\">\n"
-                    + "<th colspan=\"4\" >"
-                    + "<th colspan=\"6\">1st Inning  "
-                    + "<th colspan=\"6\">2nd Inning  "
-                    + "<th colspan=\"4\"> Result "
-                    + "</tr>"
-                    + "            <tr class=\"thead-dark\" >\n"
-                    + "                <th>Date"
-                    + "                <th>Home\n"
-                    + "                <th>Away\n"
-                    + "                <th>Toss\n"
-                    + "                <th>First Over                \n"
-                    + "                <th>5 overs\n"
-                    + "                <th>Last 5 overs\n"
-                    + "                <th>First wicket  <!--(After how many runs did the first wicket fall)-->\n"
-                    + "                <th>Fours\n"
-                    + "                <th>Sixes\n"
-                    + "\n"
-                    + "                <th>First Over                \n"
-                    + "                <th>5 overs\n"
-                    + "                <th>Last 5 overs\n"
-                    + "                <th>First wicket  <!--(After how many runs did the first wicket fall)-->\n"
-                    + "                <th>Fours\n"
-                    + "                <th>Sixes\n"
-                    + "\n"
-                    + "                    <!--                <th>No. of sixes (Batting)\n"
-                    + "                                    <th>No. of sixes (Bowling)-->\n"
-                    + "\n"
-                    + "                <th>Home Score\n"
-                    + "                <th>Away Score\n"
-                    + "\n"
-                    + "                \n"
-                    + "                <th>Win/Lose Margin\n"
-                    + "                <th>Ground\n"
-                    + "\n"
-                    + "            </tr>");
 
-            //load matchwise data ♣
-            String baseUrl = "http://stats.espncricinfo.com/";
+
+
+public class T20Data {
+    
+    public static void main (String[]args) throws IOException, SQLException
+    {   int done = 1;
+        CricDB db = new CricDB();
+        String baseUrl = "http://stats.espncricinfo.com/";
             List<String> matchLinks = new ArrayList<>();
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -112,11 +65,15 @@ public class LoadT20I extends HttpServlet {
                     matchLinks.add(matchLink);
                 }
             }
-            out.print("<h2>successful until here " + matchLinks.size());
+            //out.print("<h2>successful until here " + matchLinks.size());
             int count = 0;
+            //one match
             for (String matchLink : matchLinks) {
                 count++;
-                out.print("<h2>successful until here " + count);
+                T20Inning one = null;
+                T20Inning two = null;
+             //   out.print("<h2>successful until here " + count);
+             
                 if (count == 18) {
                     break;
                 }
@@ -137,7 +94,7 @@ public class LoadT20I extends HttpServlet {
                 try {
                     matchDate = LocalDate.parse(matchDateString.trim(), df);
                 } catch (DateTimeParseException ex) {
-                    out.print("<h1> error parsing date:" + matchDateString);
+                    //out.print("<h1> error parsing date:" + matchDateString);
                     Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -171,8 +128,8 @@ public class LoadT20I extends HttpServlet {
 
                 Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
-
+                String tossResult = detailsColumn.get(1).text();//Ireland , elected to field first
+                String[] arrOfTossResult = tossResult.split(",", 2); 
                 int seriesPos = 0;
                 for (int i = 0; i < splitUrl.length; i++) {
                     if (splitUrl[i].equals("series")) {
@@ -198,12 +155,12 @@ public class LoadT20I extends HttpServlet {
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
 
-                out.print("<tr data-href=\"" + url + "\">");
+               /* out.print("<tr data-href=\"" + url + "\">");
                 out.print("<td> " + matchDate.format(df));
                 out.print("<td>" + homeTeamName + " (" + homeTeamId + ")");
                 out.print("<td>" + awayTeamName + " (" + awayTeamId + ")");
                 out.print("<td>" + tossResult);
-
+*/
                 
                 
                 for (int inning = 1; inning <= 2; inning++) {
@@ -267,12 +224,17 @@ public class LoadT20I extends HttpServlet {
 //                            }
 //                        }
 //                    }
-                    out.print("<td>" + firstOverScore);
+                   /* out.print("<td>" + firstOverScore);
                     out.print("<td>" + fiveOverScore);
                     out.print("<td>" + lastFiveOverScore);
                     out.print("<td>" + firstWicketScore);
                     out.print("<td>" + fourCount);
-                    out.print("<td>" + sixCount);
+                    out.print("<td>" + sixCount);*/
+                   int id = ThreadLocalRandom.current().nextInt(1000, 99999);
+                   if(inning==1)
+                   one = new T20Inning(Integer.toString(id), firstOverScore, fiveOverScore, lastFiveOverScore, firstWicketScore, fourCount, sixCount);
+                   else
+                   two =  new T20Inning(Integer.toString(id), firstOverScore, fiveOverScore, lastFiveOverScore, firstWicketScore, fourCount, sixCount);
                 }
 
                 String homeScore = home.select("div.cscore_score").get(0).text();
@@ -286,56 +248,37 @@ public class LoadT20I extends HttpServlet {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
 
-                out.print("<td>" + homeScore);
-                out.print("<td>" + awayScore);
-                out.print("<td><a href=\"" + url + "\" >" + winnerName + " </a>");
+               // out.print("<td>" + homeScore);
+                //out.print("<td>" + awayScore);
+                //out.print("<td><a href=\"" + url + "\" >" + winnerName + " </a>");
 
-                out.print("<td><a href=\"" + groundLink + "\" >" + groundName + "</a>");
+            //    out.print("<td><a href=\"" + groundLink + "\" >" + groundName + "</a>");
+            int id = ThreadLocalRandom.current().nextInt(1000, 99999);
+            String tossR;
+            String winnerTeam;
+            if(arrOfTossResult[1].equals(" elected to field first"))
+                tossR = "chase";
+            else
+                tossR = "bat";
+            if (winnerName.contains(homeTeamName))
+                winnerTeam = homeTeamName;
+            else
+                winnerTeam =  awayTeamName;
+            T20Match match =  new T20Match( Integer.toString(id), homeTeamId, awayTeamId,  matchDate.format(df), arrOfTossResult[0], tossR, one.getInningId(), two.getInningId(), homeScore, awayScore, winnerTeam, winnerName, groundName);
+            if(done != 1){
+            db.addT20Inning(one);
+            db.addT20Inning(two);
+            db.addT20Match(match);
+           // System.out.println(match.getHomeTeam()+" "+ match.getHomeScore()+ " " + match.getMatchDate() + match.getOneId()+" " + match.getTossResult() + " " + match.getTossWinner() + " " + match.getWinnerTeam()+" " + match.getResult());
+           // System.out.println(match.getAwayTeam()+" "+ match.getAwayScore());
+            }
+            
             }
 
-            out.println("</body>");
-            out.println("</html>");
+            //out.println("</body>");
+            //out.println("</html>");
         }
-    }
-
-
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-/**
- * Handles the HTTP <code>GET</code> method.
- *
- * @param request servlet request
- * @param response servlet response
- * @throws ServletException if a servlet-specific error occurs
- * @throws IOException if an I/O error occurs
- */
-@Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-        public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        
+   
+    
 }
