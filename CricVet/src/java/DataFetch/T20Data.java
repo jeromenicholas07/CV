@@ -51,7 +51,7 @@ public class T20Data {
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
             for (int y = year; y >= 2018; y--) {
-                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=3;id=" + y + ";type=year").get();
+                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y-1) +"%2F"+ (y%100) + ";trophy=158;type=season").get();
                 if (matches == null && matches.getElementsByClass("data1").first() == null) {
                     continue;
                 }
