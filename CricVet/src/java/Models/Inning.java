@@ -11,7 +11,7 @@ package Models;
  *
  * @author DELL
  */
-public class T20Inning {
+public class Inning {
     
     String inningId;
     int firstOver;	
@@ -21,7 +21,7 @@ public class T20Inning {
     int fours;	
     int sixes;
     
-    public T20Inning(String inningId, int firstOver, int firstFiveOvers, int lastFiveOvers, int firstWicket, int fours, int sixes) {
+    public Inning(String inningId, int firstOver, int firstFiveOvers, int lastFiveOvers, int firstWicket, int fours, int sixes) {
         this.inningId = inningId;
         this.firstOver = firstOver;
         this.firstFiveOvers = firstFiveOvers;

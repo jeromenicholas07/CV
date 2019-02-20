@@ -70,8 +70,8 @@ public class T20Data {
             //one match
             for (String matchLink : matchLinks) {
                 count++;
-                T20Inning one = null;
-                T20Inning two = null;
+                Inning one = null;
+                Inning two = null;
              //   out.print("<h2>successful until here " + count);
              
                 if (count == 18) {
@@ -232,9 +232,9 @@ public class T20Data {
                     out.print("<td>" + sixCount);*/
                    int id = ThreadLocalRandom.current().nextInt(1000, 99999);
                    if(inning==1)
-                   one = new T20Inning(Integer.toString(id), firstOverScore, fiveOverScore, lastFiveOverScore, firstWicketScore, fourCount, sixCount);
+                   one = new Inning(Integer.toString(id), firstOverScore, fiveOverScore, lastFiveOverScore, firstWicketScore, fourCount, sixCount);
                    else
-                   two =  new T20Inning(Integer.toString(id), firstOverScore, fiveOverScore, lastFiveOverScore, firstWicketScore, fourCount, sixCount);
+                   two =  new Inning(Integer.toString(id), firstOverScore, fiveOverScore, lastFiveOverScore, firstWicketScore, fourCount, sixCount);
                 }
 
                 String homeScore = home.select("div.cscore_score").get(0).text();
@@ -264,8 +264,13 @@ public class T20Data {
                 winnerTeam = homeTeamName;
             else
                 winnerTeam =  awayTeamName;
-            T20Match match =  new T20Match( Integer.toString(id), homeTeamId, awayTeamId,  matchDate.format(df), arrOfTossResult[0], tossR, one.getInningId(), two.getInningId(), homeScore, awayScore, winnerTeam, winnerName, groundName);
-            if(done != 1){
+            Match match =  new Match( Integer.toString(id), homeTeamName, awayTeamName,  matchDate.format(df), arrOfTossResult[0], tossR, one.getInningId(), two.getInningId(), homeScore, awayScore, winnerTeam, winnerName, groundName) {
+                    @Override
+                    public int compareTo(Match o) {
+                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    }
+                };
+            if(done != 0){
             db.addT20Inning(one);
             db.addT20Inning(two);
             db.addT20Match(match);

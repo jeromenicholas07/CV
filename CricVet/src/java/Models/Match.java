@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author DELL
  */
-public class T20Match {
+public abstract class Match implements Comparable<Match>{
     
     
     String matchId;
@@ -28,7 +28,7 @@ public class T20Match {
     String result;
     String groundName;
 
-    public T20Match(String matchId, String homeTeam, String awayTeam, String matchDate, String tossWinner, String tossResult, String oneId, String twoId, String homeScore, String awayScore, String winnerTeam, String result, String groundName) {
+    public Match(String matchId, String homeTeam, String awayTeam, String matchDate, String tossWinner, String tossResult, String oneId, String twoId, String homeScore, String awayScore, String winnerTeam, String result, String groundName) {
         this.matchId = matchId;
         this.homeTeamId = homeTeam;
         this.awayTeamId = awayTeam;
