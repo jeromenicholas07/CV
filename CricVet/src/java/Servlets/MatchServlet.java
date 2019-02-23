@@ -51,8 +51,10 @@ public class MatchServlet extends HttpServlet {
         
         String teamName1 =  request.getParameter("teamName1");
         String teamName2 =  request.getParameter("teamName2");
+        String groundName = request.getParameter("groundName");
         List <Match> matches_1 = db.getMatches(teamName1);
         List <Match> matches_2 = db.getMatches(teamName2);
+        List <Match> groundMatches = db.getGroundData(groundName);
         List<Inning> batRecords_In1_1 = new ArrayList<>();
         List<Inning> bowlRecords_In1_1 =new ArrayList<>();
         List<Inning> batRecords_In2_1 = new ArrayList<>();
@@ -65,8 +67,7 @@ public class MatchServlet extends HttpServlet {
         List <String> runGivenBowl_In2_1 = new ArrayList<>();
         
         
-        
-         List<Inning> batRecords_In1_2 = new ArrayList<>();
+        List<Inning> batRecords_In1_2 = new ArrayList<>();
         List<Inning> bowlRecords_In1_2 =new ArrayList<>();
         List<Inning> batRecords_In2_2 = new ArrayList<>();
         List<Inning> bowlRecords_In2_2 =new ArrayList<>();
@@ -76,7 +77,8 @@ public class MatchServlet extends HttpServlet {
         List <String> runScoredBat_In2_2 = new ArrayList<>();
         List <String> runGivenBowl_In1_2 = new ArrayList<>();
         List <String> runGivenBowl_In2_2 = new ArrayList<>();
-       
+        List <String> groundData_In1= new ArrayList<>();
+        List <String> groundData_In2= new ArrayList<>();
         
         Inning tempIn1;
         Inning tempIn2;
@@ -84,6 +86,48 @@ public class MatchServlet extends HttpServlet {
         Match temp;
         Match temp1;
        
+        
+        //sorting ground matches
+        Collections.sort(groundMatches, new Comparator<Match>() 
+          {
+                DateFormat f = new SimpleDateFormat("MMM dd yyyy");
+                @Override
+                public int compare(Match o1, Match o2) {
+                    try {
+                        return f.parse(o1.getMatchDate()).compareTo(f.parse(o2.getMatchDate()));
+                    } catch (ParseException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                }
+         });
+        Collections.reverse(groundMatches);
+         while(i< groundMatches.size() && i<11)
+        {   
+            temp =  groundMatches.get(i);
+            if(temp.getTossWinner().contains(temp.getHomeTeam()) && temp.getTossResult().contains("bat"))
+            {
+                groundData_In1.add(temp.getHomeScore());
+                groundData_In2.add(temp.getAwayScore());
+                
+            }
+            else if(temp.getTossWinner().contains(temp.getHomeTeam()) && temp.getTossResult().contains("chase"))
+            {
+                groundData_In2.add(temp.getHomeScore());
+                groundData_In1.add(temp.getAwayScore());
+            }
+            else if(temp.getTossWinner().contains(temp.getAwayTeam()) && temp.getTossResult().contains("bat"))
+            {
+                groundData_In2.add(temp.getHomeScore());
+                groundData_In1.add(temp.getAwayScore());
+            }
+            else if(temp.getTossWinner().contains(temp.getAwayTeam()) && temp.getTossResult().contains("chase"))
+            {
+                groundData_In1.add(temp.getHomeScore());
+                groundData_In2.add(temp.getAwayScore());
+            }
+            i++;
+        }
+        
         Collections.sort(matches_1, new Comparator<Match>() 
           {
                 DateFormat f = new SimpleDateFormat("MMM dd yyyy");
@@ -97,6 +141,7 @@ public class MatchServlet extends HttpServlet {
                 }
          });
         Collections.reverse(matches_1);
+        i =0; j=0; k=0;
         while(i< matches_1.size() && i<11)
         {   temp =  matches_1.get(i);
         //figure out if ka logic
@@ -229,7 +274,7 @@ public class MatchServlet extends HttpServlet {
                 
             }
             else 
-            {   System.out.println("iN ELSE BROTHA");
+            {   System.out.println("IN ELSE BROTHA");
                 temp1 = new Match(temp.getMatchId(), temp.getHomeTeam(), temp.getAwayTeam(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
                         @Override
                         public int compareTo(Match o) {
@@ -314,6 +359,10 @@ public class MatchServlet extends HttpServlet {
         request.setAttribute("runGivenBowl_In1_2", runGivenBowl_In1_2);
         request.setAttribute("runGivenBowl_In2_2",runGivenBowl_In2_2);
         
+        request.setAttribute("groundName",groundName);
+        request.setAttribute("groundData_In1", groundData_In1);
+        request.setAttribute("groundData_In2",groundData_In2);
+        
         RequestDispatcher dispatcher = request.getRequestDispatcher("/show.jsp");
         dispatcher.forward(request, response);
            
@@ -365,10 +414,12 @@ public class MatchServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+
+
+
+
+    } // </editor-fold>
 
     
-    
-
     
 }

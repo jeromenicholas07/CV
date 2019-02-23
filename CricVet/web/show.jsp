@@ -448,7 +448,30 @@
            
           
             
-            
+            <div id="groundData">
+                
+                <table>
+                    <thead>Ground Data for ${groundName} </thead>
+                    <tr>
+                        <td> Inning 1: </td>
+                        <c:forEach var="temp" items="${groundData_In1}">
+                             <td>${temp}</td>
+                        </c:forEach>    
+                    </tr>
+                    <tr>
+                        <td> Inning 2: </td>
+                        <c:forEach var="temp" items="${groundData_In2}">
+                             <td>${temp}</td>
+                        </c:forEach>    
+                    </tr> 
+                    
+                    
+                </table>
+                 
+                
+                
+                
+            </div>
             
             <div background="red">
             

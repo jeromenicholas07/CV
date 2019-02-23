@@ -225,6 +225,73 @@ public class CricDB {
         
         
     }
+     
+      public  List<Match> getGroundData(String groundName1) throws Exception
+    {
+        List<Match> matches = new ArrayList<Match>();
+        
+        Connection myConn = null;
+        Statement myStmt = null;
+        ResultSet myRs = null;
+        
+        try{
+            
+            myConn =  db.getConnection(); 
+            
+            String sql = "select * from T20MATCH where groundname = '"+ groundName1 +"'";
+            
+            myStmt = myConn.createStatement();
+            
+            myRs = myStmt.executeQuery(sql);
+            
+            while (myRs.next())
+            {
+                     String matchId= myRs.getString("id");
+                     String homeTeamId= myRs.getString("hometeam");
+                     String awayTeamId= myRs.getString("awayteam");
+                     String matchDate= myRs.getString("matchdate");
+                     String tossWinner= myRs.getString("tosswinner");
+                     String tossResult= myRs.getString("tossresult");
+                     String oneId= myRs.getString("oneid");
+                     String twoId= myRs.getString("twoid");
+                     String homeScore= myRs.getString("homescore");
+                     String awayScore= myRs.getString("awayscore");
+                     String winnerTeam= myRs.getString("winnerteam");
+                     String result= myRs.getString("result");
+                     String groundName= myRs.getString("groundname");
+                
+                     
+                     Match temp =  new Match(matchId, homeTeamId, awayTeamId, matchDate, tossWinner, tossResult, oneId, twoId, homeScore, awayScore, winnerTeam, result, groundName) {
+                         @Override
+                         public int compareTo(Match o) {
+                             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                         }
+                     };
+                     
+                     matches.add(temp);
+                     
+            }
+            
+           return matches;   
+            
+        }catch(Exception e)
+        {
+            
+            e.printStackTrace();
+        }
+        finally{
+             myConn.close();
+            myStmt.close();
+            myRs.close();
+            
+            
+        }
+        return null;
+        
+        
+    }
+     
+     
     
 }
 

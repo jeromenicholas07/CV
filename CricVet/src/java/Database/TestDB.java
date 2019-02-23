@@ -25,7 +25,16 @@ public class TestDB {
     {
         
         CricDB db = new CricDB();
-        String teamName = "Pakistan";
+        String groundName1 ="Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)";
+        List <Match> matches = db.getGroundData(groundName1);
+        int i = 0;
+        
+        while(i<matches.size())
+        {
+            System.out.println(matches.get(i).getHomeTeam()+" "+ matches.get(i).getMatchDate());
+            i++;
+        }
+        /*String teamName = "Pakistan";
         List <Match> matches = db.getMatches(teamName);
         List<Inning> batRecords_In1 = new ArrayList<>();
         List<Inning> bowlRecords_In1 =new ArrayList<>();
@@ -133,7 +142,7 @@ public class TestDB {
             //System.out.println(bat.get(j).getMatchDate()+"||" +bat.get(j).getWinnerTeam()+"||"+ batRecords_In1.get(j).getFirstFiveOvers()+"||"+bowlRecords_In2.get(j).getFirstFiveOvers()+"||" +bat.get(j).getTossWinner()+"||" +bat.get(j).getTossResult());
             j++;
         }
-        
+        */
         
     }
    

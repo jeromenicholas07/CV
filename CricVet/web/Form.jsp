@@ -145,6 +145,10 @@
                                     <option value="Quetta Gladiators">Quetta Gladiators</option>
                         </select></td>
                 </tr>
+                <tr>
+                <input type="text" name="groundName">
+                
+                </tr>
             
                 <tr><td span="2"></td></tr>
             </table>
