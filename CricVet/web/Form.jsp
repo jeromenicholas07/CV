@@ -145,8 +145,29 @@
                                     <option value="Quetta Gladiators">Quetta Gladiators</option>
                         </select></td>
                 </tr>
-                <tr>
-                <input type="text" name="groundName">
+                <tr><td><label>Ground Name: </label></td>
+                    <td>
+                    <select name="groundName">
+                                             <option value="SuperSport Park, Centurion">SuperSport Park, Centurion</option>
+                                            <option value="Adelaide Oval">Adelaide Oval</option>
+                                            <option value="ICC Academy, Dubai">ICC Academy, Dubai</option>
+                                            <option value="Docklands Stadium, Melbourne">Docklands Stadium, Melbourne</option>
+                                            <option value="Aurora Stadium, Launceston">Aurora Stadium, Launceston</option>
+                                            <option value="Manuka Oval, Canberra">Manuka Oval, Canberra</option>
+                                            <option value="Melbourne Cricket Ground">Melbourne Cricket Ground</option>
+                                            <option value="Brisbane Cricket Ground, Woolloongabba, Brisbane">Brisbane Cricket Ground, Woolloongabba, Brisbane</option>
+                                            <option value="The Wanderers Stadium, Johannesburg">The Wanderers Stadium, Johannesburg</option>
+                                            <option value="Bellerive Oval, Hobart">Bellerive Oval, Hobart</option>
+                                            <option value="Seddon Park, Hamilton">Seddon Park, Hamilton</option>
+                                            <option value="Westpac Stadium, Wellington">Westpac Stadium, Wellington</option>
+                                            <option value="Al Amerat Cricket Ground Oman Cricket (Ministry Turf 2)">Al Amerat Cricket Ground Oman Cricket (Ministry Turf 2)</option>
+                                            <option value="Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)">Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)</option>
+                                            <option value="Perth Stadium">Perth Stadium</option>
+                                            <option value="Eden Park, Auckland">Eden Park, Auckland</option>
+                                            <option value="Newlands, Cape Town">Newlands, Cape Town</option>
+                                            <option value="Sydney Cricket Ground">Sydney Cricket Ground</option>
+                    </select>
+                        </td>
                 
                 </tr>
             

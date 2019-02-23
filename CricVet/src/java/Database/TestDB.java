@@ -26,12 +26,12 @@ public class TestDB {
         
         CricDB db = new CricDB();
         String groundName1 ="Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)";
-        List <Match> matches = db.getGroundData(groundName1);
+        List <String> matches = db.getGroundNames();
         int i = 0;
         
         while(i<matches.size())
         {
-            System.out.println(matches.get(i).getHomeTeam()+" "+ matches.get(i).getMatchDate());
+            System.out.println("<option value=\""+matches.get(i)+"\">"+matches.get(i)+"</option>");
             i++;
         }
         /*String teamName = "Pakistan";

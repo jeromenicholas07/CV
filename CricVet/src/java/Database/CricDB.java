@@ -290,6 +290,56 @@ public class CricDB {
         
         
     }
+      
+      
+      public  List<String> getGroundNames() throws Exception
+    {
+        List<String> names = new ArrayList<String>();
+        
+        Connection myConn = null;
+        Statement myStmt = null;
+        ResultSet myRs = null;
+        
+        try{
+            
+            myConn =  db.getConnection(); 
+            
+            String sql = "select distinct groundname from T20MATCH";
+            
+            myStmt = myConn.createStatement();
+            
+            myRs = myStmt.executeQuery(sql);
+            
+            while (myRs.next())
+            {
+                     
+                     String groundName= myRs.getString("groundname");
+                
+                     
+                     
+                     
+                     names.add(groundName);
+                     
+            }
+            
+           return names;   
+            
+        }catch(Exception e)
+        {
+            
+            e.printStackTrace();
+        }
+        finally{
+             myConn.close();
+            myStmt.close();
+            myRs.close();
+            
+            
+        }
+        return null;
+        
+        
+    }
      
      
     
