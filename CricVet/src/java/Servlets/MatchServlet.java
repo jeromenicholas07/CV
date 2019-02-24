@@ -188,7 +188,7 @@ public class MatchServlet extends HttpServlet {
              i++;
         }
         
-        while(k< bat_1.size() && k<6)
+        while(k< bat_1.size() && k<5)
         {
             tempIn1 = db.getInning(bat_1.get(k).getOneId());
             batRecords_In1_1.add(tempIn1);
@@ -208,7 +208,7 @@ public class MatchServlet extends HttpServlet {
             
         }
         
-        while(j< chase_1.size() && j<6)
+        while(j< chase_1.size() && j<5)
         {
             tempIn1 = db.getInning(chase_1.get(j).getOneId());
             bowlRecords_In1_1.add(tempIn1);
@@ -293,7 +293,7 @@ public class MatchServlet extends HttpServlet {
              i++;
         }
         
-        while(k< bat_2.size() && k<6)
+        while(k< bat_2.size() && k<5)
         {
             tempIn1 = db.getInning(bat_2.get(k).getOneId());
             batRecords_In1_2.add(tempIn1);
@@ -313,7 +313,7 @@ public class MatchServlet extends HttpServlet {
             
         }
         
-        while(j< chase_2.size() && j<6)
+        while(j< chase_2.size() && j<5)
         {
             tempIn1 = db.getInning(chase_2.get(j).getOneId());
             bowlRecords_In1_2.add(tempIn1);

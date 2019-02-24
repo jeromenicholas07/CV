@@ -51,7 +51,7 @@ public class T20Data {
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
             for (int y = year; y >= 2018; y--) {
-                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y-1) +"%2F"+ (y%100) + ";trophy=158;type=season").get();
+                Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=748;type=season").get();
                 if (matches == null && matches.getElementsByClass("data1").first() == null) {
                     continue;
                 }
@@ -74,9 +74,9 @@ public class T20Data {
                 Inning two = null;
              //   out.print("<h2>successful until here " + count);
              
-                if (count == 18) {
+              /*  if (count == 18) {
                     break;
-                }
+                }*/
                 String url = baseUrl + matchLink;
 
                 Document matchPage = Jsoup.connect(url).followRedirects(true).get();
@@ -260,10 +260,14 @@ public class T20Data {
                 tossR = "chase";
             else
                 tossR = "bat";
-            if (winnerName.contains(homeTeamName))
-                winnerTeam = homeTeamName;
-            else
-                winnerTeam =  awayTeamName;
+           
+            winnerTeam = winnerName.split("won",2)[0]; 
+            
+                    
+            
+            
+            
+            
             Match match =  new Match( Integer.toString(id), homeTeamName, awayTeamName,  matchDate.format(df), arrOfTossResult[0], tossR, one.getInningId(), two.getInningId(), homeScore, awayScore, winnerTeam, winnerName, groundName) {
                     @Override
                     public int compareTo(Match o) {
