@@ -97,7 +97,7 @@ public class LoadCPL extends HttpServlet {
             List<String> matchLinks = new ArrayList<>();
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
-            for (int y = year; y >= 2018; y--) {
+            for (int y = year; y >= 2017; y--) {
                 Document matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=748;type=season").get();
                 if (matches == null && matches.getElementsByClass("data1").first() == null) {
                     continue;
