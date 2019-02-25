@@ -28,6 +28,10 @@
         <servlet-name>LoadCPL</servlet-name>
         <servlet-class>views.LoadCPL</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoadTest</servlet-name>
+        <servlet-class>views.LoadTest</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadODI</servlet-name>
         <url-pattern>/LoadODI</url-pattern>
@@ -55,6 +59,10 @@
     <servlet-mapping>
         <servlet-name>LoadCPL</servlet-name>
         <url-pattern>/LoadCPL</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadTest</servlet-name>
+        <url-pattern>/LoadTest</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
