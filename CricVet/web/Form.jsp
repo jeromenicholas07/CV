@@ -148,24 +148,32 @@
                 <tr><td><label>Ground Name: </label></td>
                     <td>
                     <select name="groundName">
-                                             <option value="SuperSport Park, Centurion">SuperSport Park, Centurion</option>
                                             <option value="Adelaide Oval">Adelaide Oval</option>
-                                            <option value="ICC Academy, Dubai">ICC Academy, Dubai</option>
+                                            <option value="Ted Summerton Reserve, Moe">Ted Summerton Reserve, Moe</option>
+                                            <option value="Wankhede Stadium, Mumbai">Wankhede Stadium, Mumbai</option>
                                             <option value="Docklands Stadium, Melbourne">Docklands Stadium, Melbourne</option>
-                                            <option value="Aurora Stadium, Launceston">Aurora Stadium, Launceston</option>
                                             <option value="Manuka Oval, Canberra">Manuka Oval, Canberra</option>
                                             <option value="Melbourne Cricket Ground">Melbourne Cricket Ground</option>
-                                            <option value="Brisbane Cricket Ground, Woolloongabba, Brisbane">Brisbane Cricket Ground, Woolloongabba, Brisbane</option>
-                                            <option value="The Wanderers Stadium, Johannesburg">The Wanderers Stadium, Johannesburg</option>
-                                            <option value="Bellerive Oval, Hobart">Bellerive Oval, Hobart</option>
-                                            <option value="Seddon Park, Hamilton">Seddon Park, Hamilton</option>
-                                            <option value="Westpac Stadium, Wellington">Westpac Stadium, Wellington</option>
-                                            <option value="Al Amerat Cricket Ground Oman Cricket (Ministry Turf 2)">Al Amerat Cricket Ground Oman Cricket (Ministry Turf 2)</option>
-                                            <option value="Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)">Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)</option>
+                                            <option value="M.Chinnaswamy Stadium, Bengaluru">M.Chinnaswamy Stadium, Bengaluru</option>
+                                            <option value="Eden Gardens, Kolkata">Eden Gardens, Kolkata</option>
                                             <option value="Perth Stadium">Perth Stadium</option>
-                                            <option value="Eden Park, Auckland">Eden Park, Auckland</option>
-                                            <option value="Newlands, Cape Town">Newlands, Cape Town</option>
-                                            <option value="Sydney Cricket Ground">Sydney Cricket Ground</option>
+                                            <option value="Carrara Oval">Carrara Oval</option>
+                                            <option value="Rajiv Gandhi International Stadium, Uppal, Hyderabad">Rajiv Gandhi International Stadium, Uppal, Hyderabad</option>
+                                            <option value="Simonds Stadium, South Geelong, Victoria">Simonds Stadium, South Geelong, Victoria</option>
+                                            <option value="Holkar Cricket Stadium, Indore">Holkar Cricket Stadium, Indore</option>
+                                            <option value="Maharashtra Cricket Association Stadium, Pune">Maharashtra Cricket Association Stadium, Pune</option>
+                                            <option value="Sydney Showground Stadium">Sydney Showground Stadium</option>
+                                            <option value="Sawai Mansingh Stadium, Jaipur">Sawai Mansingh Stadium, Jaipur</option>
+                                            <option value="Brian Lara Stadium, Tarouba, Trinidad">Brian Lara Stadium, Tarouba, Trinidad</option>
+                                            <option value="Punjab Cricket Association IS Bindra Stadium, Mohali, Chandigarh">Punjab Cricket Association IS Bindra Stadium, Mohali, Chandigarh</option>
+                                            <option value="Aurora Stadium, Launceston">Aurora Stadium, Launceston</option>
+                                            <option value="Providence Stadium, Guyana">Providence Stadium, Guyana</option>
+                                            <option value="Geelong Cricket Ground">Geelong Cricket Ground</option>
+                                            <option value="MA Chidambaram Stadium, Chepauk, Chennai">MA Chidambaram Stadium, Chepauk, Chennai</option>
+                                            <option value="Brisbane Cricket Ground, Woolloongabba, Brisbane">Brisbane Cricket Ground, Woolloongabba, Brisbane</option>
+                                            <option value="Feroz Shah Kotla, Delhi">Feroz Shah Kotla, Delhi</option>
+                                            <option value="Bellerive Oval, Hobart">Bellerive Oval, Hobart</option>
+                                            <option value="Sydney Cricket Ground">Sydney Cricket Ground</option>      
                     </select>
                         </td>
                 
