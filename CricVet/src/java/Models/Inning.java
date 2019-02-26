@@ -3,90 +3,47 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Models;
+package models;
 
+import java.util.List;
 
-
-/**
- *
- * @author DELL
- */
 public class Inning {
     
-    String inningId;
-    int firstOver;	
-    int firstFiveOvers;
-    int lastFiveOvers;	
-    int firstWicket;	
-    int fours;	
-    int sixes;
-    
-    public Inning(String inningId, int firstOver, int firstFiveOvers, int lastFiveOvers, int firstWicket, int fours, int sixes) {
-        this.inningId = inningId;
-        this.firstOver = firstOver;
-        this.firstFiveOvers = firstFiveOvers;
-        this.lastFiveOvers = lastFiveOvers;
-        this.firstWicket = firstWicket;
-        this.fours = fours;
-        this.sixes = sixes;
-    }
+    int inningId;
+    int noOfParams;
+    List<String> params;
 
-    public String getInningId() {
+    public Inning(int noOfParams, List<String> params) {
+        this.noOfParams = noOfParams;
+        this.params = params;
+    }
+    public Inning(int inningId, int noOfParams, List<String> params) {
+        this.inningId = inningId;
+        this.noOfParams = noOfParams;
+        this.params = params;
+    }
+    
+    
+    public int getInningId() {
         return inningId;
     }
-
-    public void setInningId(String inningId) {
+    public void setInningId(int inningId) {
         this.inningId = inningId;
     }
 
-    public int getFirstOver() {
-        return firstOver;
+    public int getNoOfParams() {
+        return noOfParams;
+    }
+    public void setNoOfParams(int noOfParams) {
+        this.noOfParams = noOfParams;
     }
 
-    public void setFirstOver(int firstOver) {
-        this.firstOver = firstOver;
+    public List<String> getParams() {
+        return params;
     }
-
-    public int getFirstFiveOvers() {
-        return firstFiveOvers;
-    }
-
-    public void setFirstFiveOvers(int firstFiveOvers) {
-        this.firstFiveOvers = firstFiveOvers;
-    }
-
-    public int getLastFiveOvers() {
-        return lastFiveOvers;
-    }
-
-    public void setLastFiveOvers(int lastFiveOvers) {
-        this.lastFiveOvers = lastFiveOvers;
-    }
-
-    public int getFirstWicket() {
-        return firstWicket;
-    }
-
-    public void setFirstWicket(int firstWicket) {
-        this.firstWicket = firstWicket;
-    }
-
-    public int getFours() {
-        return fours;
-    }
-
-    public void setFours(int fours) {
-        this.fours = fours;
-    }
-
-    public int getSixes() {
-        return sixes;
-    }
-
-    public void setSixes(int sixes) {
-        this.sixes = sixes;
+    public void setParams(List<String> params) {
+        this.params = params;
     }
     
-
-  
+    
 }

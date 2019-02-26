@@ -32,6 +32,10 @@
         <servlet-name>LoadTest</servlet-name>
         <servlet-class>views.LoadTest</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoadAll</servlet-name>
+        <servlet-class>views.LoadAll</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadODI</servlet-name>
         <url-pattern>/LoadODI</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>LoadTest</servlet-name>
         <url-pattern>/LoadTest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadAll</servlet-name>
+        <url-pattern>/LoadAll</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
