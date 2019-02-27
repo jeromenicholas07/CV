@@ -32,7 +32,20 @@ public class CricDB extends BaseDAO {
     public void addMatch(Match match) {
         try {
             Connection con = getConnection();
-            String sql = "insert into DJ.MATCHES (MATCHID, HOMETEAM, AWAYTEAM, MATCHDATE, TOSSWINNER, BATTINGFIRST, INNING1_ID, INNING2_ID, HOMESCORE, AWAYSCORE, WINNERTEAM, RESULT, GROUNDNAME) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sq = "select * from DJ.MATCHES WHERE MATCHID="+String.valueOf(match.getMatchId());
+            Statement s = con.createStatement();
+            ResultSet r = s.executeQuery(sq);
+            if(r.next()){
+                System.out.println("Match "+ String.valueOf(match.getMatchId()) + " already exists in DB");
+                return;
+            }
+            
+            int inn1 = addInning(match.getInningOne());
+            
+            int inn2 = addInning(match.getInningTwo());
+            
+            
+            String sql = "insert into DJ.MATCHES (MATCHID, HOMETEAM, AWAYTEAM, MATCHDATE, TOSSWINNER, BATTINGFIRST, INNING1_ID, INNING2_ID, HOMESCORE, AWAYSCORE, WINNERTEAM, RESULT, GROUNDNAME, MATCHTYPE) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, match.getMatchId());
             ps.setString(2, match.getHomeTeam());
@@ -40,19 +53,41 @@ public class CricDB extends BaseDAO {
             ps.setDate(4, match.getMatchDate());
             ps.setString(5, match.getTossWinner());
             ps.setString(6, match.getBattingFirst());
-            ps.setInt(7, match.getInningOne().getInningId());
-            ps.setInt(8, match.getInningTwo().getInningId());
+            ps.setInt(7, inn1);
+            ps.setInt(8, inn2);
             ps.setString(9, match.getHomeScore());
             ps.setString(10, match.getAwayScore());
             ps.setString(11, match.getWinnerTeam());
             ps.setString(12, match.getResult());
             ps.setString(13, match.getGroundName());
+            ps.setString(14, String.valueOf(match.getMatchType()) );
             ps.execute();
 
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
             //todo: show that ur unable to connect to db
         }
+    }
+    
+    public boolean checkMatchEntry(int matchId){
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            con = getConnection();
+            String sql = "SELECT * FROM DJ.MATCHES WHERE MATCHID=" + String.valueOf(matchId);
+            
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    return false;
     }
 
     public int addInning(Inning i) {

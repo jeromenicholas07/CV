@@ -5,8 +5,8 @@
  */
 package Database;
 
-import Models.Inning1;
-import Models.Match1;
+import models.Inning1;
+import models.Match1;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
