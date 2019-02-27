@@ -37,7 +37,7 @@
         <servlet-class>Servlets.T20MatchServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>OdiMatchServlet1</servlet-name>
+        <servlet-name>OdiMatchServlet</servlet-name>
         <servlet-class>Servlets.OdiMatchServlet</servlet-class>
     </servlet>
     <servlet>
@@ -85,8 +85,8 @@
         <url-pattern>/T20MatchServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>OdiMatchServlet1</servlet-name>
-        <url-pattern>/OdiMatchServlet1</url-pattern>
+        <servlet-name>OdiMatchServlet</servlet-name>
+        <url-pattern>/OdiMatchServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
