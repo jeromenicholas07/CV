@@ -3,121 +3,40 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package views;
+package DataFetch;
 
+import Database.CricDB;
 import Models.*;
 import Models.Match;
+import Models.OdiInning;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.*;
-import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.jsoup.*;
-import org.jsoup.select.*;
-import org.jsoup.nodes.*;
-import org.apache.http.client.utils.*;
-import org.json.*;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import views.LoadODI;
 
 /**
  *
  * @author DELL
  */
-public class LoadODI extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet LoadODI</title>");
-            out.println("<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css\" integrity=\"sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS\" crossorigin=\"anonymous\">");
-            out.println("</head>");
-            out.println("<body>");
-
-//            out.print("<table class=\"table table-striped\"><tr class=\"thead-dark\"><th>ODI Teams</tr>");
-//
-//            //getting page with list of ODI teams
-//            Document doc = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/index.html").get();
-//            Element teamListContainer = doc.getElementById("recteam");
-//            Elements teams = teamListContainer.getElementsByClass("RecordLinks");//container with ODI teams
-//
-//            for (Element team : teams) {    //loop for every team
-//
-//                URL url = new URL(team.absUrl("href"));
-//                List<org.apache.http.NameValuePair> params = URLEncodedUtils.parse(url.toURI(), Charset.forName("UTF-8"));
-//
-//                String id = params.get(0).getValue();   //#todo
-//                String teamName = team.text();     //#todo
-//
-////                out.print("<tr><td> <a href='/CricVet/teamInfo.jsp?id=" + id + "&team=" + e.text() + "' >" + e.text() + "</a>");
-//            }
-//
-//            out.println("</table>");
-            out.print("<table class=\"table table-striped\">\n"
-                    + "            <tr class=\"thead-dark\">\n"
-                    + "<th colspan=\"4\" >"
-                    + "<th colspan=\"6\">1st Inning  "
-                    + "<th colspan=\"6\">2nd Inning  "
-                    + "<th colspan=\"4\"> Result "
-                    + "</tr>"
-                    + "            <tr class=\"thead-dark\" >\n"
-                    + "                <th>Date"
-                    + "                <th>Home\n"
-                    + "                <th>Away\n"
-                    + "                <th>Toss\n"
-                    + "                <th>First Over                \n"
-                    + "                <th>10 overs\n"
-                    + "                <th>Last 10 overs\n"
-                    + "                <th>First wicket  <!--(After how many runs did the first wicket fall)-->\n"
-                    + "                <th>Fours\n"
-                    + "                <th>Sixes\n"
-                    + "\n"
-                    + "                <th>First Over                \n"
-                    + "                <th>10 overs\n"
-                    + "                <th>Last 10 overs\n"
-                    + "                <th>First wicket  <!--(After how many runs did the first wicket fall)-->\n"
-                    + "                <th>Fours\n"
-                    + "                <th>Sixes\n"
-                    + "\n"
-                    + "                    <!--                <th>No. of sixes (Batting)\n"
-                    + "                                    <th>No. of sixes (Bowling)-->\n"
-                    + "\n"
-                    + "                <th>Home Score\n"
-                    + "                <th>Away Score\n"
-                    + "\n"
-                    + "                \n"
-                    + "                <th>Win/Lose Margin\n"
-                    + "                <th>Ground\n"
-                    + "\n"
-                    + "            </tr>");
-
-            //load matchwise data ♣
-            String baseUrl = "http://stats.espncricinfo.com/";
+public class OdiFetch {
+    
+public static void main(String[] args) throws IOException, SQLException
+{   int done =1;
+     CricDB db = new CricDB();
+     String baseUrl = "http://stats.espncricinfo.com/";
             List<String> matchLinks = new ArrayList<>();
 
             int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -141,9 +60,12 @@ public class LoadODI extends HttpServlet {
             int count = 0;
             for (String matchLink : matchLinks) {
                 count++;
-                if (count == 5) {
+                 OdiInning one = null;
+                OdiInning two = null;
+                
+               /* if (count == 5) {
                     break;
-                }
+                }*/
                 String url = baseUrl + matchLink;
 
                 Document matchPage = Jsoup.connect(url).followRedirects(true).get();
@@ -161,7 +83,7 @@ public class LoadODI extends HttpServlet {
                 try {
                     matchDate = LocalDate.parse(matchDateString.trim(), df);
                 } catch (DateTimeParseException ex) {
-                    out.print("<h1> error parsing date:" + matchDateString);
+                   // out.print("<h1> error parsing date:" + matchDateString);
                     Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
@@ -196,6 +118,7 @@ public class LoadODI extends HttpServlet {
                 Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 String tossResult = detailsColumn.get(1).text();
+                String[] arrOfTossResult = tossResult.split(",", 2); 
 
                 
                 
@@ -224,12 +147,12 @@ public class LoadODI extends HttpServlet {
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
 
-                out.print("<tr data-href=\"" + url + "\">");
+              /*  out.print("<tr data-href=\"" + url + "\">");
                 out.print("<td> " + matchDate.format(df));
                 out.print("<td>" + homeTeamName + " (" + homeTeamId + ")");
                 out.print("<td>" + awayTeamName + " (" + awayTeamId + ")");
                 out.print("<td>" + tossResult);
-
+                    */
                 for (int inning = 1; inning <= 2; inning++) {
 
                     List<JSONObject> ballList = new ArrayList<>();
@@ -291,14 +214,17 @@ public class LoadODI extends HttpServlet {
 //                            }
 //                        }
 //                    }
-                    out.print("<td>" + firstOverScore);
+                   /* out.print("<td>" + firstOverScore);
                     out.print("<td>" + tenOverScore);
                     out.print("<td>" + lastTenOverScore);
                     out.print("<td>" + firstWicketScore);
                     out.print("<td>" + fourCount);
-                    out.print("<td>" + sixCount);
+                    out.print("<td>" + sixCount);*/
                     int id = ThreadLocalRandom.current().nextInt(1000, 99999);
-                
+                   if(inning==1)
+                   one = new OdiInning(Integer.toString(id), firstOverScore, tenOverScore, lastTenOverScore, firstWicketScore, fourCount, sixCount);
+                   else
+                   two =  new OdiInning(Integer.toString(id), firstOverScore, tenOverScore, lastTenOverScore, firstWicketScore, fourCount, sixCount);
                 }
 
                 String homeScore = home.select("div.cscore_score").get(0).text();
@@ -312,15 +238,18 @@ public class LoadODI extends HttpServlet {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
                 
-                out.print("<td>" + homeScore);
+              /*  out.print("<td>" + homeScore);
                 out.print("<td>" + awayScore);
                 out.print("<td><a href=\"" + url + "\" >" + winnerName + " </a>");
 
-                out.print("<td><a href=\"" + groundLink + "\" >" + groundName +"</a>");
+                out.print("<td><a href=\"" + groundLink + "\" >" + groundName +"</a>");*/
                  int id = ThreadLocalRandom.current().nextInt(1000, 99999);
             String tossR;
             String winnerTeam;
-           
+            if(arrOfTossResult[1].equals(" elected to field first"))
+                tossR = "chase";
+            else
+                tossR = "bat";
            
             winnerTeam = winnerName.split("won",2)[0]; 
             
@@ -329,25 +258,27 @@ public class LoadODI extends HttpServlet {
             
             
             
-         
-
-//            out.println("<h1>" + matchLinks);
-            out.println("</body>");
-            out.println("</html>");
-        }
-//        catch (URISyntaxException ex) {
-//            Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    }
+            OdiMatch match =  new OdiMatch( Integer.toString(id), homeTeamName, awayTeamName,  matchDate.format(df), arrOfTossResult[0], tossR, one.getInningId(), two.getInningId(), homeScore, awayScore, winnerTeam, winnerName, groundName) {
+                    @Override
+                    public int compareTo(Match o) {
+                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    }
+                };
+            if(done != 0){
+            db.addOdiInning(one);
+            db.addOdiInning(two);
+            db.addOdiMatch(match);
+            }
+    
+    
+            }
+    
+    
 }
+
+
+}
+
+
+
+

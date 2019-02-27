@@ -8,6 +8,8 @@ package Servlets;
 import Database.CricDB;
 import Models.Inning;
 import Models.Match;
+import Models.OdiInning;
+import Models.OdiMatch;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
@@ -16,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,10 +32,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author DELL
  */
-@WebServlet(name = "MatchServlet", urlPatterns = {"/MatchServlet"})
-public class MatchServlet extends HttpServlet {
-
-     CricDB db = new CricDB();
+//@WebServlet(name = "OdiMatchServlet", urlPatterns = {"/OdiMatchServlet"})
+public class OdiMatchServlet extends HttpServlet {
+    CricDB db = new CricDB();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -47,32 +47,31 @@ public class MatchServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
-    
-        
+         
         String teamName1 =  request.getParameter("teamName1");
         String teamName2 =  request.getParameter("teamName2");
         String groundName = request.getParameter("groundName");
-        List <Match> matches_1 = db.getMatches(teamName1);
-        List <Match> matches_2 = db.getMatches(teamName2);
-        List <Match> groundMatches = db.getGroundData(groundName);
-        List<Inning> batRecords_In1_1 = new ArrayList<>();
-        List<Inning> bowlRecords_In1_1 =new ArrayList<>();
-        List<Inning> batRecords_In2_1 = new ArrayList<>();
-        List<Inning> bowlRecords_In2_1 =new ArrayList<>();
-        List <Match> bat_1 = new ArrayList<>();
-        List <Match> chase_1 = new ArrayList<>();
+        List <OdiMatch> matches_1 = db.getOdiMatches(teamName1);
+        List <OdiMatch> matches_2 = db.getOdiMatches(teamName2);
+        List <OdiMatch> groundMatches = db.getOdiGroundData(groundName);
+        List<OdiInning> batRecords_In1_1 = new ArrayList<>();
+        List<OdiInning> bowlRecords_In1_1 =new ArrayList<>();
+        List<OdiInning> batRecords_In2_1 = new ArrayList<>();
+        List<OdiInning> bowlRecords_In2_1 =new ArrayList<>();
+        List <OdiMatch> bat_1 = new ArrayList<>();
+        List <OdiMatch> chase_1 = new ArrayList<>();
         List <String> runScoredBat_In1_1 = new ArrayList<>();
         List <String> runScoredBat_In2_1 = new ArrayList<>();
         List <String> runGivenBowl_In1_1 = new ArrayList<>();
         List <String> runGivenBowl_In2_1 = new ArrayList<>();
         
         
-        List<Inning> batRecords_In1_2 = new ArrayList<>();
-        List<Inning> bowlRecords_In1_2 =new ArrayList<>();
-        List<Inning> batRecords_In2_2 = new ArrayList<>();
-        List<Inning> bowlRecords_In2_2 =new ArrayList<>();
-        List <Match> bat_2 = new ArrayList<>();
-        List <Match> chase_2 = new ArrayList<>();
+        List<OdiInning> batRecords_In1_2 = new ArrayList<>();
+        List<OdiInning> bowlRecords_In1_2 =new ArrayList<>();
+        List<OdiInning> batRecords_In2_2 = new ArrayList<>();
+        List<OdiInning> bowlRecords_In2_2 =new ArrayList<>();
+        List <OdiMatch> bat_2 = new ArrayList<>();
+        List <OdiMatch> chase_2 = new ArrayList<>();
         List <String> runScoredBat_In1_2 = new ArrayList<>();
         List <String> runScoredBat_In2_2 = new ArrayList<>();
         List <String> runGivenBowl_In1_2 = new ArrayList<>();
@@ -80,47 +79,49 @@ public class MatchServlet extends HttpServlet {
         List <String> groundData_In1= new ArrayList<>();
         List <String> groundData_In2= new ArrayList<>();
         
-        Inning tempIn1;
-        Inning tempIn2;
+        OdiInning tempIn1;
+        OdiInning tempIn2;
         int i =0, j=0, k=0;
-        Match temp;
-        Match temp1;
+        OdiMatch temp;
+        OdiMatch temp1;
        
         
         //sorting ground matches
-        Collections.sort(groundMatches, new Comparator<Match>() 
+        Collections.sort(groundMatches, new Comparator<OdiMatch>() 
           {
                 DateFormat f = new SimpleDateFormat("MMM dd yyyy");
-                @Override
-                public int compare(Match o1, Match o2) {
-                    try {
+               
+
+            @Override
+            public int compare(OdiMatch o1, OdiMatch o2) {
+                try {
                         return f.parse(o1.getMatchDate()).compareTo(f.parse(o2.getMatchDate()));
                     } catch (ParseException e) {
                         throw new IllegalArgumentException(e);
                     }
-                }
+            }
          });
         Collections.reverse(groundMatches);
          while(i< groundMatches.size() && i<5)
         {   
             temp =  groundMatches.get(i);
-            if(temp.getTossWinner().contains(temp.getHomeTeam()) && temp.getTossResult().contains("bat"))
+            if(temp.getTossWinner().contains(temp.getHomeTeamId()) && temp.getTossResult().contains("bat"))
             {
                 groundData_In1.add(temp.getHomeScore());
                 groundData_In2.add(temp.getAwayScore());
                 
             }
-            else if(temp.getTossWinner().contains(temp.getHomeTeam()) && temp.getTossResult().contains("chase"))
+            else if(temp.getTossWinner().contains(temp.getHomeTeamId()) && temp.getTossResult().contains("chase"))
             {
                 groundData_In2.add(temp.getHomeScore());
                 groundData_In1.add(temp.getAwayScore());
             }
-            else if(temp.getTossWinner().contains(temp.getAwayTeam()) && temp.getTossResult().contains("bat"))
+            else if(temp.getTossWinner().contains(temp.getAwayTeamId()) && temp.getTossResult().contains("bat"))
             {
                 groundData_In2.add(temp.getHomeScore());
                 groundData_In1.add(temp.getAwayScore());
             }
-            else if(temp.getTossWinner().contains(temp.getAwayTeam()) && temp.getTossResult().contains("chase"))
+            else if(temp.getTossWinner().contains(temp.getAwayTeamId()) && temp.getTossResult().contains("chase"))
             {
                 groundData_In1.add(temp.getHomeScore());
                 groundData_In2.add(temp.getAwayScore());
@@ -128,11 +129,11 @@ public class MatchServlet extends HttpServlet {
             i++;
         }
         
-        Collections.sort(matches_1, new Comparator<Match>() 
+        Collections.sort(matches_1, new Comparator<OdiMatch>() 
           {
                 DateFormat f = new SimpleDateFormat("MMM dd yyyy");
                 @Override
-                public int compare(Match o1, Match o2) {
+                public int compare(OdiMatch o1, OdiMatch o2) {
                     try {
                         return f.parse(o1.getMatchDate()).compareTo(f.parse(o2.getMatchDate()));
                     } catch (ParseException e) {
@@ -147,7 +148,7 @@ public class MatchServlet extends HttpServlet {
         //figure out if ka logic
             if(temp.getTossResult().contains("chase") && !temp.getTossWinner().contains(teamName1))// || ((!temp.getTossWinner().equals("South Africa")&&temp.getTossResult().equals("chase"))) )
             {   System.out.println("iN THA IFF");
-                temp1 = new Match(temp.getMatchId(), temp.getHomeTeam(), temp.getAwayTeam(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
+                temp1 = new OdiMatch(temp.getMatchId(), temp.getHomeTeamId(), temp.getAwayTeamId(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
                         @Override
                         public int compareTo(Match o) {
                             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -158,7 +159,7 @@ public class MatchServlet extends HttpServlet {
                 
             }
          else if(temp.getTossWinner().contains(teamName1)&&temp.getTossResult().contains("bat"))
-            {   temp1 = new Match(temp.getMatchId(), temp.getHomeTeam(), temp.getAwayTeam(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
+            {   temp1 = new OdiMatch(temp.getMatchId(), temp.getHomeTeamId(), temp.getAwayTeamId(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
                         @Override
                         public int compareTo(Match o) {
                             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -170,7 +171,7 @@ public class MatchServlet extends HttpServlet {
             }
             else 
             {   System.out.println("iN ELSE BROTHA");
-                temp1 = new Match(temp.getMatchId(), temp.getHomeTeam(), temp.getAwayTeam(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
+                temp1 = new OdiMatch(temp.getMatchId(), temp.getHomeTeamId(), temp.getAwayTeamId(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
                         @Override
                         public int compareTo(Match o) {
                             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -182,19 +183,19 @@ public class MatchServlet extends HttpServlet {
           
             
             
-             System.out.println(matches_1.get(i).getHomeTeam() +" "+ matches_1.get(i).getMatchDate());
+             /*System.out.println(matches_1.get(i).getHomeTeamId() +" "+ matches_1.get(i).getMatchDate());
              Inning in =  db.getInning(matches_1.get(i).getOneId());
-             System.out.println(in.getFirstOver());
+             System.out.println(in.getFirstOver());*/
              i++;
         }
         
         while(k< bat_1.size() && k<5)
         {
-            tempIn1 = db.getInning(bat_1.get(k).getOneId());
+            tempIn1 = db.getOdiInning(bat_1.get(k).getOneId());
             batRecords_In1_1.add(tempIn1);
-            tempIn2 = db.getInning(bat_1.get(k).getTwoId());
+            tempIn2 = db.getOdiInning(bat_1.get(k).getTwoId());
             bowlRecords_In2_1.add(tempIn2);
-            if(bat_1.get(k).getHomeTeam().contains(teamName1))
+            if(bat_1.get(k).getHomeTeamId().contains(teamName1))
             {
                 runScoredBat_In1_1.add(bat_1.get(k).getHomeScore());
                 runGivenBowl_In2_1.add(bat_1.get(k).getAwayScore());
@@ -210,12 +211,12 @@ public class MatchServlet extends HttpServlet {
         
         while(j< chase_1.size() && j<5)
         {
-            tempIn1 = db.getInning(chase_1.get(j).getOneId());
+            tempIn1 = db.getOdiInning(chase_1.get(j).getOneId());
             bowlRecords_In1_1.add(tempIn1);
             
-            tempIn2 = db.getInning(chase_1.get(j).getTwoId());
+            tempIn2 = db.getOdiInning(chase_1.get(j).getTwoId());
             batRecords_In2_1.add(tempIn2);
-            if(chase_1.get(j).getHomeTeam().contains(teamName1))
+            if(chase_1.get(j).getHomeTeamId().contains(teamName1))
             {
                
                  runScoredBat_In2_1.add(chase_1.get(j).getHomeScore());
@@ -234,11 +235,11 @@ public class MatchServlet extends HttpServlet {
         //Second TEAm Data
         i =0; j=0; k=0;
         
-         Collections.sort(matches_2, new Comparator<Match>() 
+         Collections.sort(matches_2, new Comparator<OdiMatch>() 
           {
                 DateFormat f = new SimpleDateFormat("MMM dd yyyy");
                 @Override
-                public int compare(Match o1, Match o2) {
+                public int compare(OdiMatch o1, OdiMatch o2) {
                     try {
                         return f.parse(o1.getMatchDate()).compareTo(f.parse(o2.getMatchDate()));
                     } catch (ParseException e) {
@@ -252,7 +253,7 @@ public class MatchServlet extends HttpServlet {
         //figure out if ka logic
             if(temp.getTossResult().contains("chase") && !temp.getTossWinner().contains(teamName2))// || ((!temp.getTossWinner().equals("South Africa")&&temp.getTossResult().equals("chase"))) )
             {   System.out.println("iN THA IFF");
-                temp1 = new Match(temp.getMatchId(), temp.getHomeTeam(), temp.getAwayTeam(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
+                temp1 = new OdiMatch(temp.getMatchId(), temp.getHomeTeamId(), temp.getAwayTeamId(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
                         @Override
                         public int compareTo(Match o) {
                             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -263,7 +264,7 @@ public class MatchServlet extends HttpServlet {
                 
             }
          else if(temp.getTossWinner().contains(teamName2)&&temp.getTossResult().contains("bat"))
-            {   temp1 = new Match(temp.getMatchId(), temp.getHomeTeam(), temp.getAwayTeam(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
+            {   temp1 = new OdiMatch(temp.getMatchId(), temp.getHomeTeamId(), temp.getAwayTeamId(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
                         @Override
                         public int compareTo(Match o) {
                             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -275,7 +276,7 @@ public class MatchServlet extends HttpServlet {
             }
             else 
             {   System.out.println("IN ELSE BROTHA");
-                temp1 = new Match(temp.getMatchId(), temp.getHomeTeam(), temp.getAwayTeam(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
+                temp1 = new OdiMatch(temp.getMatchId(), temp.getHomeTeamId(), temp.getAwayTeamId(), temp.getMatchDate(), temp.getTossWinner(), temp.getTossResult(), temp.getOneId(), temp.getTwoId(), temp.getHomeScore(), temp.getAwayScore(), temp.getWinnerTeam(), temp.getResult(), temp.getGroundName()) {
                         @Override
                         public int compareTo(Match o) {
                             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -286,20 +287,20 @@ public class MatchServlet extends HttpServlet {
             }
           
             
-            
-             System.out.println(matches_2.get(i).getHomeTeam() +" "+ matches_2.get(i).getMatchDate());
-             Inning in =  db.getInning(matches_2.get(i).getOneId());
-             System.out.println(in.getFirstOver());
+//            
+//             System.out.println(matches_2.get(i).getHomeTeamId() +" "+ matches_2.get(i).getMatchDate());
+//             Inning in =  db.getInning(matches_2.get(i).getOneId());
+//             System.out.println(in.getFirstOver());
              i++;
         }
         
         while(k< bat_2.size() && k<5)
         {
-            tempIn1 = db.getInning(bat_2.get(k).getOneId());
+            tempIn1 = db.getOdiInning(bat_2.get(k).getOneId());
             batRecords_In1_2.add(tempIn1);
-            tempIn2 = db.getInning(bat_2.get(k).getTwoId());
+            tempIn2 = db.getOdiInning(bat_2.get(k).getTwoId());
             bowlRecords_In2_2.add(tempIn2);
-            if(bat_2.get(k).getHomeTeam().contains(teamName2))
+            if(bat_2.get(k).getHomeTeamId().contains(teamName2))
             {
                 runScoredBat_In1_2.add(bat_2.get(k).getHomeScore());
                 runGivenBowl_In2_2.add(bat_2.get(k).getAwayScore());
@@ -315,12 +316,12 @@ public class MatchServlet extends HttpServlet {
         
         while(j< chase_2.size() && j<5)
         {
-            tempIn1 = db.getInning(chase_2.get(j).getOneId());
+            tempIn1 = db.getOdiInning(chase_2.get(j).getOneId());
             bowlRecords_In1_2.add(tempIn1);
             
-            tempIn2 = db.getInning(chase_2.get(j).getTwoId());
+            tempIn2 = db.getOdiInning(chase_2.get(j).getTwoId());
             batRecords_In2_2.add(tempIn2);
-            if(chase_2.get(j).getHomeTeam().contains(teamName2))
+            if(chase_2.get(j).getHomeTeamId().contains(teamName2))
             {
                
                  runScoredBat_In2_2.add(chase_2.get(j).getHomeScore());
@@ -363,10 +364,8 @@ public class MatchServlet extends HttpServlet {
         request.setAttribute("groundData_In1", groundData_In1);
         request.setAttribute("groundData_In2",groundData_In2);
         
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/show.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/showOdi.jsp");
         dispatcher.forward(request, response);
-           
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -381,11 +380,11 @@ public class MatchServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         try {
-             processRequest(request, response);
-         } catch (Exception ex) {
-             Logger.getLogger(MatchServlet.class.getName()).log(Level.SEVERE, null, ex);
-         }
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(OdiMatchServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -399,11 +398,11 @@ public class MatchServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         try {
-             processRequest(request, response);
-         } catch (Exception ex) {
-             Logger.getLogger(MatchServlet.class.getName()).log(Level.SEVERE, null, ex);
-         }
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(OdiMatchServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -414,12 +413,6 @@ public class MatchServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
+    }// </editor-fold>
 
-
-
-
-    } // </editor-fold>
-
-    
-    
 }

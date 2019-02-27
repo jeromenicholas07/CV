@@ -28,6 +28,18 @@
         <servlet-name>LoadCPL</servlet-name>
         <servlet-class>views.LoadCPL</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TestMatchServlet</servlet-name>
+        <servlet-class>Servlets.TestMatchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>T20MatchServlet</servlet-name>
+        <servlet-class>Servlets.T20MatchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OdiMatchServlet1</servlet-name>
+        <servlet-class>Servlets.OdiMatchServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadODI</servlet-name>
         <url-pattern>/LoadODI</url-pattern>
@@ -55,6 +67,18 @@
     <servlet-mapping>
         <servlet-name>LoadCPL</servlet-name>
         <url-pattern>/LoadCPL</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestMatchServlet</servlet-name>
+        <url-pattern>/TestMatchServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>T20MatchServlet</servlet-name>
+        <url-pattern>/T20MatchServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OdiMatchServlet1</servlet-name>
+        <url-pattern>/OdiMatchServlet1</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
