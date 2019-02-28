@@ -26,12 +26,12 @@ public class Match {
     private String homeScore;
     private String awayScore;
 
-    private String winnerTeam;
+    
     private String result;
     private String groundName;
     private int matchType;
 
-    public Match(int matchId, String homeTeam, String awayTeam, Date matchDate, String tossWinner, String battingFirst, Inning one, Inning two, String homeScore, String awayScore, String winnerTeam, String result, String groundName, int matchType) {
+    public Match(int matchId, String homeTeam, String awayTeam, Date matchDate, String tossWinner, String battingFirst, Inning one, Inning two, String homeScore, String awayScore, String result, String groundName, int matchType) {
         this.matchId = matchId;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -42,7 +42,7 @@ public class Match {
         this.inningTwo = two;
         this.homeScore = homeScore;
         this.awayScore = awayScore;
-        this.winnerTeam = winnerTeam;
+        
         this.result = result;
         this.groundName = groundName;
         this.matchType = matchType;
@@ -113,12 +113,6 @@ public class Match {
     }
     public void setAwayScore(String awayScore) {
         this.awayScore = awayScore;
-    }
-    public String getWinnerTeam() {
-        return winnerTeam;
-    }
-    public void setWinnerTeam(String winnerTeam) {
-        this.winnerTeam = winnerTeam;
     }
     public String getResult() {
         return result;

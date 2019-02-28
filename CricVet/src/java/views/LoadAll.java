@@ -37,11 +37,40 @@ public class LoadAll extends HttpServlet {
 
             DataFetch df = new DataFetch();
             
-            out.print("Loading IPL data");
-            df.loadIPLData();
+            out.print("<h1>Loading IPL data");
+            if(!df.loadIPLData()){
+                out.print("<h3>Error Loading IPL..Try again");
+            }
+            else{
+                out.print("<h3>IPL Loaded successfully");
+            }
             
-            out.print("Loading ODI data");
-            df.loadODIData();
+            
+            
+            out.print("<h1>Loading ODI data");
+            if(!df.loadODIData()){
+                out.print("<h3>Error Loading ODI..Try again");
+            }
+            else{
+                out.print("<h3>ODI Loaded successfully");
+            }
+
+            
+            out.print("<h1>Loading BBL data..");
+            if(!df.loadBBLData()){
+                out.print("<h3>Error Loading BBL..Try again");
+            }
+            else{
+                out.print("<h3>BBL Loaded successfully");
+            }
+            
+            out.print("<h1>Loading BPL data..");
+            if(!df.loadBPLData()){
+                out.print("<h3>Error Loading BPL..Try again");
+            }
+            else{
+                out.print("<h3>BPL Loaded successfully");
+            }
 
         }
     }

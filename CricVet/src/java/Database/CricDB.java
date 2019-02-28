@@ -45,7 +45,7 @@ public class CricDB extends BaseDAO {
             int inn2 = addInning(match.getInningTwo());
             
             
-            String sql = "insert into DJ.MATCHES (MATCHID, HOMETEAM, AWAYTEAM, MATCHDATE, TOSSWINNER, BATTINGFIRST, INNING1_ID, INNING2_ID, HOMESCORE, AWAYSCORE, WINNERTEAM, RESULT, GROUNDNAME, MATCHTYPE) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into DJ.MATCHES (MATCHID, HOMETEAM, AWAYTEAM, MATCHDATE, TOSSWINNER, BATTINGFIRST, INNING1_ID, INNING2_ID, HOMESCORE, AWAYSCORE, RESULT, GROUNDNAME, MATCHTYPE) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, match.getMatchId());
             ps.setString(2, match.getHomeTeam());
@@ -57,10 +57,10 @@ public class CricDB extends BaseDAO {
             ps.setInt(8, inn2);
             ps.setString(9, match.getHomeScore());
             ps.setString(10, match.getAwayScore());
-            ps.setString(11, match.getWinnerTeam());
-            ps.setString(12, match.getResult());
-            ps.setString(13, match.getGroundName());
-            ps.setString(14, String.valueOf(match.getMatchType()) );
+            
+            ps.setString(11, match.getResult());
+            ps.setString(12, match.getGroundName());
+            ps.setString(13, String.valueOf(match.getMatchType()) );
             ps.execute();
 
         } catch (SQLException ex) {
@@ -172,7 +172,6 @@ public class CricDB extends BaseDAO {
                 int inning2_id = rs.getInt("inning2_id");
                 String homeScore = rs.getString("homescore");
                 String awayscore = rs.getString("awayscore");
-                String winnerTeam = rs.getString("winnerteam");
                 String result = rs.getString("result");
                 String groundName = rs.getString("groundname");
                 int matchType = rs.getInt("matchtype");
@@ -180,7 +179,7 @@ public class CricDB extends BaseDAO {
                 Inning inningOne = getInning(inning1_id);
                 Inning inningTwo = getInning(inning2_id);
                 
-                Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, winnerTeam, result, groundName,matchType);
+                Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, result, groundName,matchType);
                 matches.add(m);
             }
 
@@ -246,7 +245,7 @@ public class CricDB extends BaseDAO {
                 int inning2_id = rs.getInt("inning2_id");
                 String homeScore = rs.getString("homescore");
                 String awayscore = rs.getString("awayscore");
-                String winnerTeam = rs.getString("winnerteam");
+                
                 String result = rs.getString("result");
 //                String groundName = rs.getString("groundname");
                 
@@ -254,7 +253,7 @@ public class CricDB extends BaseDAO {
                 Inning inningOne = getInning(inning1_id);
                 Inning inningTwo = getInning(inning2_id);
                 
-                Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, winnerTeam, result, groundName, matchType);
+                Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
                 matches.add(m);
             }
             
@@ -291,6 +290,33 @@ public class CricDB extends BaseDAO {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }
         return grounds;
+    }
+    
+    public List<String> getTeamsList(int matchType){
+        List<String> teams = new ArrayList<>();
+        
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            con = getConnection();
+            String sql = "select distinct HOMETEAM from DJ.MATCHES where MATCHTYPE = '"+ matchType +"' "
+                    + "union select distinct AWAYTEAM from DJ.MATCHES where MATCHTYPE = '"+ matchType +"'";
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            
+            while(rs.next()){
+                String tName = rs.getString("hometeam");
+                if(!teams.contains(tName)){
+                    teams.add(tName);
+                }
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return teams;
     }
 //    BaseDAO db = new BaseDAO();;
     public void addT20Match(Match1 match) {
