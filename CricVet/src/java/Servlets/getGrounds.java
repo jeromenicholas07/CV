@@ -3,23 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package views;
+package Servlets;
 
 import Database.CricDB;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
-import DataFetch.DataFetch;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
  *
  * @author DELL
  */
-public class LoadAll extends HttpServlet {
+public class getGrounds extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,75 +33,18 @@ public class LoadAll extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-
-            DataFetch df = new DataFetch();
+            /* TODO output your page here. You may use following sample code. */
             
-            out.print("<h1>Loading IPL data");
-            if(!df.loadIPLData()){
-                out.print("<h3>Error Loading IPL..Try again");
-            }
-            else{
-                out.print("<h3>IPL Loaded successfully");
-            }
+            int matchType = Integer.parseInt(request.getParameter("matchType"));
             
+//            System.out.println("mt : " + matchType);
+            CricDB db = new CricDB();
             
+            String json = new Gson().toJson(db.getGroundList(matchType));
+//            System.out.println(json);
             
-            out.print("<h1>Loading ODI data");
-            if(!df.loadODIData()){
-                out.print("<h3>Error Loading ODI..Try again");
-            }
-            else{
-                out.print("<h3>ODI Loaded successfully");
-            }
-
-            out.print("<h1>Loading T20I data..");
-            if(!df.loadT20IData()){
-                out.print("<h3>Error Loading T20I..Try again");
-            }
-            else{
-                out.print("<h3>T20I Loaded successfully");
-            }
-            
-            out.print("<h1>Loading BBL data..");
-            if(!df.loadBBLData()){
-                out.print("<h3>Error Loading BBL..Try again");
-            }
-            else{
-                out.print("<h3>BBL Loaded successfully");
-            }
-            
-            out.print("<h1>Loading BPL data..");
-            if(!df.loadBPLData()){
-                out.print("<h3>Error Loading BPL..Try again");
-            }
-            else{
-                out.print("<h3>BPL Loaded successfully");
-            }
-
-            out.print("<h1>Loading CPL data..");
-            if(!df.loadCPLData()){
-                out.print("<h3>Error Loading CPL..Try again");
-            }
-            else{
-                out.print("<h3>CPL Loaded successfully");
-            }
-            
-            out.print("<h1>Loading PSL data..");
-            if(!df.loadPSLData()){
-                out.print("<h3>Error Loading PSL..Try again");
-            }
-            else{
-                out.print("<h3>PSL Loaded successfully");
-            }
-            
-//            out.print("<h1>Loading Test data..");
-//            if(!df.loadTestData()){
-//                out.print("<h3>Error Loading Test..Try again");
-//            }
-//            else{
-//                out.print("<h3>Test matches Loaded successfully");
-//            }
-            
+            response.setContentType("application/json");
+            response.getWriter().write(json);
         }
     }
 

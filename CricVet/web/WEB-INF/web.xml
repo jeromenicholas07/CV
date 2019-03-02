@@ -36,6 +36,18 @@
         <servlet-name>LoadAll</servlet-name>
         <servlet-class>views.LoadAll</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>getTeams</servlet-name>
+        <servlet-class>Servlets.getTeams</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getGrounds</servlet-name>
+        <servlet-class>Servlets.getGrounds</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getData</servlet-name>
+        <servlet-class>Servlets.getData</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadODI</servlet-name>
         <url-pattern>/LoadODI</url-pattern>
@@ -71,6 +83,18 @@
     <servlet-mapping>
         <servlet-name>LoadAll</servlet-name>
         <url-pattern>/LoadAll</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getTeams</servlet-name>
+        <url-pattern>/getTeams</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getGrounds</servlet-name>
+        <url-pattern>/getGrounds</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getData</servlet-name>
+        <url-pattern>/getData</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

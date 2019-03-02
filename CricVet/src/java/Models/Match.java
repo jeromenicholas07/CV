@@ -127,4 +127,11 @@ public class Match {
         this.matchType = matchType;
     }
 
+    @Override
+    public String toString() {
+        return "ID: " + matchId + " Date: "+ matchDate.toString() + " BatFirst: "+ battingFirst;
+    }
+    
+    
+
 }
