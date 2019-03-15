@@ -61,54 +61,102 @@ public class getData extends HttpServlet {
             String teamOne = request.getParameter("teamName1");
             String teamTwo = request.getParameter("teamName2");
             String groundName = request.getParameter("groundName");
-
+            
+            Inning temp;
             List<Match> matches = db.getMatches(teamOne, matchType, 1);
-            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+            int k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
                 oneBatFirst.add(matches.get(i).getInningOne());
+                temp =  db.getInning(matches.get(i).getInningOne().getInningId());
+                if( temp.getParams().get(3).equals("-1"))
+                {
+                    k++;
+                }
             }
 
             matches.clear();
+            k = 5;
             matches = db.getMatches(teamTwo, matchType, 2);
-            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
                 twoBatSecond.add(matches.get(i).getInningTwo());
-                
+                temp =  db.getInning(matches.get(i).getInningTwo().getInningId());
+                  if( temp.getParams().get(3).equals("-1"))
+                {
+                    k++;
+                }
             }
 
             matches.clear();
+            k = 5;
             matches = db.getMatches(teamOne, matchType, 2);
             System.out.println("t:" + teamOne + " m:" + matches.size() + "mt: " + matchType);
-            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
                 oneBatSecond.add(matches.get(i).getInningTwo());
+                temp =  db.getInning(matches.get(i).getInningTwo().getInningId());
+                  if( temp.getParams().get(3).equals("-1"))
+                {
+                    k++;
+                }
             }
 
             matches.clear();
+            k = 5;
             matches = db.getMatches(teamTwo, matchType, 1);
-            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
                 twoBatFirst.add(matches.get(i).getInningOne());
+                temp =  db.getInning(matches.get(i).getInningOne().getInningId());
+                  if( temp.getParams().get(3).equals("-1"))
+                {
+                    k++;
+                }
             }
 
             matches.clear();
+            k = 5;
             matches = db.getMatches(teamOne, matchType, 1);
-            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
                 oneBowlSecond.add(matches.get(i).getInningTwo());
+                temp =  db.getInning(matches.get(i).getInningTwo().getInningId());
+                  if( temp.getParams().get(3).equals("-1"))
+                {
+                    k++;
+                }
             }
 
             matches.clear();
+            k = 5;
             matches = db.getMatches(teamOne, matchType, 2);
-            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
                 oneBowlFirst.add(matches.get(i).getInningOne());
+                temp =  db.getInning(matches.get(i).getInningOne().getInningId());
+                  if( temp.getParams().get(3).equals("-1"))
+                {
+                    k++;
+                }
             }
 
             matches.clear();
+            k = 5;
             matches = db.getMatches(teamTwo, matchType, 1);
-            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
                 twoBowlSecond.add(matches.get(i).getInningTwo());
+                temp =  db.getInning(matches.get(i).getInningTwo().getInningId());
+                  if( temp.getParams().get(3).equals("-1"))
+                {
+                    k++;
+                }
             }
 
             matches.clear();
+            k = 5;
             matches = db.getMatches(teamTwo, matchType, 2);
-            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
                 twoBowlFirst.add(matches.get(i).getInningOne());
+                temp =  db.getInning(matches.get(i).getInningOne().getInningId());
+                  if( temp.getParams().get(3).equals("-1"))
+                {
+                    k++;
+                }
             }
             
             
@@ -120,6 +168,7 @@ public class getData extends HttpServlet {
             for (int i = 0; i < Math.min(5, matches.size()); i++) {
                 groundFirst.add(matches.get(i).getInningOne());
                 groundSecond.add(matches.get(i).getInningTwo());
+                
             }
 
 //            for(int i = 0; i < matches.size(); i++){
