@@ -8,14 +8,106 @@ and open the template in the editor.
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
+
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous" >
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .al{
+                text-align: center;
+                text-align: center;
+                position: relative;
+                top: 50%;
+                -ms-transform: translateY(-50%);
+                -webkit-transform: translateY(-50%);
+                transform: translateY(-50%);
+
+
+            }
+            .bg1{
+                background: #0F2027;  /* fallback for old browsers */
+                background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
+                background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+                padding: 0;
+                height: 100vh
+            }
+            .left {
+                background-image: linear-gradient(to top, #dfe9f3 0%, white 100%);
+
+                float: left ;
+                height: 100%;
+                width: 50%;
+                margin: 0;
+            }
+
+            .rightTop {
+                float: right ;
+                background-image: linear-gradient(45deg, #8baaaa 0%, #ae8b9c 100%);
+
+                height: 50%;
+                width : 50%;
+                margin: 0;
+            }
+            .rightBottom{
+                background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
+
+                float: right;
+                height: 50%;
+                width : 50%;
+                margin: 0;
+            }
+
+        </style>
     </head>
     <body>
-        <table class="table align-middle">
-            <tr><th><a href="/CricVet/LoadAll">Load All</a>
+        <div class="container-fluid bg1">
+            <div class="left" onclick="location.href = '/CricVet/LoadAll';">
+                <h2 class="al">Load</h2>
 
-            <tr><th><a href="/CricVet/queryPage.jsp">Query</a>
-        </table>
+            </div>
+            <div class="rightTop" onclick="location.href = '/CricVet/queryPage.jsp';">
+                <h2 class="al">Matches</h2>
+            </div>
+            <div class="rightBottom" onclick="location.href = '/CricVet/checkDB.jsp';">
+                <h2 class="al">Database</h2>
+            </div>
+        </div>
+
+        <script>
+
+            $('div').hover(function () {
+                $('div').css({opacity: '1'});
+                $(this).css({opacity: '0.8'});
+            }, function () {
+                $('div').css({opacity: '1'})
+            }
+            );
+
+        </script>
+
+
+
+
+
+
+
+
+        <!--            <div class="container-fluid col-12">
+                        <a href="/CricVet/LoadAll">Load All</a>
+                    </div>
+                    <div class="container-fluid ">
+                        <div class="col-6">
+                            <a href="/CricVet/queryPage.jsp">Query</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="/CricVet/tempServ">See matches</a>
+                        </div>
+                    </div>-->
     </body>
 </html>

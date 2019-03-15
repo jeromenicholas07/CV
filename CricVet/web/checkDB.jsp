@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 
-        <title>Query Page</title>
+        <title>Check Database</title>
         <style>
             .vertical-center {
                 min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
@@ -65,7 +65,7 @@
         <div class="outer">
             <div class="middle">
                 <div class="inner">
-                    <form method="POST" action="getData" id="form">
+                    <form method="POST" action="getDB" id="form">
                         <div class="container form-query">
                             <div class="form-group">
                                 <!--<label for="teamSelect">Select Tournament</label>-->
@@ -85,25 +85,14 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-6 teams">
-                                    <select class="form-control form-control required" id="teamSelect1" name="teamName1">
-                                        <option value="-1">Batting Team</option>
-                                    </select>
-                                </div>
-                                <div class="col-6 teams">
-                                    <select class="form-control form-control required" id="teamSelect2" name="teamName2">
-                                        <option value="-1">Chasing Team</option>
-
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
                                 <div class="col-12 teams">
-                                    <select class="form-control form-control-sm required" id="groundSelect" name="groundName">
-                                        <option value="-1">Select Ground</option>
+                                    <select class="form-control form-control required" id="teamSelect1" name="teamName1">
+                                        <option value="-1">Select Team</option>
                                     </select>
                                 </div>
+                                
                             </div>
+                            
 
                             <div class="form-group row">
                                 <div class="col-12 teams">
@@ -121,17 +110,10 @@
                         });
 
                         $("#tourSelect").change(function () {
-                            $('#teamSelect1').empty().append('<option selected="selected" value="-1">Batting Team</option>');
-                            $('#teamSelect2').empty().append('<option selected="selected" value="-1">Chasing Team</option>');
-                            $('#groundSelect').empty().append('<option selected="selected" value="-1">Select Ground</option>');
+                            $('#teamSelect1').empty().append('<option selected="selected" value="-1">Select Team</option>');
+                            
                             var id = $(this).children(":selected").attr("value");
                             
-//                            var t1 = document.getElementById('tourSelect');
-//                            
-//                            if(t1.value == '-1'){
-//                                $('.teams').hide();
-//                            }
-                            //                alert(id);
                             $.ajax({
                                 url: "/CricVet/getTeams", //servlet URL that gets first option as parameter and returns JSON of to-be-populated options
                                 type: "POST", //request type, can be GET
@@ -140,14 +122,12 @@
                                 dataType: "json"//type of data returned
                             }).done(function (data) {
                                 $('.teams').show();
-                                //                    alert(data);
+                                
                                 var team1 = $("#teamSelect1");
-                                var team2 = $("#teamSelect2");
-
+                                
                                 $.each(data, function (index, value) {
                                     team1.append($("<option />").val(value).text(value));
-                                    team2.append($("<option />").val(value).text(value));
-                                    //                        alert(index +" : " + value);
+                                    
                                 });
                             });
 
