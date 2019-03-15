@@ -5,8 +5,8 @@
  */
 package Database;
 
-import models.Inning1;
-import models.Match1;
+import DataFetch.DataFetch;
+import Models.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,15 +25,20 @@ public class TestDB {
     {
         
         CricDB db = new CricDB();
-        String groundName1 ="Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)";
-        List <String> matches = db.getGroundNames();
-        int i = 0;
         
-        while(i<matches.size())
-        {
-            System.out.println("<option value=\""+matches.get(i)+"\">"+matches.get(i)+"</option>");
-            i++;
-        }
+        DataFetch df = new DataFetch();
+        
+        boolean b = df.loadIPLData();
+        
+//        String groundName1 ="Al Amerat Cricket Ground Oman Cricket (Ministry Turf 1)";
+//        List <String> matches = db.getGroundNames();
+//        int i = 0;
+//        
+//        while(i<matches.size())
+//        {
+//            System.out.println("<option value=\""+matches.get(i)+"\">"+matches.get(i)+"</option>");
+//            i++;
+//        }
         /*String teamName = "Pakistan";
         List <Match> matches = db.getMatches1(teamName);
         List<Inning> batRecords_In1 = new ArrayList<>();

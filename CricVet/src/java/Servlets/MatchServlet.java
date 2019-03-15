@@ -6,8 +6,8 @@
 package Servlets;
 
 import Database.CricDB;
-import models.Inning1;
-import models.Match1;
+import Models.Inning1;
+import Models.Match1;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;

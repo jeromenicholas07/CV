@@ -25,7 +25,7 @@ public class BaseDAO {
 
             Connection conn=null;
         try {
-            InitialContext ctx;
+         /*   InitialContext ctx;
             DataSource ds;
             Statement stmt;
             ResultSet rs;
@@ -37,14 +37,14 @@ public class BaseDAO {
             ds = (DataSource) ctx.lookup("jdbc/jres");
             conn = ds.getConnection();
             stmt = conn.createStatement();
+           */ 
             
             
             
             
             
             
-            
-//            conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
+           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
             
             System.out.println("Conn Created");
         } catch (Exception ex) {

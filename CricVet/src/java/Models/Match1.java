@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 //package Models;
-package models;
+package Models;
 import java.util.Date;
 
 /**

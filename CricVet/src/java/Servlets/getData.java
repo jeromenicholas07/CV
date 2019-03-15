@@ -17,8 +17,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import models.Inning;
-import models.Match;
+import Models.*;
+
+
 
 /**
  *
@@ -42,7 +43,7 @@ public class getData extends HttpServlet {
 
             CricDB db = new CricDB();
             
-            db.initDB();
+            //db.initDB();
             
             List<Inning> oneBatFirst = new ArrayList<>();
             List<Inning> oneBatSecond = new ArrayList<>();

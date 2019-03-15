@@ -9,7 +9,7 @@ package Database;
  *
  * @author DELL
  */
-import models.*;
+import Models.*;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
