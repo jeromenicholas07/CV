@@ -49,10 +49,6 @@
         <servlet-class>Servlets.getData</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>tempServ</servlet-name>
-        <servlet-class>Servlets.tempServ</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>getDB</servlet-name>
         <servlet-class>Servlets.getDB</servlet-class>
     </servlet>
@@ -103,10 +99,6 @@
     <servlet-mapping>
         <servlet-name>getData</servlet-name>
         <url-pattern>/getData</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>tempServ</servlet-name>
-        <url-pattern>/tempServ</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>getDB</servlet-name>

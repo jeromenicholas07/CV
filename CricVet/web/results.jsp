@@ -4,6 +4,9 @@
     Author     : DELL
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="models.Inning"%>
+<%@page import="java.util.List"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
@@ -37,45 +40,38 @@
             }
         </style>
         <div class="container-fluid text-center">
-            <!--            <div class="row">
-                            <div class="col-">
-                                <h1>${teamOne} Batting</h1>
-                            </div>
-                            <div class="col-6">
-                                <h1>${teamTwo} Batting</h1>
-                            </div>
-                        </div>-->
             <h1 class="text-center">${teamOne} v/s ${teamTwo}</h1>
-            <c:forEach var="h" items="${headers}" varStatus="loop">
-                <div class="row" >
-                    <div class ="col-12">
-                        <div class="card mar">
-                            <div class="card-body ">
-                                <h5 class="card-title">${h}</h5>
 
+            <h2>First Inning</h2>
+            <c:forEach var="h" begin="0" end="6" varStatus="loop">
+                <c:choose>
+                    <c:when test="${loop.index == 2}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneBatFirst)}">${teamOne} Batting First</th>
+                                        <th colspan="${fn:length(oneBatFirstX)}">${teamOne} Batting First</th>
                                         <th>
-                                        <th colspan="${fn:length(twoBowlFirst)}">${teamTwo} Bowling First</th>
+                                        <th colspan="${fn:length(twoBowlFirstX)}">${teamTwo} Bowling First</th>
                                         <th>
                                         <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${oneBatFirst}">
+                                        <c:forEach var="in" items="${oneBatFirstX}">
                                             <td name="${loop.index}Left">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
-                                            <td>
-                                        <c:forEach var="in" items="${twoBowlFirst}">
+                                        <td>
+                                            <c:forEach var="in" items="${twoBowlFirstX}">
                                             <td name="${loop.index}Left">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
-                                            <td>
-                                        <c:forEach var="in" items="${groundFirst}">
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirst}">
                                             <td>
                                                 ${in.getParams().get(loop.index)}
                                             </td>
@@ -94,56 +90,213 @@
 
                                     </tr>
                                 </table>
+
                             </div>
                         </div>
-                    </div>
 
-                    <!--                    <div class="col-6">
-                                            <div class="card mar">
-                                                <div class="card-body ">
-                                                    <h5 class="card-title">${h}</h5>
-                    
-                                                    <table class="table table-bordered">
-                                                        <tr class="thead-dark">
-                                                            <th colspan="${fn:length(twoBatFirst)}">${teamTwo} Batting First</th>
-                                                            <th colspan="${fn:length(oneBowlFirst)}">${teamOne} Bowling First</th>
-                                                            <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
-                                                            <th>Odds</th>
-                                                        </tr>
-                                                        <tr>
-                    <c:forEach var="in" items="${twoBatFirst}">
-                        <td name="${loop.index}Right">
-                        ${in.getParams().get(loop.index)}
-                    </td>
-                    </c:forEach>
-                    <c:forEach var="in" items="${oneBowlFirst}">
-                        <td name="${loop.index}Right">
-                        ${in.getParams().get(loop.index)}
-                    </td>
-                    </c:forEach>
-                    <c:forEach var="in" items="${groundFirst}">
-                        <td>
-                        ${in.getParams().get(loop.index)}
-                    </td>
-                    </c:forEach>
-                    <td>
-                        <input type="number" id="${loop.index}Right" >
-                    </td>
-                </tr>
+                    </c:when>
+                    <c:when test="${loop.index==6}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
 
-            </table>
-        </div>
-    </div>
-</div>-->
-                </div>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(oneBatFirst)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(twoBowlFirst)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${oneBatFirst}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${twoBowlFirst}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirst}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${oneBatFirst}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getParams().get(loop.index +1)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${twoBowlFirst}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getParams().get(loop.index +1)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirst}">
+                                            <td>
+                                                ${in.getParams().get(loop.index +1)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        </td>
+
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </c:when>
+                    <c:otherwise>
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(oneBatFirst)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(twoBowlFirst)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${oneBatFirst}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${twoBowlFirst}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirst}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </c:forEach>
-            <h1>Second Inning</h1>
-            <c:forEach var="h" items="${headers}" varStatus="loop">
-                <div class="row" >
-                    <div class ="col-12">
-                        <div class="card mar">
-                            <div class="card-body ">
-                                <h5 class="card-title">${h}</h5>
+            <h2>Second Inning</h2>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <c:forEach var="h" begin="0" end="6" varStatus="loop">
+                <c:choose>
+                    <c:when test="${loop.index == 2}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(twoBatSecondX)}">${teamTwo} Batting Second</th>
+                                        <th>
+                                        <th colspan="${fn:length(oneBowlSecondX)}">${teamOne} Bowling Second</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundSecond)}">${groundName} Second</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${twoBatSecondX}">
+                                            <td name="${loop.index}Left2">
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${oneBowlSecondX}">
+                                            <td name="${loop.index}Left2">
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${groundSecond}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left2" id="${loop.index}Left2">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left2">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </c:when>
+                    <c:when test="${loop.index==6}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
 
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
@@ -160,14 +313,14 @@
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
-                                            <td>
-                                        <c:forEach var="in" items="${oneBowlSecond}">
+                                        <td>
+                                            <c:forEach var="in" items="${oneBowlSecond}">
                                             <td name="${loop.index}Left2">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
-                                            <td>
-                                        <c:forEach var="in" items="${groundSecond}">
+                                        <td>
+                                            <c:forEach var="in" items="${groundSecond}">
                                             <td>
                                                 ${in.getParams().get(loop.index)}
                                             </td>
@@ -180,50 +333,97 @@
                                                 </div>
                                                 <input type="number" class="form-control" name="${loop.index}Left2">
                                             </div>
-
+                                            <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${twoBatSecond}">
+                                            <td name="${loop.index}Left2">
+                                                ${in.getParams().get(loop.index +1)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${oneBowlSecond}">
+                                            <td name="${loop.index}Left2">
+                                                ${in.getParams().get(loop.index +1)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${groundSecond}">
+                                            <td>
+                                                ${in.getParams().get(loop.index +1)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        </td>
+
 
                                     </tr>
                                 </table>
+
                             </div>
                         </div>
-                    </div>
 
-                    <!--                    <div class="col-6">
-                                            <div class="card mar">
-                                                <div class="card-body ">
-                                                    <h5 class="card-title">${h}</h5>
-                    
-                                                    <table class="table table-bordered">
-                                                        <tr class="thead-dark">
-                                                            <th colspan="${fn:length(oneBatSecond)}">${teamTwo} Batting Second</th>
-                                                            <th colspan="${fn:length(twoBowlSecond)}">${teamOne} Bowling Second</th>
-                                                            <th colspan="${fn:length(groundSecond)}">${groundName} Second</th>
-                                                        </tr>
-                                                        <tr>
-                    <c:forEach var="in" items="${oneBatSecond}">
-                        <td>
-                        ${in.getParams().get(loop.index)}
-                    </td>
-                    </c:forEach>
-                    <c:forEach var="in" items="${twoBowlSecond}">
-                        <td>
-                        ${in.getParams().get(loop.index)}
-                    </td>
-                    </c:forEach>
-                    <c:forEach var="in" items="${groundSecond}">
-                        <td>
-                        ${in.getParams().get(loop.index)}
-                    </td>
-                    </c:forEach>
-                </tr>
-            </table>
-        </div>
-    </div>
-</div>-->
-                </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(twoBatSecond)}">${teamTwo} Batting Second</th>
+                                        <th>
+                                        <th colspan="${fn:length(oneBowlSecond)}">${teamOne} Bowling Second</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundSecond)}">${groundName} Second</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${twoBatSecond}">
+                                            <td name="${loop.index}Left2">
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${oneBowlSecond}">
+                                            <td name="${loop.index}Left2">
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${groundSecond}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left2" id="${loop.index}Left2">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left2">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
             </c:forEach>
+            
         </div>
+            
+            
+            
+            
 
         <script type="text/javascript">
             $("input").keyup(function () {
@@ -245,7 +445,7 @@
                         $('#' + name).text("@");
                     });
 
-                } else {    
+                } else {
 //                    var tds = $('td[name="' + name + '"]');
 //
 //                    var noOfTds = $('td[name="' + name + '"]');
@@ -266,7 +466,7 @@
 
                     });
 
-                    $('#' + name).text(num.toString() + "/" + den.toString());
+                    $('#' + name).text(den.toString() + "/" + num.toString());
 
                 }
             });
