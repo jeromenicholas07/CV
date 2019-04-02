@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import models.*;
 
-
 /**
  *
  * @author DELL
@@ -61,10 +60,10 @@ public class getDB extends HttpServlet {
                 String tossWinner;
                 String BorC;
                 String result;
-                
-                DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");  
+
+                DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
                 matchDate = dateFormat.format(matches.get(i).getMatchDate());
-                
+
                 if (matches.get(i).getHomeTeam().equals(teamOne)) {
                     oppTeam = matches.get(i).getAwayTeam();
                 } else {
@@ -107,19 +106,13 @@ public class getDB extends HttpServlet {
 
                 Inning one;
                 Inning two;
-                
-                if (BorC.equals("B")) {
-                    one = matches.get(i).getInningOne();
-                    two = matches.get(i).getInningTwo();
-                } else {
-                    one = matches.get(i).getInningTwo();
-                    two = matches.get(i).getInningOne();
-                }
 
-                
+                one = matches.get(i).getInningOne();
+                two = matches.get(i).getInningTwo();
+
                 int totalSixes = Integer.parseInt(one.getParams().get(5)) + Integer.parseInt(two.getParams().get(5));
-                        
-                temp = new dbMatch(matchDate, oppTeam, tossWinner, BorC, result,totalSixes, one, two);
+
+                temp = new dbMatch(matchDate, oppTeam, tossWinner, BorC, result, totalSixes, one, two);
                 dbMatches.add(temp);
 
             }
@@ -127,7 +120,7 @@ public class getDB extends HttpServlet {
             request.setAttribute("team", teamOne);
             request.setAttribute("matches", dbMatches);
             request.setAttribute("inningHeaders", db.getHeaders(matchType));
-            
+
             RequestDispatcher dispatcher = request.getRequestDispatcher("/dbResults.jsp");
             dispatcher.forward(request, response);
         }

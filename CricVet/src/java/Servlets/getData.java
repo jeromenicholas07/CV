@@ -64,8 +64,16 @@ public class getData extends HttpServlet {
             List<Match> matches = db.getMatches(teamOne, matchType, 1);
             int k = 5;
             for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                oneBatFirst.add(matches.get(i).getInningOne());
-                temp = db.getInning(matches.get(i).getInningOne().getInningId());
+                temp = matches.get(i).getInningOne();
+                int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                int sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                List<String> ps = temp.getParams();
+                ps.set(4, String.valueOf(fours));
+                ps.set(5, String.valueOf(sixes));
+                temp.setParams(ps);
+                oneBatFirst.add(temp);
                 if (temp.getParams().get(2).equals("-1")) {
                     k++;
                 }
@@ -75,31 +83,16 @@ public class getData extends HttpServlet {
             k = 5;
             matches = db.getMatches(teamTwo, matchType, 2);
             for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                twoBatSecond.add(matches.get(i).getInningTwo());
-                temp = db.getInning(matches.get(i).getInningTwo().getInningId());
-                if (temp.getParams().get(2).equals("-1")) {
-                    k++;
-                }
-            }
-
-            matches.clear();
-            k = 5;
-            matches = db.getMatches(teamOne, matchType, 2);
-            System.out.println("t:" + teamOne + " m:" + matches.size() + "mt: " + matchType);
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                oneBatSecond.add(matches.get(i).getInningTwo());
-                temp = db.getInning(matches.get(i).getInningTwo().getInningId());
-                if (temp.getParams().get(2).equals("-1")) {
-                    k++;
-                }
-            }
-
-            matches.clear();
-            k = 5;
-            matches = db.getMatches(teamTwo, matchType, 1);
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                twoBatFirst.add(matches.get(i).getInningOne());
-                temp = db.getInning(matches.get(i).getInningOne().getInningId());
+                temp = matches.get(i).getInningTwo();
+                int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                int sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                List<String> ps = temp.getParams();
+                ps.set(4, String.valueOf(fours));
+                ps.set(5, String.valueOf(sixes));
+                temp.setParams(ps);
+                twoBatSecond.add(temp);
                 if (temp.getParams().get(2).equals("-1")) {
                     k++;
                 }
@@ -109,30 +102,16 @@ public class getData extends HttpServlet {
             k = 5;
             matches = db.getMatches(teamOne, matchType, 1);
             for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                oneBowlSecond.add(matches.get(i).getInningTwo());
-                temp = db.getInning(matches.get(i).getInningTwo().getInningId());
-                if (temp.getParams().get(2).equals("-1")) {
-                    k++;
-                }
-            }
-
-            matches.clear();
-            k = 5;
-            matches = db.getMatches(teamOne, matchType, 2);
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                oneBowlFirst.add(matches.get(i).getInningOne());
-                temp = db.getInning(matches.get(i).getInningOne().getInningId());
-                if (temp.getParams().get(2).equals("-1")) {
-                    k++;
-                }
-            }
-
-            matches.clear();
-            k = 5;
-            matches = db.getMatches(teamTwo, matchType, 1);
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                twoBowlSecond.add(matches.get(i).getInningTwo());
-                temp = db.getInning(matches.get(i).getInningTwo().getInningId());
+                temp = matches.get(i).getInningTwo();
+                int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                int sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                List<String> ps = temp.getParams();
+                ps.set(4, String.valueOf(fours));
+                ps.set(5, String.valueOf(sixes));
+                temp.setParams(ps);
+                oneBowlSecond.add(temp);
                 if (temp.getParams().get(2).equals("-1")) {
                     k++;
                 }
@@ -142,55 +121,135 @@ public class getData extends HttpServlet {
             k = 5;
             matches = db.getMatches(teamTwo, matchType, 2);
             for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                twoBowlFirst.add(matches.get(i).getInningOne());
-                temp = db.getInning(matches.get(i).getInningOne().getInningId());
+                temp = matches.get(i).getInningOne();
+                int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                int sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                List<String> ps = temp.getParams();
+                ps.set(4, String.valueOf(fours));
+                ps.set(5, String.valueOf(sixes));
+                temp.setParams(ps);
+                twoBowlFirst.add(temp);
                 if (temp.getParams().get(2).equals("-1")) {
                     k++;
                 }
             }
 
+            List<Inning> oneFS = new ArrayList<>();
+            List<Inning> twoFS = new ArrayList<>();
             matches.clear();
-            matches = db.getGroundInfo(groundName, matchType);
+
+            matches = db.getMatches(teamOne, matchType, 0);
             for (int i = 0; i < Math.min(5, matches.size()); i++) {
-                groundFirst.add(matches.get(i).getInningOne());
-                groundSecond.add(matches.get(i).getInningTwo());
+                temp = matches.get(i).getInningOne();
+                int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                int sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                List<String> ps = temp.getParams();
+                ps.set(4, String.valueOf(fours));
+                ps.set(5, String.valueOf(sixes));
+                temp.setParams(ps);
+                oneFS.add(temp);
+            }
+            request.setAttribute("oneFS", oneFS);
+
+            matches.clear();
+
+            matches = db.getMatches(teamTwo, matchType, 0);
+            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+                temp = matches.get(i).getInningOne();
+                int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                int sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                List<String> ps = temp.getParams();
+                ps.set(4, String.valueOf(fours));
+                ps.set(5, String.valueOf(sixes));
+                temp.setParams(ps);
+                twoFS.add(temp);
+            }
+            request.setAttribute("twoFS", twoFS);
+
+            matches.clear();
+            k = 5;
+            matches = db.getGroundInfo(groundName, matchType);
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                temp = matches.get(i).getInningOne();
+                int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                int sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                List<String> ps = temp.getParams();
+                ps.set(4, String.valueOf(fours));
+                ps.set(5, String.valueOf(sixes));
+                temp.setParams(ps);
+                groundFirst.add(temp);
+
+                Inning temp2 = matches.get(i).getInningTwo();
+                fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
+                        + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                List<String> ps2 = temp2.getParams();
+                ps2.set(4, String.valueOf(fours));
+                ps2.set(5, String.valueOf(sixes));
+                temp2.setParams(ps2);
+                groundSecond.add(temp2);
+
+                if (temp.getParams().get(2).equals("-1") || temp2.getParams().get(2).equals("-1")) {
+                    k++;
+                }
 
             }
 
             List<Inning> oneBatFirstX = new ArrayList<>();
             List<Inning> twoBowlFirstX = new ArrayList<>();
+            List<Inning> groundFirstX = new ArrayList<>();
+            List<Inning> groundSecondX = new ArrayList<>();
 
-            for(Inning q : oneBatFirst) {
+            for (Inning q : oneBatFirst) {
                 if (!q.getParams().get(2).contains("-1")) {
                     oneBatFirstX.add(q);
                 }
             }
 
-            for(Inning q : twoBowlFirst) {
+            for (Inning q : twoBowlFirst) {
                 if (!q.getParams().get(2).contains("-1")) {
                     twoBowlFirstX.add(q);
                 }
             }
+
+            for (Inning q : groundFirst) {
+                if (!q.getParams().get(2).contains("-1")) {
+                    groundFirstX.add(q);
+                }
+            }
+            for (Inning q : groundSecond) {
+                if (!q.getParams().get(2).contains("-1")) {
+                    groundSecondX.add(q);
+                }
+            }
             oneBatFirst = oneBatFirst.subList(0, Math.min(5, oneBatFirst.size()));
-            twoBowlFirst = oneBatFirst.subList(0, Math.min(5, oneBatFirst.size()));
+            twoBowlFirst = twoBowlFirst.subList(0, Math.min(5, twoBowlFirst.size()));
+            groundFirst = groundFirst.subList(0, Math.min(5, groundFirst.size()));
+            groundSecond = groundSecond.subList(0, Math.min(5, groundSecond.size()));
             request.setAttribute("oneBatFirstX", oneBatFirstX);
             request.setAttribute("twoBowlFirstX", twoBowlFirstX);
-            
-            
-            
-            
-            
-            
+            request.setAttribute("groundFirstX", groundFirstX.subList(0, Math.min(5, groundFirstX.size())));
+            request.setAttribute("groundSecondX", groundSecondX.subList(0, Math.min(5, groundSecondX.size())));
+
             List<Inning> twoBatSecondX = new ArrayList<>();
             List<Inning> oneBowlSecondX = new ArrayList<>();
 
-            for(Inning q : twoBatSecond) {
+            for (Inning q : twoBatSecond) {
                 if (!q.getParams().get(2).contains("-1")) {
                     twoBatSecondX.add(q);
                 }
             }
 
-            for(Inning q : oneBowlSecond) {
+            for (Inning q : oneBowlSecond) {
                 if (!q.getParams().get(2).contains("-1")) {
                     oneBowlSecondX.add(q);
                 }
@@ -202,6 +261,27 @@ public class getData extends HttpServlet {
 //            for(int i = 0; i < matches.size(); i++){
 //                out.print("<h1>"+matches.get(i));
 //            }
+
+            List<Inning> oneBatFirstY = new ArrayList<>();
+            List<Inning> twoBowlFirstY = new ArrayList<>();
+            
+            for(Match q : db.getDB(matchType, teamOne)) {
+                oneBatFirstY.add(q.getInningOne());
+            }
+
+            for(Match q : db.getDB(matchType, teamTwo)) {
+                twoBowlFirstY.add(q.getInningOne());
+            }
+            oneBatFirstY = oneBatFirstY.subList(0, Math.min(5, oneBatFirstY.size()));
+            twoBowlFirstY = twoBowlFirstY.subList(0, Math.min(5, twoBowlFirstY.size()));
+            request.setAttribute("oneBatFirstY", oneBatFirstY);
+            request.setAttribute("twoBowlFirstY", twoBowlFirstY);
+
+            
+            
+            
+            
+
             request.setAttribute("headers", db.getHeaders(matchType));
             request.setAttribute("teamOne", teamOne);
             request.setAttribute("teamTwo", teamTwo);

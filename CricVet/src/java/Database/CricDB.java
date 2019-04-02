@@ -9,7 +9,6 @@ package Database;
  *
  * @author DELL
  */
-
 import models.*;
 
 import java.sql.Connection;
@@ -339,6 +338,42 @@ public class CricDB extends BaseDAO {
         ResultSet rs = null;
 
         switch (type) {
+            case 0:
+
+                try {
+                    con = getConnection();
+                    String sql = "select * from APP.MATCHES where (hometeam = '" + teamName + "' OR awayteam = '" + teamName + "' )  and matchtype = " + matchType + " order by MATCHDATE DESC";
+
+                    stmt = con.prepareStatement(sql);
+                    rs = stmt.executeQuery();
+
+                    while (rs.next()) {
+                        int matchId = rs.getInt("matchid");
+                        String homeTeam = rs.getString("hometeam");
+                        String awayTeam = rs.getString("awayteam");
+                        Date matchDate = rs.getDate("matchdate");
+                        String tossWinner = rs.getString("tosswinner");
+                        String battingFirst = rs.getString("battingfirst");
+                        int inning1_id = rs.getInt("inning1_id");
+                        int inning2_id = rs.getInt("inning2_id");
+                        String homeScore = rs.getString("homescore");
+                        String awayscore = rs.getString("awayscore");
+                        String result = rs.getString("result");
+                        String groundName = rs.getString("groundname");
+//                int matchType = rs.getInt("matchtype");
+
+                        Inning inningOne = getInning(inning1_id);
+                        Inning inningTwo = getInning(inning2_id);
+
+                        Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
+                        matches.add(m);
+                    }
+
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
             case 1:
 
                 try {
