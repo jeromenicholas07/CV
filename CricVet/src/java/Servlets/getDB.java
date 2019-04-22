@@ -107,8 +107,14 @@ public class getDB extends HttpServlet {
                 Inning one;
                 Inning two;
 
-                one = matches.get(i).getInningOne();
-                two = matches.get(i).getInningTwo();
+                if (BorC.equals("B")) {
+                    one = matches.get(i).getInningOne();
+                    two = matches.get(i).getInningTwo();
+                }
+                else{
+                    one = matches.get(i).getInningTwo();
+                    two = matches.get(i).getInningOne();
+                }
 
                 int totalSixes = Integer.parseInt(one.getParams().get(5)) + Integer.parseInt(two.getParams().get(5));
 

@@ -59,13 +59,22 @@ and open the template in the editor.
 
                 float: right;
                 height: 50%;
-                width : 50%;
+                width : 30%;
+                margin: 0;
+            }
+            .rightBottomHalf{
+                background-image: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
+
+                float: right;
+                height: 50%;
+                width : 20%;
                 margin: 0;
             }
 
         </style>
     </head>
     <body>
+        
         <div class="container-fluid bg1">
             <div class="left" onclick="location.href = '/CricVet/LoadAll';">
                 <h2 class="al">Load</h2>
@@ -73,6 +82,9 @@ and open the template in the editor.
             </div>
             <div class="rightTop" onclick="location.href = '/CricVet/queryPage.jsp';">
                 <h2 class="al">Matches</h2>
+            </div>
+            <div class="rightBottomHalf" onclick="location.href = '/CricVet/checkGrounds.jsp';">
+                <h2 class="al">Ground DB</h2>
             </div>
             <div class="rightBottom" onclick="location.href = '/CricVet/checkDB.jsp';">
                 <h2 class="al">Database</h2>

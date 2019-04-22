@@ -172,7 +172,60 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
+        try {
+            String sql = "UPDATE APP.MATCHES SET HOMETEAM = 'Delhi Capitals' WHERE HOMETEAM = 'Delhi Daredevils' ";
 
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            String sql = "UPDATE APP.MATCHES SET awayteam = 'Delhi Capitals' WHERE awayteam = 'Delhi Daredevils' ";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            String sql = "UPDATE APP.MATCHES SET battingfirst = 'Delhi Capitals' WHERE battingfirst = 'Delhi Daredevils' ";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+            String sql = "UPDATE APP.MATCHES SET tosswinner = 'Delhi Capitals , elected to field first' WHERE tosswinner = 'Delhi Daredevils , elected to field first' ";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            
+            sql = "UPDATE APP.MATCHES SET tosswinner = 'Delhi Capitals , elected to bat first' WHERE tosswinner = 'Delhi Daredevils , elected to bat first' ";
+            Statement st = con.createStatement();
+            st.execute(sql);
+            
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public List<String> getHeaders(int matchType) {

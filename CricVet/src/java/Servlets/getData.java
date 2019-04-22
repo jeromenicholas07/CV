@@ -78,6 +78,8 @@ public class getData extends HttpServlet {
                     k++;
                 }
             }
+            
+            
 
             matches.clear();
             k = 5;

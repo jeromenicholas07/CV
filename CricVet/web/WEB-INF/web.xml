@@ -52,6 +52,10 @@
         <servlet-name>getDB</servlet-name>
         <servlet-class>Servlets.getDB</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>getGroundData</servlet-name>
+        <servlet-class>Servlets.getGroundData</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadODI</servlet-name>
         <url-pattern>/LoadODI</url-pattern>
@@ -103,6 +107,10 @@
     <servlet-mapping>
         <servlet-name>getDB</servlet-name>
         <url-pattern>/getDB</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getGroundData</servlet-name>
+        <url-pattern>/getGroundData</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
