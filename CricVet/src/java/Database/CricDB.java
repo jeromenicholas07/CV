@@ -30,6 +30,51 @@ import javax.naming.InitialContext;
  * @author DELL
  */
 public class CricDB extends BaseDAO {
+    
+    public List<Match> getHth(int matchType, String A, String B){
+        List<Match> matches = new ArrayList<>();
+
+        Connection con;
+        Statement stmt;
+        ResultSet rs;
+
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.Matches where matchtype= " + matchType + " and ((hometeam='" + A + "' AND awayteam='" + B + "') OR (hometeam='" + B + "' AND awayteam='" + A + "')) order by MATCHDATE DESC FETCH FIRST 30 ROWS ONLY";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Date matchDate = rs.getDate("matchdate");
+                String tossWinner = rs.getString("tosswinner");
+                String battingFirst = rs.getString("battingfirst");
+                int inning1_id = rs.getInt("inning1_id");
+                int inning2_id = rs.getInt("inning2_id");
+                String homeScore = rs.getString("homescore");
+                String awayscore = rs.getString("awayscore");
+                String result = rs.getString("result");
+                String groundName = rs.getString("groundname");
+//                int matchType = rs.getInt("matchtype");
+
+                Inning inningOne = getInning(inning1_id);
+                Inning inningTwo = getInning(inning2_id);
+
+                Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
+                matches.add(m);
+            }
+
+            con.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return matches;
+    }
 
     public List<Match> getDB(int matchType, String TeamName) {
         List<Match> matches = new ArrayList<>();
@@ -83,6 +128,8 @@ public class CricDB extends BaseDAO {
         Connection con;
         Statement stmt;
         ResultSet rs;
+        
+        
 
         try {
             String sql = "create table \"APP\".HEADERS\n"

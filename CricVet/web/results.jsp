@@ -41,6 +41,60 @@
         </style>
         <div class="container-fluid text-center">
             <h1 class="text-center">${teamOne} v/s ${teamTwo}</h1>
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="card-title">Head to head</h5>
+
+
+
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(hth)}">${teamOne} v/s ${teamTwo}</th>
+                            <th>Odds</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${hth}">
+                                <td name="-Left">
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+
+                            <td>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="-Left" id="-Left">@</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="-Left">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${hth}">
+                                <td name="-LeftOdd">
+
+                                </td>
+                            </c:forEach>
+                            
+                            <td colspan="2"></td>
+                        </tr>
+                        
+
+                        
+                        <tr>
+                            <c:forEach var="in" items="${hth}">
+                                <td name="-Left">
+                                    ${in.getParams().get(7)}
+                                </td>
+                            </c:forEach>
+                            
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+
+
             <div class="row" >
                 <div class ="col-12">
                     <h5 class="card-title">Form Guide</h5>
@@ -212,16 +266,16 @@
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirstY}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoBowlFirstY}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
-                                        
+
 
                                     </tr>
                                 </table>
@@ -273,20 +327,20 @@
 
 
                                     </tr>
-                                    
+
                                     <tr>
                                         <c:forEach var="in" items="${oneFS}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoFS}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
-                                        
+
                                     </tr>
                                 </table>
 
@@ -337,20 +391,20 @@
 
 
                                     </tr>
-                                    
+
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirstX}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoBowlFirstX}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
-                                        
+
 
 
                                     </tr>
@@ -405,24 +459,24 @@
 
 
                                     </tr>
-                                    
+
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirst}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoBowlFirst}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
-                                        
+
 
 
                                     </tr>
-                                    
+
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirst}">
                                             <td name="${loop.index}Left">
@@ -499,16 +553,16 @@
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirst}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoBowlFirst}">
                                             <td name="${loop.index}LeftOdd">
-                                                
+
                                             </td>
                                         </c:forEach>
-                                        
+
                                     </tr>
                                 </table>
 
@@ -587,16 +641,16 @@
                                     <tr>
                                         <c:forEach var="in" items="${twoBatSecond}">
                                             <td name="${loop.index}Left2Odd">
-                                                
+
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${oneBowlSecond}">
                                             <td name="${loop.index}Left2Odd">
-                                                
+
                                             </td>
                                         </c:forEach>
-                                        
+
                                     </tr>
                                 </table>
 
@@ -617,29 +671,28 @@
 
         <script type="text/javascript">
             $(document).ready(function () {
-                
-                var classes = ["-1Left", "0Left", "1Left", "2Left", "3Left", "4Left", "5Left", "6Left", "1Left2", "3Left2"];
+
+                var classes = ["-Left","-1Left", "0Left", "1Left", "2Left", "3Left", "4Left", "5Left", "6Left", "1Left2", "3Left2"];
 
                 var i;
                 for (i = 0; i < classes.length; i++) {
                     var nam = classes[i];
-                    
+
                     var ind = 0;
-                    
-                    $('td[name="' + nam + 'Odd"]').each(function(i, obj){
-                       var val =  parseInt( $('td[name="' + nam + '"]').eq(i).text() );
-                       
-                       
-                       
-                       
+
+                    $('td[name="' + nam + 'Odd"]').each(function (i, obj) {
+                        var val = parseInt($('td[name="' + nam + '"]').eq(i).text());
+
+
+
+
                         var num = 0;
                         var den = 0;
 
                         $('td[name="' + nam + '"]').each(function () {
-                            if(parseInt($(this).text()) == -1){
-                            
-                            }
-                            else if (parseInt($(this).text()) >= parseInt(val)) {
+                            if (parseInt($(this).text()) == -1) {
+
+                            } else if (parseInt($(this).text()) >= parseInt(val)) {
                                 num++;
                             } else if (parseInt($(this).text()) < parseInt(val)) {
 //                                alert($(this).text() +" :: "+ val);
@@ -649,13 +702,13 @@
                         });
 
                         $(this).text(den.toString() + "/" + num.toString());
-                       
-                       
-                       
-                       
-                       
+
+
+
+
+
                     });
-                    
+
                 }
             });
 
@@ -685,10 +738,9 @@
                     var den = 0;
 
                     $('td[name="' + name + '"]').each(function () {
-                        if(parseInt($(this).text()) == -1){
-                            
-                        }
-                        else if (parseInt($(this).text()) >= parseInt(inp)) {
+                        if (parseInt($(this).text()) == -1) {
+
+                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
                             $(this).addClass("greater");
                             num++;
                         } else if (parseInt($(this).text()) < parseInt(inp)) {
@@ -732,10 +784,9 @@
                     var den = 0;
 
                     $('td[name="' + name + '"]').each(function () {
-                        if(parseInt($(this).text()) == -1){
-                            
-                        }
-                        else if (parseInt($(this).text()) >= parseInt(inp)) {
+                        if (parseInt($(this).text()) == -1) {
+
+                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
 
                             $(this).addClass("greater");
                             num++;

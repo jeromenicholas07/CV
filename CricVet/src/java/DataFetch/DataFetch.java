@@ -190,9 +190,9 @@ public class DataFetch {
             String result = winner.select("span").first().text();
 
             String BorC = "";
-            if (result.contains(" wickets")) {
+            if (result.contains(" wicket")) {
                 BorC = "C";
-            } else if (result.contains(" runs")) {
+            } else if (result.contains(" run")) {
                 BorC = "B";
             } else {
                 BorC = "-";
@@ -217,6 +217,7 @@ public class DataFetch {
                 int firstOverScore = 0;
                 int sixOverScore = 0;
                 int lastFiveOverScore = -1;
+                int lastFlag = -1;
                 int firstWicketScore = -1;
                 int fourCount = 0;
                 int sixCount = 0;
@@ -272,6 +273,13 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
+                        
+                        if (jItem.getJSONObject("over").getInt("unique") == 15 && lastFlag == -1) {
+                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                                lastFlag = 1;
+                            }
+                        }
+                        
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -287,6 +295,9 @@ public class DataFetch {
                 }
                 if (lastFiveOverScore != -1) {
                     lastFiveOverScore++;
+                }
+                if(lastFlag == 1){
+                    lastFiveOverScore = -1;
                 }
 
                 List<String> params = new ArrayList<>();
@@ -475,9 +486,9 @@ public class DataFetch {
             String result = winner.select("span").first().text();
 
             String BorC = "";
-            if (result.contains(" wickets")) {
+            if (result.contains(" wicket")) {
                 BorC = "C";
-            } else if (result.contains(" runs")) {
+            } else if (result.contains(" run")) {
                 BorC = "B";
             } else {
                 BorC = "-";
@@ -514,6 +525,7 @@ public class DataFetch {
                 List<JSONObject> ballList = new ArrayList<>();
                 int firstOverScore = 0;
                 int tenOverScore = 0;
+                int lastFlag = -1;
                 int lastTenOverScore = -1;
                 int firstWicketScore = -1;
                 int fourCount = 0;
@@ -554,6 +566,12 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 40 && jItem.getJSONObject("over").getInt("unique") <= 50) {
                             lastTenOverScore += jItem.getInt("scoreValue");
                         }
+                        
+                        if (jItem.getJSONObject("over").getInt("unique") >= 40 && lastFlag == -1) {
+                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                                lastFlag = 1;
+                            }
+                        }
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -570,6 +588,10 @@ public class DataFetch {
                 }
                 if (lastTenOverScore != -1) {
                     lastTenOverScore++;
+                }
+                
+                if(lastFlag == 1){
+                    lastTenOverScore = -1;
                 }
 
                 List<String> params = new ArrayList<>();
@@ -758,9 +780,9 @@ public class DataFetch {
             String result = winner.select("span").first().text();
 
             String BorC = "";
-            if (result.contains(" wickets")) {
+            if (result.contains(" wicket")) {
                 BorC = "C";
-            } else if (result.contains(" runs")) {
+            } else if (result.contains(" run")) {
                 BorC = "B";
             } else {
                 BorC = "-";
@@ -784,6 +806,7 @@ public class DataFetch {
                 List<JSONObject> ballList = new ArrayList<>();
                 int firstOverScore = 0;
                 int sixOverScore = 0;
+                int lastFlag = -1;
                 int lastFiveOverScore = -1;
                 int firstWicketScore = -1;
                 int fourCount = 0;
@@ -817,6 +840,13 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
+                        
+                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                                lastFlag = 1;
+                            }
+                        }
+
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -833,6 +863,10 @@ public class DataFetch {
                 }
                 if (lastFiveOverScore != -1) {
                     lastFiveOverScore++;
+                }
+                
+                if(lastFlag == 1){
+                    lastFiveOverScore = -1;
                 }
 
                 List<String> params = new ArrayList<>();
@@ -1020,9 +1054,9 @@ public class DataFetch {
             String result = winner.select("span").first().text();
 
             String BorC = "";
-            if (result.contains(" wickets")) {
+            if (result.contains(" wicket")) {
                 BorC = "C";
-            } else if (result.contains(" runs")) {
+            } else if (result.contains(" run")) {
                 BorC = "B";
             } else {
                 BorC = "-";
@@ -1046,6 +1080,7 @@ public class DataFetch {
                 List<JSONObject> ballList = new ArrayList<>();
                 int firstOverScore = 0;
                 int sixOverScore = 0;
+                int lastFlag = -1;
                 int lastFiveOverScore = -1;
                 int firstWicketScore = -1;
                 int fourCount = 0;
@@ -1079,6 +1114,14 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
+                        
+                        if (jItem.getJSONObject("over").getInt("unique") >= 15   && lastFlag == -1) {
+                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                                lastFlag = 1;
+                            }
+                        }
+
+                        
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -1094,6 +1137,10 @@ public class DataFetch {
                 }
                 if (lastFiveOverScore != -1) {
                     lastFiveOverScore++;
+                }
+                
+                if(lastFlag == 1){
+                    lastFiveOverScore = -1;
                 }
 
                 List<String> params = new ArrayList<>();
@@ -1283,9 +1330,9 @@ public class DataFetch {
             String result = winner.select("span").first().text();
 
             String BorC = "";
-            if (result.contains(" wickets")) {
+            if (result.contains(" wicket")) {
                 BorC = "C";
-            } else if (result.contains(" runs")) {
+            } else if (result.contains(" run")) {
                 BorC = "B";
             } else {
                 BorC = "-";
@@ -1310,6 +1357,7 @@ public class DataFetch {
                 int firstOverScore = 0;
                 int sixOverScore = 0;
                 int lastFiveOverScore = -1;
+                int lastFlag = -1;
                 int firstWicketScore = -1;
                 int fourCount = 0;
                 int sixCount = 0;
@@ -1342,6 +1390,13 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
+                        
+                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                                lastFlag = 1;
+                            }
+                        }
+
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -1357,6 +1412,10 @@ public class DataFetch {
                 }
                 if (lastFiveOverScore != -1) {
                     lastFiveOverScore++;
+                }
+                
+                if(lastFlag == 1){
+                    lastFiveOverScore = -1;
                 }
 
                 List<String> params = new ArrayList<>();
@@ -1547,9 +1606,9 @@ public class DataFetch {
             String result = winner.select("span").first().text();
 
             String BorC = "";
-            if (result.contains(" wickets")) {
+            if (result.contains(" wicket")) {
                 BorC = "C";
-            } else if (result.contains(" runs")) {
+            } else if (result.contains(" run")) {
                 BorC = "B";
             } else {
                 BorC = "-";
@@ -1573,6 +1632,7 @@ public class DataFetch {
                 List<JSONObject> ballList = new ArrayList<>();
                 int firstOverScore = 0;
                 int sixOverScore = 0;
+                int lastFlag = -1;
                 int lastFiveOverScore = -1;
                 int firstWicketScore = -1;
                 int fourCount = 0;
@@ -1606,6 +1666,12 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
+                        
+                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                                lastFlag = 1;
+                            }
+                        }
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -1622,6 +1688,10 @@ public class DataFetch {
                 if (lastFiveOverScore != -1) {
 
                     lastFiveOverScore++;
+                }
+                
+                if(lastFlag == 1){
+                    lastFiveOverScore = -1;
                 }
 
                 List<String> params = new ArrayList<>();
@@ -1811,9 +1881,9 @@ public class DataFetch {
             String result = winner.select("span").first().text();
 
             String BorC = "";
-            if (result.contains(" wickets")) {
+            if (result.contains(" wicket")) {
                 BorC = "C";
-            } else if (result.contains(" runs")) {
+            } else if (result.contains(" run")) {
                 BorC = "B";
             } else {
                 BorC = "-";
@@ -1837,6 +1907,7 @@ public class DataFetch {
                 List<JSONObject> ballList = new ArrayList<>();
                 int firstOverScore = 0;
                 int sixOverScore = 0;
+                int lastFlag = -1;
                 int lastFiveOverScore = -1;
                 int firstWicketScore = -1;
                 int fourCount = 0;
@@ -1871,6 +1942,12 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
+                        
+                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                                lastFlag = 1;
+                            }
+                        }
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -1887,6 +1964,10 @@ public class DataFetch {
                 if (lastFiveOverScore != -1) {
 
                     lastFiveOverScore++;
+                }
+                
+                if(lastFlag == 1){
+                    lastFiveOverScore = -1;
                 }
 
                 List<String> params = new ArrayList<>();

@@ -268,11 +268,78 @@ public class getData extends HttpServlet {
             List<Inning> twoBowlFirstY = new ArrayList<>();
             
             for(Match q : db.getDB(matchType, teamOne)) {
-                oneBatFirstY.add(q.getInningOne());
+                String res =q.getResult();
+                String worl = "";
+                
+                String BorC = "";
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    BorC = "B";
+                }
+                else{
+                    BorC = "C";
+                }
+                
+                if(res.contains(" wicket")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                        worl = "L";
+                    }
+                    else{
+                        worl = "W";
+                    }
+                }
+                else if(res.contains(" run")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                        worl = "W";
+                    }
+                    else{
+                        worl = "L";
+                    }
+                }else{
+                    worl = "-";
+                }
+                Inning m = q.getInningOne();
+                List<String> params = m.getParams();
+                
+                params.set(7, BorC + "/" + worl);
+                m.setParams(params);
+                oneBatFirstY.add(m);
             }
 
             for(Match q : db.getDB(matchType, teamTwo)) {
-                twoBowlFirstY.add(q.getInningOne());
+                String res =q.getResult();
+                String worl = "";
+                
+                String BorC = "";
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    BorC = "B";
+                }
+                else{
+                    BorC = "C";
+                }
+                
+                if(res.contains(" wicket")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
+                        worl = "L";
+                    }
+                    else{
+                        worl = "W";
+                    }
+                }
+                else if(res.contains(" run")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
+                        worl = "W";
+                    }
+                    else{
+                        worl = "L";
+                    }
+                }else{
+                    worl = "-";
+                }
+                Inning m = q.getInningOne();
+                List<String> params = m.getParams();
+                params.set(7, BorC + "/" + worl);
+                m.setParams(params);
+                twoBowlFirstY.add(m);
             }
             oneBatFirstY = oneBatFirstY.subList(0, Math.min(5, oneBatFirstY.size()));
             twoBowlFirstY = twoBowlFirstY.subList(0, Math.min(5, twoBowlFirstY.size()));
@@ -280,8 +347,49 @@ public class getData extends HttpServlet {
             request.setAttribute("twoBowlFirstY", twoBowlFirstY);
 
             
+            List<Inning> hth = new ArrayList<>();
+            matches = db.getHth(matchType, teamOne, teamTwo);
+            for(int i = 0; i < Math.min(5, matches.size()); i++){
+                Match q = matches.get(i);
+                
+                String res =q.getResult();
+                String worl = "";
+                
+                String BorC = "";
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    BorC = "B";
+                }
+                else{
+                    BorC = "C";
+                }
+                
+                if(res.contains(" wicket")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                        worl = "L";
+                    }
+                    else{
+                        worl = "W";
+                    }
+                }
+                else if(res.contains(" run")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                        worl = "W";
+                    }
+                    else{
+                        worl = "L";
+                    }
+                }else{
+                    worl = "-";
+                }
+                Inning m = q.getInningOne();
+                List<String> params = m.getParams();
+                params.set(7, BorC + "/" +worl);
+                m.setParams(params);
+                hth.add(m);
+                
+            }
             
-            
+            request.setAttribute("hth", hth);
             
 
             request.setAttribute("headers", db.getHeaders(matchType));
