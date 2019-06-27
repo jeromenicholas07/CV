@@ -34,9 +34,9 @@ public class CricDB extends BaseDAO {
     public List<Match> getHth(int matchType, String A, String B){
         List<Match> matches = new ArrayList<>();
 
-        Connection con;
-        Statement stmt;
-        ResultSet rs;
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
         try {
             con = getConnection();
@@ -72,6 +72,10 @@ public class CricDB extends BaseDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return matches;
     }
@@ -79,9 +83,9 @@ public class CricDB extends BaseDAO {
     public List<Match> getDB(int matchType, String TeamName) {
         List<Match> matches = new ArrayList<>();
 
-        Connection con;
-        Statement stmt;
-        ResultSet rs;
+        Connection con = null;
+        Statement stmt=null;
+        ResultSet rs=null;
 
         try {
             con = getConnection();
@@ -117,6 +121,10 @@ public class CricDB extends BaseDAO {
 
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return matches;
     }
@@ -125,9 +133,9 @@ public class CricDB extends BaseDAO {
 
         System.out.println("at init");
 
-        Connection con;
-        Statement stmt;
-        ResultSet rs;
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
         
         
 
@@ -152,6 +160,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
 
         try {
@@ -178,6 +190,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
 
         try {
@@ -201,6 +217,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
 
         try {
@@ -218,6 +238,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         
         
@@ -231,6 +255,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         
         try {
@@ -243,6 +271,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
 
         try {
@@ -255,6 +287,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         
         try {
@@ -272,6 +308,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
     }
 
@@ -299,16 +339,24 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return headers;
     }
 
     public void addMatch(Match match) {
+        
+        Connection con = null;
+        Statement s = null;
+        ResultSet r = null;
         try {
-            Connection con = getConnection();
+            con = getConnection();
             String sq = "select * from APP.MATCHES WHERE MATCHID=" + String.valueOf(match.getMatchId());
-            Statement s = con.createStatement();
-            ResultSet r = s.executeQuery(sq);
+            s = con.createStatement();
+            r = s.executeQuery(sq);
             if (r.next()) {
                 System.out.println("Match " + String.valueOf(match.getMatchId()) + " already exists in DB");
                 return;
@@ -346,6 +394,10 @@ public class CricDB extends BaseDAO {
 
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
             //todo: show that ur unable to connect to db
+        }finally {
+            try { r.close(); } catch (Exception e) { /* ignored */ }
+            try { s.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
     }
 
@@ -368,16 +420,24 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return false;
     }
 
     public int addInning(Inning i) {
         int id = -1;
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+                
         try {
-            Connection con = getConnection();
-            PreparedStatement ps = null;
-            ResultSet rs = null;
+            con = getConnection();
+            ps = null;
+            rs = null;
             if (i.getNoOfParams() == 4) {
                 String sql = "insert into APP.INNINGS (param1, param2, param3, param4, noofparams) values(?,?,?,?,?)";
                 String generatedColumns[] = {"ID"};
@@ -426,6 +486,10 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
             //todo: show that ur unable to connect to db
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { ps.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return id;
     }
@@ -472,6 +536,10 @@ public class CricDB extends BaseDAO {
                     con.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+                }finally {
+                    try { rs.close(); } catch (Exception e) { /* ignored */ }
+                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
+                    try { con.close(); } catch (Exception e) { /* ignored */ }
                 }
                 break;
             case 1:
@@ -508,6 +576,10 @@ public class CricDB extends BaseDAO {
                     con.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+                }finally {
+                    try { rs.close(); } catch (Exception e) { /* ignored */ }
+                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
+                    try { con.close(); } catch (Exception e) { /* ignored */ }
                 }
                 break;
             case 2:
@@ -545,6 +617,10 @@ public class CricDB extends BaseDAO {
                     con.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+                }finally {
+                    try { rs.close(); } catch (Exception e) { /* ignored */ }
+                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
+                    try { con.close(); } catch (Exception e) { /* ignored */ }
                 }
                 break;
             default:
@@ -583,6 +659,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return inning;
     }
@@ -596,7 +676,7 @@ public class CricDB extends BaseDAO {
 
         try {
             con = getConnection();
-            String sql = "select * from APP.MATCHES where groundname = '" + groundName + "' AND MATCHTYPE = " + matchType + " ";
+            String sql = "select * from APP.MATCHES where groundname = '" + groundName + "' AND MATCHTYPE = " + matchType + " order by MATCHDATE DESC";
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
 
@@ -625,6 +705,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
 
         return matches;
@@ -652,6 +736,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return grounds;
     }
@@ -687,6 +775,10 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return teams;
     }

@@ -7,6 +7,9 @@ package DataFetch;
 
 import Database.CricDB;
 import java.io.IOException;
+import java.security.SecureRandom;
+
+import java.security.cert.X509Certificate;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +19,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HttpsURLConnection;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import models.*;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +39,33 @@ import views.LoadODI;
  * @author DELL
  */
 public class DataFetch {
+
+    static {
+        TrustManager[] trustAllCerts;
+        trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        }};
+
+// Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+            ;
+        }
+    }
 
     int yr = 2015;
 
@@ -46,7 +82,7 @@ public class DataFetch {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=117;type=season").get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -86,7 +122,7 @@ public class DataFetch {
             Document matchPage;
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -206,7 +242,7 @@ public class DataFetch {
                 String json;
                 try {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                     return false;
                 }
@@ -231,7 +267,7 @@ public class DataFetch {
                     String body;
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                         return false;
                     }
@@ -248,8 +284,8 @@ public class DataFetch {
                                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             je.printStackTrace();
-                            
-                            if(x == 6){
+
+                            if (x == 6) {
                                 return false;
                             }
                         }
@@ -273,13 +309,12 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
-                        
+
                         if (jItem.getJSONObject("over").getInt("unique") == 15 && lastFlag == -1) {
-                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                            if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
                         }
-                        
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -296,7 +331,7 @@ public class DataFetch {
                 if (lastFiveOverScore != -1) {
                     lastFiveOverScore++;
                 }
-                if(lastFlag == 1){
+                if (lastFlag == 1) {
                     lastFiveOverScore = -1;
                 }
 
@@ -339,7 +374,7 @@ public class DataFetch {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=2;id=" + y + ";type=year").get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -381,7 +416,7 @@ public class DataFetch {
             Document matchPage;
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -502,7 +537,7 @@ public class DataFetch {
                 String json;
                 try {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     System.out.println(commentaryUrl);
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                     return false;
@@ -540,7 +575,7 @@ public class DataFetch {
                     String body;
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         System.out.println(currentPageUrl);
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                         return false;
@@ -566,9 +601,9 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 40 && jItem.getJSONObject("over").getInt("unique") <= 50) {
                             lastTenOverScore += jItem.getInt("scoreValue");
                         }
-                        
+
                         if (jItem.getJSONObject("over").getInt("unique") >= 40 && lastFlag == -1) {
-                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                            if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
                         }
@@ -589,8 +624,8 @@ public class DataFetch {
                 if (lastTenOverScore != -1) {
                     lastTenOverScore++;
                 }
-                
-                if(lastFlag == 1){
+
+                if (lastFlag == 1) {
                     lastTenOverScore = -1;
                 }
 
@@ -634,7 +669,7 @@ public class DataFetch {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=158;type=season").get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -675,7 +710,7 @@ public class DataFetch {
             Document matchPage;
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -796,7 +831,7 @@ public class DataFetch {
                 String json;
                 try {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                     return false;
                 }
@@ -821,7 +856,7 @@ public class DataFetch {
                     String body;
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                         return false;
                     }
@@ -840,13 +875,12 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
-                        
+
                         if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
-                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                            if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
                         }
-
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -864,8 +898,8 @@ public class DataFetch {
                 if (lastFiveOverScore != -1) {
                     lastFiveOverScore++;
                 }
-                
-                if(lastFlag == 1){
+
+                if (lastFlag == 1) {
                     lastFiveOverScore = -1;
                 }
 
@@ -909,7 +943,7 @@ public class DataFetch {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=159;type=season").get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -949,7 +983,7 @@ public class DataFetch {
             Document matchPage;
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -1070,7 +1104,7 @@ public class DataFetch {
                 String json;
                 try {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                     return false;
                 }
@@ -1095,7 +1129,7 @@ public class DataFetch {
                     String body;
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                         return false;
                     }
@@ -1114,14 +1148,12 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
-                        
-                        if (jItem.getJSONObject("over").getInt("unique") >= 15   && lastFlag == -1) {
-                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+
+                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                            if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
                         }
-
-                        
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -1138,8 +1170,8 @@ public class DataFetch {
                 if (lastFiveOverScore != -1) {
                     lastFiveOverScore++;
                 }
-                
-                if(lastFlag == 1){
+
+                if (lastFlag == 1) {
                     lastFiveOverScore = -1;
                 }
 
@@ -1184,7 +1216,7 @@ public class DataFetch {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=748;type=season").get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -1225,7 +1257,7 @@ public class DataFetch {
             Document matchPage;
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -1346,7 +1378,7 @@ public class DataFetch {
                 String json;
                 try {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                     return false;
                 }
@@ -1371,7 +1403,7 @@ public class DataFetch {
                     String body;
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                         return false;
                     }
@@ -1390,13 +1422,12 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
-                        
+
                         if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
-                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                            if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
                         }
-
 
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
@@ -1413,8 +1444,8 @@ public class DataFetch {
                 if (lastFiveOverScore != -1) {
                     lastFiveOverScore++;
                 }
-                
-                if(lastFlag == 1){
+
+                if (lastFlag == 1) {
                     lastFiveOverScore = -1;
                 }
 
@@ -1460,7 +1491,7 @@ public class DataFetch {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=205;type=season").get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -1501,7 +1532,7 @@ public class DataFetch {
             Document matchPage;
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -1622,7 +1653,7 @@ public class DataFetch {
                 String json;
                 try {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                     return false;
                 }
@@ -1647,7 +1678,7 @@ public class DataFetch {
                     String body;
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                         return false;
                     }
@@ -1666,9 +1697,9 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
-                        
+
                         if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
-                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                            if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
                         }
@@ -1689,8 +1720,8 @@ public class DataFetch {
 
                     lastFiveOverScore++;
                 }
-                
-                if(lastFlag == 1){
+
+                if (lastFlag == 1) {
                     lastFiveOverScore = -1;
                 }
 
@@ -1736,7 +1767,7 @@ public class DataFetch {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=3;id=" + y + ";type=year").get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -1776,7 +1807,7 @@ public class DataFetch {
             Document matchPage;
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -1897,7 +1928,7 @@ public class DataFetch {
                 String json;
                 try {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                     return false;
                 }
@@ -1922,7 +1953,7 @@ public class DataFetch {
                     String body;
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                         return false;
                     }
@@ -1942,9 +1973,9 @@ public class DataFetch {
                         if (jItem.getJSONObject("over").getInt("unique") >= 15) {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
-                        
+
                         if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
-                            if(jItem.getJSONObject("innings").getInt("wickets") > 7){
+                            if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
                         }
@@ -1965,8 +1996,8 @@ public class DataFetch {
 
                     lastFiveOverScore++;
                 }
-                
-                if(lastFlag == 1){
+
+                if (lastFlag == 1) {
                     lastFiveOverScore = -1;
                 }
 
@@ -2011,7 +2042,7 @@ public class DataFetch {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=1;id=" + y + ";type=year").get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -2053,7 +2084,7 @@ public class DataFetch {
             Document matchPage;
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -2162,7 +2193,7 @@ public class DataFetch {
             String json;
             try {
                 json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
             }
@@ -2193,7 +2224,7 @@ public class DataFetch {
                     String body;
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                         return false;
                     }
