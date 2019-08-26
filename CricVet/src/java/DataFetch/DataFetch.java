@@ -33,6 +33,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import views.LoadODI;
+import models.*;
+import models.testInning;
+import models.testMatch;
 
 /**
  *
@@ -2076,8 +2079,11 @@ public class DataFetch {
         return true;
     }
 
+    
+    
     public boolean loadTestData() {
         int matchType = 1;
+        
 
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
@@ -2107,6 +2113,7 @@ public class DataFetch {
         }
 
         for (String matchLink : matchLinks) {
+            int foflag = 0;
 
             int mPos = 0;
             String[] mParts = matchLink.split("/");
@@ -2119,7 +2126,7 @@ public class DataFetch {
             String mid = mParts[mPos];
             int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
 
-            if (db.checkMatchEntry(mId)) {
+            if (db.checktestMatchEntry(mId)) {
                 System.out.println("Match " + mId + " exists");
                 continue;
             }
@@ -2146,6 +2153,7 @@ public class DataFetch {
             String[] parts2 = parts[parts.length - 1].split("-");
             String[] parts3 = parts2[1].split(" ");
             String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+            
 
             try {
                 matchDate = LocalDate.parse(matchDateString.trim(), df);
@@ -2187,8 +2195,23 @@ public class DataFetch {
             }
             String awayTeamId = urlParts[pos];  //#todo
 
-            String homeScore = home.select("div.cscore_score").get(0).text();
-            String awayScore = away.select("div.cscore_score").get(0).text();
+           // String homeScore = home.select("div.cscore_score").get(0).text();
+           // String awayScore = away.select("div.cscore_score").get(0).text();
+           
+            String homeScore = home.select("div.cscore_score").text();
+           String awayScore = away.select("div.cscore_score").text();
+           
+           System.out.println(awayScore);
+           
+           if(awayScore.contains("f/o") || homeScore.contains("f/o")){
+               foflag = 1;
+               
+           }
+           
+            
+            
+            
+          
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
@@ -2245,11 +2268,16 @@ public class DataFetch {
             JSONObject j = new JSONObject(json);
             int pageCount = j.getJSONObject("commentary").getInt("pageCount");
 
-            Inning one = null;
-            Inning two = null;
-            List<String> params1 = new ArrayList<>();
-            List<String> params2 = new ArrayList<>();
-            List<String> params = new ArrayList<>();
+            testInning one= null;
+            testInning two= null;
+            testInning three= null;
+            testInning four= null;
+            
+            
+            List<String> params12 = new ArrayList<>();
+            List<String> params21 = new ArrayList<>();
+            List<String> params11 = new ArrayList<>();
+            List<String> params22 = new ArrayList<>();
             for (int inning = 1; inning <= 4; inning++) {
 
                 List<JSONObject> ballList = new ArrayList<>();
@@ -2258,9 +2286,11 @@ public class DataFetch {
                 int firstWicketScore = -1;
                 int sixCount = 0;
                 int afterFifthWicketScore = -1;
+                int fourCount = 0;
 
                 int wicketCount = 0;
-
+                
+           
                 for (int i = 1; i <= pageCount; i++) {
                     String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
                             + seriesNo + "/playbyplay?contentorigin=espn&event="
@@ -2292,27 +2322,79 @@ public class DataFetch {
                         if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
                             firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
                         }
-//                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-//                                fourCount++;
-//                            }
+                        if (jItem.getJSONObject("playType").getInt("id") == 3) {
+                               fourCount++;
+                          }
                         if (jItem.getJSONObject("playType").getInt("id") == 4) {
                             sixCount++;
                         }
+                        
+                        
                     }
                 }
+                
+                
+              
+                
 
-                params.add(String.valueOf(totalRuns));
-                params.add(String.valueOf(firstWicketScore));
-                params.add(String.valueOf(sixCount));
-                params.add(String.valueOf(afterFifthWicketScore));
-
+                
+                if (inning == 1 ) {
+                params11.add(String.valueOf(totalRuns));
+                params11.add(String.valueOf(sixCount));
+                params11.add(String.valueOf(fourCount));
+                params11.add(String.valueOf(firstWicketScore));
+                params11.add(String.valueOf(afterFifthWicketScore));
+                one = new testInning(5, params11);
+                    
+                }
                 if (inning == 2) {
-                    one = new Inning(8, params);
-                    params.clear();
+                params21.add(String.valueOf(totalRuns));
+                params21.add(String.valueOf(sixCount));
+                params21.add(String.valueOf(fourCount));
+                params21.add(String.valueOf(firstWicketScore));
+                params21.add(String.valueOf(afterFifthWicketScore));
+                    two = new testInning(5, params21);
+                    
                 }
-                if (inning == 4) {
-                    two = new Inning(8, params);
+                if (inning == 3 && foflag == 0) {
+                params12.add(String.valueOf(totalRuns));
+                params12.add(String.valueOf(sixCount));
+                params12.add(String.valueOf(fourCount));
+                params12.add(String.valueOf(firstWicketScore));
+                params12.add(String.valueOf(afterFifthWicketScore));
+                    three = new testInning(5, params12);
+                    
                 }
+                if(inning==3 && foflag ==1){
+                params22.add(String.valueOf(totalRuns));
+                params22.add(String.valueOf(sixCount));
+                params22.add(String.valueOf(fourCount));
+                params22.add(String.valueOf(firstWicketScore));
+                params22.add(String.valueOf(afterFifthWicketScore));
+                three = new testInning(5, params22);
+                    
+                
+                }
+                if (inning == 4 && foflag==0) {
+                    params22.add(String.valueOf(totalRuns));
+                params22.add(String.valueOf(sixCount));
+                params22.add(String.valueOf(fourCount));
+                params22.add(String.valueOf(firstWicketScore));
+                params22.add(String.valueOf(afterFifthWicketScore));
+                    four = new testInning(5, params22);
+                    
+                }
+                if(inning ==4 && foflag ==1){
+                    params12.add(String.valueOf(totalRuns));
+                params12.add(String.valueOf(sixCount));
+                params12.add(String.valueOf(fourCount));
+                params12.add(String.valueOf(firstWicketScore));
+                params12.add(String.valueOf(afterFifthWicketScore));
+                    four = new testInning(5, params12);
+
+                }
+
+                
             }
 
             Elements ground = matchPage.getElementsByClass("stadium-details");
@@ -2322,9 +2404,19 @@ public class DataFetch {
 
             Elements winner = matchPage.getElementsByClass("cscore_notes");
             String result = winner.select("span").first().text();
+            
+            if(foflag==0){
+            testMatch m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one,two,three,four, homeScore, awayScore, result, groundName, matchType);
+            db.addtestMatch(m);
+            System.out.println("new test match added");
+            }
+            else if(foflag==1){
+            testMatch m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one,two,four,three, homeScore, awayScore, result, groundName, matchType);
+            db.addtestMatch(m);
+            System.out.println("new test match added");
+                
+            }
 
-            Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
-            db.addMatch(m);
         }
 
         return true;

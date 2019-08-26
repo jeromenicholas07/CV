@@ -24,12 +24,183 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.DataSource;
 import javax.naming.InitialContext;
+import models.*;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.activation.DataSource;
+import javax.naming.InitialContext;
+import models.testInning;
+import models.testMatch;
+
 
 /**
  *
  * @author DELL
  */
 public class CricDB extends BaseDAO {
+    
+    public void addtestMatch(testMatch match) {
+        
+        Connection con = null;
+        Statement s = null;
+        ResultSet r = null;
+        try {
+            con = getConnection();
+            String sq = "select * from APP.TESTMATCH WHERE MATCHID=" + String.valueOf(match.getMatchId());
+            s = con.createStatement();
+            r = s.executeQuery(sq);
+            if (r.next()) {
+                System.out.println("Match " + String.valueOf(match.getMatchId()) + " already exists in DB");
+                return;
+            }
+
+            if (match.getResult().contains("No result")) {
+                System.out.println("Match " + String.valueOf(match.getMatchId()) + " has no result");
+                return;
+            }
+
+            int inn11 = addtestInning(match.getInningOne1());
+
+            int inn21 = addtestInning(match.getInningTwo1());
+            int inn12 = addtestInning(match.getInningOne2());
+
+            int inn22 = addtestInning(match.getInningTwo2());
+
+            String sql = "insert into APP.TESTMATCH (MATCHID, HOMETEAM, AWAYTEAM, MATCHDATE, TOSSWINNER, BATTINGFIRST, ONE1ID, TWO1ID, ONE2ID, TWO2ID, HOMESCORE, AWAYSCORE, RESULT, GROUNDNAME, MATCHTYPE) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, match.getMatchId());
+            ps.setString(2, match.getHomeTeam());
+            ps.setString(3, match.getAwayTeam());
+            ps.setDate(4, match.getMatchDate());
+            ps.setString(5, match.getTossWinner());
+            ps.setString(6, match.getBattingFirst());
+            ps.setInt(7, inn11);
+            ps.setInt(8, inn21);
+            ps.setInt(9, inn12);
+            ps.setInt(10, inn22);
+            
+            ps.setString(11, match.getHomeScore());
+            ps.setString(12, match.getAwayScore());
+
+            ps.setString(13, match.getResult());
+            ps.setString(14, match.getGroundName());
+            ps.setString(15, String.valueOf(match.getMatchType()));
+            ps.execute();
+
+            con.close();
+        } catch (SQLException ex) {
+
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            //todo: show that ur unable to connect to db
+        }finally {
+            try { r.close(); } catch (Exception e) { /* ignored */ }
+            try { s.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+    
+    public int addtestInning(testInning i) {
+        System.out.println(i.getNoOfParams());
+        System.out.println(i.getParams());
+        int id = -1;
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+                
+        try {
+            con = getConnection();
+            ps = null;
+            rs = null;
+            
+            String sql = "insert into APP.TESTINNING (TOTALRUNS, SIXES, FOURS, FIRSTWICKET, RUNS5WICKET) values(?,?,?,?,?)";
+            String generatedColumns[] = {"ID"};
+            ps = con.prepareStatement(sql, generatedColumns);
+            for (int it = 1; it <= i.getNoOfParams(); it++) {
+                    ps.setString(it, i.getParams().get(it-1));
+                }
+                  
+            ps.execute();
+
+            rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+                }
+              
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            //todo: show that ur unable to connect to db
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { ps.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return id;
+    }
+    
+    public List<testMatch> gettestMatch() {
+        List<testMatch> matches = new ArrayList<>();
+
+        Connection con = null;
+        Statement stmt=null;
+        ResultSet rs=null;
+
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.TESTMATCH order by MATCHDATE DESC FETCH FIRST 30 ROWS ONLY";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Date matchDate = rs.getDate("matchdate");
+                String tossWinner = rs.getString("tosswinner");
+                String battingFirst = rs.getString("battingfirst");
+                int one1 = rs.getInt("one1id");
+                int two1 = rs.getInt("two1id");
+                int one2 = rs.getInt("one2id");
+                int two2 = rs.getInt("two2id");
+                String homeScore = rs.getString("homescore");
+                String awayscore = rs.getString("awayscore");
+                String result = rs.getString("result");
+                String groundName = rs.getString("groundname");
+                int matchType = rs.getInt("matchtype");
+
+                testInning inningOne1 = gettestInning(one1);
+                testInning inningTwo1 = gettestInning(two1);
+                testInning inningOne2 = gettestInning(one2);
+                testInning inningTwo2 = gettestInning(two2);
+
+                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType);
+                matches.add(m);
+            }
+
+            con.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return matches;
+    }
     
     public List<Match> getHth(int matchType, String A, String B){
         List<Match> matches = new ArrayList<>();
@@ -184,7 +355,60 @@ public class CricDB extends BaseDAO {
         */
         
         
+        try {
+            String sql = "create table \"APP\".TESTMATCH\n"
+                    + "(\n"
+                    + "	MATCHID INTEGER default -1 not null primary key,\n"
+                    + "	HOMETEAM VARCHAR(120) not null,\n"
+                    + "	AWAYTEAM VARCHAR(120) not null,\n"
+                    + "	MATCHDATE DATE,\n"
+                    + "	TOSSWINNER VARCHAR(120) not null,\n"
+                    + "	BATTINGFIRST VARCHAR(120) not null,\n"
+                    + "	ONE1ID INTEGER not null,\n"
+                    + "	TWO1ID INTEGER not null,\n"
+                    + "	ONE2ID INTEGER not null,\n"
+                    + "	TWO2ID INTEGER not null,\n"
+                    + "	HOMESCORE VARCHAR(120) not null,\n"
+                    + "	AWAYSCORE VARCHAR(120) not null,\n"
+                    + "	RESULT VARCHAR(120),\n"
+                    + "	GROUNDNAME VARCHAR(120),\n"
+                    + "	MATCHTYPE INTEGER\n"
+                    + ")";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
         
+        try {
+            String sql = "create table \"APP\".TESTINNING\n"
+                    + "(\n"
+                    + "	ID INTEGER GENERATED ALWAYS AS IDENTITY not null primary key,\n"
+                    + "	TOTALRUNS VARCHAR(20),\n"
+                    + "	SIXES VARCHAR(20),\n"
+                    + "	FOURS VARCHAR(20),\n"
+                    + "	FIRSTWICKET VARCHAR(20),\n"
+                    + "	RUNS5WICKET VARCHAR(20),\n"
+                    + ")";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
         
         
         
@@ -368,6 +592,73 @@ public class CricDB extends BaseDAO {
             try { con.close(); } catch (Exception e) {  }
         }
 
+    }
+    
+    public boolean checktestMatchEntry(int matchId) {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            String sql = "SELECT * FROM APP.TESTMATCH WHERE MATCHID=" + String.valueOf(matchId);
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                con.close();
+                return true;
+            }
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return false;
+    }
+    
+    public testInning gettestInning(int id) {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        testInning inning = null;
+
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.TESTINNING where id = " + id + "";
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                int inningId = rs.getInt("id");
+                int totalruns = rs.getInt("totalruns");
+                int sixes = rs.getInt("sixes");
+                int fours = rs.getInt("fours");
+                int firstwicket = rs.getInt("firstwicket");
+                int runs5wicket = rs.getInt("runs5wicket");
+
+                //for (int i = 1; i <= noOfParams; i++) {
+                //    params.add(rs.getString("param" + i));
+                //}
+
+                inning = new testInning(inningId, totalruns, sixes, fours, firstwicket,runs5wicket);
+
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return inning;
     }
 
     public List<String> getHeaders(int matchType) {
