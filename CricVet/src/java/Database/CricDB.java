@@ -138,6 +138,60 @@ public class CricDB extends BaseDAO {
         ResultSet rs = null;
         
         
+        
+        /*
+        try {
+            String sql = "drop table \"APP\".HEADERS";
+            con = getConnection();
+            stmt = con.createStatement();
+            System.out.println("Dropping headers");
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        try {
+            String sql = "drop table \"APP\".INNINGS";
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        try {
+            String sql = "drop table \"APP\".MATCHES";
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        
+        */
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
         try {
             String sql = "create table \"APP\".HEADERS\n"
@@ -161,9 +215,9 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
         }
 
         try {
@@ -191,9 +245,9 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
         }
 
         try {
@@ -218,9 +272,9 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) { }
         }
 
         try {
@@ -239,9 +293,9 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
         }
         
         
@@ -256,9 +310,9 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
         }
         
         try {
@@ -272,9 +326,9 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
         }
 
         try {
@@ -288,9 +342,9 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
         }
         
         try {
@@ -309,10 +363,11 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
         }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
         }
+
     }
 
     public List<String> getHeaders(int matchType) {
@@ -671,14 +726,16 @@ public class CricDB extends BaseDAO {
         List<Match> matches = new ArrayList<>();
 
         Connection con = null;
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         ResultSet rs = null;
 
         try {
             con = getConnection();
-            String sql = "select * from APP.MATCHES where groundname = '" + groundName + "' AND MATCHTYPE = " + matchType + " order by MATCHDATE DESC";
-            stmt = con.createStatement();
-            rs = stmt.executeQuery(sql);
+            String sql = "select * from APP.MATCHES where groundname = ? AND MATCHTYPE = ? order by MATCHDATE DESC";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, groundName);
+            stmt.setInt(2, matchType);
+            rs = stmt.executeQuery();
 
             while (rs.next()) {
                 int matchId = rs.getInt("matchid");

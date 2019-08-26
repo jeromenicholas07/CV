@@ -99,6 +99,8 @@ public class DataFetch {
                 matchLinks.add(matchLink);
             }
         }
+        
+        MATCHLABEL:
         for (String matchLink : matchLinks) {
 
             int mPos = 0;
@@ -294,6 +296,13 @@ public class DataFetch {
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
+                        System.out.println("it:"+it + " url: " + currentPageUrl);
+                        if(jItem.getJSONObject("playType").getInt("id") == 0){
+                            
+                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
+                            continue MATCHLABEL;
+                        }
+                        
                         ballList.add(jItem);
                         //                        out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
                         //                        out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
@@ -310,7 +319,7 @@ public class DataFetch {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
 
-                        if (jItem.getJSONObject("over").getInt("unique") == 15 && lastFlag == -1) {
+                        if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
                             if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
@@ -360,6 +369,9 @@ public class DataFetch {
 
             Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
             db.addMatch(m);
+            
+            skipAndConti:
+            ;
         }
         return true;
     }
@@ -393,6 +405,7 @@ public class DataFetch {
             }
         }
 
+        MATCHLABEL:
         for (String matchLink : matchLinks) {
 
             int mPos = 0;
@@ -586,6 +599,11 @@ public class DataFetch {
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
+                        if(jItem.getJSONObject("playType").getInt("id") == 0){
+                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
+                            continue MATCHLABEL;
+                        }
+                        
                         ballList.add(jItem);
                         //                        out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
                         //                        out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
@@ -602,7 +620,7 @@ public class DataFetch {
                             lastTenOverScore += jItem.getInt("scoreValue");
                         }
 
-                        if (jItem.getJSONObject("over").getInt("unique") >= 40 && lastFlag == -1) {
+                        if (jItem.getJSONObject("over").getFloat("unique") == 40.01 && lastFlag == -1) {
                             if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
@@ -687,6 +705,7 @@ public class DataFetch {
             }
         }
 
+        MATCHLABEL:
         for (String matchLink : matchLinks) {
 
             int mPos = 0;
@@ -864,6 +883,11 @@ public class DataFetch {
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
+                        if(jItem.getJSONObject("playType").getInt("id") == 0){
+                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
+                            continue MATCHLABEL;
+                        }
+                        
                         ballList.add(jItem);
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
@@ -876,7 +900,7 @@ public class DataFetch {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
 
-                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                        if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
                             if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
@@ -961,6 +985,7 @@ public class DataFetch {
             }
         }
 
+        MATCHLABEL:
         for (String matchLink : matchLinks) {
             int mPos = 0;
             String[] mParts = matchLink.split("/");
@@ -1137,6 +1162,10 @@ public class DataFetch {
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
+                        if(jItem.getJSONObject("playType").getInt("id") == 0){
+                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
+                            continue MATCHLABEL;
+                        }
                         ballList.add(jItem);
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
@@ -1149,7 +1178,7 @@ public class DataFetch {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
 
-                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                        if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
                             if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
@@ -1234,6 +1263,7 @@ public class DataFetch {
             }
         }
 
+        MATCHLABEL:
         for (String matchLink : matchLinks) {
 
             int mPos = 0;
@@ -1411,6 +1441,11 @@ public class DataFetch {
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
+                        if(jItem.getJSONObject("playType").getInt("id") == 0){
+                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
+                            continue MATCHLABEL;
+                        }
+                        
                         ballList.add(jItem);
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
@@ -1423,7 +1458,7 @@ public class DataFetch {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
 
-                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                        if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
                             if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
@@ -1510,6 +1545,7 @@ public class DataFetch {
             }
         }
 
+        MATCHLABEL:
         for (String matchLink : matchLinks) {
             int mPos = 0;
             String[] mParts = matchLink.split("/");
@@ -1686,6 +1722,10 @@ public class DataFetch {
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
+                        if(jItem.getJSONObject("playType").getInt("id") == 0){
+                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
+                            continue MATCHLABEL;
+                        }
                         ballList.add(jItem);
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
@@ -1698,7 +1738,7 @@ public class DataFetch {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
 
-                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                        if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
                             if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
@@ -1785,6 +1825,7 @@ public class DataFetch {
             }
         }
 
+        MATCHLABEL:
         for (String matchLink : matchLinks) {
             int mPos = 0;
             String[] mParts = matchLink.split("/");
@@ -1961,6 +2002,10 @@ public class DataFetch {
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
+                        if(jItem.getJSONObject("playType").getInt("id") == 0){
+                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
+                            continue MATCHLABEL;
+                        }
                         ballList.add(jItem);
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
@@ -1974,7 +2019,7 @@ public class DataFetch {
                             lastFiveOverScore += jItem.getInt("scoreValue");
                         }
 
-                        if (jItem.getJSONObject("over").getInt("unique") >= 15 && lastFlag == -1) {
+                        if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
                             if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
                                 lastFlag = 1;
                             }
