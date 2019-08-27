@@ -38,6 +38,14 @@ public class LoadAll extends HttpServlet {
             CricDB db = new CricDB();
 
             db.initDB();
+            
+            out.print("<h1>Loading Test data");
+            if (!df.loadTestData()) {
+                out.print("<h3>Error Loading Test matches..Try again");
+            } else {
+                alertInternet(out);
+                out.print("<h3>TEST Loaded successfully");
+            }
 
             out.print("<h1>Loading IPL data");
             if (!df.loadIPLData()) {

@@ -395,7 +395,7 @@ public class CricDB extends BaseDAO {
                     + "	SIXES VARCHAR(20),\n"
                     + "	FOURS VARCHAR(20),\n"
                     + "	FIRSTWICKET VARCHAR(20),\n"
-                    + "	RUNS5WICKET VARCHAR(20),\n"
+                    + "	RUNS5WICKET VARCHAR(20)\n"
                     + ")";
 
             con = getConnection();

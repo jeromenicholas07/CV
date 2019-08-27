@@ -2134,6 +2134,7 @@ public class DataFetch {
             String url = baseUrl + matchLink;
 
             Document matchPage;
+            System.out.println("try test0 :"+url);
             try {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
@@ -2297,6 +2298,7 @@ public class DataFetch {
                             + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
 
                     String body;
+                    System.out.println("trying test :" + currentPageUrl);
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
