@@ -36,11 +36,19 @@ public class getTeams extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             
             int matchType = Integer.parseInt(request.getParameter("matchType"));
-//            System.out.println("mt : " + matchType);
+            System.out.println("mt : " + matchType);
             CricDB db = new CricDB();
+            String json;
             
-            String json = new Gson().toJson(db.getTeamsList(matchType));
-//            System.out.println(json);
+            if(matchType ==1){
+                 json = new Gson().toJson(db.getTestTeamsList());
+                 
+            }
+            
+            else{
+                 json = new Gson().toJson(db.getTeamsList(matchType));
+            }
+            System.out.println(json);
             
             response.setContentType("application/json");
             response.getWriter().write(json);

@@ -202,6 +202,59 @@ public class CricDB extends BaseDAO {
         return matches;
     }
     
+    public List<testMatch> getteamtestMatch(String teamName) {
+        List<testMatch> matches = new ArrayList<>();
+
+        Connection con = null;
+        Statement stmt=null;
+        ResultSet rs=null;
+
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.TESTMATCH where (hometeam='" + teamName + "' OR awayteam='" + teamName + "') order by MATCHDATE DESC FETCH FIRST 30 ROWS ONLY";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Date matchDate = rs.getDate("matchdate");
+                String tossWinner = rs.getString("tosswinner");
+                String battingFirst = rs.getString("battingfirst");
+                int one1 = rs.getInt("one1id");
+                int two1 = rs.getInt("two1id");
+                int one2 = rs.getInt("one2id");
+                int two2 = rs.getInt("two2id");
+                String homeScore = rs.getString("homescore");
+                String awayscore = rs.getString("awayscore");
+                String result = rs.getString("result");
+                String groundName = rs.getString("groundname");
+                int matchType = rs.getInt("matchtype");
+
+                testInning inningOne1 = gettestInning(one1);
+                testInning inningTwo1 = gettestInning(two1);
+                testInning inningOne2 = gettestInning(one2);
+                testInning inningTwo2 = gettestInning(two2);
+
+                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType);
+                matches.add(m);
+            }
+
+            con.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return matches;
+    }
+    
     public List<Match> getHth(int matchType, String A, String B){
         List<Match> matches = new ArrayList<>();
 
@@ -1130,6 +1183,48 @@ public class CricDB extends BaseDAO {
         }
         return teams;
     }
+    
+    public List<String> getTestTeamsList() {
+        int matchType = 1;
+        List<String> teams = new ArrayList<>();
+
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            String sql = "select distinct HOMETEAM from APP.TESTMATCH where MATCHTYPE = " + matchType + " "
+                    + "union select distinct AWAYTEAM from APP.TESTMATCH where MATCHTYPE = " + matchType + "";
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+//                ResultSetMetaData md = rs.getMetaData();
+//                int colCount = md.getColumnCount();
+//
+//                for (int i = 1; i <= colCount; i++) {
+//                    String col_name = md.getColumnName(i);
+//                    System.out.println("col:"+col_name);
+//                }
+
+                String tName = rs.getString("1");
+                if (!teams.contains(tName)) {
+                    teams.add(tName);
+                }
+            }
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return teams;
+    }
+    
+    
 //    BaseDAO db = new BaseDAO();;
 
 }
