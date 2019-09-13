@@ -304,6 +304,13 @@ public class DataFetch {
                         }
                         
                         ballList.add(jItem);
+                        try{
+                            jItem.getJSONObject("over").getInt("unique");
+                        }
+                        catch(JSONException ex){
+                            System.out.println("No unique found in number " + (it+1) + " " + currentPageUrl);
+                            continue;
+                        }
                         //                        out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
                         //                        out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
 
@@ -605,6 +612,13 @@ public class DataFetch {
                         }
                         
                         ballList.add(jItem);
+                        try{
+                            jItem.getJSONObject("over").getInt("unique");
+                        }
+                        catch(JSONException ex){
+                            System.out.println("No unique found in number " + (it+1) + " " + currentPageUrl);
+                            continue;
+                        }
                         //                        out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
                         //                        out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
 
@@ -889,6 +903,13 @@ public class DataFetch {
                         }
                         
                         ballList.add(jItem);
+                        try{
+                            jItem.getJSONObject("over").getInt("unique");
+                        }
+                        catch(JSONException ex){
+                            System.out.println("No unique found in number " + (it+1) + " " + currentPageUrl);
+                            continue;
+                        }
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
                             firstOverScore += jItem.getInt("scoreValue");
@@ -1167,6 +1188,13 @@ public class DataFetch {
                             continue MATCHLABEL;
                         }
                         ballList.add(jItem);
+                        try{
+                            jItem.getJSONObject("over").getInt("unique");
+                        }
+                        catch(JSONException ex){
+                            System.out.println("No unique found in number " + (it+1) + " " + currentPageUrl);
+                            continue;
+                        }
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
                             firstOverScore += jItem.getInt("scoreValue");
@@ -1447,6 +1475,13 @@ public class DataFetch {
                         }
                         
                         ballList.add(jItem);
+                        try{
+                            jItem.getJSONObject("over").getInt("unique");
+                        }
+                        catch(JSONException ex){
+                            System.out.println("No unique found in number " + (it+1) + " " + currentPageUrl);
+                            continue;
+                        }
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
                             firstOverScore += jItem.getInt("scoreValue");
@@ -1727,6 +1762,13 @@ public class DataFetch {
                             continue MATCHLABEL;
                         }
                         ballList.add(jItem);
+                        try{
+                            jItem.getJSONObject("over").getInt("unique");
+                        }
+                        catch(JSONException ex){
+                            System.out.println("No unique found in number " + (it+1) + " " + currentPageUrl);
+                            continue;
+                        }
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
                             firstOverScore += jItem.getInt("scoreValue");
@@ -2007,6 +2049,13 @@ public class DataFetch {
                             continue MATCHLABEL;
                         }
                         ballList.add(jItem);
+                        try{
+                            jItem.getJSONObject("over").getInt("unique");
+                        }
+                        catch(JSONException ex){
+                            System.out.println("No unique found in number " + (it+1) + " " + currentPageUrl);
+                            continue;
+                        }
 
                         if (jItem.getJSONObject("over").getInt("unique") == 0) {
                             firstOverScore += jItem.getInt("scoreValue");
