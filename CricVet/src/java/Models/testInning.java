@@ -17,6 +17,8 @@ public class testInning {
     int fours;
     int firstwicket;
     int runs5wicket;
+    String winner;
+
 
     public testInning(int noOfParams, List<String> params) {
         this.noOfParams = noOfParams;
@@ -28,19 +30,20 @@ public class testInning {
         this.params = params;
     }
     
-    public testInning(int inningId,int totalruns,int sixes,int fours,int firstwicket,int runs5wicket) {
+    public testInning(int inningId,int totalruns,int sixes,int fours,int firstwicket,int runs5wicket, String winner) {
         this.inningId = inningId;
         this.totalruns = totalruns;
         this.sixes = sixes;
         this.fours = fours;
         this.firstwicket = firstwicket;
         this.runs5wicket = runs5wicket;
+        this.winner = winner;
     }
     
     
     public int getInningId() {
         return inningId;
-    }
+    }   
     public void setInningId(int inningId) {
         this.inningId = inningId;
     }
@@ -53,8 +56,10 @@ public class testInning {
     }
 
     public List<String> getParams() {
+        
+
         return params;
-    }
+        }
     public void setParams(List<String> params) {
         this.params = params;
     }
@@ -98,6 +103,12 @@ public class testInning {
     public void setRuns5wicket(int runs5wicket) {
         this.runs5wicket = runs5wicket;
     }
-    
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
     
 }

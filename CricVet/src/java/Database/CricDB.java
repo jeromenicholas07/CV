@@ -122,7 +122,7 @@ public class CricDB extends BaseDAO {
             ps = null;
             rs = null;
             
-            String sql = "insert into APP.TESTINNING (TOTALRUNS, SIXES, FOURS, FIRSTWICKET, RUNS5WICKET) values(?,?,?,?,?)";
+            String sql = "insert into APP.TESTINNING (TOTALRUNS, SIXES, FOURS, FIRSTWICKET, RUNS5WICKET,WINNER) values(?,?,?,?,?,?)";
             String generatedColumns[] = {"ID"};
             ps = con.prepareStatement(sql, generatedColumns);
             for (int it = 1; it <= i.getNoOfParams(); it++) {
@@ -148,7 +148,7 @@ public class CricDB extends BaseDAO {
         }
         return id;
     }
-    
+// fetches all test matches
     public List<testMatch> gettestMatch() {
         List<testMatch> matches = new ArrayList<>();
 
@@ -201,7 +201,8 @@ public class CricDB extends BaseDAO {
         }
         return matches;
     }
-    
+
+// fetches all TEAM A's test matches
     public List<testMatch> getteamtestMatch(String teamName) {
         List<testMatch> matches = new ArrayList<>();
 
@@ -261,7 +262,7 @@ public class CricDB extends BaseDAO {
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
-
+       
         try {
             con = getConnection();
 
@@ -289,6 +290,60 @@ public class CricDB extends BaseDAO {
                 Inning inningTwo = getInning(inning2_id);
 
                 Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
+                matches.add(m);
+            }
+
+            con.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return matches;
+    }
+// get team A vs team B HTH
+    public List<testMatch> gettestHth(int matchType, String A, String B){
+        
+        List<testMatch> matches = new ArrayList<>();
+
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+       
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.TESTMATCH where matchtype= " + matchType + " and ((hometeam='" + A + "' AND awayteam='" + B + "') OR (hometeam='" + B + "' AND awayteam='" + A + "')) order by MATCHDATE DESC FETCH FIRST 30 ROWS ONLY";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Date matchDate = rs.getDate("matchdate");
+                String tossWinner = rs.getString("tosswinner");
+                String battingFirst = rs.getString("battingfirst");
+                int one1 = rs.getInt("one1id");
+                int two1 = rs.getInt("two1id");
+                int one2 = rs.getInt("one2id");
+                int two2 = rs.getInt("two2id");
+                String homeScore = rs.getString("homescore");
+                String awayscore = rs.getString("awayscore");
+                String result = rs.getString("result");
+                String groundName = rs.getString("groundname");
+//                int matchType = rs.getInt("matchtype");
+
+                testInning inningOne1 = gettestInning(one1);
+                testInning inningTwo1 = gettestInning(two1);
+                testInning inningOne2 = gettestInning(one2);
+                testInning inningTwo2 = gettestInning(two2);
+
+                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType);
                 matches.add(m);
             }
 
@@ -339,6 +394,60 @@ public class CricDB extends BaseDAO {
 
                 Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
                 matches.add(m);
+            }
+
+            con.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return matches;
+    }
+    
+    public List<testMatch> gettestDB(int matchType, String TeamName) {
+        List<testMatch> matches = new ArrayList<>();
+
+        Connection con = null;
+        Statement stmt=null;
+        ResultSet rs=null;
+
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.TESTMATCH where matchtype= " + matchType + " and (hometeam='" + TeamName + "' OR awayteam='" + TeamName + "') order by MATCHDATE DESC FETCH FIRST 30 ROWS ONLY";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Date matchDate = rs.getDate("matchdate");
+                String tossWinner = rs.getString("tosswinner");
+                String battingFirst = rs.getString("battingfirst");
+                int one1 = rs.getInt("one1id");
+                int two1 = rs.getInt("two1id");
+                int one2 = rs.getInt("one2id");
+                int two2 = rs.getInt("two2id");
+                String homeScore = rs.getString("homescore");
+                String awayscore = rs.getString("awayscore");
+                String result = rs.getString("result");
+                String groundName = rs.getString("groundname");
+//                int matchType = rs.getInt("matchtype");
+
+                testInning inningOne1 = gettestInning(one1);
+                testInning inningTwo1 = gettestInning(two1);
+                testInning inningOne2 = gettestInning(one2);
+                testInning inningTwo2 = gettestInning(two2);
+
+                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType);
+                matches.add(m);
+                
             }
 
             con.close();
@@ -694,12 +803,13 @@ public class CricDB extends BaseDAO {
                 int fours = rs.getInt("fours");
                 int firstwicket = rs.getInt("firstwicket");
                 int runs5wicket = rs.getInt("runs5wicket");
+                String winner = rs.getString("winner");
 
                 //for (int i = 1; i <= noOfParams; i++) {
                 //    params.add(rs.getString("param" + i));
                 //}
 
-                inning = new testInning(inningId, totalruns, sixes, fours, firstwicket,runs5wicket);
+                inning = new testInning(inningId, totalruns, sixes, fours, firstwicket,runs5wicket,winner);
 
             }
 
@@ -733,7 +843,19 @@ public class CricDB extends BaseDAO {
                     headers.add(rs.getString("param" + i));
                 }
             } else if (matchType == 1) {
-                //test
+                String one = "Total Runs";
+                String two = "Sixes";
+                String three = "fours";
+                String four = "Runs before First Wicket";
+                String five = "Runs after 5 Wickets";
+                String six = "winner";
+                headers.add(one);
+                headers.add(two);
+                headers.add(three);
+                headers.add(four);
+                headers.add(five);
+                headers.add(six);
+                
             }
             con.close();
         } catch (SQLException ex) {
@@ -892,6 +1014,158 @@ public class CricDB extends BaseDAO {
         }
         return id;
     }
+// gets a Team's test match if 0 : all teams matches, 1 : team a bats first, 2 : team a bats second
+    public List<testMatch> gettestMatches(String teamName, int matchType, int type){
+        
+        List<testMatch> testmatches = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        switch (type) {
+            case 0:
+
+                try {
+                    con = getConnection();
+                    String sql = "select * from APP.TESTMATCH where (hometeam = '" + teamName + "' OR awayteam = '" + teamName + "' ) order by MATCHDATE DESC";
+
+                    stmt = con.prepareStatement(sql);
+                    rs = stmt.executeQuery();
+
+                    while (rs.next()) {
+                        int matchId = rs.getInt("matchid");
+                        String homeTeam = rs.getString("hometeam");
+                        String awayTeam = rs.getString("awayteam");
+                        Date matchDate = rs.getDate("matchdate");
+                        String tossWinner = rs.getString("tosswinner");
+                        String battingFirst = rs.getString("battingfirst");
+                        int one1 = rs.getInt("one1id");
+                        int two1 = rs.getInt("two1id");
+                        int one2 = rs.getInt("one2id");
+                        int two2 = rs.getInt("two2id");
+                                
+                        String homeScore = rs.getString("homescore");
+                        String awayscore = rs.getString("awayscore");
+                        String result = rs.getString("result");
+                        String groundName = rs.getString("groundname");
+//                int matchType = rs.getInt("matchtype");
+
+                        testInning inningOne1 = gettestInning(one1);
+                        testInning inningTwo1 = gettestInning(two1);
+                        testInning inningOne2 = gettestInning(one2);
+                        testInning inningTwo2 = gettestInning(two2);
+
+                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType);
+                        testmatches.add(m);
+                    }
+
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+                }finally {
+                    try { rs.close(); } catch (Exception e) { /* ignored */ }
+                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
+                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                }
+                break;
+                
+            case 1:
+
+                try {
+                    con = getConnection();
+                    String sql = "select * from APP.TESTMATCH where battingfirst = '" + teamName + "' order by MATCHDATE DESC";
+
+                    stmt = con.prepareStatement(sql);
+                    rs = stmt.executeQuery();
+
+                    while (rs.next()) {
+                        int matchId = rs.getInt("matchid");
+                        String homeTeam = rs.getString("hometeam");
+                        String awayTeam = rs.getString("awayteam");
+                        Date matchDate = rs.getDate("matchdate");
+                        String tossWinner = rs.getString("tosswinner");
+                        String battingFirst = rs.getString("battingfirst");
+                        int one1 = rs.getInt("one1id");
+                        int two1 = rs.getInt("two1id");
+                        int one2 = rs.getInt("one2id");
+                        int two2 = rs.getInt("two2id");
+                        String homeScore = rs.getString("homescore");
+                        String awayscore = rs.getString("awayscore");
+                        String result = rs.getString("result");
+                        String groundName = rs.getString("groundname");
+//                int matchType = rs.getInt("matchtype");
+
+                        testInning inningOne1 = gettestInning(one1);
+                        testInning inningTwo1 = gettestInning(two1);
+                        testInning inningOne2 = gettestInning(one2);
+                        testInning inningTwo2 = gettestInning(two2);
+
+                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType);
+                        testmatches.add(m);
+                    }
+
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+                }finally {
+                    try { rs.close(); } catch (Exception e) { /* ignored */ }
+                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
+                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                }
+                break;
+                
+            case 2:
+
+                try {
+                    con = getConnection();
+                    String sql = "select * from APP.TESTMATCH where ((hometeam = '" + teamName + "' or awayteam = '" + teamName + "') "
+                            + "and matchtype = " + matchType + ") AND NOT battingfirst = '" + teamName + "' order by MATCHDATE DESC";
+
+                    stmt = con.prepareStatement(sql);
+                    rs = stmt.executeQuery();
+
+                    while (rs.next()) {
+                        int matchId = rs.getInt("matchid");
+                        String homeTeam = rs.getString("hometeam");
+                        String awayTeam = rs.getString("awayteam");
+                        Date matchDate = rs.getDate("matchdate");
+                        String tossWinner = rs.getString("tosswinner");
+                        String battingFirst = rs.getString("battingfirst");
+                        int one1 = rs.getInt("one1id");
+                        int two1 = rs.getInt("two1id");
+                        int one2 = rs.getInt("one2id");
+                        int two2 = rs.getInt("two2id");
+                        String homeScore = rs.getString("homescore");
+                        String awayscore = rs.getString("awayscore");
+                        String result = rs.getString("result");
+                        String groundName = rs.getString("groundname");
+//                int matchType = rs.getInt("matchtype");
+
+                        testInning inningOne1 = gettestInning(one1);
+                        testInning inningTwo1 = gettestInning(two1);
+                        testInning inningOne2 = gettestInning(one2);
+                        testInning inningTwo2 = gettestInning(two2);
+
+                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType);
+                        testmatches.add(m);
+                    }
+
+                    con.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+                }finally {
+                    try { rs.close(); } catch (Exception e) { /* ignored */ }
+                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
+                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                }
+                break;
+            default:
+                break;
+            }
+            return testmatches;
+            
+        
+    }
 
     public List<Match> getMatches(String teamName, int matchType, int type) {
 
@@ -899,7 +1173,7 @@ public class CricDB extends BaseDAO {
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-
+        
         switch (type) {
             case 0:
 
@@ -1024,8 +1298,11 @@ public class CricDB extends BaseDAO {
                 break;
             default:
                 break;
-        }
+            }
         return matches;
+        
+        
+        
 
     }
 
@@ -1065,6 +1342,8 @@ public class CricDB extends BaseDAO {
         }
         return inning;
     }
+    
+   
 
     public List<Match> getGroundInfo(String groundName, int matchType) {
         List<Match> matches = new ArrayList<>();
@@ -1114,6 +1393,60 @@ public class CricDB extends BaseDAO {
 
         return matches;
     }
+    
+    public List<testMatch> gettestGroundInfo(String groundName, int matchType) {
+        List<testMatch> testmatches = new ArrayList<>();
+
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            String sql = "select * from APP.TESTMATCH where groundname = ? AND MATCHTYPE = ? order by MATCHDATE DESC";
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, groundName);
+            stmt.setInt(2, matchType);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Date matchDate = rs.getDate("matchdate");
+                String tossWinner = rs.getString("tosswinner");
+                String battingFirst = rs.getString("battingfirst");
+                int one1 = rs.getInt("one1id");
+                int two1 = rs.getInt("two1id");
+                int one2 = rs.getInt("one2id");
+                int two2 = rs.getInt("two2id");
+                String homeScore = rs.getString("homescore");
+                String awayscore = rs.getString("awayscore");
+
+                String result = rs.getString("result");
+//                String groundName = rs.getString("groundname");
+
+                testInning inningOne1 = gettestInning(one1);
+                testInning inningTwo1 = gettestInning(two1);
+                testInning inningOne2 = gettestInning(one2);
+                testInning inningTwo2 = gettestInning(two2);
+
+                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType);
+                testmatches.add(m);
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+
+        return testmatches;
+    }
+
 
     public List<String> getGroundList(int matchType) {
         List<String> grounds = new ArrayList<String>();
@@ -1121,10 +1454,16 @@ public class CricDB extends BaseDAO {
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
+        String sql;
 
         try {
             con = getConnection();
-            String sql = "select distinct groundname from APP.MATCHES where MATCHTYPE = " + matchType + "";
+            if(matchType == 1){
+             sql = "select distinct groundname from APP.TESTMATCH";
+            }
+            else{
+                sql = "select distinct groundname from APP.MATCHES where MATCHTYPE = " + matchType + "";
+            }
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
 
