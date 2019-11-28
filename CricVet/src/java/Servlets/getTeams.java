@@ -35,7 +35,7 @@ public class getTeams extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             
-            int matchType = Integer.parseInt(request.getParameter("matchType"));
+            int matchType = Integer.parseInt(request.getParameter("matchType"));          
             System.out.println("mt : " + matchType);
             CricDB db = new CricDB();
             String json;

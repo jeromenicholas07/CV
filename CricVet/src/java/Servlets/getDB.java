@@ -48,39 +48,20 @@ public class getDB extends HttpServlet {
             
             if(matchType == 1){
                 
-                int i;
-                db.initDB();
+                    int i;
+                    db.initDB();
 
-            
-            //String teamOne = "England";//request.getParameter("teamName1");
-          
-            
+                    List<testMatch> matches = new ArrayList<>();
 
-                List<testMatch> matches = new ArrayList<>();
-                List<testInning> inningone1 = new ArrayList<>();
-                List<testInning> inningtwo1 = new ArrayList<>();
-                List<testInning> inningone2 = new ArrayList<>();
-                List<testInning> inningtwo2 = new ArrayList<>();
+                    matches = db.getteamtestMatch(teamOne);
+           
 
-                matches = db.getteamtestMatch(teamOne);
-            /*for(i=0;i<matches.size();i++){
-                inningone1.add(matches.get(i).getInningOne1());
-                
-                
-            }*/
-
-                request.setAttribute("team", teamOne);
+                    request.setAttribute("team", teamOne);
             
-                request.setAttribute("matches", matches);
+                    request.setAttribute("matches", matches);
             
-            
-            System.out.println(matches);
-                
-            
-            
-
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/showtest.jsp");
-                dispatcher.forward(request, response);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/showtest.jsp");
+                    dispatcher.forward(request, response);
             }
             
             else{
