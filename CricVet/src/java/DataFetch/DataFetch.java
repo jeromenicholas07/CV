@@ -36,12 +36,24 @@ import views.LoadODI;
 import models.*;
 import models.testInning;
 import models.testMatch;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  *
  * @author DELL
  */
 public class DataFetch {
+    
+    Map<String,String> unloaded = new HashMap<>();
+    
+    public Map<String, String> getUnloaded(){
+        return unloaded;
+    }
+    
+    public void clearUnloaded(){
+        unloaded.clear();
+    }
 
     static {
         TrustManager[] trustAllCerts;
@@ -75,6 +87,7 @@ public class DataFetch {
     CricDB db = new CricDB();
 
     public boolean loadIPLData() {
+        boolean ret = true;
 
         String baseUrl = "http://stats.espncricinfo.com/";
         int matchType = 117;
@@ -119,6 +132,7 @@ public class DataFetch {
 
             if (db.checkMatchEntry(mId)) {
                 System.out.println("Match " + mId + " exists");
+                ret = false;
                 continue;
             }
 
@@ -129,7 +143,9 @@ public class DataFetch {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
             String matchUrl = matchPage.baseUri();
             String[] splitUrl = matchUrl.split("/");
@@ -150,6 +166,7 @@ public class DataFetch {
             }
             if (matchDate.equals(LocalDate.now().minusDays(1))) {
                 System.out.println("Match " + mId + " today.");
+                ret = false;
                 continue;
             }
 
@@ -186,7 +203,9 @@ public class DataFetch {
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                continue;
+                unloaded.put( "LIVE:"+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
 
             Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
@@ -249,7 +268,10 @@ public class DataFetch {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    return false;
+                    unloaded.put( ""+mId , commentaryUrl);
+                    ret = false;
+                    continue MATCHLABEL;
+                    
                 }
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
@@ -274,36 +296,29 @@ public class DataFetch {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        return false;
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
                     }
 
                     JSONObject jObj = new JSONObject();
-                    for (int x = 0; x < 7; x++) {
+                    
                         try {
                             jObj = new JSONObject(body);
-                            break;
+                            
                         } catch (JSONException je) {
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            je.printStackTrace();
-
-                            if (x == 6) {
-                                return false;
-                            }
+                            unloaded.put( ""+mId , currentPageUrl);
+                            ret = false;
+                            continue MATCHLABEL;
                         }
-                    }
+                    
                     //                    out.print("<td> " + i + "(" + jObj.getJSONObject("commentary").getInt("pageIndex")+")");
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
                         System.out.println("it:"+it + " url: " + currentPageUrl);
                         if(jItem.getJSONObject("playType").getInt("id") == 0){
-                            
-                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
-                            continue MATCHLABEL;
+                            continue;
                         }
                         
                         ballList.add(jItem);
@@ -376,10 +391,12 @@ public class DataFetch {
             skipAndConti:
             ;
         }
-        return true;
+        return ret;
     }
 
     public boolean loadODIData() {
+        boolean ret = true;
+        
         int matchType = 2;
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
@@ -434,7 +451,9 @@ public class DataFetch {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
             String matchUrl = matchPage.baseUri();
             String[] splitUrl = matchUrl.split("/");
@@ -492,7 +511,9 @@ public class DataFetch {
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                continue;
+                unloaded.put( "LIVE:"+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
 
             Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
@@ -556,7 +577,9 @@ public class DataFetch {
                 } catch (Exception ex) {
                     System.out.println(commentaryUrl);
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    return false;
+                    unloaded.put( ""+mId , commentaryUrl);
+                    ret = false;
+                    continue MATCHLABEL;
                 }
                 System.out.println(commentaryUrl);
 
@@ -594,17 +617,25 @@ public class DataFetch {
                     } catch (Exception ex) {
                         System.out.println(currentPageUrl);
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        return false;
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
                     }
                     System.out.println(currentPageUrl);
-                    JSONObject jObj = new JSONObject(body);
+                    JSONObject jObj = new JSONObject();
+                    try{
+                        jObj = new JSONObject(body);
+                    }catch(JSONException je){
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
                     //                    out.print("<td> " + i + "(" + jObj.getJSONObject("commentary").getInt("pageIndex")+")");
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
                         if(jItem.getJSONObject("playType").getInt("id") == 0){
-                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
-                            continue MATCHLABEL;
+                            continue;
                         }
                         
                         ballList.add(jItem);
@@ -677,10 +708,12 @@ public class DataFetch {
             db.addMatch(m);
         }
 
-        return true;
+        return ret;
     }
 
     public boolean loadBBLData() {
+        boolean ret = true;
+        
         int matchType = 158;
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
@@ -734,7 +767,9 @@ public class DataFetch {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
             String matchUrl = matchPage.baseUri();
             String[] splitUrl = matchUrl.split("/");
@@ -792,7 +827,9 @@ public class DataFetch {
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                continue;
+                unloaded.put( "LIVE:"+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
 
             Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
@@ -855,7 +892,9 @@ public class DataFetch {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    return false;
+                    unloaded.put( ""+mId , commentaryUrl);
+                    ret = false;
+                    continue MATCHLABEL;
                 }
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
@@ -880,15 +919,24 @@ public class DataFetch {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        return false;
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
                     }
-                    JSONObject jObj = new JSONObject(body);
+                    
+                    JSONObject jObj = new JSONObject();
+                    try{
+                        jObj = new JSONObject(body);
+                    }catch(JSONException je){
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
                         if(jItem.getJSONObject("playType").getInt("id") == 0){
-                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
-                            continue MATCHLABEL;
+                            continue;
                         }
                         
                         ballList.add(jItem);
@@ -957,10 +1005,12 @@ public class DataFetch {
             db.addMatch(m);
         }
 
-        return true;
+        return ret;
     }
 
     public boolean loadBPLData() {
+        boolean ret = true;
+        
         int matchType = 159;
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
@@ -1013,7 +1063,9 @@ public class DataFetch {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
             String matchUrl = matchPage.baseUri();
             String[] splitUrl = matchUrl.split("/");
@@ -1071,7 +1123,9 @@ public class DataFetch {
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                continue;
+                unloaded.put( "LIVE:"+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
 
             Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
@@ -1134,7 +1188,9 @@ public class DataFetch {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    return false;
+                    unloaded.put( ""+mId , commentaryUrl);
+                    ret = false;
+                    continue MATCHLABEL;
                 }
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
@@ -1159,15 +1215,24 @@ public class DataFetch {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        return false;
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
                     }
-                    JSONObject jObj = new JSONObject(body);
+                    
+                    JSONObject jObj = new JSONObject();
+                    try{
+                        jObj = new JSONObject(body);
+                    }catch(JSONException je){
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
                         if(jItem.getJSONObject("playType").getInt("id") == 0){
-                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
-                            continue MATCHLABEL;
+                            continue;
                         }
                         ballList.add(jItem);
 
@@ -1234,10 +1299,11 @@ public class DataFetch {
             db.addMatch(m);
         }
 
-        return true;
+        return ret;
     }
 
     public boolean loadCPLData() {
+        boolean ret = true;
 
         int matchType = 748;
         String baseUrl = "http://stats.espncricinfo.com/";
@@ -1292,7 +1358,9 @@ public class DataFetch {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
             String matchUrl = matchPage.baseUri();
             String[] splitUrl = matchUrl.split("/");
@@ -1350,7 +1418,9 @@ public class DataFetch {
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                continue;
+                unloaded.put( "LIVE:"+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
 
             Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
@@ -1413,7 +1483,9 @@ public class DataFetch {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    return false;
+                    unloaded.put( ""+mId , commentaryUrl);
+                    ret = false;
+                    continue MATCHLABEL;
                 }
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
@@ -1437,16 +1509,25 @@ public class DataFetch {
                     try {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        return false;
+                        System.out.println("Missing json for : " + currentPageUrl);
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
                     }
-                    JSONObject jObj = new JSONObject(body);
+                    
+                    JSONObject jObj = new JSONObject();
+                    try{
+                        jObj = new JSONObject(body);
+                    }catch(JSONException je){
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
                         if(jItem.getJSONObject("playType").getInt("id") == 0){
-                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
-                            continue MATCHLABEL;
+                            continue;
                         }
                         
                         ballList.add(jItem);
@@ -1515,10 +1596,13 @@ public class DataFetch {
             db.addMatch(m);
 
         }
-        return true;
+        return ret;
     }
 
     public boolean loadPSLData() {
+        
+        boolean ret = true;
+        
         int matchType = 205;
 
         String baseUrl = "http://stats.espncricinfo.com/";
@@ -1573,7 +1657,9 @@ public class DataFetch {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
             String matchUrl = matchPage.baseUri();
             String[] splitUrl = matchUrl.split("/");
@@ -1631,7 +1717,9 @@ public class DataFetch {
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                continue;
+                unloaded.put( "LIVE:"+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
 
             Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
@@ -1694,7 +1782,9 @@ public class DataFetch {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    return false;
+                    unloaded.put( ""+mId , commentaryUrl);
+                    ret = false;
+                    continue MATCHLABEL;
                 }
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
@@ -1719,15 +1809,24 @@ public class DataFetch {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        return false;
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
                     }
-                    JSONObject jObj = new JSONObject(body);
+                    
+                    JSONObject jObj = new JSONObject();
+                    try{
+                        jObj = new JSONObject(body);
+                    }catch(JSONException je){
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
                         if(jItem.getJSONObject("playType").getInt("id") == 0){
-                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
-                            continue MATCHLABEL;
+                            continue;
                         }
                         ballList.add(jItem);
 
@@ -1796,10 +1895,11 @@ public class DataFetch {
 
         }
 
-        return true;
+        return ret;
     }
 
     public boolean loadT20IData() {
+        boolean ret = true;
 
         int matchType = 3;
         String baseUrl = "http://stats.espncricinfo.com/";
@@ -1853,7 +1953,9 @@ public class DataFetch {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
             String matchUrl = matchPage.baseUri();
             String[] splitUrl = matchUrl.split("/");
@@ -1911,7 +2013,9 @@ public class DataFetch {
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                continue;
+                unloaded.put( "LIVE:"+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
 
             Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
@@ -1974,7 +2078,9 @@ public class DataFetch {
                     json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    return false;
+                    unloaded.put( ""+mId , commentaryUrl);
+                    ret = false;
+                    continue MATCHLABEL;
                 }
                 JSONObject j = new JSONObject(json);
                 int pageCount = j.getJSONObject("commentary").getInt("pageCount");
@@ -1999,15 +2105,24 @@ public class DataFetch {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        return false;
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
                     }
-                    JSONObject jObj = new JSONObject(body);
+                    
+                    JSONObject jObj = new JSONObject();
+                    try{
+                        jObj = new JSONObject(body);
+                    }catch(JSONException je){
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
                         if(jItem.getJSONObject("playType").getInt("id") == 0){
-                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
-                            continue MATCHLABEL;
+                            continue;
                         }
                         ballList.add(jItem);
 
@@ -2076,12 +2191,14 @@ public class DataFetch {
             db.addMatch(m);
         }
 
-        return true;
+        return ret;
     }
 
     
     
     public boolean loadTestData() {
+        boolean ret = true;
+        
         int matchType = 1;
         
 
@@ -2089,7 +2206,7 @@ public class DataFetch {
         List<String> matchLinks = new ArrayList<>();
 
         int year = Calendar.getInstance().get(Calendar.YEAR);
-        for (int y = year; y >= yr; y--) {
+        for (int y = year; y >= 2016; y--) {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=1;id=" + y + ";type=year").get();
@@ -2140,7 +2257,9 @@ public class DataFetch {
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
             String matchUrl = matchPage.baseUri();
             String[] splitUrl = matchUrl.split("/");
@@ -2217,7 +2336,9 @@ public class DataFetch {
 
             Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
             if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                continue;
+                unloaded.put( "LIVE:"+mId , url);
+                ret = false;
+                continue MATCHLABEL;
             }
 
             Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
@@ -2281,7 +2402,9 @@ public class DataFetch {
                 json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                unloaded.put( ""+mId , commentaryUrl);
+                ret = false;
+                continue MATCHLABEL;
             }
             JSONObject j = new JSONObject(json);
             int pageCount = j.getJSONObject("commentary").getInt("pageCount");
@@ -2318,34 +2441,26 @@ public class DataFetch {
                         body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        return false;
+                        System.out.println("misiing JSON : " + currentPageUrl);
+                        unloaded.put( ""+mId , currentPageUrl);
+                        ret = false;
+                        continue MATCHLABEL;
                     }
                     JSONObject jObj = new JSONObject();
-                    for (int x = 0; x < 7; x++) {
                         try {
                             jObj = new JSONObject(body);
-                            break;
                         } catch (JSONException je) {
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            je.printStackTrace();
-
-                            if (x == 6) {
-                                return false;
-                            }
+                            unloaded.put( "CORRUPT:"+mId , currentPageUrl);
+                            ret = false;
+                            continue MATCHLABEL;
                         }
-                    }
+                    
 
                     for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
                         JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
                         System.out.println("it:"+it + " url: " + currentPageUrl);
                         if(jItem.getJSONObject("playType").getInt("id") == 0){
-                            
-                            System.out.println("SkipnConti it:"+it + " url: " + currentPageUrl);
-                            continue MATCHLABEL;
+                            continue;
                         }
                         ballList.add(jItem);
                         
@@ -2476,6 +2591,6 @@ public class DataFetch {
 
         }
 
-        return true;
+        return ret;
     }
 }

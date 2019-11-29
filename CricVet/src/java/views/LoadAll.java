@@ -9,6 +9,7 @@ import Database.CricDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import DataFetch.DataFetch;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,12 +39,13 @@ public class LoadAll extends HttpServlet {
             CricDB db = new CricDB();
 
             db.initDB();
+            df.clearUnloaded();
             
             out.print("<h1>Loading Test data");
             if (!df.loadTestData()) {
                 out.print("<h3>Error Loading Test matches..Try again");
             } else {
-                alertInternet(out);
+                
                 out.print("<h3>TEST Loaded successfully");
             }
 
@@ -51,7 +53,7 @@ public class LoadAll extends HttpServlet {
             if (!df.loadIPLData()) {
                 out.print("<h3>Error Loading IPL..Try again");
             } else {
-                alertInternet(out);
+                
                 out.print("<h3>IPL Loaded successfully");
             }
 
@@ -59,7 +61,7 @@ public class LoadAll extends HttpServlet {
             if (!df.loadODIData()) {
                 out.print("<h3>Error Loading ODI..Try again");
             } else {
-                alertInternet(out);
+                
                 out.print("<h3>ODI Loaded successfully");
             }
 
@@ -67,7 +69,7 @@ public class LoadAll extends HttpServlet {
             if (!df.loadT20IData()) {
                 out.print("<h3>Error Loading T20I..Try again");
             } else {
-                alertInternet(out);
+                
                 out.print("<h3>T20I Loaded successfully");
             }
 
@@ -75,7 +77,7 @@ public class LoadAll extends HttpServlet {
             if (!df.loadBBLData()) {
                 out.print("<h3>Error Loading BBL..Try again");
             } else {
-                alertInternet(out);
+                
                 out.print("<h3>BBL Loaded successfully");
             }
 
@@ -83,7 +85,7 @@ public class LoadAll extends HttpServlet {
             if (!df.loadBPLData()) {
                 out.print("<h3>Error Loading BPL..Try again");
             } else {
-                alertInternet(out);
+                
                 out.print("<h3>BPL Loaded successfully");
             }
 
@@ -91,7 +93,7 @@ public class LoadAll extends HttpServlet {
             if (!df.loadCPLData()) {
                 out.print("<h3>Error Loading CPL..Try again");
             } else {
-                alertInternet(out);
+                
                 out.print("<h3>CPL Loaded successfully");
             }
 
@@ -99,9 +101,21 @@ public class LoadAll extends HttpServlet {
             if (!df.loadPSLData()) {
                 out.print("<h3>Error Loading PSL..Try again");
             } else {
-                alertInternet(out);
+                
                 out.print("<h3>PSL Loaded successfully");
             }
+            
+            if(df.getUnloaded().size() > 0){
+                alertInternet(out);
+            }
+            
+            out.print("<h1> No. of matches that loaded unsuccessfully: "+ df.getUnloaded().size());
+            out.print("<table>");
+            out.print("<tr> <th>MatchID</th>  <th>Link</th>  </tr>");
+            for(Map.Entry<String,String> e : df.getUnloaded().entrySet()){
+                out.print("<tr> <td>"+e.getKey()+"</td>  <td><a href=\""+e.getValue()+"\">Link </a></td> </tr>");
+            }
+            out.print("</table>");
 
 //            out.print("<h1>Loading Test data..");
 //            if(!df.loadTestData()){

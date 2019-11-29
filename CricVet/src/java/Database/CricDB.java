@@ -474,10 +474,10 @@ public class CricDB extends BaseDAO {
         
         /*
         try {
-            String sql = "drop table \"APP\".HEADERS";
+            String sql = "drop table \"APP\".TESTINNING";
             con = getConnection();
             stmt = con.createStatement();
-            System.out.println("Dropping headers");
+            System.out.println("Dropping test inning");
             stmt.execute(sql);
             con.close();
         } catch (SQLException ex) {
@@ -488,10 +488,11 @@ public class CricDB extends BaseDAO {
             try { con.close(); } catch (Exception e) {  }
         }
         try {
-            String sql = "drop table \"APP\".INNINGS";
+            String sql = "drop table \"APP\".TESTMATCH";
             con = getConnection();
             stmt = con.createStatement();
             stmt.execute(sql);
+            System.out.println("Dropping test matches");
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
@@ -500,6 +501,7 @@ public class CricDB extends BaseDAO {
             try { stmt.close(); } catch (Exception e) { }
             try { con.close(); } catch (Exception e) {  }
         }
+        
         try {
             String sql = "drop table \"APP\".MATCHES";
             con = getConnection();
@@ -557,8 +559,8 @@ public class CricDB extends BaseDAO {
                     + "	SIXES VARCHAR(20),\n"
                     + "	FOURS VARCHAR(20),\n"
                     + "	FIRSTWICKET VARCHAR(20),\n"
-                    + "	RUNS5WICKET VARCHAR(20)\n"
-                    + ")";
+                    + "	RUNS5WICKET VARCHAR(20),\n"
+                    + " WINNER LONG VARCHAR )";
 
             con = getConnection();
             stmt = con.createStatement();
