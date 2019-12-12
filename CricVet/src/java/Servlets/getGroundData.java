@@ -46,6 +46,7 @@ public class getGroundData extends HttpServlet {
 
             int matchType = Integer.parseInt(request.getParameter("tournament"));
             String groundName = request.getParameter("groundName");
+            if(matchType!=1){
             
             List<Match> matches = db.getGroundInfo(groundName, matchType);
             
@@ -56,7 +57,19 @@ public class getGroundData extends HttpServlet {
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("/groundResults.jsp");
             dispatcher.forward(request, response);
+            }
+            else{
+            List<testMatch> matches = db.gettestGroundInfo(groundName, matchType);
             
+
+            request.setAttribute("ground", groundName);
+            request.setAttribute("matches", matches);
+            request.setAttribute("inningHeaders", db.getHeaders(matchType));
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/testgroundresults.jsp");
+            dispatcher.forward(request, response);
+                
+            }
             
             
 

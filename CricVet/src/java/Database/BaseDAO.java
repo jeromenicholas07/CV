@@ -37,7 +37,11 @@ public class BaseDAO {
             conn = ds.getConnection();
 
         
+<<<<<<< Updated upstream
 //           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVet", "dj", "dj");
+=======
+           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
+>>>>>>> Stashed changes
             
             System.out.println("Conn Created");
         } catch (Exception ex) {

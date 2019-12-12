@@ -40,7 +40,8 @@
             }
         </style>
         <div class="container-fluid text-center">
-            <h1 class="text-center">${teamOne} v/s ${teamTwo}</h1>
+            <h1 class="text-center">Home Team: ${hometeam}</h1>
+            <h1 class="text-center">Batting team ${teamOne} v/s Bowling Team ${teamTwo}</h1>
             <div class="row">
                 <div class="col-12">
                     <h5 class="card-title">Head to head</h5>
@@ -166,7 +167,7 @@
                         <tr>
                             <c:forEach var="in" items="${t_oneBatFirstY}">
                                 <td name="-2Left">
-                                    ${in.getSixes()}
+                                    ${in.getWinner()}
                                 </td>
                             </c:forEach>
                             <td></td>
@@ -196,21 +197,21 @@
                                 <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(t_oneBatFirstY)}">${teamOne}</th>
+                                        <th colspan="${fn:length(t_teamoneBatFirst)}">${teamOne} Batting First</th>
                                         <th>
-                                        <th colspan="${fn:length(t_twoBowlFirstY)}">${teamTwo}</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} First</th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} First Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${t_oneBatFirstY}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_twoBowlFirstY}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getTotalruns()}
                                             </td>
@@ -235,13 +236,13 @@
 
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${t_oneBatFirstY}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_twoBowlFirstY}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -260,21 +261,21 @@
                                 <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(one1)}">${teamOne}</th>
+                                        <th colspan="${fn:length(t_teamoneBatFirst)}">${teamOne} Batting First Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(two1)}">${teamTwo}</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First Inning</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundFirst1)}">${t_groundName}</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${one1}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getSixes()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${two1}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getSixes()}
                                             </td>
@@ -300,13 +301,13 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${one1}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${two1}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -324,21 +325,21 @@
                                 <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(one1)}">${teamOne}</th>
+                                        <th colspan="${fn:length(t_teamoneBatFirst)}">${teamOne} Batting First Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(two1)}">${teamTwo}</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First Inning</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundFirst1)}">${t_groundName}</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${one1}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getFours()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${two1}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getFours()}
                                             </td>
@@ -364,13 +365,13 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${one1}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${two1}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -388,21 +389,21 @@
                                 <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(t_oneBatFirstX)}">${teamOne} Batting First</th>
+                                        <th colspan="${fn:length(t_teamoneBatFirst)}">${teamOne} Batting First Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_twoBowlFirstX)}">${teamTwo} Bowling First</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} First</th>
+                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} First Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${t_oneBatFirstX}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_twoBowlFirstX}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getFirstwicket()}
                                             </td>
@@ -428,13 +429,13 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${t_oneBatFirstX}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_twoBowlFirstX}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -456,21 +457,21 @@
 
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(t_oneBatFirst)}">${teamOne} Batting First</th>
+                                        <th colspan="${fn:length(t_teamoneBatFirst)}">${teamOne} Batting First Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_twoBowlFirst)}">${teamTwo} Bowling First</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} First</th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} First Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${t_oneBatFirst}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_twoBowlFirst}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}Left">
                                                 ${in.getRuns5wicket()}
                                             </td>
@@ -496,13 +497,13 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${t_oneBatFirst}">
+                                        <c:forEach var="in" items="${t_teamoneBatFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_twoBowlFirst}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -533,21 +534,21 @@
                                 <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(t_twoBatFirstY)}">${teamOne}</th>
+                                        <th colspan="${fn:length(t_teamoneBatSecond)}">${teamOne} Batting Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_oneBowlFirstY)}">${teamTwo}</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} Bowling Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} First</th>
+                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} Secong Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${t_twoBatFirstY}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_oneBowlFirstY}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getTotalruns()}
                                             </td>
@@ -572,13 +573,13 @@
 
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${t_twoBatFirstY}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_oneBowlFirstY}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -597,21 +598,21 @@
                                 <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(one1)}">${teamOne}</th>
+                                        <th colspan="${fn:length(t_teamoneBatSecond)}">${teamOne} Batting Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(two1)}">${teamTwo}</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} Bowling Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName}</th>
+                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} Second Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${one1}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getSixes()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${two1}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getSixes()}
                                             </td>
@@ -637,13 +638,13 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${one1}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${two1}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -661,21 +662,21 @@
                                 <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(one1)}">${teamOne}</th>
+                                        <th colspan="${fn:length(t_teamoneBatSecond)}">${teamOne} Batting Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(two1)}">${teamTwo}</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} BowlingSecond Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName}</th>
+                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} Second Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${one1}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getFours()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${two1}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getFours()}
                                             </td>
@@ -701,13 +702,13 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${one1}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${two1}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -725,21 +726,21 @@
                                 <h5 class="card-title">${headers.get(loop.index)}</h5>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(t_twoBatFirstX)}">${teamOne} Batting First</th>
+                                        <th colspan="${fn:length(t_teamoneBatSecond)}">${teamOne} Batting Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_oneBowlFirstX)}">${teamTwo} Bowling First</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} Bating Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} First</th>
+                                        <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} Second Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${t_twoBatFirstX}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_oneBowlFirstX}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getFirstwicket()}
                                             </td>
@@ -765,13 +766,13 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${t_twoBatFirstX}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_oneBowlFirstX}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -793,21 +794,21 @@
 
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(t_twoBatFirst)}">${teamOne} Batting First</th>
+                                        <th colspan="${fn:length(t_teamoneBatSecond)}">${teamOne} Batting Second</th>
                                         <th>
-                                        <th colspan="${fn:length(t_oneBowlFirst)}">${teamTwo} Bowling First</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} Bowling Second</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} First</th>
+                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} Second Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${t_twoBatFirst}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_oneBowlFirst}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
                                             <td name="${loop.index}Left">
                                                 ${in.getRuns5wicket()}
                                             </td>
@@ -833,13 +834,685 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${t_twoBatFirst}">
+                                        <c:forEach var="in" items="${t_teamoneBatSecond}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_oneBowlFirst}">
+                                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+
+
+                                    </tr>
+
+                                    
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </c:when>
+                    
+                </c:choose>
+            </c:forEach>
+            
+            <h2>Third Inning</h2>
+            <c:forEach var="h" begin="0" end="6" varStatus="loop">
+                <c:choose>
+                    <c:when test="${loop.index == 0}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatThird)}">${teamOne} Batting Third</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Third</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getTotalruns()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getTotalruns()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <td>
+                                                ${in.getTotalruns()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:when test="${loop.index == 1}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatThird)}">${teamOne}</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo}</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName}</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getSixes()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getSixes()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <td>
+                                                ${in.getSixes()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:when test="${loop.index == 2}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatThird)}">${teamOne} batting Third</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Third</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getFours()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getFours()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <td>
+                                                ${in.getFours()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:when test="${loop.index == 3}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatThird)}">${teamOne} Batting Third</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} Third</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getFirstwicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getFirstwicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
+                                            <td>
+                                                ${in.getFirstwicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </c:when>
+                    <c:when test="${loop.index==4}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatThird)}">${teamOne} Batting Third</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Third</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getRuns5wicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getRuns5wicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <td>
+                                                ${in.getRuns5wicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+
+
+                                    </tr>
+
+                                    
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </c:when>
+                    
+                </c:choose>
+            </c:forEach>
+            
+            <h2>Fourth Inning</h2>
+            <c:forEach var="h" begin="0" end="6" varStatus="loop">
+                <c:choose>
+                    <c:when test="${loop.index == 0}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatFourth)}">${teamOne} Batting Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Fourth</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getTotalruns()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getTotalruns()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <td>
+                                                ${in.getTotalruns()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:when test="${loop.index == 1}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatFourth)}">${teamOne} Batting Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Fourth</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getSixes()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getSixes()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <td>
+                                                ${in.getSixes()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:when test="${loop.index == 2}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatFourth)}">${teamOne} Batting Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Fourth</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getFours()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getFours()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <td>
+                                                ${in.getFours()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:when test="${loop.index == 3}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatFourth)}">${teamOne} Batting Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} Fourth</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getFirstwicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getFirstwicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
+                                            <td>
+                                                ${in.getFirstwicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+
+
+
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </c:when>
+                    <c:when test="${loop.index==4}">
+                        <div class="row" >
+                            <div class ="col-12">
+                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(t_teamoneBatFourth)}">${teamOne} Batting Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Fourth</th>
+                                        <th>Odds</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getRuns5wicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                            <td name="${loop.index}Left">
+                                                ${in.getRuns5wicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <td>
+                                                ${in.getRuns5wicket()}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                            </div>
+                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                        </td>
+
+
+                                    </tr>
+
+                                    <tr>
+                                        <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                            <td name="${loop.index}LeftOdd">
+
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>

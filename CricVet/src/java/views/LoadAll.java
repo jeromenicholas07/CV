@@ -48,7 +48,8 @@ public class LoadAll extends HttpServlet {
                 
                 out.print("<h3>TEST Loaded successfully");
             }
-
+            
+/*
             out.print("<h1>Loading IPL data");
             if (!df.loadIPLData()) {
                 out.print("<h3>Error Loading IPL..Try again");
@@ -124,6 +125,7 @@ public class LoadAll extends HttpServlet {
 //            else{
 //                out.print("<h3>Test matches Loaded successfully");
 //            }
+            */
         }
 
     }

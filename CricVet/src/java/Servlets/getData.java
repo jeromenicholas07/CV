@@ -45,9 +45,580 @@ public class getData extends HttpServlet {
             String teamOne = request.getParameter("teamName1");
             String teamTwo = request.getParameter("teamName2");
             String groundName = request.getParameter("groundName");
+            String hometeam = db.checkhomeoraway(teamOne, teamTwo, groundName);
             
             if(matchType == 1){
+            
+            
+            if(teamOne.equals(hometeam)){
+            
+                System.out.println("home is : " + teamOne);
                 
+            List<testInning> t_oneBatFirst = new ArrayList<>();
+            List<testInning> t_oneBatSecond = new ArrayList<>();
+            List<testInning> t_twoBatFirst = new ArrayList<>();
+            List<testInning> t_twoBatSecond = new ArrayList<>();
+
+            List<testInning> t_oneBowlFirst = new ArrayList<>();
+            List<testInning> t_oneBowlSecond = new ArrayList<>();
+            List<testInning> t_twoBowlFirst = new ArrayList<>();
+            List<testInning> t_twoBowlSecond = new ArrayList<>();
+
+            List<testInning> t_groundFirst1 = new ArrayList<>();
+            List<testInning> t_groundSecond1 = new ArrayList<>();
+            List<testInning> t_groundFirst2 = new ArrayList<>();
+            List<testInning> t_groundSecond2 = new ArrayList<>();
+            
+            testInning temp;
+            List<testMatch> matches; 
+            matches = db.gettestMatches(teamOne, matchType, 1);
+            // out.println(matches);
+            int k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                temp = matches.get(i).getInningOne1();
+                /*out.println(temp.getInningId());
+                out.println(temp.getFirstwicket());
+                out.println(temp.getFours());
+                out.println(temp.getRuns5wicket());
+                out.println(temp.getSixes() );
+                out.println(temp.getTotalruns());
+                //out.println(temp);   
+                */
+                
+                int fours = matches.get(i).getInningOne1().getFours()
+                        + matches.get(i).getInningTwo1().getFours() + matches.get(i).getInningOne2().getFours() 
+                        + matches.get(i).getInningTwo2().getFours();
+                //out.println(fours);
+                int sixes = matches.get(i).getInningOne1().getSixes()
+                        + matches.get(i).getInningTwo1().getSixes() + matches.get(i).getInningOne2().getSixes()
+                        + matches.get(i).getInningTwo2().getSixes();
+                //out.println(sixes);
+                temp.setFours(fours);
+                temp.setSixes(sixes);
+                t_oneBatFirst.add(temp);
+                if (temp.getRuns5wicket()== -1) {
+                    k++;
+                }
+            }
+            
+         
+
+            matches.clear();
+            k = 5;
+            matches = db.gettestMatches(teamTwo, matchType, 2);
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                temp = matches.get(i).getInningTwo1();
+                int fours = matches.get(i).getInningOne1().getFours()
+                        + matches.get(i).getInningTwo1().getFours() + matches.get(i).getInningOne2().getFours() 
+                        + matches.get(i).getInningTwo2().getFours();
+                int sixes = matches.get(i).getInningOne1().getSixes()
+                        + matches.get(i).getInningTwo1().getSixes() + matches.get(i).getInningOne2().getSixes()
+                        + matches.get(i).getInningTwo2().getSixes();                
+                temp.setFours(fours);
+                temp.setSixes(sixes);
+                t_twoBatSecond.add(temp);
+                if (temp.getRuns5wicket()== -1) {
+                    k++;
+                }
+            }
+
+            matches.clear();
+            k = 5;
+            matches = db.gettestMatches(teamOne, matchType, 1);
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                temp = matches.get(i).getInningTwo1();
+                int fours = matches.get(i).getInningOne1().getFours()
+                        + matches.get(i).getInningTwo1().getFours() + matches.get(i).getInningOne2().getFours() 
+                        + matches.get(i).getInningTwo2().getFours();
+                int sixes = matches.get(i).getInningOne1().getSixes()
+                        + matches.get(i).getInningTwo1().getSixes() + matches.get(i).getInningOne2().getSixes()
+                        + matches.get(i).getInningTwo2().getSixes();                
+                temp.setFours(fours);
+                temp.setSixes(sixes);
+                t_oneBowlSecond.add(temp);
+                if (temp.getRuns5wicket()== -1) {
+                    k++;
+                }
+           }
+
+            matches.clear();
+            k = 5;
+            matches = db.gettestMatches(teamTwo, matchType, 2);
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                temp = matches.get(i).getInningOne1();
+                int fours = matches.get(i).getInningOne1().getFours()
+                        + matches.get(i).getInningTwo1().getFours() + matches.get(i).getInningOne2().getFours() 
+                        + matches.get(i).getInningTwo2().getFours();
+                int sixes = matches.get(i).getInningOne1().getSixes()
+                        + matches.get(i).getInningTwo1().getSixes() + matches.get(i).getInningOne2().getSixes()
+                        + matches.get(i).getInningTwo2().getSixes();                
+                temp.setFours(fours);
+                temp.setSixes(sixes);
+                t_twoBowlFirst.add(temp);
+                if (temp.getRuns5wicket()== -1) {
+                    k++;
+                }
+           }
+                            
+
+            List<testInning> one1 = new ArrayList<>();
+            List<testInning> two1 = new ArrayList<>();
+            List<testInning> one2 = new ArrayList<>();
+            List<testInning> two2 = new ArrayList<>();
+            
+            matches.clear();
+            
+            testInning temp11;
+            testInning temp12;
+            testInning temp21;
+            testInning temp22;
+
+
+            matches = db.gettestMatches(teamOne, matchType, 0);
+            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+                if(matches.get(i).getBattingFirst()== teamOne){
+                temp11 = matches.get(i).getInningOne1();
+                temp12 = matches.get(i).getInningOne2();
+                        }
+                else{
+                temp11 = matches.get(i).getInningTwo1();
+                temp12 = matches.get(i).getInningTwo2();
+                    
+                }
+                int fours = matches.get(i).getInningOne1().getFours()
+                        + matches.get(i).getInningTwo1().getFours() + matches.get(i).getInningOne2().getFours() 
+                        + matches.get(i).getInningTwo2().getFours();
+                int sixes = matches.get(i).getInningOne1().getSixes()
+                        + matches.get(i).getInningTwo1().getSixes() + matches.get(i).getInningOne2().getSixes()
+                        + matches.get(i).getInningTwo2().getSixes();  
+                temp11.setFours(fours);
+                temp12.setFours(fours);
+                temp11.setSixes(sixes);
+                temp12.setSixes(sixes);
+                
+                one1.add(temp11);
+                one2.add(temp12);
+            }
+            request.setAttribute("one1", one1);
+            request.setAttribute("one2",one2);
+
+            matches.clear();
+
+            matches = db.gettestMatches(teamTwo, matchType, 0);
+            for (int i = 0; i < Math.min(5, matches.size()); i++) {
+                if(matches.get(i).getBattingFirst()== teamTwo){
+                temp21 = matches.get(i).getInningOne1();
+                temp22 = matches.get(i).getInningOne2();
+                        }
+                else{
+                temp21 = matches.get(i).getInningTwo1();
+                temp22 = matches.get(i).getInningTwo2();
+                    
+                }
+                int fours = matches.get(i).getInningOne1().getFours()
+                        + matches.get(i).getInningTwo1().getFours() + matches.get(i).getInningOne2().getFours() 
+                        + matches.get(i).getInningTwo2().getFours();
+                int sixes = matches.get(i).getInningOne1().getSixes()
+                        + matches.get(i).getInningTwo1().getSixes() + matches.get(i).getInningOne2().getSixes()
+                        + matches.get(i).getInningTwo2().getSixes();  
+                temp21.setFours(fours);
+                temp22.setFours(fours);
+                temp21.setSixes(sixes);
+                temp22.setSixes(sixes);
+                
+                two1.add(temp21);
+                two2.add(temp22);
+            }
+            request.setAttribute("two1", two1);
+            request.setAttribute("two2",two2);
+
+            matches.clear();
+            
+            k = 5;
+            
+            
+            matches = db.gettestGroundInfo(groundName, matchType);
+            
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                temp11 = matches.get(i).getInningOne1();
+                temp12 = matches.get(i).getInningOne2();
+                temp21 = matches.get(i).getInningTwo1();
+                temp22 = matches.get(i).getInningTwo2();
+                
+                int fours = matches.get(i).getInningOne1().getFours()
+                        + matches.get(i).getInningTwo1().getFours() + matches.get(i).getInningOne2().getFours() 
+                        + matches.get(i).getInningTwo2().getFours();
+                int sixes = matches.get(i).getInningOne1().getSixes()
+                        + matches.get(i).getInningTwo1().getSixes() + matches.get(i).getInningOne2().getSixes()
+                        + matches.get(i).getInningTwo2().getSixes(); 
+                
+                temp21.setFours(fours);
+                temp22.setFours(fours);
+                temp21.setSixes(sixes);
+                temp22.setSixes(sixes);
+                
+                t_groundFirst1.add(temp11);
+                t_groundFirst2.add(temp12);
+                t_groundSecond1.add(temp21);
+                t_groundSecond2.add(temp22);               
+
+ //               if (temp.getParams().get(2).equals("-1") || temp2.getParams().get(2).equals("-1")) {
+ //                   k++;
+ //               }
+
+            }
+            
+
+            List<testInning> t_oneBatFirstX = new ArrayList<>();
+            List<testInning> t_twoBowlFirstX = new ArrayList<>();
+            List<testInning> t_groundFirst1X = new ArrayList<>();
+            List<testInning> t_groundSecond1X = new ArrayList<>();
+            List<testInning> t_groundFirst2X = new ArrayList<>();
+            List<testInning> t_groundSecond2X = new ArrayList<>();
+            
+            for (testInning q : t_oneBatFirst) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_oneBatFirstX.add(q);
+                }
+            }
+
+            for (testInning q : t_twoBowlFirst) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_twoBowlFirstX.add(q);
+                }
+            }
+
+            for (testInning q : t_groundFirst1) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_groundFirst1X.add(q);
+                }
+            }
+            for (testInning q : t_groundSecond1) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_groundSecond1X.add(q);
+                }
+            }
+            for (testInning q : t_groundFirst2) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_groundFirst2X.add(q);
+                }
+            }
+            
+            for (testInning q : t_groundSecond2) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_groundSecond2X.add(q);
+                }
+            }
+            
+            t_oneBatFirst = t_oneBatFirst.subList(0, Math.min(5, t_oneBatFirst.size()));
+            t_twoBowlFirst = t_twoBowlFirst.subList(0, Math.min(5, t_twoBowlFirst.size()));
+            t_groundFirst1 = t_groundFirst1.subList(0, Math.min(5, t_groundFirst1.size()));
+            t_groundSecond1 = t_groundSecond1.subList(0, Math.min(5, t_groundSecond1.size()));
+            t_groundFirst2 = t_groundFirst2.subList(0, Math.min(5, t_groundFirst2.size()));
+            t_groundSecond2 = t_groundSecond2.subList(0, Math.min(5, t_groundSecond2.size()));
+            
+            request.setAttribute("t_oneBatFirstX", t_oneBatFirstX);
+            request.setAttribute("t_twoBowlFirstX", t_twoBowlFirstX);
+            request.setAttribute("t_groundFirst1X", t_groundFirst1X.subList(0, Math.min(5, t_groundFirst1X.size())));
+            //request.setAttribute("t_groundSecond1X", t_groundSecond1X.subList(0, Math.min(5, t_groundSecond1X.size())));
+           // request.setAttribute("t_groundFirst2X", t_groundFirst2X.subList(0, Math.min(5, t_groundFirst2X.size())));
+          //  request.setAttribute("t_groundSecond2X", t_groundSecond2X.subList(0, Math.min(5, t_groundSecond2X.size())));
+
+            List<testInning> t_twoBatSecondX = new ArrayList<>();
+            List<testInning> t_oneBowlSecondX = new ArrayList<>();
+
+            for (testInning q : t_twoBatSecond) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_twoBatSecondX.add(q);
+                }
+            }
+
+            for (testInning q : t_oneBowlSecond) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_oneBowlSecondX.add(q);
+                }
+            }
+            
+            t_twoBatSecond = t_twoBatSecond.subList(0, Math.min(5, t_twoBatSecond.size()));
+            t_oneBowlSecond = t_oneBowlSecond.subList(0, Math.min(5, t_oneBowlSecond.size()));
+            
+            request.setAttribute("t_twoBatSecondX", t_twoBatSecondX);
+            request.setAttribute("t_oneBowlSecondX", t_oneBowlSecondX);
+            
+//            for(int i = 0; i < matches.size(); i++){
+//                out.print("<h1>"+matches.get(i));
+//            }
+
+            List<testInning> t_oneBatFirstY = new ArrayList<>();
+            List<testInning> t_twoBowlFirstY = new ArrayList<>();
+            
+            for(testMatch q : db.gettestDB(matchType, teamOne)) {
+                String res =q.getResult();
+                String worl = "";
+                
+                String BorC = "";
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    BorC = "B";
+                }
+                else{
+                    BorC = "C";
+                }
+                
+                if(res.contains(" wicket")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                        worl = "L";
+                    }
+                    else{
+                        worl = "W";
+                    }
+                }
+                else if(res.contains(" run")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                        worl = "W";
+                    }
+                    else{
+                        worl = "L";
+                    }
+                }else{
+                    worl = "-";
+                }
+                testInning m = q.getInningOne1();
+                String bcwl = BorC + "/" +worl;
+                m.setWinner(bcwl);
+                t_oneBatFirstY.add(m);            }
+
+            for(testMatch q : db.gettestDB(matchType, teamTwo)) {
+                String res =q.getResult();
+                String worl = "";
+                
+                String BorC = "";
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    BorC = "B";
+                }
+                else{
+                    BorC = "C";
+                }
+                
+                if(res.contains(" wicket")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
+                        worl = "L";
+                    }
+                    else{
+                        worl = "W";
+                    }
+                }
+                else if(res.contains(" run")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
+                        worl = "W";
+                    }
+                    else{
+                        worl = "L";
+                    }
+                }else{
+                    worl = "-";
+                }
+                testInning m = q.getInningOne1();
+                String bcwl = BorC + "/" +worl;
+                m.setWinner(bcwl);
+                t_twoBowlFirstY.add(m);
+            }
+            t_oneBatFirstY = t_oneBatFirstY.subList(0, Math.min(5, t_oneBatFirstY.size()));
+            t_twoBowlFirstY = t_twoBowlFirstY.subList(0, Math.min(5, t_twoBowlFirstY.size()));
+            request.setAttribute("oneBatFirstY", t_oneBatFirstY);
+            request.setAttribute("twoBowlFirstY", t_twoBowlFirstY);
+
+            
+            List<testInning> hth = new ArrayList<>();
+            matches = db.gettestHth(matchType, teamOne, teamTwo);
+            for(int i = 0; i < Math.min(5, matches.size()); i++){
+                testMatch q = matches.get(i);
+                
+                String res =q.getResult();
+                String worl = "";
+                
+                String BorC = "";
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    BorC = "B";
+                }
+                else{
+                    BorC = "C";
+                }
+                
+                if(res.contains(" wicket")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                        worl = "L";
+                    }
+                    else{
+                        worl = "W";
+                    }
+                }
+                else if(res.contains(" run")){
+                    if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                        worl = "W";
+                    }
+                    else{
+                        worl = "L";
+                    }
+                }else{
+                    worl = "-";
+                }
+                testInning m = q.getInningOne1();
+                String bcwl = BorC + "/" +worl;
+                m.setWinner(bcwl);
+                hth.add(m);
+                
+            }
+            
+            List<testInning> t_teamoneBatFirst = new ArrayList<>();
+            List<testInning> t_teamoneBatSecond = new ArrayList<>();
+            List<testInning> t_teamoneBatThird = new ArrayList<>();
+            List<testInning> t_teamoneBatFourth = new ArrayList<>();
+
+            List<testInning> t_teamtwoBowlFirst = new ArrayList<>();
+            List<testInning> t_teamtwoBowlSecond = new ArrayList<>();
+            List<testInning> t_teamtwoBowlThird = new ArrayList<>();
+            List<testInning> t_teamtwoBowlFourth = new ArrayList<>();
+            
+//Team one Bat First Innings LAST 5      
+            matches = db.gettesthomeoraway(teamOne,1,1,true);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningOne1();
+                t_teamoneBatFirst.add(m);
+            }
+            matches.clear();
+            
+ //Team One Bats Second Innings LAST 5          
+            matches = db.gettesthomeoraway(teamOne,1,2,true);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningTwo1();
+                t_teamoneBatSecond.add(m);
+            }
+            matches.clear();
+            
+//Team One Bats Third Innings LAST 5            
+            matches = db.gettesthomeoraway(teamOne,1,1,true);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningOne2();
+                t_teamoneBatThird.add(m);
+            }
+            matches.clear();
+//Team One Bats Fourth Innings LAST 5            
+            matches = db.gettesthomeoraway(teamOne,1,2,true);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningTwo2();
+                t_teamoneBatFourth.add(m);
+            }
+            matches.clear();
+//Team two Bowls First Innings LAST 5            
+            matches = db.gettesthomeoraway(teamTwo,1,2,false);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningOne1();
+                t_teamtwoBowlFirst.add(m);
+            }
+            matches.clear();
+//Team two Bowls Second Innings LAST 5            
+            matches = db.gettesthomeoraway(teamTwo,1,1,false);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningTwo1();
+                t_teamtwoBowlSecond.add(m);
+            }
+            matches.clear();
+//Team two Bowls Third Innings LAST 5            
+            matches = db.gettesthomeoraway(teamTwo,1,2,false);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningOne2();
+                t_teamtwoBowlThird.add(m);
+            }
+            matches.clear();
+//Team two Bowls Fourth Innings LAST 5            
+            matches = db.gettesthomeoraway(teamTwo,1,1,false);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningTwo2();
+                t_teamtwoBowlFourth.add(m);
+            }
+            matches.clear();
+            
+            List<String> headers =  new ArrayList();
+            headers = db.getHeaders(matchType);
+            
+            
+            
+            //System.out.println(t_oneBatFirst.size());
+            //out.println(t_oneBatSecond.size());
+            //out.println(t_twoBatFirst.size());
+           // out.println(t_twoBatSecond.size());
+           // out.println(t_oneBowlFirst.size());
+           // out.println(t_oneBowlSecond.size());
+            //out.println(t_twoBowlFirst.size());        
+         //  out.println(t_twoBowlSecond.size());
+         //   out.println(t_groundFirst1.size());
+        //    out.println(t_groundSecond1.size());
+           // out.println(t_groundFirst2.size());
+            
+            
+            
+            request.setAttribute("hth", hth);
+            
+            
+
+            request.setAttribute("headers", headers);
+            request.setAttribute("teamOne", teamOne);
+            request.setAttribute("teamTwo", teamTwo);
+            request.setAttribute("t_oneBatFirst", t_oneBatFirst);
+            request.setAttribute("t_oneBatFirstY", t_oneBatFirstY);
+            request.setAttribute("t_oneBatSecond", t_oneBatSecond);
+            
+
+            request.setAttribute("t_twoBatFirst", t_twoBatFirst);
+            
+            request.setAttribute("t_twoBatSecond", t_twoBatSecond);
+
+            request.setAttribute("t_oneBowlFirst", t_oneBowlFirst);
+            request.setAttribute("t_oneBowlSecond", t_oneBowlSecond);
+            request.setAttribute("t_twoBowlFirst", t_twoBowlFirst);
+            request.setAttribute("t_twoBowlSecond", t_twoBowlSecond);
+                        request.setAttribute("t_twoBowlFirstY", t_twoBowlFirstY);
+                        
+
+            request.setAttribute("t_groundName", groundName);
+            request.setAttribute("t_groundFirst1", t_groundFirst1);
+            request.setAttribute("t_groundSecond1", t_groundSecond1);
+            request.setAttribute("t_groundFirst2", t_groundFirst2);
+            request.setAttribute("t_groundSecond2", t_groundSecond2);
+            
+            request.setAttribute("t_teamoneBatFirst", t_teamoneBatFirst);
+            request.setAttribute("t_teamoneBatSecond", t_teamoneBatSecond);
+            request.setAttribute("t_teamoneBatThird", t_teamoneBatThird);
+            request.setAttribute("t_teamoneBatFourth", t_teamoneBatFourth);
+            request.setAttribute("t_teamtwoBowlFirst", t_teamtwoBowlFirst);
+            request.setAttribute("t_teamtwoBowlSecond", t_teamtwoBowlSecond);
+            request.setAttribute("t_teamtwoBowlThird", t_teamtwoBowlThird);
+            request.setAttribute("t_teamtwoBowlFourth", t_teamtwoBowlFourth);
+            
+
+//            System.out.println(db.getHeaders(matchType));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/testresults.jsp");
+            dispatcher.forward(request, response);
+                
+            }
+ //if teamA is away           
+            else{
             List<testInning> t_oneBatFirst = new ArrayList<>();
             List<testInning> t_oneBatSecond = new ArrayList<>();
             List<testInning> t_twoBatFirst = new ArrayList<>();
@@ -461,6 +1032,92 @@ public class getData extends HttpServlet {
                 hth.add(m);
                 
             }
+            
+            List<testInning> t_teamoneBatFirst = new ArrayList<>();
+            List<testInning> t_teamoneBatSecond = new ArrayList<>();
+            List<testInning> t_teamoneBatThird = new ArrayList<>();
+            List<testInning> t_teamoneBatFourth = new ArrayList<>();
+
+            List<testInning> t_teamtwoBowlFirst = new ArrayList<>();
+            List<testInning> t_teamtwoBowlSecond = new ArrayList<>();
+            List<testInning> t_teamtwoBowlThird = new ArrayList<>();
+            List<testInning> t_teamtwoBowlFourth = new ArrayList<>();
+            
+//Team one Bat First Innings LAST 5      
+            matches = db.gettesthomeoraway(teamOne,1,1,false);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningOne1();
+                t_teamoneBatFirst.add(m);
+            }
+            matches.clear();
+            
+ //Team One Bats Second Innings LAST 5          
+            matches = db.gettesthomeoraway(teamOne,1,2,false);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningTwo1();
+                t_teamoneBatSecond.add(m);
+            }
+            matches.clear();
+            
+//Team One Bats Third Innings LAST 5            
+            matches = db.gettesthomeoraway(teamOne,1,1,false);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningOne2();
+                t_teamoneBatThird.add(m);
+            }
+            matches.clear();
+//Team One Bats Fourth Innings LAST 5            
+            matches = db.gettesthomeoraway(teamOne,1,2,false);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningTwo2();
+                t_teamoneBatFourth.add(m);
+            }
+            matches.clear();
+//Team two Bowls First Innings LAST 5            
+            matches = db.gettesthomeoraway(teamTwo,1,2,true);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningOne1();
+                t_teamtwoBowlFirst.add(m);
+            }
+            matches.clear();
+//Team two Bowls Second Innings LAST 5            
+            matches = db.gettesthomeoraway(teamTwo,1,1,true);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningTwo1();
+                t_teamtwoBowlSecond.add(m);
+            }
+            matches.clear();
+//Team two Bowls Third Innings LAST 5            
+            matches = db.gettesthomeoraway(teamTwo,1,2,true);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningOne2();
+                t_teamtwoBowlThird.add(m);
+            }
+            matches.clear();
+//Team two Bowls Fourth Innings LAST 5            
+            matches = db.gettesthomeoraway(teamTwo,1,1,true);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                testInning m = q.getInningTwo2();
+                t_teamtwoBowlFourth.add(m);
+            }
+            matches.clear();
+            
             List<String> headers =  new ArrayList();
             headers = db.getHeaders(matchType);
             
@@ -470,7 +1127,7 @@ public class getData extends HttpServlet {
            // out.println(t_twoBatSecond.size());
            // out.println(t_oneBowlFirst.size());
            // out.println(t_oneBowlSecond.size());
-            out.println(t_twoBowlFirst.size());
+           // out.println(t_twoBowlFirst.size());
          //  out.println(t_twoBowlSecond.size());
          //   out.println(t_groundFirst1.size());
         //    out.println(t_groundSecond1.size());
@@ -507,11 +1164,22 @@ public class getData extends HttpServlet {
             request.setAttribute("t_groundFirst2", t_groundFirst2);
             request.setAttribute("t_groundSecond2", t_groundSecond2);
             
+            request.setAttribute("t_teamoneBatFirst", t_teamoneBatFirst);
+            request.setAttribute("t_teamoneBatSecond", t_teamoneBatSecond);
+            request.setAttribute("t_teamoneBatThird", t_teamoneBatThird);
+            request.setAttribute("t_teamoneBatFourth", t_teamoneBatFourth);
+            request.setAttribute("t_teamtwoBowlFirst", t_teamtwoBowlFirst);
+            request.setAttribute("t_teamtwoBowlSecond", t_teamtwoBowlSecond);
+            request.setAttribute("t_teamtwoBowlThird", t_teamtwoBowlThird);
+            request.setAttribute("t_teamtwoBowlFourth", t_teamtwoBowlFourth);
+            request.setAttribute("hometeam",hometeam);
+            
 
 //            System.out.println(db.getHeaders(matchType));
             RequestDispatcher dispatcher = request.getRequestDispatcher("/testresults.jsp");
             dispatcher.forward(request, response);
-            
+            }
+                
             
             
             }
@@ -863,6 +1531,11 @@ public class getData extends HttpServlet {
                 hth.add(m);
                 
             }
+            
+            
+            
+            
+            
             out.println(oneBatFirst.size());
             out.println(oneBatSecond.size());
             out.println(twoBatFirst.size());
