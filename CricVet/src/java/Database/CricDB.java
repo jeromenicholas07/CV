@@ -1975,10 +1975,9 @@ public class CricDB extends BaseDAO {
 
         try {
             con = getConnection();
-            String sql = "select * from APP.TESTMATCH where groundname = ? AND MATCHTYPE = ? order by MATCHDATE DESC";
+            String sql = "select * from APP.TESTMATCH where groundname = ? order by MATCHDATE DESC";
             stmt = con.prepareStatement(sql);
             stmt.setString(1, groundName);
-            stmt.setInt(2, matchType);
             rs = stmt.executeQuery();
 
             while (rs.next()) {

@@ -234,9 +234,22 @@ public class getData extends HttpServlet {
 
             matches.clear();
             
+            matches = db.gettestGroundInfo(groundName,matchType);
             k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                
+                t_groundFirst1.add(q.getInningOne1());
+                t_groundFirst2.add(q.getInningOne2());
+                t_groundSecond1.add(q.getInningTwo1());
+                t_groundSecond2.add(q.getInningTwo2());
+            }
+            matches.clear();
+           
             
             
+            
+   /*         
             matches = db.gettestGroundInfo(groundName, matchType);
             
             for (int i = 0; i < Math.min(k, matches.size()); i++) {
@@ -256,7 +269,7 @@ public class getData extends HttpServlet {
                 temp22.setFours(fours);
                 temp21.setSixes(sixes);
                 temp22.setSixes(sixes);
-   */             
+                
                 t_groundFirst1.add(temp11);
                 t_groundFirst2.add(temp12);
                 t_groundSecond1.add(temp21);
@@ -268,7 +281,7 @@ public class getData extends HttpServlet {
 
             }
             
-
+*/
             List<testInning> t_oneBatFirstX = new ArrayList<>();
             List<testInning> t_twoBowlFirstX = new ArrayList<>();
             List<testInning> t_groundFirst1X = new ArrayList<>();
@@ -309,20 +322,20 @@ public class getData extends HttpServlet {
                     t_groundSecond2X.add(q);
                 }
             }
-            
+           
             t_oneBatFirst = t_oneBatFirst.subList(0, Math.min(5, t_oneBatFirst.size()));
             t_twoBowlFirst = t_twoBowlFirst.subList(0, Math.min(5, t_twoBowlFirst.size()));
-            t_groundFirst1 = t_groundFirst1.subList(0, Math.min(5, t_groundFirst1.size()));
+/*            t_groundFirst1 = t_groundFirst1.subList(0, Math.min(5, t_groundFirst1.size()));
             t_groundSecond1 = t_groundSecond1.subList(0, Math.min(5, t_groundSecond1.size()));
             t_groundFirst2 = t_groundFirst2.subList(0, Math.min(5, t_groundFirst2.size()));
             t_groundSecond2 = t_groundSecond2.subList(0, Math.min(5, t_groundSecond2.size()));
-            
+      */      
             request.setAttribute("t_oneBatFirstX", t_oneBatFirstX);
             request.setAttribute("t_twoBowlFirstX", t_twoBowlFirstX);
-            request.setAttribute("t_groundFirst1X", t_groundFirst1X.subList(0, Math.min(5, t_groundFirst1X.size())));
-            request.setAttribute("t_groundSecond1X", t_groundSecond1X.subList(0, Math.min(5, t_groundSecond1X.size())));
-            request.setAttribute("t_groundFirst2X", t_groundFirst2X.subList(0, Math.min(5, t_groundFirst2X.size())));
-            request.setAttribute("t_groundSecond2X", t_groundSecond2X.subList(0, Math.min(5, t_groundSecond2X.size())));
+            request.setAttribute("t_groundFirst1X", t_groundFirst1);
+            request.setAttribute("t_groundSecond1X", t_groundSecond1);
+            request.setAttribute("t_groundFirst2X", t_groundFirst2);
+            request.setAttribute("t_groundSecond2X", t_groundSecond2);
 
             List<testInning> t_twoBatSecondX = new ArrayList<>();
             List<testInning> t_oneBowlSecondX = new ArrayList<>();
@@ -800,8 +813,18 @@ public class getData extends HttpServlet {
             matches.clear();
             
             k = 5;
-            
-            
+             matches = db.gettestGroundInfo(groundName,matchType);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                
+                t_groundFirst1.add(q.getInningOne1());
+                t_groundFirst2.add(q.getInningOne2());
+                t_groundSecond1.add(q.getInningTwo1());
+                t_groundSecond2.add(q.getInningTwo2());
+            }
+            matches.clear();
+ /*           
             matches = db.gettestGroundInfo(groundName, matchType);
             
             for (int i = 0; i < Math.min(k, matches.size()); i++) {
@@ -832,7 +855,7 @@ public class getData extends HttpServlet {
  //               }
 
             }
-
+*/
             List<testInning> t_oneBatFirstX = new ArrayList<>();
             List<testInning> t_twoBowlFirstX = new ArrayList<>();
             List<testInning> t_groundFirst1X = new ArrayList<>();
@@ -876,14 +899,18 @@ public class getData extends HttpServlet {
             
             t_oneBatFirst = t_oneBatFirst.subList(0, Math.min(5, t_oneBatFirst.size()));
             t_twoBowlFirst = t_twoBowlFirst.subList(0, Math.min(5, t_twoBowlFirst.size()));
-            t_groundFirst1 = t_groundFirst1.subList(0, Math.min(5, t_groundFirst1.size()));
+/*            t_groundFirst1 = t_groundFirst1.subList(0, Math.min(5, t_groundFirst1.size()));
             t_groundSecond1 = t_groundSecond1.subList(0, Math.min(5, t_groundSecond1.size()));
             t_groundFirst2 = t_groundFirst2.subList(0, Math.min(5, t_groundFirst2.size()));
             t_groundSecond2 = t_groundSecond2.subList(0, Math.min(5, t_groundSecond2.size()));
-            
+  */          
             request.setAttribute("t_oneBatFirstX", t_oneBatFirstX);
             request.setAttribute("t_twoBowlFirstX", t_twoBowlFirstX);
             request.setAttribute("t_groundFirst1X", t_groundFirst1X.subList(0, Math.min(5, t_groundFirst1X.size())));
+            request.setAttribute("t_groundFirst1X", t_groundFirst1);
+            request.setAttribute("t_groundSecond1X", t_groundSecond1);
+            request.setAttribute("t_groundFirst2X", t_groundFirst2);
+            request.setAttribute("t_groundSecond2X", t_groundSecond2);
             //request.setAttribute("t_groundSecond1X", t_groundSecond1X.subList(0, Math.min(5, t_groundSecond1X.size())));
            // request.setAttribute("t_groundFirst2X", t_groundFirst2X.subList(0, Math.min(5, t_groundFirst2X.size())));
           //  request.setAttribute("t_groundSecond2X", t_groundSecond2X.subList(0, Math.min(5, t_groundSecond2X.size())));
