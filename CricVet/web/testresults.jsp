@@ -217,7 +217,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
                                             <td>
                                                 ${in.getTotalruns()}
                                             </td>
@@ -265,7 +265,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName}</th>
+                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName}</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -281,7 +281,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
                                             <td>
                                                 ${in.getSixes()}
                                             </td>
@@ -329,7 +329,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName}</th>
+                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName}</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -345,7 +345,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
                                             <td>
                                                 ${in.getFours()}
                                             </td>
@@ -461,7 +461,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} First Inning</th>
+                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} First Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -477,7 +477,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
                                             <td>
                                                 ${in.getRuns5wicket()}
                                             </td>
@@ -538,7 +538,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} Bowling Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} Secong Inning</th>
+                                        <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} Secong Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -554,7 +554,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundSecond1}">
+                                            <c:forEach var="in" items="${t_groundSecond1X}">
                                             <td>
                                                 ${in.getTotalruns()}
                                             </td>
@@ -602,7 +602,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} Bowling Second Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} Second Inning</th>
+                                        <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} Second Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -618,7 +618,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundSecond1}">
+                                            <c:forEach var="in" items="${t_groundSecond1X}">
                                             <td>
                                                 ${in.getSixes()}
                                             </td>
@@ -666,7 +666,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} BowlingSecond Inning</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} Second Inning</th>
+                                        <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} Second Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -682,7 +682,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
                                             <td>
                                                 ${in.getFours()}
                                             </td>
@@ -798,7 +798,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlSecond)}">${teamTwo} Bowling Second</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundSecond1)}">${t_groundName} Second Inning</th>
+                                        <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} Second Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -814,7 +814,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundSecond1}">
+                                            <c:forEach var="in" items="${t_groundSecond1X}">
                                             <td>
                                                 ${in.getRuns5wicket()}
                                             </td>
@@ -874,7 +874,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Third</th>
+                                        <th colspan="${fn:length(t_groundFirst2X)}">${t_groundName} Third</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -890,7 +890,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst2X}">
                                             <td>
                                                 ${in.getTotalruns()}
                                             </td>
@@ -938,7 +938,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo}</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName}</th>
+                                        <th colspan="${fn:length(t_groundFirst2X)}">${t_groundName}</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -954,7 +954,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst2X}">
                                             <td>
                                                 ${in.getSixes()}
                                             </td>
@@ -1002,7 +1002,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Third</th>
+                                        <th colspan="${fn:length(t_groundFirst2X)}">${t_groundName} Third</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -1018,7 +1018,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst2X}">
                                             <td>
                                                 ${in.getFours()}
                                             </td>
@@ -1066,7 +1066,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} Third</th>
+                                        <th colspan="${fn:length(t_groundFirst2X)}">${t_groundName} Third</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -1082,7 +1082,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1X}">
+                                            <c:forEach var="in" items="${t_groundFirst2X}">
                                             <td>
                                                 ${in.getFirstwicket()}
                                             </td>
@@ -1134,7 +1134,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Third</th>
+                                        <th colspan="${fn:length(t_groundFirst2X)}">${t_groundName} Third</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -1150,7 +1150,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundFirst2X}">
                                             <td>
                                                 ${in.getRuns5wicket()}
                                             </td>
@@ -1210,7 +1210,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Fourth</th>
+                                        <th colspan="${fn:length(t_groundSecond2X)}">${t_groundName} Fourth</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -1226,7 +1226,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundSecond2X}">
                                             <td>
                                                 ${in.getTotalruns()}
                                             </td>
@@ -1274,7 +1274,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Fourth</th>
+                                        <th colspan="${fn:length(t_groundSecond2X)}">${t_groundName} Fourth</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -1290,7 +1290,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundSecond2X}">
                                             <td>
                                                 ${in.getSixes()}
                                             </td>
@@ -1338,7 +1338,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Fourth</th>
+                                        <th colspan="${fn:length(t_groundSecond2X)}">${t_groundName} Fourth</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -1354,7 +1354,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundSecond2X}">
                                             <td>
                                                 ${in.getFours()}
                                             </td>
@@ -1402,7 +1402,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} Fourth</th>
+                                        <th colspan="${fn:length(t_groundSecond2X)}">${t_groundName} Fourth</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -1418,7 +1418,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1X}">
+                                            <c:forEach var="in" items="${t_groundSecond2X}">
                                             <td>
                                                 ${in.getFirstwicket()}
                                             </td>
@@ -1470,7 +1470,7 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFourth)}">${teamTwo} Bowling Fourth</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} Fourth</th>
+                                        <th colspan="${fn:length(t_groundSecond2X)}">${t_groundName} Fourth</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
@@ -1486,7 +1486,7 @@
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${t_groundFirst1}">
+                                            <c:forEach var="in" items="${t_groundSecond2X}">
                                             <td>
                                                 ${in.getRuns5wicket()}
                                             </td>

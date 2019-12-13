@@ -245,7 +245,7 @@ public class getData extends HttpServlet {
                 temp21 = matches.get(i).getInningTwo1();
                 temp22 = matches.get(i).getInningTwo2();
                 
-                int fours = matches.get(i).getInningOne1().getFours()
+ /*               int fours = matches.get(i).getInningOne1().getFours()
                         + matches.get(i).getInningTwo1().getFours() + matches.get(i).getInningOne2().getFours() 
                         + matches.get(i).getInningTwo2().getFours();
                 int sixes = matches.get(i).getInningOne1().getSixes()
@@ -256,7 +256,7 @@ public class getData extends HttpServlet {
                 temp22.setFours(fours);
                 temp21.setSixes(sixes);
                 temp22.setSixes(sixes);
-                
+   */             
                 t_groundFirst1.add(temp11);
                 t_groundFirst2.add(temp12);
                 t_groundSecond1.add(temp21);
@@ -320,9 +320,9 @@ public class getData extends HttpServlet {
             request.setAttribute("t_oneBatFirstX", t_oneBatFirstX);
             request.setAttribute("t_twoBowlFirstX", t_twoBowlFirstX);
             request.setAttribute("t_groundFirst1X", t_groundFirst1X.subList(0, Math.min(5, t_groundFirst1X.size())));
-            //request.setAttribute("t_groundSecond1X", t_groundSecond1X.subList(0, Math.min(5, t_groundSecond1X.size())));
-           // request.setAttribute("t_groundFirst2X", t_groundFirst2X.subList(0, Math.min(5, t_groundFirst2X.size())));
-          //  request.setAttribute("t_groundSecond2X", t_groundSecond2X.subList(0, Math.min(5, t_groundSecond2X.size())));
+            request.setAttribute("t_groundSecond1X", t_groundSecond1X.subList(0, Math.min(5, t_groundSecond1X.size())));
+            request.setAttribute("t_groundFirst2X", t_groundFirst2X.subList(0, Math.min(5, t_groundFirst2X.size())));
+            request.setAttribute("t_groundSecond2X", t_groundSecond2X.subList(0, Math.min(5, t_groundSecond2X.size())));
 
             List<testInning> t_twoBatSecondX = new ArrayList<>();
             List<testInning> t_oneBowlSecondX = new ArrayList<>();
