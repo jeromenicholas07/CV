@@ -85,6 +85,7 @@ public class DataFetch {
     int yr = 2018;
 
     CricDB db = new CricDB();
+    
 
     public boolean loadIPLData() {
         boolean ret = true;
@@ -2515,16 +2516,19 @@ public class DataFetch {
             String groundName = sp.text();
             String groundLink = ground.select("a").first().attr("href");
             String teamathome = db.checkhomeoraway(homeTeamName, awayTeamName, groundName);
+            String teamataway = db.getawayteam(homeTeamName,awayTeamName,groundName);
+            System.out.println("AWAYTEAM IS " + teamataway);
+            
 
             
             
             if(foflag==0){
-            testMatch m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one,two,three,four, homeScore, awayScore, result, groundName, matchType,teamathome);
+            testMatch m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one,two,three,four, homeScore, awayScore, result, groundName, matchType,teamathome,teamataway);
             db.addtestMatch(m);
             System.out.println("new test match added");
             }
             else if(foflag==1){
-            testMatch m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one,two,four,three, homeScore, awayScore, result, groundName, matchType,teamathome);
+            testMatch m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one,two,four,three, homeScore, awayScore, result, groundName, matchType,teamathome,teamataway);
             db.addtestMatch(m);
             }
             System.out.println("new test match added");

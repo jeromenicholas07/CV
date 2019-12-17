@@ -82,9 +82,9 @@
 
                         
                         <tr>
-                            <c:forEach var="in" items="${hth}">
+                            <c:forEach var="in" items="${hthmatch}">
                                 <td name="-Left">
-                                    ${in.getWinner()}
+                                    ${in.getResult()}
                                 </td>
                             </c:forEach>
                             
@@ -187,6 +187,83 @@
 
                 </div>
             </div>
+                <div class="row" >
+                <div class ="col-12">
+                    <h5 class="card-title">Total Fours</h5>
+
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(onetotal)}">${teamOne}</th>
+                            <th>
+                            <th colspan="${fn:length(twototal)}">${teamTwo}</th>
+                            <th>
+
+                            <th>Odds</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${onetotal}">
+                                <td name="-1Left">
+                                    ${in.getFours()}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="in" items="${twototal}">
+                                <td name="-1Left">
+                                    ${in.getFours()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+                            
+
+
+                        </tr>
+
+
+                    </table>
+
+                </div>
+            </div>
+                            <div class="row" >
+                <div class ="col-12">
+                    <h5 class="card-title">Total Sixes</h5>
+
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(onetotal)}">${teamOne}</th>
+                            <th>
+                            <th colspan="${fn:length(twototal)}">${teamTwo}</th>
+                            <th>
+
+                            <th>Odds</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${onetotal}">
+                                <td name="-1Left">
+                                    ${in.getSixes()}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="in" items="${twototal}">
+                                <td name="-1Left">
+                                    ${in.getSixes()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+                            
+
+
+                        </tr>
+
+
+                    </table>
+
+                </div>
+            </div>
+
 
             <h2>First Inning</h2>
             <c:forEach var="h" begin="0" end="6" varStatus="loop">
@@ -250,6 +327,27 @@
 
 
                                     </tr>
+                                    <tr>
+                            <c:forEach var="in" items="${t_teamoneBatFirst}">
+                                <td name="-2Left">
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+                            <c:forEach var="in" items="${t_teamtwoBowlFirst}">
+                                <td name="-2Left">
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+
+                            <td>
+                            </td>
+
+
+                                 </tr>
+                                    
+
                                 </table>
 
                             </div>
@@ -587,6 +685,25 @@
 
 
                                     </tr>
+                                    <tr>
+                            <c:forEach var="in" items="${t_teamoneBatSecond}">
+                                <td name="-2Left">
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+                            <c:forEach var="in" items="${t_teamtwoBowlSecond}">
+                                <td name="-2Left">
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+
+                            <td>
+                            </td>
+
+
+                                 </tr>
                                 </table>
 
                             </div>
@@ -923,6 +1040,25 @@
 
 
                                     </tr>
+                                    <tr>
+                            <c:forEach var="in" items="${t_teamoneBatThird}">
+                                <td name="-2Left">
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+                            <c:forEach var="in" items="${t_teamtwoBowlThird}">
+                                <td name="-2Left">
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+
+                            <td>
+                            </td>
+
+
+                                 </tr>
                                 </table>
 
                             </div>
@@ -1259,6 +1395,25 @@
 
 
                                     </tr>
+                                    <tr>
+                            <c:forEach var="in" items="${t_teamoneBatFourth}">
+                                <td name="-2Left">
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+                            <c:forEach var="in" items="${t_teamtwoBowlFourth}">
+                                <td name="-2Left">
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                            <td></td>
+
+                            <td>
+                            </td>
+
+
+                                 </tr>
                                 </table>
 
                             </div>
