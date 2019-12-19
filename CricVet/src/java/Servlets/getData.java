@@ -406,17 +406,26 @@ public class getData extends HttpServlet {
             
             for(testMatch q : db.gettesthome(teamOne, 1,0)) {
                 String res =q.getResult();
+                String worl;
                 String borc;
                 
                 if(res.contains(teamOne)){
-                     borc = "Win";
+                     worl = "Win";
                 }
                 else if(res.equals("Match drawn")){
-                    borc = "Draw";
+                    worl = "Draw";
                 }
                 else{
-                     borc = "Lose";
+                     worl = "Lose";
                 }
+                
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    borc = "B";
+                }
+                else{
+                    borc = "C";
+                }
+                
                 
                /* String worl = "";
                 
@@ -449,20 +458,29 @@ public class getData extends HttpServlet {
                 */
                 testInning m = q.getInningOne1();
                 
-                m.setWinner(borc);
+                m.setWinner(borc + "/" + worl);
                 t_oneBatFirstY.add(m);            }
 
             for(testMatch q : db.gettestaway(teamTwo, 1,0)) {
                 String res =q.getResult();
+                String worl;
                 String borc;
+                
                 if(res.contains(teamTwo)){
-                     borc = "Win";
+                     worl = "Win";
                 }
                 else if(res.equals("Match drawn")){
-                    borc = "Draw";
+                    worl = "Draw";
                 }
                 else{
-                     borc = "Lose";
+                     worl = "Lose";
+                }
+                
+                if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
+                    borc = "B";
+                }
+                else{
+                    borc = "C";
                 }
                 /*(
                 String BorC = "";
@@ -494,7 +512,7 @@ public class getData extends HttpServlet {
                 */
                 testInning m = q.getInningOne1();
                 
-                m.setWinner(borc);
+                m.setWinner(borc + "/" + worl);
                 t_twoBowlFirstY.add(m);
             }
             t_oneBatFirstY = t_oneBatFirstY.subList(0, Math.min(5, t_oneBatFirstY.size()));
@@ -1167,15 +1185,22 @@ public class getData extends HttpServlet {
             for(testMatch q : db.gettestaway(teamOne, 1,0)) {
                 String res =q.getResult();
                 String borc;
+                String worl;                
                 if(res.contains(teamOne)){
-                    borc = "Win";
-                   
+                     worl = "Win";
                 }
                 else if(res.equals("Match drawn")){
-                    borc = "Draw";
+                    worl = "Draw";
                 }
                 else{
-                    borc = "lose";
+                     worl = "Lose";
+                }
+                
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    borc = "B";
+                }
+                else{
+                    borc = "C";
                 }
             /*    String worl = "";
                 
@@ -1208,20 +1233,29 @@ public class getData extends HttpServlet {
                 */
                 testInning m = q.getInningOne1();
                 
-                m.setWinner(borc);
+                m.setWinner(borc + "/" + worl);
                 t_oneBatFirstY.add(m);            }
 
             for(testMatch q : db.gettesthome(teamTwo, 1,0)) {
                 String res =q.getResult();
                 String borc;
+                String worl;
+                
                 if(res.contains(teamTwo)){
-                    borc = "Win";
+                     worl = "Win";
                 }
                 else if(res.equals("Match drawn")){
-                    borc = "Draw";
+                    worl = "Draw";
                 }
                 else{
-                    borc = "Lose";
+                     worl = "Lose";
+                }
+                
+                if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
+                    borc = "B";
+                }
+                else{
+                    borc = "C";
                 }
                 /*
                 String worl = "";
@@ -1255,7 +1289,7 @@ public class getData extends HttpServlet {
                 */
                 testInning m = q.getInningOne1();
                 
-                m.setWinner(borc);
+                m.setWinner(borc + "/" + worl);
                 t_twoBowlFirstY.add(m);
             }
             t_oneBatFirstY = t_oneBatFirstY.subList(0, Math.min(5, t_oneBatFirstY.size()));
