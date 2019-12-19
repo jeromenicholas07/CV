@@ -371,21 +371,17 @@ public class getData extends HttpServlet {
             for(testMatch q : db.gettesthome(teamOne,1,0)){
                 int fours;
                 int sixes;
-                if(q.getBattingFirst().equals(teamOne)){
+                
                      fours = q.getInningOne1().getFours()+
-                         q.getInningOne2().getFours();
+                         q.getInningOne2().getFours() + q.getInningTwo1().getFours() + q.getInningTwo2().getFours();
                         
                      sixes = q.getInningOne1().getSixes()
-                         + q.getInningOne2().getSixes();                          
-                }
-                else{
-                     fours = q.getInningTwo1().getFours()+
-                         q.getInningTwo2().getFours();
-                        
-                     sixes = q.getInningTwo1().getSixes()
-                         + q.getInningTwo2().getSixes(); 
+                         + q.getInningOne2().getSixes() + q.getInningTwo1().getSixes() + q.getInningTwo2().getSixes();                          
+                
+                
+                     
                     
-                }
+                
                 testInning m = q.getInningOne1();
                 m.setFours(fours);
                 m.setSixes(sixes);
@@ -396,21 +392,11 @@ public class getData extends HttpServlet {
             for(testMatch q : db.gettestaway(teamTwo,1,0)){
                 int fours;
                 int sixes;
-                if(q.getBattingFirst().equals(teamTwo) ){
-                     fours = q.getInningOne1().getFours()+
-                         q.getInningOne2().getFours();
+               fours = q.getInningOne1().getFours()+
+                         q.getInningOne2().getFours() + q.getInningTwo1().getFours() + q.getInningTwo2().getFours();
                         
                      sixes = q.getInningOne1().getSixes()
-                         + q.getInningOne2().getSixes();                          
-                }
-                else{
-                     fours = q.getInningTwo1().getFours()+
-                         q.getInningTwo2().getFours();
-                        
-                     sixes = q.getInningTwo1().getSixes()
-                         + q.getInningTwo2().getSixes(); 
-                    
-                }
+                         + q.getInningOne2().getSixes() + q.getInningTwo1().getSixes() + q.getInningTwo2().getSixes(); 
                 testInning m = q.getInningOne1();
                 m.setFours(fours);
                 m.setSixes(sixes);
@@ -563,14 +549,17 @@ public class getData extends HttpServlet {
             }
             
             List<testInning> t_teamoneBatFirst = new ArrayList<>();
-            List<testInning> t_teamoneBatSecond = new ArrayList<>();
             List<testInning> t_teamoneBatThird = new ArrayList<>();
-            List<testInning> t_teamoneBatFourth = new ArrayList<>();
+            List<testInning> t_teamoneBowlSecond = new ArrayList<>();
+            List<testInning> t_teamoneBowlFourth = new ArrayList<>();
+            
 
             List<testInning> t_teamtwoBowlFirst = new ArrayList<>();
-            List<testInning> t_teamtwoBowlSecond = new ArrayList<>();
             List<testInning> t_teamtwoBowlThird = new ArrayList<>();
-            List<testInning> t_teamtwoBowlFourth = new ArrayList<>();
+            List<testInning> t_teamtwoBatSecond = new ArrayList<>();
+            List<testInning> t_teamtwoBatFourth = new ArrayList<>();
+            
+            
             
 //Team one Bat First Innings LAST 5      
             matches = db.gettesthome(teamOne,1,1);
@@ -602,105 +591,25 @@ public class getData extends HttpServlet {
                 m.setWinner(BorC + "/" + worl);
                 
                 t_teamoneBatFirst.add(m);
+                
+                testInning b = q.getInningOne2();
+                b.setWinner(BorC + "/" + worl);
+                t_teamoneBatThird.add(b);
+                
+                testInning c = q.getInningTwo1();
+                c.setWinner(BorC + "/" + worl);
+                t_teamoneBowlSecond.add(c);
+                
+                testInning d = q.getInningTwo2();
+                d.setWinner(BorC + "/" + worl);
+                t_teamoneBowlFourth.add(d);
             }
  //           matches.clear();
-            
- //Team One Bats Second Innings LAST 5          
-            matches = db.gettesthome(teamOne,1,2);
-            k = 5;
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                testMatch q = matches.get(i);
-                String res =q.getResult();
-                String worl = "";
-                
-                String BorC = "";
-                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
-                    BorC = "B";
-                }
-                else{
-                    BorC = "C";
-                }
-                
-                if(res.contains(teamOne)){
-                     worl = "Win";
-                }
-                else if(res.equals("Match drawn")){
-                    worl = "Draw";
-                }
-                else{
-                     worl = "Lose";
-                }
-                
-                testInning m = q.getInningTwo1();
-                m.setWinner(BorC + "/" + worl);
-                
-                t_teamoneBatSecond.add(m);
-            }
-  //          matches.clear();
-            
-//Team One Bats Third Innings LAST 5            
-            matches = db.gettesthome(teamOne,1,1);
-            k = 5;
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                testMatch q = matches.get(i);
-                String res =q.getResult();
-                String worl = "";
-                
-                String BorC = "";
-                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
-                    BorC = "B";
-                }
-                else{
-                    BorC = "C";
-                }
-                
-                if(res.contains(teamOne)){
-                     worl = "Win";
-                }
-                else if(res.equals("Match drawn")){
-                    worl = "Draw";
-                }
-                else{
-                     worl = "Lose";
-                }
-                
-                testInning m = q.getInningOne2();
-                m.setWinner(BorC + "/" + worl);
-                
-                t_teamoneBatThird.add(m);
-            }
+
+           
  //           matches.clear();
 //Team One Bats Fourth Innings LAST 5            
-            matches = db.gettesthome(teamOne,1,2);
-            k = 5;
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
-                testMatch q = matches.get(i);
-                String res =q.getResult();
-                String worl = "";
-                
-                String BorC = "";
-                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
-                    BorC = "B";
-                }
-                else{
-                    BorC = "C";
-                }
-                
-                if(res.contains(teamOne)){
-                     worl = "Win";
-                }
-                else if(res.equals("Match drawn")){
-                    worl = "Draw";
-                }
-                else{
-                     worl = "Lose";
-                }
-                
-                testInning m = q.getInningTwo2();
-                m.setWinner(BorC + "/" + worl);
-                
-                t_teamoneBatFourth.add(m);
-            }
+ 
   //          matches.clear();
 //Team two Bowls First Innings LAST 5            
             matches = db.gettestaway(teamTwo,1,2);
@@ -732,7 +641,20 @@ public class getData extends HttpServlet {
                 m.setWinner(BorC + "/" + worl);
                 
                 t_teamtwoBowlFirst.add(m);
+                
+                testInning b = q.getInningOne2();
+                b.setWinner(BorC + "/" + worl);
+                t_teamtwoBowlThird.add(b);
+                
+                testInning c = q.getInningTwo1();
+                c.setWinner(BorC + "/" + worl);
+                t_teamtwoBatSecond.add(c);
+                
+                testInning d = q.getInningTwo2();
+                d.setWinner(BorC + "/" + worl);
+                t_teamtwoBatFourth.add(d);
             }
+            /*
   //          matches.clear();
 //Team two Bowls Second Innings LAST 5            
             matches = db.gettestaway(teamTwo,1,1);
@@ -830,7 +752,7 @@ public class getData extends HttpServlet {
                 t_teamtwoBowlFourth.add(m);
             }
   //          matches.clear();
-            
+    */        
             List<String> headers =  new ArrayList();
             headers = db.getHeaders(matchType);
             
@@ -882,13 +804,13 @@ public class getData extends HttpServlet {
             request.setAttribute("t_groundSecond2", t_groundSecond2);
             
             request.setAttribute("t_teamoneBatFirst", t_teamoneBatFirst);
-            request.setAttribute("t_teamoneBatSecond", t_teamoneBatSecond);
             request.setAttribute("t_teamoneBatThird", t_teamoneBatThird);
-            request.setAttribute("t_teamoneBatFourth", t_teamoneBatFourth);
+            request.setAttribute("t_teamoneBowlSecond", t_teamoneBowlSecond);
+            request.setAttribute("t_teamoneBowlFourth", t_teamoneBowlFourth);
             request.setAttribute("t_teamtwoBowlFirst", t_teamtwoBowlFirst);
-            request.setAttribute("t_teamtwoBowlSecond", t_teamtwoBowlSecond);
             request.setAttribute("t_teamtwoBowlThird", t_teamtwoBowlThird);
-            request.setAttribute("t_teamtwoBowlFourth", t_teamtwoBowlFourth);
+            request.setAttribute("t_teamtwoBatSecond", t_teamtwoBatSecond);
+            request.setAttribute("t_teamtwoBatFourth", t_teamtwoBatFourth);
             
 
 //            System.out.println(db.getHeaders(matchType));
@@ -1215,21 +1137,11 @@ public class getData extends HttpServlet {
             for(testMatch q : db.gettestaway(teamOne,1,0)){
                 int fours;
                 int sixes;
-                if(q.getBattingFirst().equals(teamOne)){
-                     fours = q.getInningOne1().getFours()+
-                         q.getInningOne2().getFours();
+                fours = q.getInningOne1().getFours()+
+                         q.getInningOne2().getFours() + q.getInningTwo1().getFours() + q.getInningTwo2().getFours();
                         
                      sixes = q.getInningOne1().getSixes()
-                         + q.getInningOne2().getSixes();                          
-                }
-                else{
-                     fours = q.getInningTwo1().getFours()+
-                         q.getInningTwo2().getFours();
-                        
-                     sixes = q.getInningTwo1().getSixes()
-                         + q.getInningTwo2().getSixes(); 
-                    
-                }
+                         + q.getInningOne2().getSixes() + q.getInningTwo1().getSixes() + q.getInningTwo2().getSixes(); 
                 testInning m = q.getInningOne1();
                 m.setFours(fours);
                 m.setSixes(sixes);
@@ -1239,21 +1151,11 @@ public class getData extends HttpServlet {
             for(testMatch q : db.gettesthome(teamTwo,1,0)){
                 int fours;
                 int sixes;
-                if(q.getBattingFirst().equals(teamTwo)){
-                     fours = q.getInningOne1().getFours()+
-                         q.getInningOne2().getFours();
+                fours = q.getInningOne1().getFours()+
+                         q.getInningOne2().getFours() + q.getInningTwo1().getFours() + q.getInningTwo2().getFours();
                         
                      sixes = q.getInningOne1().getSixes()
-                         + q.getInningOne2().getSixes();                          
-                }
-                else{
-                     fours = q.getInningTwo1().getFours()+
-                         q.getInningTwo2().getFours();
-                        
-                     sixes = q.getInningTwo1().getSixes()
-                         + q.getInningTwo2().getSixes(); 
-                    
-                }
+                         + q.getInningOne2().getSixes() + q.getInningTwo1().getSixes() + q.getInningTwo2().getSixes(); 
                 testInning m = q.getInningOne1();
                 m.setFours(fours);
                 m.setSixes(sixes);
@@ -1409,14 +1311,110 @@ public class getData extends HttpServlet {
             }
             
             List<testInning> t_teamoneBatFirst = new ArrayList<>();
-            List<testInning> t_teamoneBatSecond = new ArrayList<>();
             List<testInning> t_teamoneBatThird = new ArrayList<>();
-            List<testInning> t_teamoneBatFourth = new ArrayList<>();
+            List<testInning> t_teamoneBowlSecond = new ArrayList<>();
+            List<testInning> t_teamoneBowlFourth = new ArrayList<>();
+            
 
             List<testInning> t_teamtwoBowlFirst = new ArrayList<>();
-            List<testInning> t_teamtwoBowlSecond = new ArrayList<>();
             List<testInning> t_teamtwoBowlThird = new ArrayList<>();
-            List<testInning> t_teamtwoBowlFourth = new ArrayList<>();
+            List<testInning> t_teamtwoBatSecond = new ArrayList<>();
+            List<testInning> t_teamtwoBatFourth = new ArrayList<>();
+            
+            
+            matches = db.gettestaway(teamOne,1,1);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                String res =q.getResult();
+                String worl = "";
+                
+                String BorC = "";
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    BorC = "B";
+                }
+                else{
+                    BorC = "C";
+                }
+                if(res.contains(teamOne)){
+                     worl = "Win";
+                }
+                else if(res.equals("Match drawn")){
+                    worl = "Draw";
+                }
+                else{
+                     worl = "Lose";
+                }
+                
+                
+                testInning m = q.getInningOne1();
+                m.setWinner(BorC + "/" + worl);
+                
+                t_teamoneBatFirst.add(m);
+                
+                testInning b = q.getInningOne2();
+                b.setWinner(BorC + "/" + worl);
+                t_teamoneBatThird.add(b);
+                
+                testInning c = q.getInningTwo1();
+                c.setWinner(BorC + "/" + worl);
+                t_teamoneBowlSecond.add(c);
+                
+                testInning d = q.getInningTwo2();
+                d.setWinner(BorC + "/" + worl);
+                t_teamoneBowlFourth.add(d);
+            }
+ //           matches.clear();
+
+           
+ //           matches.clear();
+//Team One Bats Fourth Innings LAST 5            
+ 
+  //          matches.clear();
+//Team two Bowls First Innings LAST 5            
+            matches = db.gettesthome(teamTwo,1,2);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                testMatch q = matches.get(i);
+                String res =q.getResult();
+                String worl = "";
+                
+                String BorC = "";
+                if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
+                    BorC = "B";
+                }
+                else{
+                    BorC = "C";
+                }
+                
+               if(res.contains(teamTwo)){
+                     worl = "Win";
+                }
+                else if(res.equals("Match drawn")){
+                    worl = "Draw";
+                }
+                else{
+                     worl = "Lose";
+                }
+                
+                testInning m = q.getInningOne1();
+                m.setWinner(BorC + "/" + worl);
+                
+                t_teamtwoBowlFirst.add(m);
+                
+                testInning b = q.getInningOne2();
+                b.setWinner(BorC + "/" + worl);
+                t_teamtwoBowlThird.add(b);
+                
+                testInning c = q.getInningTwo1();
+                c.setWinner(BorC + "/" + worl);
+                t_teamtwoBatSecond.add(c);
+                
+                testInning d = q.getInningTwo2();
+                d.setWinner(BorC + "/" + worl);
+                t_teamtwoBatFourth.add(d);
+            }
+            /*
             
 //Team one Bat First Innings LAST 5      
             matches = db.gettestaway(teamOne,1,1);
@@ -1450,7 +1448,7 @@ public class getData extends HttpServlet {
                 t_teamoneBatFirst.add(m);
             }
             matches.clear();
-            
+ /*           
  //Team One Bats Second Innings LAST 5          
             matches = db.gettestaway(teamOne,1,2);
             k = 5;
@@ -1483,8 +1481,9 @@ public class getData extends HttpServlet {
                 t_teamoneBatSecond.add(m);
             }
             matches.clear();
-            
-//Team One Bats Third Innings LAST 5            
+ */           
+//Team One Bats Third Innings LAST 5      
+/*
             matches = db.gettestaway(teamOne,1,1);
             k = 5;
             for (int i = 0; i < Math.min(k, matches.size()); i++) {
@@ -1676,7 +1675,7 @@ public class getData extends HttpServlet {
                 t_teamtwoBowlFourth.add(m);
             }
             matches.clear();
-            
+     */       
             List<String> headers =  new ArrayList();
             headers = db.getHeaders(matchType);
             
@@ -1727,13 +1726,13 @@ public class getData extends HttpServlet {
             request.setAttribute("t_groundSecond2", t_groundSecond2);
             
             request.setAttribute("t_teamoneBatFirst", t_teamoneBatFirst);
-            request.setAttribute("t_teamoneBatSecond", t_teamoneBatSecond);
             request.setAttribute("t_teamoneBatThird", t_teamoneBatThird);
-            request.setAttribute("t_teamoneBatFourth", t_teamoneBatFourth);
+            request.setAttribute("t_teamoneBowlSecond", t_teamoneBowlSecond);
+            request.setAttribute("t_teamoneBowlFourth", t_teamoneBowlFourth);
             request.setAttribute("t_teamtwoBowlFirst", t_teamtwoBowlFirst);
-            request.setAttribute("t_teamtwoBowlSecond", t_teamtwoBowlSecond);
             request.setAttribute("t_teamtwoBowlThird", t_teamtwoBowlThird);
-            request.setAttribute("t_teamtwoBowlFourth", t_teamtwoBowlFourth);
+            request.setAttribute("t_teamtwoBatSecond", t_teamtwoBatSecond);
+            request.setAttribute("t_teamtwoBatFourth", t_teamtwoBatFourth);
             request.setAttribute("hometeam",hometeam);
             
 
@@ -1974,15 +1973,27 @@ public class getData extends HttpServlet {
             List<Inning> twoBowlFirstY = new ArrayList<>();
             
             for(Match q : db.getDB(matchType, teamOne)) {
-                String res =q.getResult();
+                String res = q.getResult();
+                String toss = q.getTossWinner();
                 String worl = "";
-                
                 String BorC = "";
-                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
-                    BorC = "B";
+                System.out.println("toss" + toss);
+                if(toss.contains(teamOne)){
+                    if(toss.contains("bat")){
+                         BorC = "B";
+                    }
+                    else if(toss.contains("field")){
+                         BorC = "C";
+                    }
                 }
-                else{
-                    BorC = "C";
+                else {
+                  
+                    if(toss.contains("bat")){
+                         BorC = "C";
+                    }
+                    else if(toss.contains("field")){
+                         BorC = "B";
+                    }
                 }
                 
                 if(res.contains(" wicket")){
@@ -2013,14 +2024,27 @@ public class getData extends HttpServlet {
 
             for(Match q : db.getDB(matchType, teamTwo)) {
                 String res =q.getResult();
+                String toss = q.getTossWinner();
                 String worl = "";
-                
                 String BorC = "";
-                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
-                    BorC = "B";
+                System.out.println("toss:" + toss);
+                        
+                if(toss.contains(teamTwo)){
+                    if(toss.contains("bat")){
+                         BorC = "B";
+                    }
+                    else if(toss.contains("field")){
+                         BorC = "C";
+                    }
                 }
-                else{
-                    BorC = "C";
+                else {
+                  
+                    if(toss.contains("bat")){
+                         BorC = "C";
+                    }
+                    else if(toss.contains("field")){
+                         BorC = "B";
+                    }
                 }
                 
                 if(res.contains(" wicket")){

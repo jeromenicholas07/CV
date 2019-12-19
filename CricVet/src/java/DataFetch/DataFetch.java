@@ -2480,6 +2480,7 @@ public class DataFetch {
                             sixCount++;
                         }
                         totalRuns += jItem.getInt("scoreValue");
+                        afterFifthWicketScore = totalRuns - afterFifthWicketScore;
                         
                         
                     }
