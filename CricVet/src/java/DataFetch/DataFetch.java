@@ -720,14 +720,14 @@ public class DataFetch {
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
 
-        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
         for (int y = year; y >= yr; y--) {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=158;type=season").get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                continue;
             }
             if (matches == null && matches.getElementsByClass("data1").first() == null) {
                 continue;
@@ -1017,14 +1017,14 @@ public class DataFetch {
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
 
-        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
         for (int y = year; y >= yr; y--) {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=159;type=season").get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                continue;
             }
             if (matches == null && matches.getElementsByClass("data1").first() == null) {
                 continue;
@@ -1610,14 +1610,14 @@ public class DataFetch {
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
 
-        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
         for (int y = year; y >= yr; y--) {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=205;type=season").get();
             } catch (Exception ex) {
                 Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                continue;
             }
 
             if (matches == null && matches.getElementsByClass("data1").first() == null) {
