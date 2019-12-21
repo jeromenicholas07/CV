@@ -744,8 +744,9 @@ public class DataFetch {
         }
 
         MATCHLABEL:
+        
         for (String matchLink : matchLinks) {
-
+            try{
             int mPos = 0;
             String[] mParts = matchLink.split("/");
             for (int i = 0; i < mParts.length; i++) {
@@ -1006,7 +1007,14 @@ public class DataFetch {
             Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
             db.addMatch(m);
         }
+        
+        catch (Exception ex) {
+                Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                continue;
+            }
 
+        
+    }
         return ret;
     }
 
@@ -1042,6 +1050,7 @@ public class DataFetch {
 
         MATCHLABEL:
         for (String matchLink : matchLinks) {
+            try{
             int mPos = 0;
             String[] mParts = matchLink.split("/");
             for (int i = 0; i < mParts.length; i++) {
@@ -1300,7 +1309,12 @@ public class DataFetch {
             Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
             db.addMatch(m);
         }
-
+             catch (Exception ex) {
+                Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                continue;
+            }
+       
+    }
         return ret;
     }
 
@@ -1636,6 +1650,7 @@ public class DataFetch {
 
         MATCHLABEL:
         for (String matchLink : matchLinks) {
+            try{
             int mPos = 0;
             String[] mParts = matchLink.split("/");
             for (int i = 0; i < mParts.length; i++) {
@@ -1896,7 +1911,14 @@ public class DataFetch {
             db.addMatch(m);
 
         }
+            catch (Exception ex) {
+                Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                continue;
+            }
+            
 
+        
+    }
         return ret;
     }
 
