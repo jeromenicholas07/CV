@@ -365,6 +365,10 @@ public class getData extends HttpServlet {
 
             List<testInning> t_oneBatFirstY = new ArrayList<>();
             List<testInning> t_twoBowlFirstY = new ArrayList<>();
+            List<testInning> t_oneBatFirst1 = new ArrayList<>();
+            List<testInning> t_twoBowlFirst1 = new ArrayList<>();
+            List<testInning> t_oneBatFirst2 = new ArrayList<>();
+            List<testInning> t_twoBowlFirst2 = new ArrayList<>();
             List<testInning> onetotal = new ArrayList<>();
             List<testInning> twototal = new ArrayList<>();
             
@@ -515,12 +519,24 @@ public class getData extends HttpServlet {
                 m.setWinner(borc + "/" + worl);
                 t_twoBowlFirstY.add(m);
             }
-            t_oneBatFirstY = t_oneBatFirstY.subList(0, Math.min(5, t_oneBatFirstY.size()));
-            t_twoBowlFirstY = t_twoBowlFirstY.subList(0, Math.min(5, t_twoBowlFirstY.size()));
+            
+             for (testInning q : t_oneBatFirstY) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_oneBatFirst1.add(q);
+                }
+            }
+
+            for (testInning q : t_twoBowlFirstY) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_twoBowlFirst1.add(q);
+                }
+            }
+            t_oneBatFirst2 = t_oneBatFirst1.subList(0, Math.min(5, t_oneBatFirst1.size()));
+            t_twoBowlFirst2 = t_twoBowlFirst1.subList(0, Math.min(5, t_twoBowlFirst1.size()));
             onetotal = onetotal.subList(0, Math.min(5, onetotal.size()));
             twototal = twototal.subList(0, Math.min(5, twototal.size()));
-            request.setAttribute("oneBatFirstY", t_oneBatFirstY);
-            request.setAttribute("twoBowlFirstY", t_twoBowlFirstY);
+            request.setAttribute("t_oneBatFirstY", t_oneBatFirst2);
+            request.setAttribute("t_twoBowlFirstY", t_twoBowlFirst2);
 
             
             List<testInning> hth = new ArrayList<>();
@@ -576,13 +592,23 @@ public class getData extends HttpServlet {
             List<testInning> t_teamtwoBowlThird = new ArrayList<>();
             List<testInning> t_teamtwoBatSecond = new ArrayList<>();
             List<testInning> t_teamtwoBatFourth = new ArrayList<>();
+            List<testInning> t_teamoneBatFirst1 = new ArrayList<>();
+            List<testInning> t_teamoneBatThird1 = new ArrayList<>();
+            List<testInning> t_teamoneBowlSecond1 = new ArrayList<>();
+            List<testInning> t_teamoneBowlFourth1 = new ArrayList<>();
+            
+
+            List<testInning> t_teamtwoBowlFirst1 = new ArrayList<>();
+            List<testInning> t_teamtwoBowlThird1 = new ArrayList<>();
+            List<testInning> t_teamtwoBatSecond1 = new ArrayList<>();
+            List<testInning> t_teamtwoBatFourth1 = new ArrayList<>();
             
             
             
 //Team one Bat First Innings LAST 5      
             matches = db.gettesthome(teamOne,1,1);
             k = 5;
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+            for (int i = 0; i <matches.size(); i++) {
                 testMatch q = matches.get(i);
                 String res =q.getResult();
                 String worl = "";
@@ -631,8 +657,8 @@ public class getData extends HttpServlet {
   //          matches.clear();
 //Team two Bowls First Innings LAST 5            
             matches = db.gettestaway(teamTwo,1,2);
-            k = 5;
-            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+            
+            for (int i = 0; i < matches.size(); i++) {
                 testMatch q = matches.get(i);
                 String res =q.getResult();
                 String worl = "";
@@ -672,6 +698,60 @@ public class getData extends HttpServlet {
                 d.setWinner(BorC + "/" + worl);
                 t_teamtwoBatFourth.add(d);
             }
+            
+             for (testInning q : t_teamoneBatFirst) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamoneBatFirst1.add(q);
+                }
+            }
+             for (testInning q : t_teamoneBatThird) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamoneBatThird1.add(q);
+                }
+            }
+             for (testInning q : t_teamoneBowlSecond) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamoneBowlSecond1.add(q);
+                }
+            }
+             for (testInning q : t_teamoneBowlFourth) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamoneBowlFourth1.add(q);
+                }
+            }
+
+            for (testInning q : t_teamtwoBatSecond) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamtwoBatSecond1.add(q);
+                }
+            }
+            for (testInning q : t_teamtwoBatFourth) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamtwoBatFourth1.add(q);
+                }
+            }
+            for (testInning q : t_teamtwoBowlFirst) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamtwoBowlFirst1.add(q);
+                }
+            }
+            for (testInning q : t_teamtwoBowlThird) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamtwoBowlThird1.add(q);
+                }
+            }
+            
+            t_teamoneBatFirst1 = t_teamoneBatFirst1.subList(0, Math.min(5, t_teamoneBatFirst1.size()));
+            t_teamoneBatThird1 = t_teamoneBatThird1.subList(0, Math.min(5, t_teamoneBatThird1.size()));
+            t_teamoneBowlSecond1 = t_teamoneBowlSecond1.subList(0, Math.min(5, t_teamoneBowlSecond1.size()));
+            t_teamoneBowlFourth1 = t_teamoneBowlFourth1.subList(0, Math.min(5, t_teamoneBowlFourth1.size()));
+            
+            t_teamtwoBowlFirst1 = t_teamtwoBowlFirst1.subList(0, Math.min(5, t_teamtwoBowlFirst1.size()));
+            t_teamtwoBowlThird1 = t_teamtwoBowlThird1.subList(0, Math.min(5, t_teamtwoBowlThird1.size()));
+            t_teamtwoBatSecond1 = t_teamtwoBatSecond1.subList(0, Math.min(5, t_teamtwoBatSecond1.size()));
+            t_teamtwoBatFourth1 = t_teamtwoBatFourth1.subList(0, Math.min(5, t_teamtwoBatFourth1.size()));
+            
+            
             /*
   //          matches.clear();
 //Team two Bowls Second Innings LAST 5            
@@ -800,7 +880,7 @@ public class getData extends HttpServlet {
             request.setAttribute("teamTwo", teamTwo);
             request.setAttribute("hometeam",hometeam);
             request.setAttribute("t_oneBatFirst", t_oneBatFirst);
-            request.setAttribute("t_oneBatFirstY", t_oneBatFirstY);
+            //request.setAttribute("t_oneBatFirstY", t_oneBatFirstY);
             request.setAttribute("t_oneBatSecond", t_oneBatSecond);
             
 
@@ -821,14 +901,14 @@ public class getData extends HttpServlet {
             request.setAttribute("t_groundFirst2", t_groundFirst2);
             request.setAttribute("t_groundSecond2", t_groundSecond2);
             
-            request.setAttribute("t_teamoneBatFirst", t_teamoneBatFirst);
-            request.setAttribute("t_teamoneBatThird", t_teamoneBatThird);
-            request.setAttribute("t_teamoneBowlSecond", t_teamoneBowlSecond);
-            request.setAttribute("t_teamoneBowlFourth", t_teamoneBowlFourth);
-            request.setAttribute("t_teamtwoBowlFirst", t_teamtwoBowlFirst);
-            request.setAttribute("t_teamtwoBowlThird", t_teamtwoBowlThird);
-            request.setAttribute("t_teamtwoBatSecond", t_teamtwoBatSecond);
-            request.setAttribute("t_teamtwoBatFourth", t_teamtwoBatFourth);
+            request.setAttribute("t_teamoneBatFirst", t_teamoneBatFirst1);
+            request.setAttribute("t_teamoneBatThird", t_teamoneBatThird1);
+            request.setAttribute("t_teamoneBowlSecond", t_teamoneBowlSecond1);
+            request.setAttribute("t_teamoneBowlFourth", t_teamoneBowlFourth1);
+            request.setAttribute("t_teamtwoBowlFirst", t_teamtwoBowlFirst1);
+            request.setAttribute("t_teamtwoBowlThird", t_teamtwoBowlThird1);
+            request.setAttribute("t_teamtwoBatSecond", t_teamtwoBatSecond1);
+            request.setAttribute("t_teamtwoBatFourth", t_teamtwoBatFourth1);
             
 
 //            System.out.println(db.getHeaders(matchType));
@@ -838,7 +918,7 @@ public class getData extends HttpServlet {
             }
  //if teamA is away           
             else{
-                System.out.println("home was :" + teamTwo);
+                //System.out.println("home was :" + teamTwo);
             List<testInning> t_oneBatFirst = new ArrayList<>();
             List<testInning> t_oneBatSecond = new ArrayList<>();
             List<testInning> t_twoBatFirst = new ArrayList<>();
@@ -1292,12 +1372,29 @@ public class getData extends HttpServlet {
                 m.setWinner(borc + "/" + worl);
                 t_twoBowlFirstY.add(m);
             }
-            t_oneBatFirstY = t_oneBatFirstY.subList(0, Math.min(5, t_oneBatFirstY.size()));
-            t_twoBowlFirstY = t_twoBowlFirstY.subList(0, Math.min(5, t_twoBowlFirstY.size()));
+            List<testInning> t_oneBatFirst1 = new ArrayList<>();
+            List<testInning> t_twoBowlFirst1 = new ArrayList<>();
+            List<testInning> t_oneBatFirst2 = new ArrayList<>();
+            List<testInning> t_twoBowlFirst2 = new ArrayList<>();
+            
+            for (testInning q : t_oneBatFirstY) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_oneBatFirst1.add(q);
+                }
+            }
+
+            for (testInning q : t_twoBowlFirstY) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_twoBowlFirst1.add(q);
+                }
+            }
+            
+            t_oneBatFirst2 = t_oneBatFirst1.subList(0, Math.min(5, t_oneBatFirst1.size()));
+            t_twoBowlFirst2 = t_twoBowlFirst1.subList(0, Math.min(5, t_twoBowlFirst1.size()));
             onetotal = onetotal.subList(0, Math.min(5, onetotal.size()));
             twototal = twototal.subList(0, Math.min(5, twototal.size()));
-            request.setAttribute("oneBatFirstY", t_oneBatFirstY);
-            request.setAttribute("twoBowlFirstY", t_twoBowlFirstY);
+            request.setAttribute("t_oneBatFirstY", t_oneBatFirst2);
+            request.setAttribute("t_twoBowlFirstY", t_twoBowlFirst2);
 
             
             List<testInning> hth = new ArrayList<>();
@@ -1354,6 +1451,17 @@ public class getData extends HttpServlet {
             List<testInning> t_teamtwoBowlThird = new ArrayList<>();
             List<testInning> t_teamtwoBatSecond = new ArrayList<>();
             List<testInning> t_teamtwoBatFourth = new ArrayList<>();
+            
+            List<testInning> t_teamoneBatFirst1 = new ArrayList<>();
+            List<testInning> t_teamoneBatThird1 = new ArrayList<>();
+            List<testInning> t_teamoneBowlSecond1 = new ArrayList<>();
+            List<testInning> t_teamoneBowlFourth1 = new ArrayList<>();
+            
+
+            List<testInning> t_teamtwoBowlFirst1 = new ArrayList<>();
+            List<testInning> t_teamtwoBowlThird1 = new ArrayList<>();
+            List<testInning> t_teamtwoBatSecond1 = new ArrayList<>();
+            List<testInning> t_teamtwoBatFourth1 = new ArrayList<>();
             
             
             matches = db.gettestaway(teamOne,1,1);
@@ -1448,6 +1556,59 @@ public class getData extends HttpServlet {
                 d.setWinner(BorC + "/" + worl);
                 t_teamtwoBatFourth.add(d);
             }
+            
+            for (testInning q : t_teamoneBatFirst) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamoneBatFirst1.add(q);
+                }
+            }
+             for (testInning q : t_teamoneBatThird) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamoneBatThird1.add(q);
+                }
+            }
+             for (testInning q : t_teamoneBowlSecond) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamoneBowlSecond1.add(q);
+                }
+            }
+             for (testInning q : t_teamoneBowlFourth) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamoneBowlFourth1.add(q);
+                }
+            }
+
+            for (testInning q : t_teamtwoBatSecond) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamtwoBatSecond1.add(q);
+                }
+            }
+            for (testInning q : t_teamtwoBatFourth) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamtwoBatFourth1.add(q);
+                }
+            }
+            for (testInning q : t_teamtwoBowlFirst) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamtwoBowlFirst1.add(q);
+                }
+            }
+            for (testInning q : t_teamtwoBowlThird) {
+                if (q.getRuns5wicket()!= -1) {
+                    t_teamtwoBowlThird1.add(q);
+                }
+            }
+            
+            t_teamoneBatFirst1 = t_teamoneBatFirst1.subList(0, Math.min(5, t_teamoneBatFirst1.size()));
+            t_teamoneBatThird1 = t_teamoneBatThird1.subList(0, Math.min(5, t_teamoneBatThird1.size()));
+            t_teamoneBowlSecond1 = t_teamoneBowlSecond1.subList(0, Math.min(5, t_teamoneBowlSecond1.size()));
+            t_teamoneBowlFourth1 = t_teamoneBowlFourth1.subList(0, Math.min(5, t_teamoneBowlFourth1.size()));
+            
+            t_teamtwoBowlFirst1 = t_teamtwoBowlFirst1.subList(0, Math.min(5, t_teamtwoBowlFirst1.size()));
+            t_teamtwoBowlThird1 = t_teamtwoBowlThird1.subList(0, Math.min(5, t_teamtwoBowlThird1.size()));
+            t_teamtwoBatSecond1 = t_teamtwoBatSecond1.subList(0, Math.min(5, t_teamtwoBatSecond1.size()));
+            t_teamtwoBatFourth1 = t_teamtwoBatFourth1.subList(0, Math.min(5, t_teamtwoBatFourth1.size()));
+            
             /*
             
 //Team one Bat First Innings LAST 5      
@@ -1738,7 +1899,7 @@ public class getData extends HttpServlet {
             request.setAttribute("teamOne", teamOne);
             request.setAttribute("teamTwo", teamTwo);
             request.setAttribute("t_oneBatFirst", t_oneBatFirst);
-            request.setAttribute("t_oneBatFirstY", t_oneBatFirstY);
+            //request.setAttribute("t_oneBatFirstY", t_oneBatFirstY);
             request.setAttribute("t_oneBatSecond", t_oneBatSecond);
             
 
@@ -1759,14 +1920,14 @@ public class getData extends HttpServlet {
             request.setAttribute("t_groundFirst2", t_groundFirst2);
             request.setAttribute("t_groundSecond2", t_groundSecond2);
             
-            request.setAttribute("t_teamoneBatFirst", t_teamoneBatFirst);
-            request.setAttribute("t_teamoneBatThird", t_teamoneBatThird);
-            request.setAttribute("t_teamoneBowlSecond", t_teamoneBowlSecond);
-            request.setAttribute("t_teamoneBowlFourth", t_teamoneBowlFourth);
-            request.setAttribute("t_teamtwoBowlFirst", t_teamtwoBowlFirst);
-            request.setAttribute("t_teamtwoBowlThird", t_teamtwoBowlThird);
-            request.setAttribute("t_teamtwoBatSecond", t_teamtwoBatSecond);
-            request.setAttribute("t_teamtwoBatFourth", t_teamtwoBatFourth);
+            request.setAttribute("t_teamoneBatFirst", t_teamoneBatFirst1);
+            request.setAttribute("t_teamoneBatThird", t_teamoneBatThird1);
+            request.setAttribute("t_teamoneBowlSecond", t_teamoneBowlSecond1);
+            request.setAttribute("t_teamoneBowlFourth", t_teamoneBowlFourth1);
+            request.setAttribute("t_teamtwoBowlFirst", t_teamtwoBowlFirst1);
+            request.setAttribute("t_teamtwoBowlThird", t_teamtwoBowlThird1);
+            request.setAttribute("t_teamtwoBatSecond", t_teamtwoBatSecond1);
+            request.setAttribute("t_teamtwoBatFourth", t_teamtwoBatFourth1);
             request.setAttribute("hometeam",hometeam);
             
 
