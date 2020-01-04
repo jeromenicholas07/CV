@@ -49,7 +49,7 @@ public class LoadAll extends HttpServlet {
                 out.print("<h3>TEST Loaded successfully");
             }
             
-/*
+
             out.print("<h1>Loading IPL data");
             if (!df.loadIPLData()) {
                 out.print("<h3>Error Loading IPL..Try again");
@@ -117,15 +117,7 @@ public class LoadAll extends HttpServlet {
                 out.print("<tr> <td>"+e.getKey()+"</td>  <td><a href=\""+e.getValue()+"\">Link </a></td> </tr>");
             }
             out.print("</table>");
-
-//            out.print("<h1>Loading Test data..");
-//            if(!df.loadTestData()){
-//                out.print("<h3>Error Loading Test..Try again");
-//            }
-//            else{
-//                out.print("<h3>Test matches Loaded successfully");
-//            }
-            */
+            
         }
 
     }

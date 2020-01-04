@@ -36,12 +36,7 @@ public class BaseDAO {
             ds = (DataSource) ctx.lookup("jdbc/jres");
             conn = ds.getConnection();
 
-        
-<<<<<<< Updated upstream
-//           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVet", "dj", "dj");
-=======
-           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
->>>>>>> Stashed changes
+//           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
             
             System.out.println("Conn Created");
         } catch (Exception ex) {

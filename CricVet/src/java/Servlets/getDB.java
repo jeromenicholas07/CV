@@ -49,7 +49,6 @@ public class getDB extends HttpServlet {
             if(matchType == 1){
                 
                     int i;
-                    db.initDB();
 
                     List<testMatch> matches = new ArrayList<>();
 
