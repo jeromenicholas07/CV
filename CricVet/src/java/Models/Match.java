@@ -5,7 +5,7 @@
  */
 package models;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -16,7 +16,7 @@ public class Match {
     private int matchId;
     private String homeTeam;
     private String awayTeam;
-    private Date matchDate;
+    private Timestamp matchDate;
     private String tossWinner;
     private String battingFirst;
 
@@ -31,7 +31,7 @@ public class Match {
     private String groundName;
     private int matchType;
 
-    public Match(int matchId, String homeTeam, String awayTeam, Date matchDate, String tossWinner, String battingFirst, Inning one, Inning two, String homeScore, String awayScore, String result, String groundName, int matchType) {
+    public Match(int matchId, String homeTeam, String awayTeam, Timestamp matchDate, String tossWinner, String battingFirst, Inning one, Inning two, String homeScore, String awayScore, String result, String groundName, int matchType) {
         this.matchId = matchId;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -72,10 +72,10 @@ public class Match {
     public void setAwayTeam(String awayTeam) {
         this.awayTeam = awayTeam;
     }
-    public Date getMatchDate() {
+    public Timestamp getMatchDate() {
         return matchDate;
     }
-    public void setMatchDate(Date matchDate) {
+    public void setMatchDate(Timestamp matchDate) {
         this.matchDate = matchDate;
     }
     public String getTossWinner() {

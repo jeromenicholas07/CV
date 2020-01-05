@@ -2173,25 +2173,22 @@ public class getData extends HttpServlet {
                 String worl = "";
                 String BorC = "";
                 System.out.println("toss" + toss);
-                if(toss.contains(teamOne)){
-                    if(toss.contains("bat")){
-                         BorC = "B";
-                    }
-                    else if(toss.contains("field")){
-                         BorC = "C";
-                    }
+                if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
+                    BorC = "B";
                 }
                 else {
-                  
-                    if(toss.contains("bat")){
-                         BorC = "C";
+                    BorC = "C";
+                }
+                if(res.contains("D/L")){
+                    if(res.contains("tied")){
+                        worl = "-";
                     }
-                    else if(toss.contains("field")){
-                         BorC = "B";
+                    else{
+                        String[] splitstr = res.split(" by ");
+                        worl = splitstr[0] + "(D/L)";
                     }
                 }
-                
-                if(res.contains(" wicket")){
+                else if(res.contains(" wicket")){
                     if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
                         worl = "L";
                     }
@@ -2224,25 +2221,23 @@ public class getData extends HttpServlet {
                 String BorC = "";
                 System.out.println("toss:" + toss);
                         
-                if(toss.contains(teamTwo)){
-                    if(toss.contains("bat")){
-                         BorC = "B";
-                    }
-                    else if(toss.contains("field")){
-                         BorC = "C";
-                    }
+                if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
+                    BorC = "B";
                 }
                 else {
-                  
-                    if(toss.contains("bat")){
-                         BorC = "C";
-                    }
-                    else if(toss.contains("field")){
-                         BorC = "B";
-                    }
+                    BorC = "C";
                 }
                 
-                if(res.contains(" wicket")){
+                if(res.contains("D/L")){
+                    if(res.contains("tied")){
+                        worl = "-";
+                    }
+                    else{
+                        String[] splitstr = res.split(" by ");
+                        worl = splitstr[0] + "(D/L)";
+                    }
+                }
+                else if(res.contains(" wicket")){
                     if(q.getHomeTeam().equalsIgnoreCase(teamTwo)){
                         worl = "L";
                     }
@@ -2288,7 +2283,16 @@ public class getData extends HttpServlet {
                     BorC = "C";
                 }
                 
-                if(res.contains(" wicket")){
+                if(res.contains("D/L")){
+                    if(res.contains("tied")){
+                        worl = "-";
+                    }
+                    else{
+                        String[] splitstr = res.split(" by ");
+                        worl = splitstr[0] + "(D/L)";
+                    }
+                }
+                else if(res.contains(" wicket")){
                     if(q.getHomeTeam().equalsIgnoreCase(teamOne)){
                         worl = "L";
                     }

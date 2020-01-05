@@ -33,6 +33,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -632,7 +633,7 @@ public class CricDB extends BaseDAO {
                 int matchId = rs.getInt("matchid");
                 String homeTeam = rs.getString("hometeam");
                 String awayTeam = rs.getString("awayteam");
-                Date matchDate = rs.getDate("matchdate");
+                Timestamp matchDate = rs.getTimestamp("matchdate");
                 String tossWinner = rs.getString("tosswinner");
                 String battingFirst = rs.getString("battingfirst");
                 int inning1_id = rs.getInt("inning1_id");
@@ -737,7 +738,7 @@ public class CricDB extends BaseDAO {
                 int matchId = rs.getInt("matchid");
                 String homeTeam = rs.getString("hometeam");
                 String awayTeam = rs.getString("awayteam");
-                Date matchDate = rs.getDate("matchdate");
+                Timestamp matchDate = rs.getTimestamp("matchdate");
                 String tossWinner = rs.getString("tosswinner");
                 String battingFirst = rs.getString("battingfirst");
                 int inning1_id = rs.getInt("inning1_id");
@@ -874,11 +875,66 @@ public class CricDB extends BaseDAO {
 //            try { stmt.close(); } catch (Exception e) { }
 //            try { con.close(); } catch (Exception e) {  }
 //        }
+//        
+//        try {
+//            String sql = "drop table \"APP\".HEADERS";
+//            con = getConnection();
+//            stmt = con.createStatement();
+//            stmt.execute(sql);
+//            System.out.println("Dropping test matches");
+//            con.close();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+//        }finally {
+//            try { rs.close(); } catch (Exception e) {  }
+//            try { stmt.close(); } catch (Exception e) { }
+//            try { con.close(); } catch (Exception e) {  }
+//        }
+//        try {
+//            String sql = "drop table \"APP\".MATCHES";
+//            con = getConnection();
+//            stmt = con.createStatement();
+//            stmt.execute(sql);
+//            System.out.println("Dropping test matches");
+//            con.close();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+//        }finally {
+//            try { rs.close(); } catch (Exception e) {  }
+//            try { stmt.close(); } catch (Exception e) { }
+//            try { con.close(); } catch (Exception e) {  }
+//        }
+//        
+//                try {
+//            String sql = "drop table \"APP\".INNINGS";
+//            con = getConnection();
+//            stmt = con.createStatement();
+//            stmt.execute(sql);
+//            System.out.println("Dropping test matches");
+//            con.close();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+//        }finally {
+//            try { rs.close(); } catch (Exception e) {  }
+//            try { stmt.close(); } catch (Exception e) { }
+//            try { con.close(); } catch (Exception e) {  }
+//        }
+        
         
 
         
         
-        
+//        
+//        
+//        
+//        
+//        
+//        
+//        
+//        
+//        
+//        
+//        
         
         try {
             String sql = "create table \"APP\".TESTMATCH\n"
@@ -1007,7 +1063,7 @@ public class CricDB extends BaseDAO {
                     + "	MATCHID INTEGER default -1 not null primary key,\n"
                     + "	HOMETEAM VARCHAR(120) not null,\n"
                     + "	AWAYTEAM VARCHAR(120) not null,\n"
-                    + "	MATCHDATE DATE,\n"
+                    + "	MATCHDATE TIMESTAMP,\n"
                     + "	TOSSWINNER VARCHAR(120) not null,\n"
                     + "	BATTINGFIRST VARCHAR(120) not null,\n"
                     + "	INNING1_ID INTEGER not null,\n"
@@ -1317,7 +1373,7 @@ public class CricDB extends BaseDAO {
             ps.setInt(1, match.getMatchId());
             ps.setString(2, match.getHomeTeam());
             ps.setString(3, match.getAwayTeam());
-            ps.setDate(4, match.getMatchDate());
+            ps.setTimestamp(4, match.getMatchDate());
             ps.setString(5, match.getTossWinner());
             ps.setString(6, match.getBattingFirst());
             ps.setInt(7, inn1);
@@ -1940,7 +1996,7 @@ public class CricDB extends BaseDAO {
                         int matchId = rs.getInt("matchid");
                         String homeTeam = rs.getString("hometeam");
                         String awayTeam = rs.getString("awayteam");
-                        Date matchDate = rs.getDate("matchdate");
+                        Timestamp matchDate = rs.getTimestamp("matchdate");
                         String tossWinner = rs.getString("tosswinner");
                         String battingFirst = rs.getString("battingfirst");
                         int inning1_id = rs.getInt("inning1_id");
@@ -1980,7 +2036,7 @@ public class CricDB extends BaseDAO {
                         int matchId = rs.getInt("matchid");
                         String homeTeam = rs.getString("hometeam");
                         String awayTeam = rs.getString("awayteam");
-                        Date matchDate = rs.getDate("matchdate");
+                        Timestamp matchDate = rs.getTimestamp("matchdate");
                         String tossWinner = rs.getString("tosswinner");
                         String battingFirst = rs.getString("battingfirst");
                         int inning1_id = rs.getInt("inning1_id");
@@ -2021,7 +2077,7 @@ public class CricDB extends BaseDAO {
                         int matchId = rs.getInt("matchid");
                         String homeTeam = rs.getString("hometeam");
                         String awayTeam = rs.getString("awayteam");
-                        Date matchDate = rs.getDate("matchdate");
+                        Timestamp matchDate = rs.getTimestamp("matchdate");
                         String tossWinner = rs.getString("tosswinner");
                         String battingFirst = rs.getString("battingfirst");
                         int inning1_id = rs.getInt("inning1_id");
@@ -2116,7 +2172,7 @@ public class CricDB extends BaseDAO {
                 int matchId = rs.getInt("matchid");
                 String homeTeam = rs.getString("hometeam");
                 String awayTeam = rs.getString("awayteam");
-                Date matchDate = rs.getDate("matchdate");
+                Timestamp matchDate = rs.getTimestamp("matchdate");
                 String tossWinner = rs.getString("tosswinner");
                 String battingFirst = rs.getString("battingfirst");
                 int inning1_id = rs.getInt("inning1_id");

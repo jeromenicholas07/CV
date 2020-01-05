@@ -11,7 +11,9 @@ import java.security.SecureRandom;
 
 import java.security.cert.X509Certificate;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -101,6 +103,7 @@ public class DataFetch {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=117;type=season");
+                ret = false;
                 continue;
             }
             if (matches == null && matches.getElementsByClass("data1").first() == null) {
@@ -134,7 +137,6 @@ public class DataFetch {
 
                 if (db.checkMatchEntry(mId)) {
                     System.out.println("Match " + mId + " exists");
-                    ret = false;
                     continue;
                 }
 
@@ -153,24 +155,6 @@ public class DataFetch {
                 String[] splitUrl = matchUrl.split("/");
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
-
-                LocalDate matchDate = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-
-                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
-                String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length - 1];
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                if (matchDate.equals(LocalDate.now().minusDays(1))) {
-                    System.out.println("Match " + mId + " today.");
-                    ret = false;
-                    continue;
-                }
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text().trim();
@@ -259,6 +243,29 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+
+                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
+
+                LocalDateTime matchDate = LocalDateTime.now();
+                String dJson = "";
+                try {
+                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
+                } catch (Exception ex) {
+                    ret = false;
+                    unloaded.put("Date acquire error", dateUrl);
+                    continue;
+                }
+
+                JSONObject dj = new JSONObject(dJson);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                try {
+                    matchDate = LocalDateTime.parse(date);
+                } catch (DateTimeParseException ex) {
+                    ret = false;
+                    unloaded.put("Date parse error", date);
+                    continue;
+                }
+
 
                 Inning one = null;
                 Inning two = null;
@@ -386,7 +393,7 @@ public class DataFetch {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
 
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
+                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
 
                 skipAndConti:
@@ -394,6 +401,8 @@ public class DataFetch {
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                ret = false;
+
                 unloaded.put(ex.getMessage() + ":", matchLink);
             }
         }
@@ -468,23 +477,6 @@ public class DataFetch {
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
 
-                LocalDate matchDate = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-
-                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
-                String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length - 1];
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(1))) {
-                    System.out.println("Match " + mId + " today.");
-                    continue;
-                }
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
@@ -572,6 +564,28 @@ public class DataFetch {
                     BorC = "B";
                 } else {
                     BorC = "-";
+                }
+                
+                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
+
+                LocalDateTime matchDate = LocalDateTime.now();
+                String dJson = "";
+                try {
+                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
+                } catch (Exception ex) {
+                    ret = false;
+                    unloaded.put("Date acquire error", dateUrl);
+                    continue;
+                }
+
+                JSONObject dj = new JSONObject(dJson);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                try {
+                    matchDate = LocalDateTime.parse(date);
+                } catch (DateTimeParseException ex) {
+                    ret = false;
+                    unloaded.put("Date parse error", date);
+                    continue;
                 }
 
                 Inning one = null;
@@ -712,10 +726,11 @@ public class DataFetch {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
 
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
+                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
             } catch (Exception ex) {
                 ex.printStackTrace();
+                ret = false;
                 unloaded.put(ex.getMessage() + ":", matchLink);
 
             }
@@ -790,23 +805,7 @@ public class DataFetch {
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
 
-                LocalDate matchDate = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-
-                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
-                String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length - 1];
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(1))) {
-                    System.out.println("Match " + mId + " today.");
-                    continue;
-                }
+                
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
@@ -894,6 +893,27 @@ public class DataFetch {
                     BorC = "B";
                 } else {
                     BorC = "-";
+                }
+                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
+
+                LocalDateTime matchDate = LocalDateTime.now();
+                String dJson = "";
+                try {
+                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
+                } catch (Exception ex) {
+                    ret = false;
+                    unloaded.put("Date acquire error", dateUrl);
+                    continue;
+                }
+
+                JSONObject dj = new JSONObject(dJson);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                try {
+                    matchDate = LocalDateTime.parse(date);
+                } catch (DateTimeParseException ex) {
+                    ret = false;
+                    unloaded.put("Date parse error", date);
+                    continue;
                 }
 
                 Inning one = null;
@@ -1015,10 +1035,11 @@ public class DataFetch {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
 
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
+                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
             } catch (Exception ex) {
                 ex.printStackTrace();
+                ret = false;
                 unloaded.put(ex.getMessage() + ":", matchLink);
             }
 
@@ -1092,23 +1113,7 @@ public class DataFetch {
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
 
-                LocalDate matchDate = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-
-                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
-                String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length - 1];
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(1))) {
-                    System.out.println("Match " + mId + " today.");
-                    continue;
-                }
+                
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
@@ -1196,6 +1201,28 @@ public class DataFetch {
                     BorC = "B";
                 } else {
                     BorC = "-";
+                }
+                
+                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
+
+                LocalDateTime matchDate = LocalDateTime.now();
+                String dJson = "";
+                try {
+                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
+                } catch (Exception ex) {
+                    ret = false;
+                    unloaded.put("Date acquire error", dateUrl);
+                    continue;
+                }
+
+                JSONObject dj = new JSONObject(dJson);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                try {
+                    matchDate = LocalDateTime.parse(date);
+                } catch (DateTimeParseException ex) {
+                    ret = false;
+                    unloaded.put("Date parse error", date);
+                    continue;
                 }
 
                 Inning one = null;
@@ -1315,10 +1342,11 @@ public class DataFetch {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
 
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
+                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
             } catch (Exception ex) {
                 ex.printStackTrace();
+                ret = false;
                 unloaded.put(ex.getMessage() + ":", matchLink);
                 continue;
             }
@@ -1394,23 +1422,7 @@ public class DataFetch {
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
 
-                LocalDate matchDate = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-
-                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
-                String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length - 1];
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(1))) {
-                    System.out.println("Match " + mId + " today.");
-                    continue;
-                }
+                
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
@@ -1499,6 +1511,28 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
+
+                LocalDateTime matchDate = LocalDateTime.now();
+                String dJson = "";
+                try {
+                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
+                } catch (Exception ex) {
+                    ret = false;
+                    unloaded.put("Date acquire error", dateUrl);
+                    continue;
+                }
+
+                JSONObject dj = new JSONObject(dJson);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                try {
+                    matchDate = LocalDateTime.parse(date);
+                } catch (DateTimeParseException ex) {
+                    ret = false;
+                    unloaded.put("Date parse error", date);
+                    continue;
+                }
+                
 
                 Inning one = null;
                 Inning two = null;
@@ -1619,11 +1653,12 @@ public class DataFetch {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
 
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
+                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                ret = false;
                 unloaded.put(ex.getMessage() + ":", matchLink);
             }
         }
@@ -1699,23 +1734,7 @@ public class DataFetch {
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
 
-                LocalDate matchDate = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-
-                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
-                String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length - 1];
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(1))) {
-                    System.out.println("Match " + mId + " too recent.");
-                    continue;
-                }
+                
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
@@ -1803,6 +1822,27 @@ public class DataFetch {
                     BorC = "B";
                 } else {
                     BorC = "-";
+                }
+                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
+
+                LocalDateTime matchDate = LocalDateTime.now();
+                String dJson = "";
+                try {
+                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
+                } catch (Exception ex) {
+                    ret = false;
+                    unloaded.put("Date acquire error", dateUrl);
+                    continue;
+                }
+
+                JSONObject dj = new JSONObject(dJson);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                try {
+                    matchDate = LocalDateTime.parse(date);
+                } catch (DateTimeParseException ex) {
+                    ret = false;
+                    unloaded.put("Date parse error", date);
+                    continue;
                 }
 
                 Inning one = null;
@@ -1923,11 +1963,12 @@ public class DataFetch {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
 
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
+                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                ret = false;
                 unloaded.put(ex.getMessage() + ":", matchLink);
             }
 
@@ -2001,23 +2042,7 @@ public class DataFetch {
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
 
-                LocalDate matchDate = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-
-                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
-                String[] parts = matchDateElement.text().split(",");
-                String matchDateString = parts[parts.length - 1];
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(1))) {
-                    System.out.println("Match " + mId + " today.");
-                    continue;
-                }
+                
 
                 Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
                 String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
@@ -2105,6 +2130,28 @@ public class DataFetch {
                     BorC = "B";
                 } else {
                     BorC = "-";
+                }
+                
+                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
+
+                LocalDateTime matchDate = LocalDateTime.now();
+                String dJson = "";
+                try {
+                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
+                } catch (Exception ex) {
+                    ret = false;
+                    unloaded.put("Date acquire error", dateUrl);
+                    continue;
+                }
+
+                JSONObject dj = new JSONObject(dJson);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                try {
+                    matchDate = LocalDateTime.parse(date);
+                } catch (DateTimeParseException ex) {
+                    ret = false;
+                    unloaded.put("Date parse error", date);
+                    continue;
                 }
 
                 Inning one = null;
@@ -2226,10 +2273,11 @@ public class DataFetch {
                 String groundName = sp.text();
                 String groundLink = ground.select("a").first().attr("href");
 
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
+                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
             } catch (Exception ex) {
                 ex.printStackTrace();
+                ret = false;
                 unloaded.put(ex.getMessage() + ":", matchLink);
             }
         }
@@ -2558,8 +2606,9 @@ public class DataFetch {
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                ret = false;
                 unloaded.put(ex.getMessage() + ":", matchLink);
-                
+
             }
         }
 

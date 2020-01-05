@@ -1,0 +1,33 @@
+- remove checkmatchEntry ret=false
+
+- delete old dateparse
+
+-paste after borc n edit url
+
+::
+String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
+
+                LocalDateTime matchDate = LocalDateTime.now();
+                String dJson = "";
+                try {
+                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
+                } catch (Exception ex) {
+                    ret = false;
+                    unloaded.put("Date acquire error", dateUrl);
+                    continue;
+                }
+
+                JSONObject dj = new JSONObject(dJson);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                try {
+                    matchDate = LocalDateTime.parse(date);
+                } catch (DateTimeParseException ex) {
+                    ret = false;
+                    unloaded.put("Date parse error", date);
+                    continue;
+                }
+
+::
+
+- change match entry
+Timestamp
