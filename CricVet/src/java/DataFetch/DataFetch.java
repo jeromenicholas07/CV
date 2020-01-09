@@ -28,6 +28,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import models.*;
+import models.testInning;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -2542,7 +2543,7 @@ public class DataFetch {
                                 wicketCount++;
                             }
 
-                            if (wicketCount <= 5) {
+                            if (wicketCount >= 5) {
                                 afterFifthWicketScore += jItem.getInt("scoreValue");
                             }
 
@@ -2556,7 +2557,7 @@ public class DataFetch {
                                 sixCount++;
                             }
                             totalRuns += jItem.getInt("scoreValue");
-                            afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
 
                         }
                     }
