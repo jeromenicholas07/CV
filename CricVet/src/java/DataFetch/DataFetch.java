@@ -375,7 +375,7 @@ public class DataFetch {
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
                     params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf(firstWicketScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(fourCount));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
@@ -708,7 +708,7 @@ public class DataFetch {
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(tenOverScore));
                     params.add(String.valueOf(lastTenOverScore));
-                    params.add(String.valueOf(firstWicketScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(fourCount));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
@@ -1017,7 +1017,7 @@ public class DataFetch {
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
                     params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf(firstWicketScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(fourCount));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
@@ -1324,7 +1324,7 @@ public class DataFetch {
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
                     params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf(firstWicketScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(fourCount));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
@@ -1634,7 +1634,7 @@ public class DataFetch {
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
                     params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf(firstWicketScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(fourCount));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
@@ -1945,7 +1945,7 @@ public class DataFetch {
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
                     params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf(firstWicketScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(fourCount));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
@@ -2255,7 +2255,7 @@ public class DataFetch {
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
                     params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf(firstWicketScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(fourCount));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
@@ -2543,8 +2543,8 @@ public class DataFetch {
                                 wicketCount++;
                             }
 
-                            if (wicketCount >= 5) {
-                                afterFifthWicketScore += jItem.getInt("scoreValue");
+                            if (wicketCount >= 5 && afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("innings").getInt("runs");
                             }
 
                             if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
@@ -2566,8 +2566,8 @@ public class DataFetch {
                     params.add(String.valueOf(totalRuns));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(firstWicketScore));
-                    params.add(String.valueOf(afterFifthWicketScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(totalRuns - afterFifthWicketScore));
                     params.add(BorC);
 
                     if (inning == 1) {
