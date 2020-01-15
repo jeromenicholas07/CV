@@ -80,11 +80,11 @@ public class DataFetch {
             sc.init(null, trustAllCerts, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         } catch (Exception e) {
-            ;
+            e.printStackTrace();
         }
     }
 
-    int yr = 2018;
+    int yr = 2017;
 
     CricDB db = new CricDB();
 
@@ -252,7 +252,7 @@ public class DataFetch {
                     dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     ret = false;
-                    unloaded.put("Date acquire error", dateUrl);
+                    unloaded.put("Date acquire error", url);
                     continue;
                 }
 
@@ -262,7 +262,7 @@ public class DataFetch {
                     matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
-                    unloaded.put("Date parse error", date);
+                    unloaded.put("Date parse error", url);
                     continue;
                 }
 
@@ -277,7 +277,7 @@ public class DataFetch {
                         json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, commentaryUrl);
+                        unloaded.put("" + mId, url);
                         ret = false;
                         continue MATCHLABEL;
 
@@ -305,7 +305,7 @@ public class DataFetch {
                             body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                         } catch (Exception ex) {
                             Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -316,7 +316,7 @@ public class DataFetch {
                             jObj = new JSONObject(body);
 
                         } catch (JSONException je) {
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -403,7 +403,7 @@ public class DataFetch {
                 ex.printStackTrace();
                 ret = false;
 
-                unloaded.put(ex.getMessage() + ":", matchLink);
+                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
             }
         }
         return ret;
@@ -574,7 +574,7 @@ public class DataFetch {
                     dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     ret = false;
-                    unloaded.put("Date acquire error", dateUrl);
+                    unloaded.put("Date acquire error", url);
                     continue;
                 }
 
@@ -584,7 +584,7 @@ public class DataFetch {
                     matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
-                    unloaded.put("Date parse error", date);
+                    unloaded.put("Date parse error", url);
                     continue;
                 }
 
@@ -599,7 +599,7 @@ public class DataFetch {
                     } catch (Exception ex) {
                         System.out.println(commentaryUrl);
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, commentaryUrl);
+                        unloaded.put("" + mId, url);
                         ret = false;
                         continue MATCHLABEL;
                     }
@@ -639,7 +639,7 @@ public class DataFetch {
                         } catch (Exception ex) {
                             System.out.println(currentPageUrl);
                             Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -648,7 +648,7 @@ public class DataFetch {
                         try {
                             jObj = new JSONObject(body);
                         } catch (JSONException je) {
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -731,7 +731,7 @@ public class DataFetch {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
-                unloaded.put(ex.getMessage() + ":", matchLink);
+                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
 
             }
         }
@@ -902,7 +902,7 @@ public class DataFetch {
                     dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     ret = false;
-                    unloaded.put("Date acquire error", dateUrl);
+                    unloaded.put("Date acquire error", url);
                     continue;
                 }
 
@@ -912,7 +912,7 @@ public class DataFetch {
                     matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
-                    unloaded.put("Date parse error", date);
+                    unloaded.put("Date parse error", url);
                     continue;
                 }
 
@@ -926,7 +926,7 @@ public class DataFetch {
                         json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, commentaryUrl);
+                        unloaded.put("" + mId, url);
                         ret = false;
                         continue MATCHLABEL;
                     }
@@ -953,7 +953,7 @@ public class DataFetch {
                             body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                         } catch (Exception ex) {
                             Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -962,7 +962,7 @@ public class DataFetch {
                         try {
                             jObj = new JSONObject(body);
                         } catch (JSONException je) {
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -1040,7 +1040,7 @@ public class DataFetch {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
-                unloaded.put(ex.getMessage() + ":", matchLink);
+                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
             }
 
         }
@@ -1211,7 +1211,7 @@ public class DataFetch {
                     dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     ret = false;
-                    unloaded.put("Date acquire error", dateUrl);
+                    unloaded.put("Date acquire error", url);
                     continue;
                 }
 
@@ -1221,7 +1221,7 @@ public class DataFetch {
                     matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
-                    unloaded.put("Date parse error", date);
+                    unloaded.put("Date parse error", url);
                     continue;
                 }
 
@@ -1235,7 +1235,7 @@ public class DataFetch {
                         json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, commentaryUrl);
+                        unloaded.put("" + mId, url);
                         ret = false;
                         continue MATCHLABEL;
                     }
@@ -1262,7 +1262,7 @@ public class DataFetch {
                             body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                         } catch (Exception ex) {
                             Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -1271,7 +1271,7 @@ public class DataFetch {
                         try {
                             jObj = new JSONObject(body);
                         } catch (JSONException je) {
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -1347,7 +1347,7 @@ public class DataFetch {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
-                unloaded.put(ex.getMessage() + ":", matchLink);
+                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
                 continue;
             }
 
@@ -1519,7 +1519,7 @@ public class DataFetch {
                     dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     ret = false;
-                    unloaded.put("Date acquire error", dateUrl);
+                    unloaded.put("Date acquire error", url);
                     continue;
                 }
 
@@ -1529,7 +1529,7 @@ public class DataFetch {
                     matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
-                    unloaded.put("Date parse error", date);
+                    unloaded.put("Date parse error", url);
                     continue;
                 }
                 
@@ -1544,7 +1544,7 @@ public class DataFetch {
                         json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, commentaryUrl);
+                        unloaded.put("" + mId, url);
                         ret = false;
                         continue MATCHLABEL;
                     }
@@ -1571,7 +1571,7 @@ public class DataFetch {
                             body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                         } catch (Exception ex) {
                             System.out.println("Missing json for : " + currentPageUrl);
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -1580,7 +1580,7 @@ public class DataFetch {
                         try {
                             jObj = new JSONObject(body);
                         } catch (JSONException je) {
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -1659,7 +1659,7 @@ public class DataFetch {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
-                unloaded.put(ex.getMessage() + ":", matchLink);
+                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
             }
         }
         return ret;
@@ -1831,7 +1831,7 @@ public class DataFetch {
                     dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     ret = false;
-                    unloaded.put("Date acquire error", dateUrl);
+                    unloaded.put("Date acquire error", url);
                     continue;
                 }
 
@@ -1841,7 +1841,7 @@ public class DataFetch {
                     matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
-                    unloaded.put("Date parse error", date);
+                    unloaded.put("Date parse error", url);
                     continue;
                 }
 
@@ -1855,7 +1855,7 @@ public class DataFetch {
                         json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, commentaryUrl);
+                        unloaded.put("" + mId, url);
                         ret = false;
                         continue MATCHLABEL;
                     }
@@ -1882,7 +1882,7 @@ public class DataFetch {
                             body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                         } catch (Exception ex) {
                             Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -1891,7 +1891,7 @@ public class DataFetch {
                         try {
                             jObj = new JSONObject(body);
                         } catch (JSONException je) {
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -1969,7 +1969,7 @@ public class DataFetch {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
-                unloaded.put(ex.getMessage() + ":", matchLink);
+                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
             }
 
         }
@@ -2140,7 +2140,7 @@ public class DataFetch {
                     dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
                 } catch (Exception ex) {
                     ret = false;
-                    unloaded.put("Date acquire error", dateUrl);
+                    unloaded.put("Date acquire error", url);
                     continue;
                 }
 
@@ -2150,7 +2150,7 @@ public class DataFetch {
                     matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
-                    unloaded.put("Date parse error", date);
+                    unloaded.put("Date parse error", url);
                     continue;
                 }
 
@@ -2164,7 +2164,7 @@ public class DataFetch {
                         json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, commentaryUrl);
+                        unloaded.put("" + mId, url);
                         ret = false;
                         continue MATCHLABEL;
                     }
@@ -2191,7 +2191,7 @@ public class DataFetch {
                             body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                         } catch (Exception ex) {
                             Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -2200,7 +2200,7 @@ public class DataFetch {
                         try {
                             jObj = new JSONObject(body);
                         } catch (JSONException je) {
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -2278,7 +2278,7 @@ public class DataFetch {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
-                unloaded.put(ex.getMessage() + ":", matchLink);
+                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
             }
         }
 
@@ -2498,7 +2498,7 @@ public class DataFetch {
                         json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                     } catch (Exception ex) {
                         Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, commentaryUrl);
+                        unloaded.put("" + mId, url);
                         ret = false;
                         continue MATCHLABEL;
                     }
@@ -2517,7 +2517,7 @@ public class DataFetch {
                         } catch (Exception ex) {
                             Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
                             System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, currentPageUrl);
+                            unloaded.put("" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -2525,7 +2525,7 @@ public class DataFetch {
                         try {
                             jObj = new JSONObject(body);
                         } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, currentPageUrl);
+                            unloaded.put("CORRUPT:" + mId, url);
                             ret = false;
                             continue MATCHLABEL;
                         }
@@ -2607,7 +2607,7 @@ public class DataFetch {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
-                unloaded.put(ex.getMessage() + ":", matchLink);
+                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
 
             }
         }
