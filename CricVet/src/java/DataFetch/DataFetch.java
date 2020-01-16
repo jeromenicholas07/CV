@@ -2250,7 +2250,7 @@ public class DataFetch {
                     if (lastFlag == 1) {
                         lastFiveOverScore = -1;
                     }
-
+                    
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
@@ -2561,7 +2561,8 @@ public class DataFetch {
 
                         }
                     }
-
+                    
+                    if(afterFifthWicketScore == -1){afterFifthWicketScore++;}
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(totalRuns));
                     params.add(String.valueOf(sixCount));
