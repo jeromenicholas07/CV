@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import java.sql.Timestamp;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -81,7 +83,9 @@ public class getDB extends HttpServlet {
                 String result;
 
                 DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
-                matchDate = dateFormat.format(matches.get(i).getMatchDate());
+                System.out.println(matches.get(i).getMatchId());
+                Timestamp ts = matches.get(i).getMatchDate();
+                matchDate = dateFormat.format(ts);
 
                 if (matches.get(i).getHomeTeam().equals(teamOne)) {
                     oppTeam = matches.get(i).getAwayTeam();

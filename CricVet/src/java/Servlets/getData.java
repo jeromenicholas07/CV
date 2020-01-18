@@ -892,7 +892,7 @@ public class getData extends HttpServlet {
             request.setAttribute("t_oneBowlSecond", t_oneBowlSecond);
             request.setAttribute("t_twoBowlFirst", t_twoBowlFirst);
             request.setAttribute("t_twoBowlSecond", t_twoBowlSecond);
-                        request.setAttribute("t_twoBowlFirstY", t_twoBowlFirstY);
+//                        request.setAttribute("t_twoBowlFirstY", t_twoBowlFirstY);
                         
 
             request.setAttribute("t_groundName", groundName);
@@ -1911,7 +1911,7 @@ public class getData extends HttpServlet {
             request.setAttribute("t_oneBowlSecond", t_oneBowlSecond);
             request.setAttribute("t_twoBowlFirst", t_twoBowlFirst);
             request.setAttribute("t_twoBowlSecond", t_twoBowlSecond);
-                        request.setAttribute("t_twoBowlFirstY", t_twoBowlFirstY);
+//                        request.setAttribute("t_twoBowlFirstY", t_twoBowlFirstY);
                         
 
             request.setAttribute("t_groundName", groundName);
