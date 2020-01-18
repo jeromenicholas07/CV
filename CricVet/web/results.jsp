@@ -421,27 +421,27 @@
 
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneBatFirst)}">${teamOne} Batting First</th>
+                                        <th colspan="${fn:length(oneBatFirstZ)}">${teamOne} Batting First</th>
                                         <th>
-                                        <th colspan="${fn:length(twoBowlFirst)}">${teamTwo} Bowling First</th>
+                                        <th colspan="${fn:length(twoBowlFirstZ)}">${teamTwo} Bowling First</th>
                                         <th>
-                                        <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
+                                        <th colspan="${fn:length(groundFirstZ)}">${groundName} First</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${oneBatFirst}">
+                                        <c:forEach var="in" items="${oneBatFirstZ}">
                                             <td name="${loop.index}Left">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${twoBowlFirst}">
+                                            <c:forEach var="in" items="${twoBowlFirstZ}">
                                             <td name="${loop.index}Left">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${groundFirst}">
+                                            <c:forEach var="in" items="${groundFirstZ}">
                                             <td>
                                                 ${in.getParams().get(loop.index)}
                                             </td>
@@ -461,13 +461,13 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${oneBatFirst}">
+                                        <c:forEach var="in" items="${oneBatFirstZ}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${twoBowlFirst}">
+                                            <c:forEach var="in" items="${twoBowlFirstZ}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
@@ -478,19 +478,19 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${oneBatFirst}">
+                                        <c:forEach var="in" items="${oneBatFirstZ}">
                                             <td name="${loop.index}Left">
                                                 ${in.getParams().get(loop.index +1)}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${twoBowlFirst}">
+                                            <c:forEach var="in" items="${twoBowlFirstZ}">
                                             <td name="${loop.index}Left">
                                                 ${in.getParams().get(loop.index +1)}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${groundFirst}">
+                                            <c:forEach var="in" items="${groundFirstZ}">
                                             <td>
                                                 ${in.getParams().get(loop.index +1)}
                                             </td>

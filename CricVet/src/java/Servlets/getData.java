@@ -2133,14 +2133,14 @@ public class getData extends HttpServlet {
                     groundSecondX.add(q);
                 }
             }
-            oneBatFirst = oneBatFirst.subList(0, Math.min(5, oneBatFirst.size()));
-            twoBowlFirst = twoBowlFirst.subList(0, Math.min(5, twoBowlFirst.size()));
-            groundFirst = groundFirst.subList(0, Math.min(5, groundFirst.size()));
-            groundSecond = groundSecond.subList(0, Math.min(5, groundSecond.size()));
             request.setAttribute("oneBatFirstX", oneBatFirstX);
             request.setAttribute("twoBowlFirstX", twoBowlFirstX);
             request.setAttribute("groundFirstX", groundFirstX.subList(0, Math.min(5, groundFirstX.size())));
             request.setAttribute("groundSecondX", groundSecondX.subList(0, Math.min(5, groundSecondX.size())));
+            oneBatFirst = oneBatFirst.subList(0, Math.min(5, oneBatFirst.size()));
+            twoBowlFirst = twoBowlFirst.subList(0, Math.min(5, twoBowlFirst.size()));
+            groundFirst = groundFirst.subList(0, Math.min(5, groundFirst.size()));
+            groundSecond = groundSecond.subList(0, Math.min(5, groundSecond.size()));
 
             List<Inning> twoBatSecondX = new ArrayList<>();
             List<Inning> oneBowlSecondX = new ArrayList<>();
@@ -2168,6 +2168,9 @@ public class getData extends HttpServlet {
             List<Inning> twoBowlFirstY = new ArrayList<>();
             
             for(Match q : db.getDB(matchType, teamOne)) {
+                Inning m = q.getInningOne();
+                List<String> params = m.getParams();
+                
                 String res = q.getResult();
                 String toss = q.getTossWinner();
                 String worl = "";
@@ -2180,6 +2183,7 @@ public class getData extends HttpServlet {
                     BorC = "C";
                 }
                 if(res.contains("D/L")){
+//                    params.set(6, params.get(6)+"(D/L)");
                     if(res.contains("tied")){
                         worl = "-";
                     }
@@ -2206,8 +2210,7 @@ public class getData extends HttpServlet {
                 }else{
                     worl = "-";
                 }
-                Inning m = q.getInningOne();
-                List<String> params = m.getParams();
+                
                 
                 params.set(7, BorC + "/" + worl);
                 m.setParams(params);
@@ -2215,6 +2218,9 @@ public class getData extends HttpServlet {
             }
 
             for(Match q : db.getDB(matchType, teamTwo)) {
+                Inning m = q.getInningOne();
+                List<String> params = m.getParams();
+                
                 String res =q.getResult();
                 String toss = q.getTossWinner();
                 String worl = "";
@@ -2229,6 +2235,7 @@ public class getData extends HttpServlet {
                 }
                 
                 if(res.contains("D/L")){
+//                    params.set(6, params.get(6)+"(D/L)");
                     if(res.contains("tied")){
                         worl = "-";
                     }
@@ -2255,8 +2262,7 @@ public class getData extends HttpServlet {
                 }else{
                     worl = "-";
                 }
-                Inning m = q.getInningOne();
-                List<String> params = m.getParams();
+                
                 params.set(7, BorC + "/" + worl);
                 m.setParams(params);
                 twoBowlFirstY.add(m);
@@ -2271,6 +2277,8 @@ public class getData extends HttpServlet {
             matches = db.getHth(matchType, teamOne, teamTwo);
             for(int i = 0; i < Math.min(5, matches.size()); i++){
                 Match q = matches.get(i);
+                Inning m = q.getInningOne();
+                List<String> params = m.getParams();
                 
                 String res =q.getResult();
                 String worl = "";
@@ -2284,6 +2292,7 @@ public class getData extends HttpServlet {
                 }
                 
                 if(res.contains("D/L")){
+//                    params.set(6, params.get(6)+"(D/L)");
                     if(res.contains("tied")){
                         worl = "-";
                     }
@@ -2310,13 +2319,72 @@ public class getData extends HttpServlet {
                 }else{
                     worl = "-";
                 }
-                Inning m = q.getInningOne();
-                List<String> params = m.getParams();
+                
                 params.set(7, BorC + "/" +worl);
                 m.setParams(params);
                 hth.add(m);
                 
             }
+            
+            
+            
+            
+            matches.clear();
+            List<Inning> oneBatFirstZ = new ArrayList<>();
+            matches = db.getMatches(teamOne, matchType, 1);
+            k = 5;
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                temp = matches.get(i).getInningOne();
+//                List<String> ps = temp.getParams();
+                if(matches.get(i).getResult().contains("D/L")){
+                    k++;
+                    continue;
+                }
+//                temp.setParams(ps);
+                oneBatFirstZ.add(temp);
+            }
+            
+            matches.clear();
+            List<Inning> twoBowlFirstZ = new ArrayList<>();
+            k = 5;
+            matches = db.getMatches(teamTwo, matchType, 2);
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                temp = matches.get(i).getInningOne();
+                if(matches.get(i).getResult().contains("D/L")){
+                    k++;
+                    continue;
+                }
+                twoBowlFirstZ.add(temp);
+            }
+            
+            
+            
+            matches.clear();
+            List<Inning> groundFirstZ = new ArrayList<>();
+            List<Inning> groundSecondZ = new ArrayList<>();
+            k = 5;
+            matches = db.getGroundInfo(groundName, matchType);
+            for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                
+                if(matches.get(i).getResult().contains("D/L")){
+                    k++;
+                    continue;
+                }
+                
+                temp = matches.get(i).getInningOne();
+                groundFirstZ.add(temp);
+                Inning temp2 = matches.get(i).getInningTwo();
+                groundSecondZ.add(temp2);
+
+            }
+            
+            
+            request.setAttribute("oneBatFirstZ", oneBatFirstZ.subList(0, Math.min(5, oneBatFirstZ.size())));
+            request.setAttribute("twoBowlFirstZ", twoBowlFirstZ.subList(0, Math.min(5, twoBowlFirstZ.size())));
+            request.setAttribute("groundFirstZ", groundFirstZ.subList(0, Math.min(5, groundFirstZ.size())));
+            request.setAttribute("groundSecondZ", groundSecondZ.subList(0, Math.min(5, groundSecondZ.size())));
+            
+            
             
             
             
