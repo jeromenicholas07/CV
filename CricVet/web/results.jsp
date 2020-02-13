@@ -690,7 +690,7 @@
                         var den = 0;
 
                         $('td[name="' + nam + '"]').each(function () {
-                            if (parseInt($(this).text()) == -1) {
+                            if (parseInt($(this).text()) === -1) {
 
                             } else if (parseInt($(this).text()) >= parseInt(val)) {
                                 num++;
@@ -719,13 +719,13 @@
                 var name = $(this).attr("name");
 
                 $('td[name="' + name + '"]').each(function () {
-                    $(this).removeClass("greater")
-                    $(this).removeClass("lower")
+                    $(this).removeClass("greater");
+                    $(this).removeClass("lower");
                     $('#' + name).text("@");
                 });
 
 
-                if (inp.length == 0) {
+                if (inp.length === 0) {
                     $('td[name="' + name + '"]').each(function () {
                         $(this).removeClass("greater");
                         $(this).removeClass("lower");
@@ -738,7 +738,7 @@
                     var den = 0;
 
                     $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) == -1) {
+                        if (parseInt($(this).text()) === -1) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
                             $(this).addClass("greater");
@@ -762,13 +762,13 @@
                 var name = $(this).attr("name");
 
                 $('td[name="' + name + '"]').each(function () {
-                    $(this).removeClass("greater")
-                    $(this).removeClass("lower")
+                    $(this).removeClass("greater");
+                    $(this).removeClass("lower");
                     $('#' + name).text("@");
                 });
 
 
-                if (inp.length == 0) {
+                if (inp.length === 0) {
                     $('td[name="' + name + '"]').each(function () {
                         $(this).removeClass("greater");
                         $(this).removeClass("lower");
@@ -784,7 +784,7 @@
                     var den = 0;
 
                     $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) == -1) {
+                        if (parseInt($(this).text()) === -1) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
 

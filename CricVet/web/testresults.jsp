@@ -46,8 +46,6 @@
                 <div class="col-12">
                     <h5 class="card-title">Head to head</h5>
 
-
-
                     <table class="table table-bordered">
                         <tr class="thead-dark">
                             <th colspan="${fn:length(hth)}">${teamOne} v/s ${teamTwo}</th>
@@ -166,13 +164,13 @@
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${t_oneBatFirstY}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
                             <td></td>
                             <c:forEach var="in" items="${t_twoBowlFirstY}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
@@ -202,7 +200,7 @@
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${onetotal}">
-                                <td name="-1Left">
+                                <td name="A">
                                     ${in.getFours()}
                                 </td>
                             </c:forEach>
@@ -210,13 +208,38 @@
                             <td></td>
 
                             <c:forEach var="in" items="${twototal}">
-                                <td name="-1Left">
+                                <td name="A">
                                     ${in.getFours()}
                                 </td>
                             </c:forEach>
                             <td></td>
                             
+                            <td>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="A" id="A">@</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="A">
+                                </div>
 
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${onetotal}">
+                                <td name="AOdd">
+
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="in" items="${twototal}">
+                                <td name="AOdd">
+
+                                </td>
+                            </c:forEach>
+                            <td colspan="2"></td>
 
                         </tr>
 
@@ -240,7 +263,7 @@
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${onetotal}">
-                                <td name="-1Left">
+                                <td name="B">
                                     ${in.getSixes()}
                                 </td>
                             </c:forEach>
@@ -248,13 +271,38 @@
                             <td></td>
 
                             <c:forEach var="in" items="${twototal}">
-                                <td name="-1Left">
+                                <td name="B">
                                     ${in.getSixes()}
                                 </td>
                             </c:forEach>
                             <td></td>
-                            
+                            <td>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="B" id="B">@</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="B">
+                                </div>
 
+                            </td>
+
+
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${onetotal}">
+                                <td name="BOdd">
+
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="in" items="${twototal}">
+                                <td name="BOdd">
+
+                                </td>
+                            </c:forEach>
+                            <td colspan="2"></td>
 
                         </tr>
 
@@ -278,18 +326,18 @@
                                         <th>
                                         <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1)}">${t_groundName} First Inning</th>
+                                        <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} First Inning</th>
                                         <th>Odds</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
-                                            <td name="${loop.index}Left">
+                                            <td name="C">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlFirst}">
-                                            <td name="${loop.index}Left">
+                                            <td name="C">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
@@ -299,52 +347,47 @@
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
+                                            <td></td>
                                         <td>
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="C" id="C">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="C">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
 
 
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="COdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlFirst}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="COdd">
 
                                             </td>
                                         </c:forEach>
+                                            
 
 
                                     </tr>
                                     <tr>
                             <c:forEach var="in" items="${t_teamoneBatFirst}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
                             <td></td>
                             <c:forEach var="in" items="${t_teamtwoBowlFirst}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
-                            <td></td>
-
-                            <td>
-                            </td>
-
-
                                  </tr>
                                     
 
@@ -370,13 +413,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
-                                            <td name="${loop.index}Left">
+                                            <td name="D">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlFirst}">
-                                            <td name="${loop.index}Left">
+                                            <td name="D">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
@@ -390,11 +433,10 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="D" id="D">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="D">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
 
 
@@ -402,13 +444,13 @@
 
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="DOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlFirst}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="DOdd">
 
                                             </td>
                                         </c:forEach>
@@ -438,13 +480,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
-                                            <td name="${loop.index}Left">
+                                            <td name="E">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlFirst}">
-                                            <td name="${loop.index}Left">
+                                            <td name="E">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
@@ -458,11 +500,10 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="E" id="E">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="E">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
 
 
@@ -470,13 +511,13 @@
 
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="EOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlFirst}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="EOdd">
 
                                             </td>
                                         </c:forEach>
@@ -515,13 +556,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
-                                            <td name="${loop.index}Left">
+                                            <td name="F">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlSecond}">
-                                            <td name="${loop.index}Left">
+                                            <td name="F">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
@@ -535,9 +576,9 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="F" id="F">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="F">
                                             </div>
                                             <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
@@ -546,13 +587,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="FOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlSecond}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="FOdd">
 
                                             </td>
                                         </c:forEach>
@@ -561,22 +602,17 @@
                                     </tr>
                                     <tr>
                             <c:forEach var="in" items="${t_teamtwoBatSecond}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
                             <td></td>
                             <c:forEach var="in" items="${t_teamoneBowlSecond}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
-                            <td></td>
-
-                            <td>
-                            </td>
-
-
+                            
                                  </tr>
                                 </table>
 
@@ -600,13 +636,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
-                                            <td name="${loop.index}Left">
+                                            <td name="G">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlSecond}">
-                                            <td name="${loop.index}Left">
+                                            <td name="G">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
@@ -620,11 +656,10 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="G" id="G">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="G">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
 
 
@@ -632,13 +667,13 @@
 
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="GOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlSecond}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="GOdd">
 
                                             </td>
                                         </c:forEach>
@@ -668,13 +703,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
-                                            <td name="${loop.index}Left">
+                                            <td name="H">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlSecond}">
-                                            <td name="${loop.index}Left">
+                                            <td name="H">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
@@ -688,11 +723,10 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="H" id="H">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="H">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
 
 
@@ -700,18 +734,16 @@
 
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="HOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlSecond}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="HOdd">
 
                                             </td>
                                         </c:forEach>
-
-
 
                                     </tr>
 
@@ -744,13 +776,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
-                                            <td name="${loop.index}Left">
+                                            <td name="I">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlThird}">
-                                            <td name="${loop.index}Left">
+                                            <td name="I">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
@@ -764,24 +796,23 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="I" id="I">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="I">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
 
 
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="IOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlThird}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="IOdd">
 
                                             </td>
                                         </c:forEach>
@@ -790,13 +821,13 @@
                                     </tr>
                                     <tr>
                             <c:forEach var="in" items="${t_teamoneBatThird}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
                             <td></td>
                             <c:forEach var="in" items="${t_teamtwoBowlThird}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
@@ -828,13 +859,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
-                                            <td name="${loop.index}Left">
+                                            <td name="J">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlThird}">
-                                            <td name="${loop.index}Left">
+                                            <td name="J">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
@@ -848,11 +879,10 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="J" id="J">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="J">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
                                         </td>
 
 
@@ -860,13 +890,13 @@
 
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="JOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlThird}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="JOdd">
 
                                             </td>
                                         </c:forEach>
@@ -896,13 +926,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
-                                            <td name="${loop.index}Left">
+                                            <td name="K">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlThird}">
-                                            <td name="${loop.index}Left">
+                                            <td name="K">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
@@ -916,11 +946,11 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="K" id="K">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="K">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                            <!--<input type="number" id="K" >-->
                                         </td>
 
 
@@ -928,13 +958,13 @@
 
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="KOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamtwoBowlThird}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="KOdd">
 
                                             </td>
                                         </c:forEach>
@@ -972,13 +1002,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
-                                            <td name="${loop.index}Left">
+                                            <td name="L">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlFourth}">
-                                            <td name="${loop.index}Left">
+                                            <td name="L">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
@@ -992,24 +1022,24 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="L" id="L">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="L">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                            <!--<input type="number" id="L" >-->
                                         </td>
 
 
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="LOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlFourth}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="LOdd">
 
                                             </td>
                                         </c:forEach>
@@ -1018,22 +1048,17 @@
                                     </tr>
                                     <tr>
                             <c:forEach var="in" items="${t_teamtwoBatFourth}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
                             <td></td>
                             <c:forEach var="in" items="${t_teamoneBowlFourth}">
-                                <td name="-2Left">
+                                <td>
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
-                            <td></td>
-
-                            <td>
-                            </td>
-
-
+                            
                                  </tr>
                                 </table>
 
@@ -1057,13 +1082,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
-                                            <td name="${loop.index}Left">
+                                            <td name="M">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlFourth}">
-                                            <td name="${loop.index}Left">
+                                            <td name="M">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
@@ -1077,11 +1102,11 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="M" id="M">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="M">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                            <!--<input type="number" id="M" >-->
                                         </td>
 
 
@@ -1089,13 +1114,13 @@
 
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="MOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlFourth}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="MOdd">
 
                                             </td>
                                         </c:forEach>
@@ -1125,13 +1150,13 @@
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
-                                            <td name="${loop.index}Left">
+                                            <td name="N">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlFourth}">
-                                            <td name="${loop.index}Left">
+                                            <td name="N">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
@@ -1145,11 +1170,11 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">@</span>
+                                                    <span class="input-group-text" name="N" id="N">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
+                                                <input type="number" class="form-control" name="N">
                                             </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
+                                            <!--<input type="number" id="N" >-->
                                         </td>
 
 
@@ -1157,13 +1182,13 @@
 
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="NOdd">
 
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_teamoneBowlFourth}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <td name="NOdd">
 
                                             </td>
                                         </c:forEach>
@@ -1191,7 +1216,7 @@
         <script type="text/javascript">
             $(document).ready(function () {
 
-                var classes = ["-Left","-1Left", "0Left", "1Left", "2Left", "3Left", "4Left", "5Left", "6Left", "1Left2", "3Left2"];
+                var classes = ["-Left","-1Left","A","B","C","D","E","F","G","H","I","J","K","L","M","N" ];
 
                 var i;
                 for (i = 0; i < classes.length; i++) {
@@ -1209,7 +1234,7 @@
                         var den = 0;
 
                         $('td[name="' + nam + '"]').each(function () {
-                            if (parseInt($(this).text()) == -1) {
+                            if (parseInt($(this).text()) === -1) {
 
                             } else if (parseInt($(this).text()) >= parseInt(val)) {
                                 num++;
@@ -1238,13 +1263,13 @@
                 var name = $(this).attr("name");
 
                 $('td[name="' + name + '"]').each(function () {
-                    $(this).removeClass("greater")
-                    $(this).removeClass("lower")
+                    $(this).removeClass("greater");
+                    $(this).removeClass("lower");
                     $('#' + name).text("@");
                 });
 
 
-                if (inp.length == 0) {
+                if (inp.length === 0) {
                     $('td[name="' + name + '"]').each(function () {
                         $(this).removeClass("greater");
                         $(this).removeClass("lower");
@@ -1257,7 +1282,7 @@
                     var den = 0;
 
                     $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) == -1) {
+                        if (parseInt($(this).text()) === -1) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
                             $(this).addClass("greater");
@@ -1281,13 +1306,13 @@
                 var name = $(this).attr("name");
 
                 $('td[name="' + name + '"]').each(function () {
-                    $(this).removeClass("greater")
-                    $(this).removeClass("lower")
+                    $(this).removeClass("greater");
+                    $(this).removeClass("lower");
                     $('#' + name).text("@");
                 });
 
 
-                if (inp.length == 0) {
+                if (inp.length === 0) {
                     $('td[name="' + name + '"]').each(function () {
                         $(this).removeClass("greater");
                         $(this).removeClass("lower");
@@ -1303,7 +1328,7 @@
                     var den = 0;
 
                     $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) == -1) {
+                        if (parseInt($(this).text()) === -1) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
 
