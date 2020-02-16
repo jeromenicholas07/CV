@@ -711,43 +711,43 @@ public class getData extends HttpServlet {
                     }
 
                     for (testInning q : t_teamoneBatFirst) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamoneBatFirst1.add(q);
                         }
                     }
                     for (testInning q : t_teamoneBatThird) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamoneBatThird1.add(q);
                         }
                     }
                     for (testInning q : t_teamoneBowlSecond) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamoneBowlSecond1.add(q);
                         }
                     }
                     for (testInning q : t_teamoneBowlFourth) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamoneBowlFourth1.add(q);
                         }
                     }
 
                     for (testInning q : t_teamtwoBatSecond) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamtwoBatSecond1.add(q);
                         }
                     }
                     for (testInning q : t_teamtwoBatFourth) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamtwoBatFourth1.add(q);
                         }
                     }
                     for (testInning q : t_teamtwoBowlFirst) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamtwoBowlFirst1.add(q);
                         }
                     }
                     for (testInning q : t_teamtwoBowlThird) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamtwoBowlThird1.add(q);
                         }
                     }
@@ -1552,43 +1552,43 @@ public class getData extends HttpServlet {
                     }
 
                     for (testInning q : t_teamoneBatFirst) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamoneBatFirst1.add(q);
                         }
                     }
                     for (testInning q : t_teamoneBatThird) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamoneBatThird1.add(q);
                         }
                     }
                     for (testInning q : t_teamoneBowlSecond) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamoneBowlSecond1.add(q);
                         }
                     }
                     for (testInning q : t_teamoneBowlFourth) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamoneBowlFourth1.add(q);
                         }
                     }
 
                     for (testInning q : t_teamtwoBatSecond) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamtwoBatSecond1.add(q);
                         }
                     }
                     for (testInning q : t_teamtwoBatFourth) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamtwoBatFourth1.add(q);
                         }
                     }
                     for (testInning q : t_teamtwoBowlFirst) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamtwoBowlFirst1.add(q);
                         }
                     }
                     for (testInning q : t_teamtwoBowlThird) {
-                        if (q.getRuns5wicket() != -1) {
+                        if (q.getRuns5wicket() != -1 && q.getTotalruns()!=0) {
                             t_teamtwoBowlThird1.add(q);
                         }
                     }

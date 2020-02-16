@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -495,6 +496,9 @@ public class DataFetch {
 
                 Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
                 String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
+                        
+                if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
 
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
@@ -729,6 +733,10 @@ public class DataFetch {
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
+                }
+                else{
+                    continue;
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
@@ -2061,6 +2069,9 @@ public class DataFetch {
 
                 Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
                 String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
+                        
+                if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
 
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
@@ -2276,6 +2287,10 @@ public class DataFetch {
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
+                }
+                else{
+                    continue;
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
@@ -2295,7 +2310,7 @@ public class DataFetch {
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
 
-        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int year = 2020;//Calendar.getInstance().get(Calendar.YEAR);
 
         for (int y = year; y >= 2016; y--) {
             Document matches;
@@ -2399,6 +2414,13 @@ public class DataFetch {
 
                 Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
                 String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                
+                List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
+                        
+                if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
+                    
+                
+                
 
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
@@ -2432,6 +2454,12 @@ public class DataFetch {
                 Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 String tossResult = detailsColumn.get(1).text();
+                if (tossResult.contains("bat") || tossResult.contains("field")){
+                    tossResult = tossResult;
+                }
+                else{
+                    tossResult = detailsColumn.get(2).text();
+                }
 
                 String battingFirst;
                 if (tossResult.contains(homeTeamName)) {
@@ -2605,8 +2633,12 @@ public class DataFetch {
 
                 skipAndConti:
                 ;
-
-            } catch (Exception ex) {
+                }
+                else{
+                    continue;
+                }
+            }
+            catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
                 unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
