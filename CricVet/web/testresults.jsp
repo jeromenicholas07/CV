@@ -373,6 +373,7 @@
                                             </td>
                                         </c:forEach>
                                             
+                                            
 
 
                                     </tr>
@@ -388,6 +389,14 @@
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
+                                <td></td>
+                                <c:forEach var="in" items="${t_groundFirst1X}">
+                                <td>
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                                
+                                
                                  </tr>
                                     
 
@@ -612,6 +621,12 @@
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
+                                <td></td>
+                                <c:forEach var="in" items="${t_groundSecond1X}">
+                                <td>
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
                             
                                  </tr>
                                 </table>
@@ -832,6 +847,12 @@
                                 </td>
                             </c:forEach>
                             <td></td>
+                            
+                                <c:forEach var="in" items="${t_groundFirst2X}">
+                                <td>
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
 
                             <td>
                             </td>
@@ -1054,6 +1075,13 @@
                             </c:forEach>
                             <td></td>
                             <c:forEach var="in" items="${t_teamoneBowlFourth}">
+                                <td>
+                                    ${in.getWinner()}
+                                </td>
+                            </c:forEach>
+                                <td></td>
+                            
+                                <c:forEach var="in" items="${t_groundSecond2X}">
                                 <td>
                                     ${in.getWinner()}
                                 </td>

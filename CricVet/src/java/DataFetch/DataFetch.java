@@ -2501,7 +2501,7 @@ public class DataFetch {
                 } else if (result.contains(" run")) {
                     BorC = "B";
                 } else {
-                    BorC = "-";
+                    BorC = "D";
                 }
 
                 String seriesNo = splitUrl[seriesPos];
