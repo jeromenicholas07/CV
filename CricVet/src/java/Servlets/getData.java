@@ -2177,15 +2177,8 @@ public class getData extends HttpServlet {
                     } else {
                         BorC = "C";
                     }
-                    if (res.contains("D/L")) {
-//                    params.set(6, params.get(6)+"(D/L)");
-                        if (res.contains("tied")) {
-                            worl = "-";
-                        } else {
-                            String[] splitstr = res.split(" by ");
-                            worl = splitstr[0] + "(D/L)";
-                        }
-                    } else if (res.contains(" wicket")) {
+                    
+                    if (res.contains(" wicket")) {
                         if (q.getHomeTeam().equalsIgnoreCase(teamOne)) {
                             worl = "L";
                         } else {
@@ -2199,6 +2192,10 @@ public class getData extends HttpServlet {
                         }
                     } else {
                         worl = "-";
+                    }
+                    
+                    if (res.contains("D/L")) {
+                            worl = worl + "(D/L)";
                     }
 
                     params.set(7, BorC + "/" + worl);
@@ -2225,16 +2222,8 @@ public class getData extends HttpServlet {
                     } else {
                         BorC = "C";
                     }
-
-                    if (res.contains("D/L")) {
-//                    params.set(6, params.get(6)+"(D/L)");
-                        if (res.contains("tied")) {
-                            worl = "-";
-                        } else {
-                            String[] splitstr = res.split(" by ");
-                            worl = splitstr[0] + "(D/L)";
-                        }
-                    } else if (res.contains(" wicket")) {
+                    
+                    if (res.contains(" wicket")) {
                         if (q.getHomeTeam().equalsIgnoreCase(teamTwo)) {
                             worl = "L";
                         } else {
@@ -2248,6 +2237,10 @@ public class getData extends HttpServlet {
                         }
                     } else {
                         worl = "-";
+                    }
+                    
+                    if (res.contains("D/L")) {
+                            worl = worl + "(D/L)";
                     }
 
                     params.set(7, BorC + "/" + worl);
@@ -2278,15 +2271,7 @@ public class getData extends HttpServlet {
                         BorC = "C";
                     }
 
-                    if (res.contains("D/L")) {
-//                    params.set(6, params.get(6)+"(D/L)");
-                        if (res.contains("tied")) {
-                            worl = "-";
-                        } else {
-                            String[] splitstr = res.split(" by ");
-                            worl = splitstr[0] + "(D/L)";
-                        }
-                    } else if (res.contains(" wicket")) {
+                    if (res.contains(" wicket")) {
                         if (q.getHomeTeam().equalsIgnoreCase(teamOne)) {
                             worl = "L";
                         } else {
@@ -2300,6 +2285,10 @@ public class getData extends HttpServlet {
                         }
                     } else {
                         worl = "-";
+                    }
+                    
+                    if (res.contains("D/L")) {
+                            worl = worl + "(D/L)";
                     }
 
                     params.set(7, BorC + "/" + worl);
@@ -2318,7 +2307,10 @@ public class getData extends HttpServlet {
 //                List<String> ps = temp.getParams();
                     if (matches.get(i).getResult().contains("D/L")) {
                         k++;
-                        continue;
+                        List<String> params = temp.getParams();
+                        String tot = params.get(6);
+                        params.set(6, tot+" (D/L)");
+                        temp.setParams(params);
                     }
 //                temp.setParams(ps);
                     oneBatFirstZ.add(temp);
@@ -2333,7 +2325,10 @@ public class getData extends HttpServlet {
                     temp = matches.get(i).getInningOne();
                     if (matches.get(i).getResult().contains("D/L")) {
                         k++;
-                        continue;
+                        List<String> params = temp.getParams();
+                        String tot = params.get(6);
+                        params.set(6, tot+" (D/L)");
+                        temp.setParams(params);
                     }
                     twoBowlFirstZ.add(temp);
                 }
@@ -2345,23 +2340,31 @@ public class getData extends HttpServlet {
                 matches = db.getGroundInfo(groundName, matchType);
                 matches.removeIf(m -> (m.getMatchDate().after(backDate)));
                 for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                    temp = matches.get(i).getInningOne();
+                    Inning temp2 = matches.get(i).getInningTwo();
 
                     if (matches.get(i).getResult().contains("D/L")) {
                         k++;
-                        continue;
+                        List<String> params = temp.getParams();
+                        String tot = params.get(6);
+                        params.set(6, tot+" (D/L)");
+                        temp.setParams(params);
+                        
+                        List<String> params2 = temp2.getParams();
+                        String tot2 = params2.get(6);
+                        params2.set(6, tot2+" (D/L)");
+                        temp2.setParams(params2);
                     }
 
-                    temp = matches.get(i).getInningOne();
                     groundFirstZ.add(temp);
-                    Inning temp2 = matches.get(i).getInningTwo();
                     groundSecondZ.add(temp2);
 
                 }
 
-                request.setAttribute("oneBatFirstZ", oneBatFirstZ.subList(0, Math.min(5, oneBatFirstZ.size())));
-                request.setAttribute("twoBowlFirstZ", twoBowlFirstZ.subList(0, Math.min(5, twoBowlFirstZ.size())));
-                request.setAttribute("groundFirstZ", groundFirstZ.subList(0, Math.min(5, groundFirstZ.size())));
-                request.setAttribute("groundSecondZ", groundSecondZ.subList(0, Math.min(5, groundSecondZ.size())));
+                request.setAttribute("oneBatFirstZ", oneBatFirstZ);
+                request.setAttribute("twoBowlFirstZ", twoBowlFirstZ);
+                request.setAttribute("groundFirstZ", groundFirstZ);
+                request.setAttribute("groundSecondZ", groundSecondZ);
 
                 out.println(oneBatFirst.size());
                 out.println(oneBatSecond.size());

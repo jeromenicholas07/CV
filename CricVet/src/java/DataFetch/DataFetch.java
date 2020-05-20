@@ -42,6 +42,7 @@ import models.testInning;
 import models.testMatch;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -238,6 +239,8 @@ public class DataFetch {
                 String result = winner.select("span").first().text();
 
                 String BorC = "";
+                if(result.contains("No result")){continue;}
+                
                 if (result.contains(" wicket")) {
                     BorC = "C";
                 } else if (result.contains(" run")) {
@@ -370,6 +373,15 @@ public class DataFetch {
                     }
                     if (lastFlag == 1) {
                         lastFiveOverScore = -1;
+                    }
+                    
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
                     }
 
                     List<String> params = new ArrayList<>();
@@ -562,7 +574,9 @@ public class DataFetch {
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String result = winner.select("span").first().text();
 
-                String BorC = "";
+                String BorC = "";                
+                if(result.contains("No result")){continue;}
+                
                 if (result.contains(" wicket")) {
                     BorC = "C";
                 } else if (result.contains(" run")) {
@@ -708,6 +722,14 @@ public class DataFetch {
                         lastTenOverScore = -1;
                     }
 
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }                   
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(tenOverScore));
@@ -895,7 +917,9 @@ public class DataFetch {
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String result = winner.select("span").first().text();
 
-                String BorC = "";
+                String BorC = "";                
+                if(result.contains("No result")){continue;}
+                
                 if (result.contains(" wicket")) {
                     BorC = "C";
                 } else if (result.contains(" run")) {
@@ -1021,6 +1045,14 @@ public class DataFetch {
                         lastFiveOverScore = -1;
                     }
 
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }                   
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
@@ -1203,7 +1235,9 @@ public class DataFetch {
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String result = winner.select("span").first().text();
 
-                String BorC = "";
+                String BorC = "";                
+                if(result.contains("No result")){continue;}
+                
                 if (result.contains(" wicket")) {
                     BorC = "C";
                 } else if (result.contains(" run")) {
@@ -1328,6 +1362,14 @@ public class DataFetch {
                         lastFiveOverScore = -1;
                     }
 
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }                   
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
@@ -1512,7 +1554,9 @@ public class DataFetch {
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String result = winner.select("span").first().text();
 
-                String BorC = "";
+                String BorC = "";                
+                if(result.contains("No result")){continue;}
+                
                 if (result.contains(" wicket")) {
                     BorC = "C";
                 } else if (result.contains(" run")) {
@@ -1638,6 +1682,14 @@ public class DataFetch {
                         lastFiveOverScore = -1;
                     }
 
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }                  
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
@@ -1824,7 +1876,9 @@ public class DataFetch {
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String result = winner.select("span").first().text();
 
-                String BorC = "";
+                String BorC = "";                
+                if(result.contains("No result")){continue;}
+                
                 if (result.contains(" wicket")) {
                     BorC = "C";
                 } else if (result.contains(" run")) {
@@ -1949,6 +2003,14 @@ public class DataFetch {
                         lastFiveOverScore = -1;
                     }
 
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }                   
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
@@ -2135,7 +2197,9 @@ public class DataFetch {
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String result = winner.select("span").first().text();
 
-                String BorC = "";
+                String BorC = "";                
+                if(result.contains("No result")){continue;}
+                
                 if (result.contains(" wicket")) {
                     BorC = "C";
                 } else if (result.contains(" run")) {
@@ -2262,6 +2326,14 @@ public class DataFetch {
                         lastFiveOverScore = -1;
                     }
                     
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }                
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(firstOverScore));
                     params.add(String.valueOf(sixOverScore));
@@ -2495,7 +2567,9 @@ public class DataFetch {
                 Elements winner = matchPage.getElementsByClass("cscore_notes");
                 String result = winner.select("span").first().text();
 
-                String BorC = "";
+                String BorC = "";                
+                if(result.contains("No result")){continue;}
+                
                 if (result.contains(" wicket")) {
                     BorC = "C";
                 } else if (result.contains(" run")) {

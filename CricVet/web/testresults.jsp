@@ -4,6 +4,10 @@
     Author     : DELL
 --%>
 
+<%@page import="models.testInning"%>
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.Comparator"%>
+<%@page import="javax.servlet.jsp.jstl.core.LoopTagStatus"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="models.Inning"%>
 <%@page import="java.util.List"%>
@@ -49,7 +53,6 @@
                     <table class="table table-bordered">
                         <tr class="thead-dark">
                             <th colspan="${fn:length(hth)}">${teamOne} v/s ${teamTwo}</th>
-                            <th>Odds</th>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${hth}">
@@ -58,24 +61,9 @@
                                 </td>
                             </c:forEach>
 
-                            <td>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" name="-Left" id="-Left">@</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="-Left">
-                                </div>
-                            </td>
+                           
                         </tr>
-                        <tr>
-                            <c:forEach var="in" items="${hth}">
-                                <td name="-LeftOdd">
-
-                                </td>
-                            </c:forEach>
-                            
-                            <td colspan="2"></td>
-                        </tr>
+                        
                         
 
                         
@@ -102,9 +90,7 @@
                             <th colspan="${fn:length(t_oneBatFirstY)}">${teamOne}</th>
                             <th>
                             <th colspan="${fn:length(t_twoBowlFirstY)}">${teamTwo}</th>
-                            <th>
 
-                            <th>Odds</th>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${t_oneBatFirstY}">
@@ -120,48 +106,12 @@
                                     ${in.getTotalruns()}
                                 </td>
                             </c:forEach>
-                            <td></td>
-                            <td>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" name="-1Left" id="-1Left">@</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="-1Left">
-                                </div>
-
-                            </td>
-
-
+                            
                         </tr>
 
 
 
 
-
-
-
-
-
-
-
-
-                        <tr>
-                            <c:forEach var="in" items="${t_oneBatFirstY}">
-                                <td name="-1LeftOdd">
-
-                                </td>
-                            </c:forEach>
-
-                            <td></td>
-
-                            <c:forEach var="in" items="${t_twoBowlFirstY}">
-                                <td name="-1LeftOdd">
-
-                                </td>
-                            </c:forEach>
-                            <td colspan="2"></td>
-
-                        </tr>
                         <tr>
                             <c:forEach var="in" items="${t_oneBatFirstY}">
                                 <td>
@@ -174,10 +124,7 @@
                                     ${in.getWinner()}
                                 </td>
                             </c:forEach>
-                            <td></td>
-
-                            <td>
-                            </td>
+                            
 
 
                         </tr>
@@ -343,7 +290,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundFirst1X}">
-                                            <td>
+                                            <td name="CGr">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
@@ -373,6 +320,13 @@
                                             </td>
                                         </c:forEach>
                                             
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
+                                            <td name="CGrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
+                                            
                                             
 
 
@@ -398,6 +352,84 @@
                                 
                                 
                                  </tr>
+                                 
+                                 <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBatFirst"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBowlFirst"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundFirst1X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
                                     
 
                                 </table>
@@ -434,7 +466,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundFirst1X}">
-                                            <td>
+                                            <td name="DGr">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
@@ -463,10 +495,101 @@
 
                                             </td>
                                         </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
+                                            <td name="DGrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
 
 
                                     </tr>
+                                    
+                                    
+                                    
+                                    <tr>
+                                        <td>Sorted:
+                                    </tr>
+                                    <tr>
+                                    <%
+
+                                    if(true){
+                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                        List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBatFirst"));
+                                        Collections.sort(As, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("As", As);
+
+                                        List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBowlFirst"));
+                                        Collections.sort(Bs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("Bs", Bs);
+
+                                        List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundFirst1X"));
+                                        Collections.sort(Gs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("Gs", Gs);
+
+                                        List<testInning> ASs = new ArrayList<testInning>();
+                                        ASs.addAll(As);
+                                        ASs.addAll(Bs);
+                                        Collections.sort(ASs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("ASs", ASs);
+
+                                    }
+                                    %>
+                                        <c:forEach var="in" items="${As}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Bs}">
+                                            <td>
+                                               ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Gs}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${ASs}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    
+                                    
+                                    
                                 </table>
 
                             </div>
@@ -501,7 +624,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundFirst1X}">
-                                            <td>
+                                            <td name="EGr">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
@@ -531,9 +654,93 @@
                                             </td>
                                         </c:forEach>
 
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst1X}">
+                                            <td name="EGrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
 
                                     </tr>
+                                    
+                                    <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBatFirst"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBowlFirst"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundFirst1X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
 
                                     
                                 </table>
@@ -577,7 +784,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundSecond1X}">
-                                            <td>
+                                            <td name="FGr">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
@@ -606,6 +813,13 @@
 
                                             </td>
                                         </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundSecond1X}">
+                                            <td name="FGrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
 
                                     </tr>
@@ -629,6 +843,86 @@
                             </c:forEach>
                             
                                  </tr>
+                                 
+                                 
+                                 <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBatSecond"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBowlSecond"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundSecond1X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                
                                 </table>
 
                             </div>
@@ -663,7 +957,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundSecond1X}">
-                                            <td>
+                                            <td name="GGr">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
@@ -692,10 +986,98 @@
 
                                             </td>
                                         </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundSecond1X}">
+                                            <td name="GGrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
 
 
                                     </tr>
+                                    
+                                    
+                                    <tr>
+                                        <td>Sorted:
+                                    </tr>
+                                    <tr>
+                                    <%
+
+                                    if(true){
+                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                        List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBatSecond"));
+                                        Collections.sort(As, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("As", As);
+
+                                        List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBowlSecond"));
+                                        Collections.sort(Bs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("Bs", Bs);
+
+                                        List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundSecond1X"));
+                                        Collections.sort(Gs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("Gs", Gs);
+
+                                        List<testInning> ASs = new ArrayList<testInning>();
+                                        ASs.addAll(As);
+                                        ASs.addAll(Bs);
+                                        Collections.sort(ASs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("ASs", ASs);
+
+                                    }
+                                    %>
+                                        <c:forEach var="in" items="${As}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Bs}">
+                                            <td>
+                                               ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Gs}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${ASs}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    
                                 </table>
 
                             </div>
@@ -730,7 +1112,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundSecond1X}">
-                                            <td>
+                                            <td name="HGr">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
@@ -759,9 +1141,95 @@
 
                                             </td>
                                         </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundSecond1X}">
+                                            <td name="HGrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
                                     </tr>
 
+                                    
+                                    <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBatSecond"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBowlSecond"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundSecond1X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                    
                                     
                                 </table>
 
@@ -803,7 +1271,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundFirst2X}">
-                                            <td>
+                                            <td name="IGr">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
@@ -829,6 +1297,13 @@
                                             <c:forEach var="in" items="${t_teamtwoBowlThird}">
                                             <td name="IOdd">
 
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst2X}">
+                                            <td name="IGrOdd">
+                                                
                                             </td>
                                         </c:forEach>
 
@@ -859,6 +1334,86 @@
 
 
                                  </tr>
+                                 
+                                 
+                                 <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBatThird"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBowlThird"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundFirst2X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                 
                                 </table>
 
                             </div>
@@ -892,7 +1447,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundFirst2X}">
-                                            <td>
+                                            <td name="JGr">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
@@ -921,10 +1476,98 @@
 
                                             </td>
                                         </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst2X}">
+                                            <td name="JGrOdd">
+                                                 
+                                            </td>
+                                        </c:forEach>
 
 
 
                                     </tr>
+                                    
+                                    
+                                    <tr>
+                                        <td>Sorted:
+                                    </tr>
+                                    <tr>
+                                    <%
+
+                                    if(true){
+                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                        List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBatThird"));
+                                        Collections.sort(As, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("As", As);
+
+                                        List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBowlThird"));
+                                        Collections.sort(Bs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("Bs", Bs);
+
+                                        List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundFirst2X"));
+                                        Collections.sort(Gs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("Gs", Gs);
+
+                                        List<testInning> ASs = new ArrayList<testInning>();
+                                        ASs.addAll(As);
+                                        ASs.addAll(Bs);
+                                        Collections.sort(ASs, new Comparator<testInning>() {
+                                            @Override
+                                            public int compare(testInning o1, testInning o2) {
+                                                return o1.getFirstwicket()
+                                                        - o2.getFirstwicket();
+                                            }
+                                        });
+                                        pageContext.setAttribute("ASs", ASs);
+
+                                    }
+                                    %>
+                                        <c:forEach var="in" items="${As}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Bs}">
+                                            <td>
+                                               ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Gs}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${ASs}">
+                                            <td>
+                                                ${in.getFirstwicket() }
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    
                                 </table>
 
                             </div>
@@ -959,7 +1602,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundFirst2X}">
-                                            <td>
+                                            <td name="KGr">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
@@ -989,11 +1632,96 @@
 
                                             </td>
                                         </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundFirst2X}">
+                                            <td name="KGrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
 
 
                                     </tr>
 
+                                    
+                                    <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBatThird"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBowlThird"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundFirst2X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
                                     
                                 </table>
 
@@ -1035,7 +1763,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundSecond2X}">
-                                            <td>
+                                            <td name="LGr">
                                                 ${in.getTotalruns()}
                                             </td>
                                         </c:forEach>
@@ -1064,6 +1792,12 @@
 
                                             </td>
                                         </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundSecond2X}">
+                                            <td name="LGrOdd">
+                                                 
+                                            </td>
+                                        </c:forEach>
 
 
                                     </tr>
@@ -1088,6 +1822,87 @@
                             </c:forEach>
                             
                                  </tr>
+                                 
+                                 
+                                 <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBatFourth"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBowlFourth"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundSecond2X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                 
+                                 
                                 </table>
 
                             </div>
@@ -1122,7 +1937,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundSecond2X}">
-                                            <td>
+                                            <td name="MGr">
                                                 ${in.getFirstwicket()}
                                             </td>
                                         </c:forEach>
@@ -1153,9 +1968,97 @@
                                             </td>
                                         </c:forEach>
 
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundSecond2X}">
+                                            <td name="MGrOdd">
+                                                 
+                                            </td>
+                                        </c:forEach>
+                                        
 
 
                                     </tr>
+                                    
+                                    
+                                    <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBatFourth"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getFirstwicket()
+                                                    - o2.getFirstwicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBowlFourth"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getFirstwicket()
+                                                    - o2.getFirstwicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundSecond2X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getFirstwicket()
+                                                    - o2.getFirstwicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getFirstwicket()
+                                                    - o2.getFirstwicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getFirstwicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getFirstwicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getFirstwicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getFirstwicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                    
+                                    
                                 </table>
 
                             </div>
@@ -1190,7 +2093,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${t_groundSecond2X}">
-                                            <td>
+                                            <td name="NGr">
                                                 ${in.getRuns5wicket()}
                                             </td>
                                         </c:forEach>
@@ -1220,11 +2123,95 @@
 
                                             </td>
                                         </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${t_groundSecond2X}">
+                                            <td name="NGrOdd">
+                                                 
+                                            </td>
+                                        </c:forEach>
 
 
 
                                     </tr>
 
+                                    
+                                    <tr>
+                                    <td>Sorted:
+                                </tr>
+                                <tr>
+                                <%
+
+                                if(true){
+                                    final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                    List<testInning> As = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamtwoBatFourth"));
+                                    Collections.sort(As, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("As", As);
+
+                                    List<testInning> Bs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_teamoneBowlFourth"));
+                                    Collections.sort(Bs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Bs", Bs);
+
+                                    List<testInning> Gs = new ArrayList<testInning>((List<testInning>)request.getAttribute("t_groundSecond2X"));
+                                    Collections.sort(Gs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("Gs", Gs);
+
+                                    List<testInning> ASs = new ArrayList<testInning>();
+                                    ASs.addAll(As);
+                                    ASs.addAll(Bs);
+                                    Collections.sort(ASs, new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getRuns5wicket()
+                                                    - o2.getRuns5wicket();
+                                        }
+                                    });
+                                    pageContext.setAttribute("ASs", ASs);
+
+                                }
+                                %>
+                                    <c:forEach var="in" items="${As}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Bs}">
+                                        <td>
+                                           ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                    <td>
+                                    <c:forEach var="in" items="${Gs}">
+                                        <td>
+                                            ${in.getRuns5wicket() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
+                                <tr>
+                                    <c:forEach var="in" items="${ASs}">
+                                        <td>
+                                            ${in.getTotalruns() }
+                                        </td>
+                                    </c:forEach>
+                                </tr>
                                     
                                 </table>
 
@@ -1244,7 +2231,8 @@
         <script type="text/javascript">
             $(document).ready(function () {
 
-                var classes = ["-Left","-1Left","A","B","C","D","E","F","G","H","I","J","K","L","M","N" ];
+                var classes = ["-Left","-1Left","A","B","C","D","E","F","G","H","I","J","K","L","M","N",
+                    "CGr","DGr","EGr","FGr","GGr","HGr","IGr","JGr","KGr","LGr","MGr","NGr"];
 
                 var i;
                 for (i = 0; i < classes.length; i++) {
@@ -1259,7 +2247,7 @@
 
 
                         var num = 0;
-                        var den = 0;
+                        var den = 1;
 
                         $('td[name="' + nam + '"]').each(function () {
                             if (parseInt($(this).text()) === -1) {
@@ -1307,7 +2295,7 @@
                 } else {
 
                     var num = 0;
-                    var den = 0;
+                    var den = 1;
 
                     $('td[name="' + name + '"]').each(function () {
                         if (parseInt($(this).text()) === -1) {
@@ -1353,7 +2341,7 @@
 //                    var noOfTds = $('td[name="' + name + '"]');
 
                     var num = 0;
-                    var den = 0;
+                    var den = 1;
 
                     $('td[name="' + name + '"]').each(function () {
                         if (parseInt($(this).text()) === -1) {

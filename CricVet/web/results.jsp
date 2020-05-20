@@ -4,6 +4,11 @@
     Author     : DELL
 --%>
 
+<%@page import="com.sun.javafx.scene.control.skin.VirtualFlow.ArrayLinkedList"%>
+<%@page import="java.util.function.Predicate"%>
+<%@page import="javax.servlet.jsp.jstl.core.LoopTagStatus"%>
+<%@page import="java.util.Comparator"%>
+<%@page import="java.util.Collections"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="models.Inning"%>
 <%@page import="java.util.List"%>
@@ -50,7 +55,6 @@
                     <table class="table table-bordered">
                         <tr class="thead-dark">
                             <th colspan="${fn:length(hth)}">${teamOne} v/s ${teamTwo}</th>
-                            <th>Odds</th>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${hth}">
@@ -59,26 +63,8 @@
                                 </td>
                             </c:forEach>
 
-                            <td>
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" name="-Left" id="-Left">@</span>
-                                    </div>
-                                    <input type="number" class="form-control" name="-Left">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <c:forEach var="in" items="${hth}">
-                                <td name="-LeftOdd">
-
-                                </td>
-                            </c:forEach>
                             
-                            <td colspan="2"></td>
                         </tr>
-                        
-
                         
                         <tr>
                             <c:forEach var="in" items="${hth}">
@@ -246,7 +232,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirst}">
-                                            <td>
+                                            <td name="${loop.index}Gr">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -273,6 +259,13 @@
                                             <c:forEach var="in" items="${twoBowlFirstY}">
                                             <td name="${loop.index}LeftOdd">
 
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirst}">
+                                            <td name="${loop.index}GrOdd">
+                                                
                                             </td>
                                         </c:forEach>
 
@@ -310,7 +303,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirst}">
-                                            <td>
+                                            <td name="${loop.index}Gr">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -340,6 +333,13 @@
 
                                             </td>
                                         </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirst}">
+                                            <td name="${loop.index}GrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
+                                            
 
                                     </tr>
                                 </table>
@@ -374,7 +374,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirstX}">
-                                            <td>
+                                            <td name="${loop.index}Gr">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -405,8 +405,92 @@
                                             </td>
                                         </c:forEach>
 
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirstX}">
+                                            <td name="${loop.index}GrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
 
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Sorted:
+                                    </tr>
+                                    <tr>
+                                    <%
+                                        
+                                    if(true){
+                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirstX"));
+                                        Collections.sort(As, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("As", As);
+                                        
+                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirstX"));
+                                        Collections.sort(Bs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Bs", Bs);
+
+                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirstX"));
+                                        Collections.sort(Gs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Gs", Gs);
+                                        
+                                        List<Inning> ASs = new ArrayList<Inning>();
+                                        ASs.addAll(As);
+                                        ASs.addAll(Bs);
+                                        Collections.sort(ASs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("ASs", ASs);
+                                        
+                                    }
+                                    %>
+                                        <c:forEach var="in" items="${As}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Bs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Gs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${ASs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
                                     </tr>
                                 </table>
 
@@ -442,7 +526,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirstZ}">
-                                            <td>
+                                            <td name="${loop.index}Gr">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -472,6 +556,13 @@
 
                                             </td>
                                         </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirstZ}">
+                                            <td name="${loop.index}GrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
 
 
@@ -499,6 +590,101 @@
                                         </td>
 
 
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Sorted:
+                                    </tr>
+                                    <tr>
+                                    <%
+                                        
+                                    if(true){
+                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirstZ"));
+                                        As.removeIf(new Predicate<Inning>() {
+                                            @Override
+                                            public boolean test(Inning t) {
+                                                return t.getParams().get(ind).contains("D/L");
+                                            }
+                                        });
+                                        Collections.sort(As, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("As", As);
+                                        
+                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirstZ"));
+                                        Bs.removeIf(new Predicate<Inning>() {
+                                            @Override
+                                            public boolean test(Inning t) {
+                                                return t.getParams().get(ind).contains("D/L");
+                                            }
+                                        });
+                                        Collections.sort(Bs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Bs", Bs);
+
+                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirstZ"));
+                                        Gs.removeIf(new Predicate<Inning>() {
+                                            @Override
+                                            public boolean test(Inning t) {
+                                                return t.getParams().get(ind).contains("D/L");
+                                            }
+                                        });
+                                        Collections.sort(Gs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Gs", Gs);
+                                        
+                                        List<Inning> ASs = new ArrayList<Inning>();
+                                        ASs.addAll(As);
+                                        ASs.addAll(Bs);
+                                        Collections.sort(ASs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("ASs", ASs);
+                                    }
+                                    %>
+                                        <c:forEach var="in" items="${As}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Bs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Gs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${ASs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
                                     </tr>
                                 </table>
 
@@ -533,7 +719,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirst}">
-                                            <td>
+                                            <td name="${loop.index}Gr">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -562,7 +748,92 @@
 
                                             </td>
                                         </c:forEach>
+                                            
+                                        <td>
+                                            <c:forEach var="in" items="${groundFirst}">
+                                            <td name="${loop.index}GrOdd">
+                                                
+                                            </td>
+                                        </c:forEach>
 
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Sorted:
+                                    </tr>
+                                    <tr>
+                                    <%
+                                        
+                                    if(true){
+                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirst"));
+                                        Collections.sort(As, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("As", As);
+                                        
+                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirst"));
+                                        Collections.sort(Bs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Bs", Bs);
+
+                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirst"));
+                                        Collections.sort(Gs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Gs", Gs);
+                                        
+                                        List<Inning> ASs = new ArrayList<Inning>();
+                                        ASs.addAll(As);
+                                        ASs.addAll(Bs);
+                                        Collections.sort(ASs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("ASs", ASs);
+                                        
+                                    }
+                                    %>
+                                        <c:forEach var="in" items="${As}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Bs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Gs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${ASs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
                                     </tr>
                                 </table>
 
@@ -621,7 +892,7 @@
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundSecond}">
-                                            <td>
+                                            <td name="${loop.index}Gr2">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -651,6 +922,90 @@
                                             </td>
                                         </c:forEach>
 
+                                        <td>
+                                            <c:forEach var="in" items="${groundSecond}">
+                                            <td name="${loop.index}Gr2Odd">
+                                                
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Sorted:
+                                    </tr>
+                                    <tr>
+                                    <%
+                                        
+                                    if(true){
+                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
+                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBatSecond"));
+                                        Collections.sort(As, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("As", As);
+                                        
+                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBowlSecond"));
+                                        Collections.sort(Bs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Bs", Bs);
+
+                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundSecond"));
+                                        Collections.sort(Gs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Gs", Gs);
+                                        
+                                        List<Inning> ASs = new ArrayList<Inning>();
+                                        ASs.addAll(As);
+                                        ASs.addAll(Bs);
+                                        Collections.sort(ASs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(ind)) 
+                                                        - Integer.parseInt(o2.getParams().get(ind));
+                                            }
+                                        });
+                                        pageContext.setAttribute("ASs", ASs);
+                                        
+                                    }
+                                    %>
+                                        <c:forEach var="in" items="${As}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Bs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Gs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${ASs}">
+                                            <td>
+                                                ${in.getParams().get(loop.index)}
+                                            </td>
+                                        </c:forEach>
                                     </tr>
                                 </table>
 
@@ -672,7 +1027,8 @@
         <script type="text/javascript">
             $(document).ready(function () {
 
-                var classes = ["-Left","-1Left", "0Left", "1Left", "2Left", "3Left", "4Left", "5Left", "6Left", "1Left2", "3Left2"];
+                var classes = ["-Left","-1Left", "0Left", "1Left", "2Left", "3Left", "4Left", "5Left", "6Left", 
+                    "1Left2", "3Left2", "0Gr", "1Gr", "2Gr", "3Gr", "4Gr", "5Gr", "6Gr", "1Gr2", "3Gr2"];
 
                 var i;
                 for (i = 0; i < classes.length; i++) {
@@ -681,16 +1037,21 @@
                     var ind = 0;
 
                     $('td[name="' + nam + 'Odd"]').each(function (i, obj) {
+                        
+                        if($('td[name="' + nam + '"]').eq(i).text().includes("D/L")){
+                            return;
+                        }
+                        
                         var val = parseInt($('td[name="' + nam + '"]').eq(i).text());
 
 
 
 
                         var num = 0;
-                        var den = 0;
+                        var den = 1;
 
                         $('td[name="' + nam + '"]').each(function () {
-                            if (parseInt($(this).text()) === -1) {
+                            if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
                             } else if (parseInt($(this).text()) >= parseInt(val)) {
                                 num++;
@@ -716,6 +1077,7 @@
             $("input").change(function () {
 
                 var inp = $(this).val();
+                
                 var name = $(this).attr("name");
 
                 $('td[name="' + name + '"]').each(function () {
@@ -735,10 +1097,10 @@
                 } else {
 
                     var num = 0;
-                    var den = 0;
+                    var den = 1;
 
                     $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) === -1) {
+                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
                             $(this).addClass("greater");
@@ -759,6 +1121,7 @@
             $("input").keyup(function () {
 
                 var inp = $(this).val();
+                
                 var name = $(this).attr("name");
 
                 $('td[name="' + name + '"]').each(function () {
@@ -781,10 +1144,10 @@
 //                    var noOfTds = $('td[name="' + name + '"]');
 
                     var num = 0;
-                    var den = 0;
+                    var den = 1;
 
                     $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) === -1) {
+                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
 

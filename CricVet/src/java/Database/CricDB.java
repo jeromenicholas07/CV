@@ -822,6 +822,103 @@ public class CricDB extends BaseDAO {
         }
         return matches;
     }
+    
+    public void deleteDB(){
+        
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        
+        try {
+            String sql = "drop table \"APP\".HOMEGROUND";
+            con = getConnection();
+            stmt = con.createStatement();
+            System.out.println("Dropping test HOMEGROUND");
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        
+        
+        try {
+            String sql = "drop table \"APP\".TESTINNING";
+            con = getConnection();
+            stmt = con.createStatement();
+            System.out.println("Dropping test inning");
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        try {
+            String sql = "drop table \"APP\".TESTMATCH";
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            System.out.println("Dropping test matches");
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        
+        try {
+            String sql = "drop table \"APP\".HEADERS";
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            System.out.println("Dropping test matches");
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        try {
+            String sql = "drop table \"APP\".MATCHES";
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            System.out.println("Dropping test matches");
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        
+                try {
+            String sql = "drop table \"APP\".INNINGS";
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            System.out.println("Dropping test matches");
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+    }
 
     public void initDB() {
 
