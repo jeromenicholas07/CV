@@ -729,7 +729,7 @@ public class CricDB extends BaseDAO {
         try {
             con = getConnection();
 
-            String sql = "select * from APP.Matches where matchtype= " + matchType + " and (hometeam='" + TeamName + "' OR awayteam='" + TeamName + "') order by MATCHDATE DESC FETCH FIRST 30 ROWS ONLY";
+            String sql = "select * from APP.Matches where matchtype= " + matchType + " and (hometeam='" + TeamName + "' OR awayteam='" + TeamName + "') order by MATCHDATE DESC";
 
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);

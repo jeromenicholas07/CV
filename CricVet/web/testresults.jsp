@@ -143,7 +143,7 @@
                             <th colspan="${fn:length(twototal)}">${teamTwo}</th>
                             <th>
 
-                            <th>Odds</th>
+                            <th>Score</th>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${onetotal}">
@@ -206,7 +206,7 @@
                             <th colspan="${fn:length(twototal)}">${teamTwo}</th>
                             <th>
 
-                            <th>Odds</th>
+                            <th>Score</th>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${onetotal}">
@@ -274,7 +274,8 @@
                                         <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} First Inning</th>
-                                        <th>Odds</th>
+                                        <th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
@@ -353,8 +354,8 @@
                                 
                                  </tr>
                                  
-                                 <tr>
-                                    <td>Sorted:
+                                 <tr class="thead-dark">
+                                    <th>Sorted:
                                 </tr>
                                 <tr>
                                 <%
@@ -431,8 +432,125 @@
                                     </c:forEach>
                                 </tr>
                                     
-
                                 </table>
+                                    
+                                    
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamoneBatFirst0_bt)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirst0_bt)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirst1X0_bt)}">${t_groundName} First Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatFirst0_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlFirst0_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFirst1X0_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatFirst0_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlFirst0_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFirst1X0_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${first0A_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${first0A_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${first0A_bt}">
+                                            <td>
+                                                ${first0A_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${first0B_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${first0B_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${first0B_bt}">
+                                            <td>
+                                                ${first0B_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+                                    
 
                             </div>
                         </div>
@@ -450,7 +568,7 @@
                                         <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First inning</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} First Inning</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
@@ -509,7 +627,7 @@
                                     
                                     
                                     
-                                    <tr>
+                                    <tr class="thead-dark">
                                         <td>Sorted:
                                     </tr>
                                     <tr>
@@ -608,7 +726,7 @@
                                         <th colspan="${fn:length(t_teamtwoBowlFirst)}">${teamTwo} Bowling First Inning</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundFirst1X)}">${t_groundName} First Inning</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatFirst}">
@@ -664,7 +782,7 @@
 
                                     </tr>
                                     
-                                    <tr>
+                                    <tr  class="thead-dark">
                                     <td>Sorted:
                                 </tr>
                                 <tr>
@@ -768,7 +886,7 @@
                                         <th colspan="${fn:length(t_teamoneBowlSecond)}">${teamOne} Bowling Second Inning</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} Second Inning</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
@@ -845,7 +963,7 @@
                                  </tr>
                                  
                                  
-                                 <tr>
+                                 <tr  class="thead-dark">
                                     <td>Sorted:
                                 </tr>
                                 <tr>
@@ -941,7 +1059,7 @@
                                         <th colspan="${fn:length(t_teamoneBowlSecond)}">${teamOne} Bowling Second Inning</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} Second Inning</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
@@ -999,7 +1117,7 @@
                                     </tr>
                                     
                                     
-                                    <tr>
+                                    <tr class="thead-dark">
                                         <td>Sorted:
                                     </tr>
                                     <tr>
@@ -1096,7 +1214,7 @@
                                         <th colspan="${fn:length(t_teamoneBowlSecond)}">${teamOne} Bowling Second</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundSecond1X)}">${t_groundName} Second Inning</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatSecond}">
@@ -1152,7 +1270,7 @@
                                     </tr>
 
                                     
-                                    <tr>
+                                    <tr class="thead-dark">
                                     <td>Sorted:
                                 </tr>
                                 <tr>
@@ -1255,7 +1373,7 @@
                                         <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundFirst2X)}">${t_groundName} Third</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
@@ -1336,7 +1454,7 @@
                                  </tr>
                                  
                                  
-                                 <tr>
+                                 <tr class="thead-dark">
                                     <td>Sorted:
                                 </tr>
                                 <tr>
@@ -1431,7 +1549,7 @@
                                         <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundFirst2X)}">${t_groundName} Third</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
@@ -1489,7 +1607,7 @@
                                     </tr>
                                     
                                     
-                                    <tr>
+                                    <tr class="thead-dark">
                                         <td>Sorted:
                                     </tr>
                                     <tr>
@@ -1586,7 +1704,7 @@
                                         <th colspan="${fn:length(t_teamtwoBowlThird)}">${teamTwo} Bowling Third</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundFirst2X)}">${t_groundName} Third</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamoneBatThird}">
@@ -1645,7 +1763,7 @@
                                     </tr>
 
                                     
-                                    <tr>
+                                    <tr class="thead-dark">
                                     <td>Sorted:
                                 </tr>
                                 <tr>
@@ -1747,7 +1865,7 @@
                                         <th colspan="${fn:length(t_teamoneBowlFourth)}">${teamOne} Bowling Fourth</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundSecond2X)}">${t_groundName} Fourth</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
@@ -1824,7 +1942,7 @@
                                  </tr>
                                  
                                  
-                                 <tr>
+                                 <tr class="thead-dark">
                                     <td>Sorted:
                                 </tr>
                                 <tr>
@@ -1921,7 +2039,7 @@
                                         <th colspan="${fn:length(t_teamoneBowlFourth)}">${teamOne} Bowling Fourth</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundSecond2X)}">${t_groundName} Fourth</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
@@ -1980,7 +2098,7 @@
                                     </tr>
                                     
                                     
-                                    <tr>
+                                    <tr class="thead-dark">
                                     <td>Sorted:
                                 </tr>
                                 <tr>
@@ -2077,7 +2195,7 @@
                                         <th colspan="${fn:length(t_teamoneBowlFourth)}">${teamOne} Bowling Fourth</th>
                                         <th>
                                         <th colspan="${fn:length(t_groundSecond2X)}">${t_groundName} Fourth</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${t_teamtwoBatFourth}">
@@ -2135,7 +2253,7 @@
                                     </tr>
 
                                     
-                                    <tr>
+                                    <tr class="thead-dark">
                                     <td>Sorted:
                                 </tr>
                                 <tr>

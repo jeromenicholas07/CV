@@ -9,12 +9,18 @@ import Database.CricDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,12 +43,9 @@ public class getData extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-
-            CricDB db = new CricDB();
+    
+    private void test(HttpServletRequest request, HttpServletResponse response) throws IOException,ServletException{
+        CricDB db = new CricDB();
             final Date backDate;
             java.util.Date tempDate = new java.util.Date();
 
@@ -62,19 +65,8 @@ public class getData extends HttpServlet {
                 }
             }
             backDate = new Date(tempDate.getTime());
-            System.out.println("========================================");
-            System.out.println("========================================");
-            System.out.println("========================================");
-            System.out.println("========================================");
-            System.out.println("========================================");
-            System.out.println("========================================");
-            System.out.println("========================================");
-            System.out.println(backDate);
             
-
-            if (matchType == 1) {
-
-                if (teamOne.equals(hometeam)) {
+        if (teamOne.equals(hometeam)) {
 
                     System.out.println("home is : " + teamOne);
 
@@ -762,6 +754,707 @@ public class getData extends HttpServlet {
                     t_teamtwoBatSecond1 = t_teamtwoBatSecond1.subList(0, Math.min(5, t_teamtwoBatSecond1.size()));
                     t_teamtwoBatFourth1 = t_teamtwoBatFourth1.subList(0, Math.min(5, t_teamtwoBatFourth1.size()));
 
+                    if(true){
+                        List<testMatch> totMatches = new ArrayList<>();
+                        totMatches = db.gettesthome(teamOne, 1, 1);
+                        totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        totMatches.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        totMatches.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+                        
+                        List<testInning> tZ = new ArrayList<>();
+                        for(int i = 0; i < totMatches.size(); i++){
+                            tZ.add(totMatches.get(i).getInningOne1());
+                        }
+                        
+                        Map<String,Integer> bt = new LinkedHashMap<>();
+                        bt.put("< 1/5", 0);
+                        bt.put("1/5 - 2/5", 0);
+                        bt.put("2/5 - 3/5", 0);
+                        bt.put("3/5 - 4/5", 0);
+                        bt.put("4/5 - 5/5", 0);
+                        bt.put("5/5 <", 0);
+
+                        if(tZ.size() > 5){
+                            for(int i = 0; i < tZ.size()-6; i++){
+                                int curr = tZ.get(i).getTotalruns();
+
+                                List<testInning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                                Collections.sort(sub, new Comparator<testInning>() {
+                                    @Override
+                                    public int compare(testInning o1, testInning o2) {
+                                        return o1.getTotalruns()
+                                                - o2.getTotalruns();
+                                    }
+                                });
+
+                                if(curr < sub.get(0).getTotalruns()){
+                                    bt.put("< 1/5", bt.get("< 1/5")+1 );
+                                }
+                                else if(curr >= sub.get(0).getTotalruns()
+                                        && curr < sub.get(1).getTotalruns() ){
+                                    bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                                }
+                                else if(curr >= sub.get(1).getTotalruns()
+                                        && curr < sub.get(2).getTotalruns() ){
+                                    bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                                }
+                                else if(curr >= sub.get(2).getTotalruns() 
+                                        && curr < sub.get(3).getTotalruns() ){
+                                    bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                                }
+                                else if(curr >= sub.get(3).getTotalruns() 
+                                        && curr < sub.get(4).getTotalruns() ){
+                                    bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                                }
+                                else{
+                                    bt.put("5/5 <", bt.get("5/5 <")+1 );
+                                }
+                            } 
+                        }
+
+                        request.setAttribute("t_teamoneBatFirst0_bt", bt);
+                    }
+                    
+                    
+                    if(true){
+                        List<testMatch> totMatches = new ArrayList<>();
+                        totMatches = db.gettestaway(teamTwo, 1, 2);
+                        totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        totMatches.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        totMatches.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+                        
+                        List<testInning> tZ = new ArrayList<>();
+                        for(int i = 0; i < totMatches.size(); i++){
+                            tZ.add(totMatches.get(i).getInningOne1());
+                        }
+                        
+                        Map<String,Integer> bt = new LinkedHashMap<>();
+                        bt.put("< 1/5", 0);
+                        bt.put("1/5 - 2/5", 0);
+                        bt.put("2/5 - 3/5", 0);
+                        bt.put("3/5 - 4/5", 0);
+                        bt.put("4/5 - 5/5", 0);
+                        bt.put("5/5 <", 0);
+
+                        if(tZ.size() > 5){
+                            for(int i = 0; i < tZ.size()-6; i++){
+                                int curr = tZ.get(i).getTotalruns();
+
+                                List<testInning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                                Collections.sort(sub, new Comparator<testInning>() {
+                                    @Override
+                                    public int compare(testInning o1, testInning o2) {
+                                        return o1.getTotalruns()
+                                                - o2.getTotalruns();
+                                    }
+                                });
+
+                                if(curr < sub.get(0).getTotalruns()){
+                                    bt.put("< 1/5", bt.get("< 1/5")+1 );
+                                }
+                                else if(curr >= sub.get(0).getTotalruns()
+                                        && curr < sub.get(1).getTotalruns() ){
+                                    bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                                }
+                                else if(curr >= sub.get(1).getTotalruns()
+                                        && curr < sub.get(2).getTotalruns() ){
+                                    bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                                }
+                                else if(curr >= sub.get(2).getTotalruns() 
+                                        && curr < sub.get(3).getTotalruns() ){
+                                    bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                                }
+                                else if(curr >= sub.get(3).getTotalruns() 
+                                        && curr < sub.get(4).getTotalruns() ){
+                                    bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                                }
+                                else{
+                                    bt.put("5/5 <", bt.get("5/5 <")+1 );
+                                }
+                            } 
+                        }
+
+                        request.setAttribute("t_teamtwoBowlFirst0_bt", bt);
+                    }
+                    
+                    if(true){
+                        List<testMatch> totMatches = new ArrayList<>();
+                        totMatches = db.gettestGroundInfo(groundName, matchType);
+                        totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        totMatches.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        totMatches.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+                        
+                        List<testInning> tZ = new ArrayList<>();
+                        for(int i = 0; i < totMatches.size(); i++){
+                            tZ.add(totMatches.get(i).getInningOne1());
+                        }
+                        
+                        Map<String,Integer> bt = new LinkedHashMap<>();
+                        bt.put("< 1/5", 0);
+                        bt.put("1/5 - 2/5", 0);
+                        bt.put("2/5 - 3/5", 0);
+                        bt.put("3/5 - 4/5", 0);
+                        bt.put("4/5 - 5/5", 0);
+                        bt.put("5/5 <", 0);
+
+                        if(tZ.size() > 5){
+                            for(int i = 0; i < tZ.size()-6; i++){
+                                int curr = tZ.get(i).getTotalruns();
+
+                                List<testInning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                                Collections.sort(sub, new Comparator<testInning>() {
+                                    @Override
+                                    public int compare(testInning o1, testInning o2) {
+                                        return o1.getTotalruns()
+                                                - o2.getTotalruns();
+                                    }
+                                });
+
+                                if(curr < sub.get(0).getTotalruns()){
+                                    bt.put("< 1/5", bt.get("< 1/5")+1 );
+                                }
+                                else if(curr >= sub.get(0).getTotalruns()
+                                        && curr < sub.get(1).getTotalruns() ){
+                                    bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                                }
+                                else if(curr >= sub.get(1).getTotalruns()
+                                        && curr < sub.get(2).getTotalruns() ){
+                                    bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                                }
+                                else if(curr >= sub.get(2).getTotalruns() 
+                                        && curr < sub.get(3).getTotalruns() ){
+                                    bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                                }
+                                else if(curr >= sub.get(3).getTotalruns() 
+                                        && curr < sub.get(4).getTotalruns() ){
+                                    bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                                }
+                                else{
+                                    bt.put("5/5 <", bt.get("5/5 <")+1 );
+                                }
+                            } 
+                        }
+
+                        request.setAttribute("t_groundFirst1X0_bt", bt);
+                    }
+                    
+                    if(true){
+                        Map<String,Integer> A_bt = new LinkedHashMap<>();
+                        A_bt.put("N", 0);
+                        A_bt.put("< 1/10", 0);
+                        A_bt.put("1/10 - 2/10", 0);
+                        A_bt.put("2/10 - 3/10", 0);
+                        A_bt.put("3/10 - 4/10", 0);
+                        A_bt.put("4/10 - 5/10", 0);
+                        A_bt.put("5/10 - 6/10", 0);
+                        A_bt.put("6/10 - 7/10", 0);
+                        A_bt.put("7/10 - 8/10", 0);
+                        A_bt.put("8/10 - 9/10", 0);
+                        A_bt.put("9/10 - 10/10", 0);
+                        A_bt.put("10/10 <", 0);
+                        A_bt.put("2-2-2-3 above", 0);
+                        A_bt.put("4-4-4-7 below", 0);
+                        A_bt.put("3-3-3-4 above", 0);
+                        A_bt.put("3-3-3-6 below", 0);
+                        A_bt.put("2 above", 0);
+                        A_bt.put("3 above", 0);
+                        A_bt.put("4 above", 0);
+                        A_bt.put("6 below", 0);
+                        A_bt.put("7 below", 0);
+                        A_bt.put("8 below", 0);
+
+                        int hind = 1;
+
+                        List<testMatch> oneMatch = db.gettesthome(teamOne, 1, 1);
+                        oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        oneMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        oneMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                        List<testMatch> twoMatch = db.gettestaway(teamTwo, 1, 2);
+                        twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        twoMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        twoMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                        List<testMatch> grMatch = db.gettestGroundInfo(groundName, matchType);
+                        grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatch.size()-6; i++){
+
+                                int curr = oneMatch.get(i).getInningOne1().getTotalruns();
+                                Date currDate = oneMatch.get(i).getMatchDate();
+
+
+                                List<testInning> sub = new ArrayList<>();
+                                List<testInning> subA = new ArrayList<>();
+                                List<testInning> subB = new ArrayList<>();
+                                List<testInning> subG = new ArrayList<>();
+
+                                for(int j = i+1; j < i+6; j++){
+                                    sub.add(oneMatch.get(j).getInningOne1());
+                                    subA.add(oneMatch.get(j).getInningOne1());
+                                }
+
+                                twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(twoMatch.size() < 5){
+                                    break;
+                                }
+                                for(int j = 0; j < 5; j++){
+                                    sub.add(twoMatch.get(j).getInningOne1());
+                                    subB.add(twoMatch.get(j).getInningOne1());
+                                }
+
+                                grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(grMatch.size() >= 5){
+                                    for(int j = 0; j < 5; j++){
+                                        subG.add(twoMatch.get(j).getInningOne1());
+                                    }
+                                }
+
+                                Comparator innComp = new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    };
+
+                                Collections.sort(sub, innComp);
+                                Collections.sort(subA, innComp);
+                                Collections.sort(subB, innComp);
+                                Collections.sort(subG, innComp);
+
+                                A_bt.put("N", A_bt.get("N")+1);
+
+                                if(curr < sub.get(0).getTotalruns()){
+                                    A_bt.put("< 1/10", A_bt.get("< 1/10")+1);
+                                }
+                                else if(curr >= sub.get(0).getTotalruns()
+                                        && curr < sub.get(1).getTotalruns()){
+                                    A_bt.put("1/10 - 2/10", A_bt.get("1/10 - 2/10")+1);
+                                }
+                                else if(curr >= sub.get(1).getTotalruns()
+                                        && curr < sub.get(2).getTotalruns()){
+                                    A_bt.put("2/10 - 3/10", A_bt.get("2/10 - 3/10")+1);
+                                }
+                                else if(curr >= sub.get(2).getTotalruns()
+                                        && curr < sub.get(3).getTotalruns() ){
+                                    A_bt.put("3/10 - 4/10", A_bt.get("3/10 - 4/10")+1);
+                                }
+                                else if(curr >= sub.get(3).getTotalruns()
+                                        && curr < sub.get(4).getTotalruns()){
+                                    A_bt.put("4/10 - 5/10", A_bt.get("4/10 - 5/10")+1);
+                                }
+                                else if(curr >= sub.get(4).getTotalruns()
+                                        && curr < sub.get(5).getTotalruns()){
+                                    A_bt.put("5/10 - 6/10", A_bt.get("5/10 - 6/10")+1);
+                                }
+                                else if(curr >= sub.get(5).getTotalruns()
+                                        && curr < sub.get(6).getTotalruns()){
+                                    A_bt.put("6/10 - 7/10", A_bt.get("6/10 - 7/10")+1);
+                                }
+                                else if(curr >= sub.get(6).getTotalruns()
+                                        && curr < sub.get(7).getTotalruns()){
+                                    A_bt.put("7/10 - 8/10", A_bt.get("7/10 - 8/10")+1);
+                                }
+                                else if(curr >= sub.get(7).getTotalruns()
+                                        && curr < sub.get(8).getTotalruns()){
+                                    A_bt.put("8/10 - 9/10", A_bt.get("8/10 - 9/10")+1);
+                                }
+                                else if(curr >= sub.get(8).getTotalruns()
+                                        && curr < sub.get(9).getTotalruns()){
+                                    A_bt.put("9/10 - 10/10", A_bt.get("9/10 - 10/10")+1);
+                                }
+                                else{
+                                    A_bt.put("10/10 <", A_bt.get("10/10 <")+1);
+                                }
+
+                                if(curr >= sub.get(2).getTotalruns()
+                                        && curr >= subA.get(1).getTotalruns()
+                                        && curr >= subB.get(1).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(1).getTotalruns()){
+                                            A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(6).getTotalruns()
+                                        && curr <= subA.get(3).getTotalruns()
+                                        && curr <= subB.get(3).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(3).getTotalruns()){
+                                            A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+
+                                if(curr >= sub.get(3).getTotalruns()
+                                        && curr >= subA.get(2).getTotalruns()
+                                        && curr >= subB.get(2).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(5).getTotalruns()
+                                        && curr <= subA.get(2).getTotalruns()
+                                        && curr <= subB.get(2).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+
+                                if(curr >= sub.get(1).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(1).getTotalruns()){
+                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    }
+                                }
+
+                                if(curr >= sub.get(2).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(1).getTotalruns()){
+                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    }
+                                }
+
+                                if(curr >= sub.get(3).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(1).getTotalruns()){
+                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(5).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(3).getTotalruns()){
+                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(6).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(3).getTotalruns()){
+                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(7).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(3).getTotalruns()){
+                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    }
+                                }
+                            }
+                        }
+
+                        request.setAttribute("first0A_bt", A_bt);
+                    }
+                
+                
+                
+                if(true){
+                    
+                    Map<String,Integer> B_bt = new LinkedHashMap<>();
+                    B_bt.put("N", 0);
+                    B_bt.put("< 1/10", 0);
+                    B_bt.put("1/10 - 2/10", 0);
+                    B_bt.put("2/10 - 3/10", 0);
+                    B_bt.put("3/10 - 4/10", 0);
+                    B_bt.put("4/10 - 5/10", 0);
+                    B_bt.put("5/10 - 6/10", 0);
+                    B_bt.put("6/10 - 7/10", 0);
+                    B_bt.put("7/10 - 8/10", 0);
+                    B_bt.put("8/10 - 9/10", 0);
+                    B_bt.put("9/10 - 10/10", 0);
+                    B_bt.put("10/10 <", 0);
+                    B_bt.put("2-2-2-3 above", 0);
+                    B_bt.put("4-4-4-7 below", 0);
+                    B_bt.put("3-3-3-4 above", 0);
+                    B_bt.put("3-3-3-6 below", 0);
+                    B_bt.put("2 above", 0);
+                    B_bt.put("3 above", 0);
+                    B_bt.put("4 above", 0);
+                    B_bt.put("6 below", 0);
+                    B_bt.put("7 below", 0);
+                    B_bt.put("8 below", 0);
+
+                    int hind = 1;
+
+                    List<testMatch> oneMatch = db.gettesthome(teamOne, 1, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    oneMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                    oneMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                    List<testMatch> twoMatch = db.gettestaway(teamTwo, 1, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    twoMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                    twoMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                    List<testMatch> grMatch = db.gettestGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                    grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = twoMatch.get(i).getInningOne1().getTotalruns();
+                            Date currDate = twoMatch.get(i).getMatchDate();
+
+
+                            List<testInning> sub = new ArrayList<>();
+                            List<testInning> subA = new ArrayList<>();
+                            List<testInning> subB = new ArrayList<>();
+                            List<testInning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(twoMatch.get(j).getInningOne1());
+                                subB.add(twoMatch.get(j).getInningOne1());
+                            }
+
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(oneMatch.get(j).getInningOne1());
+                                subA.add(oneMatch.get(j).getInningOne1());
+                            }
+
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne1());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<testInning>() {
+                                    @Override
+                                    public int compare(testInning o1, testInning o2) {
+                                        return o1.getTotalruns()
+                                                - o2.getTotalruns();
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            B_bt.put("N", B_bt.get("N")+1);
+
+                            if(curr < sub.get(0).getTotalruns()){
+                                B_bt.put("< 1/10", B_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= sub.get(0).getTotalruns()
+                                    && curr < sub.get(1).getTotalruns()){
+                                B_bt.put("1/10 - 2/10", B_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= sub.get(1).getTotalruns()
+                                    && curr < sub.get(2).getTotalruns()){
+                                B_bt.put("2/10 - 3/10", B_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= sub.get(2).getTotalruns()
+                                    && curr < sub.get(3).getTotalruns()){
+                                B_bt.put("3/10 - 4/10", B_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= sub.get(3).getTotalruns()
+                                    && curr < sub.get(4).getTotalruns()){
+                                B_bt.put("4/10 - 5/10", B_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= sub.get(4).getTotalruns()
+                                    && curr < sub.get(5).getTotalruns()){
+                                B_bt.put("5/10 - 6/10", B_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= sub.get(5).getTotalruns()
+                                    && curr < sub.get(6).getTotalruns()){
+                                B_bt.put("6/10 - 7/10", B_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= sub.get(6).getTotalruns()
+                                    && curr < sub.get(7).getTotalruns()){
+                                B_bt.put("7/10 - 8/10", B_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= sub.get(7).getTotalruns()
+                                    && curr < sub.get(8).getTotalruns()){
+                                B_bt.put("8/10 - 9/10", B_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= sub.get(8).getTotalruns()
+                                    && curr < sub.get(9).getTotalruns()){
+                                B_bt.put("9/10 - 10/10", B_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                B_bt.put("10/10 <", B_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= sub.get(2).getTotalruns()
+                                    && curr >= subA.get(1).getTotalruns()
+                                    && curr >= subB.get(1).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(1).getTotalruns()){
+                                        B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(6).getTotalruns()
+                                    && curr <= subA.get(3).getTotalruns()
+                                    && curr <= subB.get(3).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(3).getTotalruns()){
+                                        B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= sub.get(3).getTotalruns()
+                                    && curr >= subA.get(2).getTotalruns()
+                                    && curr >= subB.get(2).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(5).getTotalruns()
+                                    && curr <= subA.get(2).getTotalruns()
+                                    && curr <= subB.get(2).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= sub.get(1).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(1).getTotalruns()){
+                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= sub.get(2).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(1).getTotalruns()){
+                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= sub.get(3).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(1).getTotalruns()){
+                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(5).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(3).getTotalruns()){
+                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(6).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(3).getTotalruns()){
+                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(7).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(3).getTotalruns()){
+                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("first0B_bt", B_bt);
+                }
+                    
+                    
                     /*
   //          matches.clear();
 //Team two Bowls Second Innings LAST 5            
@@ -1602,6 +2295,723 @@ public class getData extends HttpServlet {
                     t_teamtwoBowlThird1 = t_teamtwoBowlThird1.subList(0, Math.min(5, t_teamtwoBowlThird1.size()));
                     t_teamtwoBatSecond1 = t_teamtwoBatSecond1.subList(0, Math.min(5, t_teamtwoBatSecond1.size()));
                     t_teamtwoBatFourth1 = t_teamtwoBatFourth1.subList(0, Math.min(5, t_teamtwoBatFourth1.size()));
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    if(true){
+                        List<testMatch> totMatches = new ArrayList<>();
+                        totMatches = db.gettestaway(teamOne, 1, 1);
+                        totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        totMatches.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        totMatches.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+                        
+                        List<testInning> tZ = new ArrayList<>();
+                        for(int i = 0; i < totMatches.size(); i++){
+                            tZ.add(totMatches.get(i).getInningOne1());
+                        }
+                        
+                        Map<String,Integer> bt = new LinkedHashMap<>();
+                        bt.put("< 1/5", 0);
+                        bt.put("1/5 - 2/5", 0);
+                        bt.put("2/5 - 3/5", 0);
+                        bt.put("3/5 - 4/5", 0);
+                        bt.put("4/5 - 5/5", 0);
+                        bt.put("5/5 <", 0);
+
+                        if(tZ.size() > 5){
+                            for(int i = 0; i < tZ.size()-6; i++){
+                                int curr = tZ.get(i).getTotalruns();
+
+                                List<testInning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                                Collections.sort(sub, new Comparator<testInning>() {
+                                    @Override
+                                    public int compare(testInning o1, testInning o2) {
+                                        return o1.getTotalruns()
+                                                - o2.getTotalruns();
+                                    }
+                                });
+
+                                if(curr < sub.get(0).getTotalruns()){
+                                    bt.put("< 1/5", bt.get("< 1/5")+1 );
+                                }
+                                else if(curr >= sub.get(0).getTotalruns()
+                                        && curr < sub.get(1).getTotalruns() ){
+                                    bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                                }
+                                else if(curr >= sub.get(1).getTotalruns()
+                                        && curr < sub.get(2).getTotalruns() ){
+                                    bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                                }
+                                else if(curr >= sub.get(2).getTotalruns() 
+                                        && curr < sub.get(3).getTotalruns() ){
+                                    bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                                }
+                                else if(curr >= sub.get(3).getTotalruns() 
+                                        && curr < sub.get(4).getTotalruns() ){
+                                    bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                                }
+                                else{
+                                    bt.put("5/5 <", bt.get("5/5 <")+1 );
+                                }
+                            } 
+                        }
+
+                        request.setAttribute("t_teamoneBatFirst0_bt", bt);
+                    }
+                    
+                    
+                    if(true){
+                        List<testMatch> totMatches = new ArrayList<>();
+                        totMatches = db.gettesthome(teamTwo, 1, 2);
+                        totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        totMatches.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        totMatches.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+                        
+                        List<testInning> tZ = new ArrayList<>();
+                        for(int i = 0; i < totMatches.size(); i++){
+                            tZ.add(totMatches.get(i).getInningOne1());
+                        }
+                        
+                        Map<String,Integer> bt = new LinkedHashMap<>();
+                        bt.put("< 1/5", 0);
+                        bt.put("1/5 - 2/5", 0);
+                        bt.put("2/5 - 3/5", 0);
+                        bt.put("3/5 - 4/5", 0);
+                        bt.put("4/5 - 5/5", 0);
+                        bt.put("5/5 <", 0);
+
+                        if(tZ.size() > 5){
+                            for(int i = 0; i < tZ.size()-6; i++){
+                                int curr = tZ.get(i).getTotalruns();
+
+                                List<testInning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                                Collections.sort(sub, new Comparator<testInning>() {
+                                    @Override
+                                    public int compare(testInning o1, testInning o2) {
+                                        return o1.getTotalruns()
+                                                - o2.getTotalruns();
+                                    }
+                                });
+
+                                if(curr < sub.get(0).getTotalruns()){
+                                    bt.put("< 1/5", bt.get("< 1/5")+1 );
+                                }
+                                else if(curr >= sub.get(0).getTotalruns()
+                                        && curr < sub.get(1).getTotalruns() ){
+                                    bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                                }
+                                else if(curr >= sub.get(1).getTotalruns()
+                                        && curr < sub.get(2).getTotalruns() ){
+                                    bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                                }
+                                else if(curr >= sub.get(2).getTotalruns() 
+                                        && curr < sub.get(3).getTotalruns() ){
+                                    bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                                }
+                                else if(curr >= sub.get(3).getTotalruns() 
+                                        && curr < sub.get(4).getTotalruns() ){
+                                    bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                                }
+                                else{
+                                    bt.put("5/5 <", bt.get("5/5 <")+1 );
+                                }
+                            } 
+                        }
+
+                        request.setAttribute("t_teamtwoBowlFirst0_bt", bt);
+                    }
+                    
+                    if(true){
+                        List<testMatch> totMatches = new ArrayList<>();
+                        totMatches = db.gettestGroundInfo(groundName, matchType);
+                        totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        totMatches.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        totMatches.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+                        
+                        List<testInning> tZ = new ArrayList<>();
+                        for(int i = 0; i < totMatches.size(); i++){
+                            tZ.add(totMatches.get(i).getInningOne1());
+                        }
+                        
+                        Map<String,Integer> bt = new LinkedHashMap<>();
+                        bt.put("< 1/5", 0);
+                        bt.put("1/5 - 2/5", 0);
+                        bt.put("2/5 - 3/5", 0);
+                        bt.put("3/5 - 4/5", 0);
+                        bt.put("4/5 - 5/5", 0);
+                        bt.put("5/5 <", 0);
+
+                        if(tZ.size() > 5){
+                            for(int i = 0; i < tZ.size()-6; i++){
+                                int curr = tZ.get(i).getTotalruns();
+
+                                List<testInning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                                Collections.sort(sub, new Comparator<testInning>() {
+                                    @Override
+                                    public int compare(testInning o1, testInning o2) {
+                                        return o1.getTotalruns()
+                                                - o2.getTotalruns();
+                                    }
+                                });
+
+                                if(curr < sub.get(0).getTotalruns()){
+                                    bt.put("< 1/5", bt.get("< 1/5")+1 );
+                                }
+                                else if(curr >= sub.get(0).getTotalruns()
+                                        && curr < sub.get(1).getTotalruns() ){
+                                    bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                                }
+                                else if(curr >= sub.get(1).getTotalruns()
+                                        && curr < sub.get(2).getTotalruns() ){
+                                    bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                                }
+                                else if(curr >= sub.get(2).getTotalruns() 
+                                        && curr < sub.get(3).getTotalruns() ){
+                                    bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                                }
+                                else if(curr >= sub.get(3).getTotalruns() 
+                                        && curr < sub.get(4).getTotalruns() ){
+                                    bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                                }
+                                else{
+                                    bt.put("5/5 <", bt.get("5/5 <")+1 );
+                                }
+                            } 
+                        }
+
+                        request.setAttribute("t_groundFirst1X0_bt", bt);
+                    }
+                    
+                    if(true){
+                        Map<String,Integer> A_bt = new LinkedHashMap<>();
+                        A_bt.put("N", 0);
+                        A_bt.put("< 1/10", 0);
+                        A_bt.put("1/10 - 2/10", 0);
+                        A_bt.put("2/10 - 3/10", 0);
+                        A_bt.put("3/10 - 4/10", 0);
+                        A_bt.put("4/10 - 5/10", 0);
+                        A_bt.put("5/10 - 6/10", 0);
+                        A_bt.put("6/10 - 7/10", 0);
+                        A_bt.put("7/10 - 8/10", 0);
+                        A_bt.put("8/10 - 9/10", 0);
+                        A_bt.put("9/10 - 10/10", 0);
+                        A_bt.put("10/10 <", 0);
+                        A_bt.put("2-2-2-3 above", 0);
+                        A_bt.put("4-4-4-7 below", 0);
+                        A_bt.put("3-3-3-4 above", 0);
+                        A_bt.put("3-3-3-6 below", 0);
+                        A_bt.put("2 above", 0);
+                        A_bt.put("3 above", 0);
+                        A_bt.put("4 above", 0);
+                        A_bt.put("6 below", 0);
+                        A_bt.put("7 below", 0);
+                        A_bt.put("8 below", 0);
+
+                        int hind = 1;
+
+                        List<testMatch> oneMatch = db.gettestaway(teamOne, 1, 1);
+                        oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        oneMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        oneMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                        List<testMatch> twoMatch = db.gettesthome(teamTwo, 1, 2);
+                        twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        twoMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        twoMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                        List<testMatch> grMatch = db.gettestGroundInfo(groundName, matchType);
+                        grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                        grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                        grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatch.size()-6; i++){
+
+                                int curr = oneMatch.get(i).getInningOne1().getTotalruns();
+                                Date currDate = oneMatch.get(i).getMatchDate();
+
+
+                                List<testInning> sub = new ArrayList<>();
+                                List<testInning> subA = new ArrayList<>();
+                                List<testInning> subB = new ArrayList<>();
+                                List<testInning> subG = new ArrayList<>();
+
+                                for(int j = i+1; j < i+6; j++){
+                                    sub.add(oneMatch.get(j).getInningOne1());
+                                    subA.add(oneMatch.get(j).getInningOne1());
+                                }
+
+                                twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(twoMatch.size() < 5){
+                                    break;
+                                }
+                                for(int j = 0; j < 5; j++){
+                                    sub.add(twoMatch.get(j).getInningOne1());
+                                    subB.add(twoMatch.get(j).getInningOne1());
+                                }
+
+                                grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(grMatch.size() >= 5){
+                                    for(int j = 0; j < 5; j++){
+                                        subG.add(twoMatch.get(j).getInningOne1());
+                                    }
+                                }
+
+                                Comparator innComp = new Comparator<testInning>() {
+                                        @Override
+                                        public int compare(testInning o1, testInning o2) {
+                                            return o1.getTotalruns()
+                                                    - o2.getTotalruns();
+                                        }
+                                    };
+
+                                Collections.sort(sub, innComp);
+                                Collections.sort(subA, innComp);
+                                Collections.sort(subB, innComp);
+                                Collections.sort(subG, innComp);
+
+                                A_bt.put("N", A_bt.get("N")+1);
+
+                                if(curr < sub.get(0).getTotalruns()){
+                                    A_bt.put("< 1/10", A_bt.get("< 1/10")+1);
+                                }
+                                else if(curr >= sub.get(0).getTotalruns()
+                                        && curr < sub.get(1).getTotalruns()){
+                                    A_bt.put("1/10 - 2/10", A_bt.get("1/10 - 2/10")+1);
+                                }
+                                else if(curr >= sub.get(1).getTotalruns()
+                                        && curr < sub.get(2).getTotalruns()){
+                                    A_bt.put("2/10 - 3/10", A_bt.get("2/10 - 3/10")+1);
+                                }
+                                else if(curr >= sub.get(2).getTotalruns()
+                                        && curr < sub.get(3).getTotalruns() ){
+                                    A_bt.put("3/10 - 4/10", A_bt.get("3/10 - 4/10")+1);
+                                }
+                                else if(curr >= sub.get(3).getTotalruns()
+                                        && curr < sub.get(4).getTotalruns()){
+                                    A_bt.put("4/10 - 5/10", A_bt.get("4/10 - 5/10")+1);
+                                }
+                                else if(curr >= sub.get(4).getTotalruns()
+                                        && curr < sub.get(5).getTotalruns()){
+                                    A_bt.put("5/10 - 6/10", A_bt.get("5/10 - 6/10")+1);
+                                }
+                                else if(curr >= sub.get(5).getTotalruns()
+                                        && curr < sub.get(6).getTotalruns()){
+                                    A_bt.put("6/10 - 7/10", A_bt.get("6/10 - 7/10")+1);
+                                }
+                                else if(curr >= sub.get(6).getTotalruns()
+                                        && curr < sub.get(7).getTotalruns()){
+                                    A_bt.put("7/10 - 8/10", A_bt.get("7/10 - 8/10")+1);
+                                }
+                                else if(curr >= sub.get(7).getTotalruns()
+                                        && curr < sub.get(8).getTotalruns()){
+                                    A_bt.put("8/10 - 9/10", A_bt.get("8/10 - 9/10")+1);
+                                }
+                                else if(curr >= sub.get(8).getTotalruns()
+                                        && curr < sub.get(9).getTotalruns()){
+                                    A_bt.put("9/10 - 10/10", A_bt.get("9/10 - 10/10")+1);
+                                }
+                                else{
+                                    A_bt.put("10/10 <", A_bt.get("10/10 <")+1);
+                                }
+
+                                if(curr >= sub.get(2).getTotalruns()
+                                        && curr >= subA.get(1).getTotalruns()
+                                        && curr >= subB.get(1).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(1).getTotalruns()){
+                                            A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(6).getTotalruns()
+                                        && curr <= subA.get(3).getTotalruns()
+                                        && curr <= subB.get(3).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(3).getTotalruns()){
+                                            A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+
+                                if(curr >= sub.get(3).getTotalruns()
+                                        && curr >= subA.get(2).getTotalruns()
+                                        && curr >= subB.get(2).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(5).getTotalruns()
+                                        && curr <= subA.get(2).getTotalruns()
+                                        && curr <= subB.get(2).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+
+                                if(curr >= sub.get(1).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(1).getTotalruns()){
+                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    }
+                                }
+
+                                if(curr >= sub.get(2).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(1).getTotalruns()){
+                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    }
+                                }
+
+                                if(curr >= sub.get(3).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr >= subG.get(1).getTotalruns()){
+                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(5).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(3).getTotalruns()){
+                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(6).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(3).getTotalruns()){
+                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    }
+                                }
+
+                                if(curr <= sub.get(7).getTotalruns()){
+                                    if(subG.size()==5){
+                                        if(curr <= subG.get(3).getTotalruns()){
+                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        }
+                                    }
+                                    else{
+                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    }
+                                }
+                            }
+                        }
+
+                        request.setAttribute("first0A_bt", A_bt);
+                    }
+                
+                
+                
+                if(true){
+                    
+                    Map<String,Integer> B_bt = new LinkedHashMap<>();
+                    B_bt.put("N", 0);
+                    B_bt.put("< 1/10", 0);
+                    B_bt.put("1/10 - 2/10", 0);
+                    B_bt.put("2/10 - 3/10", 0);
+                    B_bt.put("3/10 - 4/10", 0);
+                    B_bt.put("4/10 - 5/10", 0);
+                    B_bt.put("5/10 - 6/10", 0);
+                    B_bt.put("6/10 - 7/10", 0);
+                    B_bt.put("7/10 - 8/10", 0);
+                    B_bt.put("8/10 - 9/10", 0);
+                    B_bt.put("9/10 - 10/10", 0);
+                    B_bt.put("10/10 <", 0);
+                    B_bt.put("2-2-2-3 above", 0);
+                    B_bt.put("4-4-4-7 below", 0);
+                    B_bt.put("3-3-3-4 above", 0);
+                    B_bt.put("3-3-3-6 below", 0);
+                    B_bt.put("2 above", 0);
+                    B_bt.put("3 above", 0);
+                    B_bt.put("4 above", 0);
+                    B_bt.put("6 below", 0);
+                    B_bt.put("7 below", 0);
+                    B_bt.put("8 below", 0);
+
+                    int hind = 1;
+
+                    List<testMatch> oneMatch = db.gettestaway(teamOne, 1, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    oneMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                    oneMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                    List<testMatch> twoMatch = db.gettesthome(teamTwo, 1, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    twoMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                    twoMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                    List<testMatch> grMatch = db.gettestGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
+                    grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = twoMatch.get(i).getInningOne1().getTotalruns();
+                            Date currDate = twoMatch.get(i).getMatchDate();
+
+
+                            List<testInning> sub = new ArrayList<>();
+                            List<testInning> subA = new ArrayList<>();
+                            List<testInning> subB = new ArrayList<>();
+                            List<testInning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(twoMatch.get(j).getInningOne1());
+                                subB.add(twoMatch.get(j).getInningOne1());
+                            }
+
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(oneMatch.get(j).getInningOne1());
+                                subA.add(oneMatch.get(j).getInningOne1());
+                            }
+
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne1());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<testInning>() {
+                                    @Override
+                                    public int compare(testInning o1, testInning o2) {
+                                        return o1.getTotalruns()
+                                                - o2.getTotalruns();
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            B_bt.put("N", B_bt.get("N")+1);
+
+                            if(curr < sub.get(0).getTotalruns()){
+                                B_bt.put("< 1/10", B_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= sub.get(0).getTotalruns()
+                                    && curr < sub.get(1).getTotalruns()){
+                                B_bt.put("1/10 - 2/10", B_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= sub.get(1).getTotalruns()
+                                    && curr < sub.get(2).getTotalruns()){
+                                B_bt.put("2/10 - 3/10", B_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= sub.get(2).getTotalruns()
+                                    && curr < sub.get(3).getTotalruns()){
+                                B_bt.put("3/10 - 4/10", B_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= sub.get(3).getTotalruns()
+                                    && curr < sub.get(4).getTotalruns()){
+                                B_bt.put("4/10 - 5/10", B_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= sub.get(4).getTotalruns()
+                                    && curr < sub.get(5).getTotalruns()){
+                                B_bt.put("5/10 - 6/10", B_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= sub.get(5).getTotalruns()
+                                    && curr < sub.get(6).getTotalruns()){
+                                B_bt.put("6/10 - 7/10", B_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= sub.get(6).getTotalruns()
+                                    && curr < sub.get(7).getTotalruns()){
+                                B_bt.put("7/10 - 8/10", B_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= sub.get(7).getTotalruns()
+                                    && curr < sub.get(8).getTotalruns()){
+                                B_bt.put("8/10 - 9/10", B_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= sub.get(8).getTotalruns()
+                                    && curr < sub.get(9).getTotalruns()){
+                                B_bt.put("9/10 - 10/10", B_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                B_bt.put("10/10 <", B_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= sub.get(2).getTotalruns()
+                                    && curr >= subA.get(1).getTotalruns()
+                                    && curr >= subB.get(1).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(1).getTotalruns()){
+                                        B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(6).getTotalruns()
+                                    && curr <= subA.get(3).getTotalruns()
+                                    && curr <= subB.get(3).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(3).getTotalruns()){
+                                        B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= sub.get(3).getTotalruns()
+                                    && curr >= subA.get(2).getTotalruns()
+                                    && curr >= subB.get(2).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(5).getTotalruns()
+                                    && curr <= subA.get(2).getTotalruns()
+                                    && curr <= subB.get(2).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= sub.get(1).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(1).getTotalruns()){
+                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= sub.get(2).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(1).getTotalruns()){
+                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= sub.get(3).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr >= subG.get(1).getTotalruns()){
+                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(5).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(3).getTotalruns()){
+                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(6).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(3).getTotalruns()){
+                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= sub.get(7).getTotalruns()){
+                                if(subG.size()==5){
+                                    if(curr <= subG.get(3).getTotalruns()){
+                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("first0B_bt", B_bt);
+                }
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
 
                     /*
             
@@ -1921,6 +3331,35 @@ public class getData extends HttpServlet {
                     RequestDispatcher dispatcher = request.getRequestDispatcher("/testresults.jsp");
                     dispatcher.forward(request, response);
                 }
+    }
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+            
+            CricDB db = new CricDB();
+            final Date backDate;
+            java.util.Date tempDate = new java.util.Date();
+
+            int matchType = Integer.parseInt(request.getParameter("tournament"));
+            String teamOne = request.getParameter("teamName1");
+            String teamTwo = request.getParameter("teamName2");
+            String groundName = request.getParameter("groundName");
+            String hometeam = db.checkhomeoraway(teamOne, teamTwo, groundName);
+            String bdate = request.getParameter("backDate");
+            if (bdate != null && !bdate.isEmpty()) {
+                try {
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    tempDate = df.parse(bdate);
+                } catch (Exception ex) {
+                    System.out.println("Date parse error =======================================");
+                    ex.printStackTrace();
+                }
+            }
+            backDate = new Date(tempDate.getTime());
+            
+
+            if (matchType == 1) {
+                test(request, response);
 
             } else {
 
@@ -1942,7 +3381,7 @@ public class getData extends HttpServlet {
                 List<Match> matches = db.getMatches(teamOne, matchType, 1);
                 matches.removeIf(m -> (m.getMatchDate().after(backDate)));
                 int k = 5;
-                for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                for (int i = 0; i < matches.size(); i++) {
                     temp = matches.get(i).getInningOne();
                     int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
                             + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
@@ -1953,16 +3392,135 @@ public class getData extends HttpServlet {
                     ps.set(5, String.valueOf(sixes));
                     temp.setParams(ps);
                     oneBatFirst.add(temp);
-                    if (temp.getParams().get(2).equals("-1")) {
-                        k++;
-                    }
+//                    if (temp.getParams().get(2).equals("-1")) {
+//                        k++;
+//                    }
                 }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamOne, matchType, 1);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningOne());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 1;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("oneBatFirst1_bt", bt);
+                }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamOne, matchType, 1);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningOne());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 3;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("oneBatFirst3_bt", bt);
+                }
+                
+                
+                
 
                 matches.clear();
                 k = 5;
                 matches = db.getMatches(teamTwo, matchType, 2);
                 matches.removeIf(m -> (m.getMatchDate().after(backDate)));
-                for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                for (int i = 0; i < matches.size(); i++) {
                     temp = matches.get(i).getInningTwo();
                     int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
                             + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
@@ -1973,9 +3531,124 @@ public class getData extends HttpServlet {
                     ps.set(5, String.valueOf(sixes));
                     temp.setParams(ps);
                     twoBatSecond.add(temp);
-                    if (temp.getParams().get(2).equals("-1")) {
-                        k++;
+//                    if (temp.getParams().get(2).equals("-1")) {
+//                        k++;
+//                    }
+                }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamTwo, matchType, 2);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningTwo());
                     }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 1;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("twoBatSecond1_bt", bt);
+                }
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamTwo, matchType, 2);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningTwo());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 3;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("twoBatSecond3_bt", bt);
                 }
 
                 matches.clear();
@@ -1997,12 +3670,637 @@ public class getData extends HttpServlet {
                         k++;
                     }
                 }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamOne, matchType, 1);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningTwo());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 1;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("oneBowlSecond1_bt", bt);
+                }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamOne, matchType, 1);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningTwo());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 3;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("oneBowlSecond3_bt", bt);
+                }
+                
+                // meth here
+                secondBackTest(teamOne, teamTwo, groundName, backDate, db, matchType, request);
+                
+                if(true){
+                    Map<String,Integer> A_bt = new LinkedHashMap<>();
+                    A_bt.put("N", 0);
+                    A_bt.put("< 1/10", 0);
+                    A_bt.put("1/10 - 2/10", 0);
+                    A_bt.put("2/10 - 3/10", 0);
+                    A_bt.put("3/10 - 4/10", 0);
+                    A_bt.put("4/10 - 5/10", 0);
+                    A_bt.put("5/10 - 6/10", 0);
+                    A_bt.put("6/10 - 7/10", 0);
+                    A_bt.put("7/10 - 8/10", 0);
+                    A_bt.put("8/10 - 9/10", 0);
+                    A_bt.put("9/10 - 10/10", 0);
+                    A_bt.put("10/10 <", 0);
+                    A_bt.put("2-2-2-3 above", 0);
+                    A_bt.put("4-4-4-7 below", 0);
+                    A_bt.put("3-3-3-4 above", 0);
+                    A_bt.put("3-3-3-6 below", 0);
+                    A_bt.put("2 above", 0);
+                    A_bt.put("3 above", 0);
+                    A_bt.put("4 above", 0);
+                    A_bt.put("6 below", 0);
+                    A_bt.put("7 below", 0);
+                    A_bt.put("8 below", 0);
+
+                    int hind = 3;
+
+                    List<Match> oneMatch = db.getMatches(teamTwo, matchType, 2);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> twoMatch = db.getMatches(teamOne, matchType, 1);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                        for(int i = 0; i < oneMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(oneMatch.get(i).getInningTwo().getParams().get(hind));
+                            Timestamp currDate = oneMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(oneMatch.get(j).getInningTwo());
+                                subA.add(oneMatch.get(j).getInningTwo());
+                            }
+
+                            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(twoMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(twoMatch.get(j).getInningTwo());
+                                subB.add(twoMatch.get(j).getInningTwo());
+                            }
+                            
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningTwo());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            A_bt.put("N", A_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                A_bt.put("< 1/10", A_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                A_bt.put("1/10 - 2/10", A_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                A_bt.put("2/10 - 3/10", A_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                A_bt.put("3/10 - 4/10", A_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                A_bt.put("4/10 - 5/10", A_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                A_bt.put("5/10 - 6/10", A_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                A_bt.put("6/10 - 7/10", A_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                A_bt.put("7/10 - 8/10", A_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                A_bt.put("8/10 - 9/10", A_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                A_bt.put("9/10 - 10/10", A_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                A_bt.put("10/10 <", A_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("threeSecondA_bt", A_bt);
+                }
+                
+                
+                
+                if(true){
+                    
+                    Map<String,Integer> B_bt = new LinkedHashMap<>();
+                    B_bt.put("N", 0);
+                    B_bt.put("< 1/10", 0);
+                    B_bt.put("1/10 - 2/10", 0);
+                    B_bt.put("2/10 - 3/10", 0);
+                    B_bt.put("3/10 - 4/10", 0);
+                    B_bt.put("4/10 - 5/10", 0);
+                    B_bt.put("5/10 - 6/10", 0);
+                    B_bt.put("6/10 - 7/10", 0);
+                    B_bt.put("7/10 - 8/10", 0);
+                    B_bt.put("8/10 - 9/10", 0);
+                    B_bt.put("9/10 - 10/10", 0);
+                    B_bt.put("10/10 <", 0);
+                    B_bt.put("2-2-2-3 above", 0);
+                    B_bt.put("4-4-4-7 below", 0);
+                    B_bt.put("3-3-3-4 above", 0);
+                    B_bt.put("3-3-3-6 below", 0);
+                    B_bt.put("2 above", 0);
+                    B_bt.put("3 above", 0);
+                    B_bt.put("4 above", 0);
+                    B_bt.put("6 below", 0);
+                    B_bt.put("7 below", 0);
+                    B_bt.put("8 below", 0);
+
+                    int hind = 3;
+
+                    List<Match> oneMatch = db.getMatches(teamTwo, matchType, 2);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> twoMatch = db.getMatches(teamOne, matchType, 1);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(twoMatch.get(i).getInningTwo().getParams().get(hind));
+                            Timestamp currDate = twoMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(twoMatch.get(j).getInningTwo());
+                                subB.add(twoMatch.get(j).getInningTwo());
+                            }
+
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(oneMatch.get(j).getInningTwo());
+                                subA.add(oneMatch.get(j).getInningTwo());
+                            }
+
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningTwo());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            B_bt.put("N", B_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                B_bt.put("< 1/10", B_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                B_bt.put("1/10 - 2/10", B_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                B_bt.put("2/10 - 3/10", B_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                B_bt.put("3/10 - 4/10", B_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                B_bt.put("4/10 - 5/10", B_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                B_bt.put("5/10 - 6/10", B_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                B_bt.put("6/10 - 7/10", B_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                B_bt.put("7/10 - 8/10", B_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                B_bt.put("8/10 - 9/10", B_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                B_bt.put("9/10 - 10/10", B_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                B_bt.put("10/10 <", B_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("threeSecondB_bt", B_bt);
+                }
+                
+                
 
                 matches.clear();
                 k = 5;
                 matches = db.getMatches(teamTwo, matchType, 2);
                 matches.removeIf(m -> (m.getMatchDate().after(backDate)));
-                for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                for (int i = 0; i < matches.size(); i++) {
                     temp = matches.get(i).getInningOne();
                     int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
                             + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
@@ -2013,9 +4311,1133 @@ public class getData extends HttpServlet {
                     ps.set(5, String.valueOf(sixes));
                     temp.setParams(ps);
                     twoBowlFirst.add(temp);
-                    if (temp.getParams().get(2).equals("-1")) {
-                        k++;
+//                    if (temp.getParams().get(2).equals("-1")) {
+//                        k++;
+//                    }
+                }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamTwo, matchType, 2);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningOne());
                     }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 1;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("twoBowlFirst1_bt", bt);
+                }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamTwo, matchType, 2);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningOne());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 3;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("twoBowlFirst3_bt", bt);
+                }
+                
+                if(true){
+                    Map<String,Integer> A_bt = new LinkedHashMap<>();
+                    A_bt.put("N", 0);
+                    A_bt.put("< 1/10", 0);
+                    A_bt.put("1/10 - 2/10", 0);
+                    A_bt.put("2/10 - 3/10", 0);
+                    A_bt.put("3/10 - 4/10", 0);
+                    A_bt.put("4/10 - 5/10", 0);
+                    A_bt.put("5/10 - 6/10", 0);
+                    A_bt.put("6/10 - 7/10", 0);
+                    A_bt.put("7/10 - 8/10", 0);
+                    A_bt.put("8/10 - 9/10", 0);
+                    A_bt.put("9/10 - 10/10", 0);
+                    A_bt.put("10/10 <", 0);
+                    A_bt.put("2-2-2-3 above", 0);
+                    A_bt.put("4-4-4-7 below", 0);
+                    A_bt.put("3-3-3-4 above", 0);
+                    A_bt.put("3-3-3-6 below", 0);
+                    A_bt.put("2 above", 0);
+                    A_bt.put("3 above", 0);
+                    A_bt.put("4 above", 0);
+                    A_bt.put("6 below", 0);
+                    A_bt.put("7 below", 0);
+                    A_bt.put("8 below", 0);
+
+                    int hind = 1;
+
+                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                        for(int i = 0; i < oneMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(oneMatch.get(i).getInningOne().getParams().get(hind));
+                            Timestamp currDate = oneMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(oneMatch.get(j).getInningOne());
+                                subA.add(oneMatch.get(j).getInningOne());
+                            }
+
+                            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(twoMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(twoMatch.get(j).getInningOne());
+                                subB.add(twoMatch.get(j).getInningOne());
+                            }
+                            
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            A_bt.put("N", A_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                A_bt.put("< 1/10", A_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                A_bt.put("1/10 - 2/10", A_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                A_bt.put("2/10 - 3/10", A_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                A_bt.put("3/10 - 4/10", A_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                A_bt.put("4/10 - 5/10", A_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                A_bt.put("5/10 - 6/10", A_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                A_bt.put("6/10 - 7/10", A_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                A_bt.put("7/10 - 8/10", A_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                A_bt.put("8/10 - 9/10", A_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                A_bt.put("9/10 - 10/10", A_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                A_bt.put("10/10 <", A_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("oneA_bt", A_bt);
+                }
+                
+                
+                
+                if(true){
+                    
+                    Map<String,Integer> B_bt = new LinkedHashMap<>();
+                    B_bt.put("N", 0);
+                    B_bt.put("< 1/10", 0);
+                    B_bt.put("1/10 - 2/10", 0);
+                    B_bt.put("2/10 - 3/10", 0);
+                    B_bt.put("3/10 - 4/10", 0);
+                    B_bt.put("4/10 - 5/10", 0);
+                    B_bt.put("5/10 - 6/10", 0);
+                    B_bt.put("6/10 - 7/10", 0);
+                    B_bt.put("7/10 - 8/10", 0);
+                    B_bt.put("8/10 - 9/10", 0);
+                    B_bt.put("9/10 - 10/10", 0);
+                    B_bt.put("10/10 <", 0);
+                    B_bt.put("2-2-2-3 above", 0);
+                    B_bt.put("4-4-4-7 below", 0);
+                    B_bt.put("3-3-3-4 above", 0);
+                    B_bt.put("3-3-3-6 below", 0);
+                    B_bt.put("2 above", 0);
+                    B_bt.put("3 above", 0);
+                    B_bt.put("4 above", 0);
+                    B_bt.put("6 below", 0);
+                    B_bt.put("7 below", 0);
+                    B_bt.put("8 below", 0);
+
+                    int hind = 1;
+
+                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(twoMatch.get(i).getInningOne().getParams().get(hind));
+                            Timestamp currDate = twoMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(twoMatch.get(j).getInningOne());
+                                subB.add(twoMatch.get(j).getInningOne());
+                            }
+
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(oneMatch.get(j).getInningOne());
+                                subA.add(oneMatch.get(j).getInningOne());
+                            }
+
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            B_bt.put("N", B_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                B_bt.put("< 1/10", B_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                B_bt.put("1/10 - 2/10", B_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                B_bt.put("2/10 - 3/10", B_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                B_bt.put("3/10 - 4/10", B_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                B_bt.put("4/10 - 5/10", B_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                B_bt.put("5/10 - 6/10", B_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                B_bt.put("6/10 - 7/10", B_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                B_bt.put("7/10 - 8/10", B_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                B_bt.put("8/10 - 9/10", B_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                B_bt.put("9/10 - 10/10", B_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                B_bt.put("10/10 <", B_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("oneB_bt", B_bt);
+                }
+                
+                if(true){
+                    Map<String,Integer> A_bt = new LinkedHashMap<>();
+                    A_bt.put("N", 0);
+                    A_bt.put("< 1/10", 0);
+                    A_bt.put("1/10 - 2/10", 0);
+                    A_bt.put("2/10 - 3/10", 0);
+                    A_bt.put("3/10 - 4/10", 0);
+                    A_bt.put("4/10 - 5/10", 0);
+                    A_bt.put("5/10 - 6/10", 0);
+                    A_bt.put("6/10 - 7/10", 0);
+                    A_bt.put("7/10 - 8/10", 0);
+                    A_bt.put("8/10 - 9/10", 0);
+                    A_bt.put("9/10 - 10/10", 0);
+                    A_bt.put("10/10 <", 0);
+                    A_bt.put("2-2-2-3 above", 0);
+                    A_bt.put("4-4-4-7 below", 0);
+                    A_bt.put("3-3-3-4 above", 0);
+                    A_bt.put("3-3-3-6 below", 0);
+                    A_bt.put("2 above", 0);
+                    A_bt.put("3 above", 0);
+                    A_bt.put("4 above", 0);
+                    A_bt.put("6 below", 0);
+                    A_bt.put("7 below", 0);
+                    A_bt.put("8 below", 0);
+
+                    int hind = 3;
+
+                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                        for(int i = 0; i < oneMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(oneMatch.get(i).getInningOne().getParams().get(hind));
+                            Timestamp currDate = oneMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(oneMatch.get(j).getInningOne());
+                                subA.add(oneMatch.get(j).getInningOne());
+                            }
+
+                            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(twoMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(twoMatch.get(j).getInningOne());
+                                subB.add(twoMatch.get(j).getInningOne());
+                            }
+                            
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            A_bt.put("N", A_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                A_bt.put("< 1/10", A_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                A_bt.put("1/10 - 2/10", A_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                A_bt.put("2/10 - 3/10", A_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                A_bt.put("3/10 - 4/10", A_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                A_bt.put("4/10 - 5/10", A_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                A_bt.put("5/10 - 6/10", A_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                A_bt.put("6/10 - 7/10", A_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                A_bt.put("7/10 - 8/10", A_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                A_bt.put("8/10 - 9/10", A_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                A_bt.put("9/10 - 10/10", A_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                A_bt.put("10/10 <", A_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("threeA_bt", A_bt);
+                }
+                
+                
+                
+                if(true){
+                    
+                    Map<String,Integer> B_bt = new LinkedHashMap<>();
+                    B_bt.put("N", 0);
+                    B_bt.put("< 1/10", 0);
+                    B_bt.put("1/10 - 2/10", 0);
+                    B_bt.put("2/10 - 3/10", 0);
+                    B_bt.put("3/10 - 4/10", 0);
+                    B_bt.put("4/10 - 5/10", 0);
+                    B_bt.put("5/10 - 6/10", 0);
+                    B_bt.put("6/10 - 7/10", 0);
+                    B_bt.put("7/10 - 8/10", 0);
+                    B_bt.put("8/10 - 9/10", 0);
+                    B_bt.put("9/10 - 10/10", 0);
+                    B_bt.put("10/10 <", 0);
+                    B_bt.put("2-2-2-3 above", 0);
+                    B_bt.put("4-4-4-7 below", 0);
+                    B_bt.put("3-3-3-4 above", 0);
+                    B_bt.put("3-3-3-6 below", 0);
+                    B_bt.put("2 above", 0);
+                    B_bt.put("3 above", 0);
+                    B_bt.put("4 above", 0);
+                    B_bt.put("6 below", 0);
+                    B_bt.put("7 below", 0);
+                    B_bt.put("8 below", 0);
+
+                    int hind = 3;
+
+                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(twoMatch.get(i).getInningOne().getParams().get(hind));
+                            Timestamp currDate = twoMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(twoMatch.get(j).getInningOne());
+                                subB.add(twoMatch.get(j).getInningOne());
+                            }
+
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(oneMatch.get(j).getInningOne());
+                                subA.add(oneMatch.get(j).getInningOne());
+                            }
+
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            B_bt.put("N", B_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                B_bt.put("< 1/10", B_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                B_bt.put("1/10 - 2/10", B_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                B_bt.put("2/10 - 3/10", B_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                B_bt.put("3/10 - 4/10", B_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                B_bt.put("4/10 - 5/10", B_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                B_bt.put("5/10 - 6/10", B_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                B_bt.put("6/10 - 7/10", B_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                B_bt.put("7/10 - 8/10", B_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                B_bt.put("8/10 - 9/10", B_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                B_bt.put("9/10 - 10/10", B_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                B_bt.put("10/10 <", B_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("threeB_bt", B_bt);
                 }
 
                 List<Inning> oneFS = new ArrayList<>();
@@ -2070,7 +5492,7 @@ public class getData extends HttpServlet {
                 k = 5;
                 matches = db.getGroundInfo(groundName, matchType);
                 matches.removeIf(m -> (m.getMatchDate().after(backDate)));
-                for (int i = 0; i < Math.min(k, matches.size()); i++) {
+                for (int i = 0; i < matches.size(); i++) {
                     temp = matches.get(i).getInningOne();
                     int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
                             + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
@@ -2097,6 +5519,238 @@ public class getData extends HttpServlet {
                         k++;
                     }
 
+                }
+                
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getGroundInfo(groundName, matchType);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningTwo());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 1;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("groundSecond1_bt", bt);
+                }
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getGroundInfo(groundName, matchType);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningTwo());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 3;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("groundSecond3_bt", bt);
+                }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getGroundInfo(groundName, matchType);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningOne());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 1;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("groundFirst1_bt", bt);
+                }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getGroundInfo(groundName, matchType);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningOne());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 3;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("groundFirst3_bt", bt);
                 }
 
                 List<Inning> oneBatFirstX = new ArrayList<>();
@@ -2126,8 +5780,776 @@ public class getData extends HttpServlet {
                         groundSecondX.add(q);
                     }
                 }
-                request.setAttribute("oneBatFirstX", oneBatFirstX);
-                request.setAttribute("twoBowlFirstX", twoBowlFirstX);
+                
+                Map<String,Integer> oneBatFirstX_bt = new LinkedHashMap<>();
+                oneBatFirstX_bt.put("< 1/5", 0);
+                oneBatFirstX_bt.put("1/5 - 2/5", 0);
+                oneBatFirstX_bt.put("2/5 - 3/5", 0);
+                oneBatFirstX_bt.put("3/5 - 4/5", 0);
+                oneBatFirstX_bt.put("4/5 - 5/5", 0);
+                oneBatFirstX_bt.put("5/5 <", 0);
+                
+                if(oneBatFirstX.size() > 5){
+                    for(int i = 0; i < oneBatFirstX.size()-6; i++){
+                        int hind = 2;
+                        int curr = Integer.parseInt(oneBatFirstX.get(i).getParams().get(hind));
+                        System.out.println("curr :: " + curr);
+                        
+                        List<Inning> sub = new ArrayList<>(oneBatFirstX.subList(i+1, i+6));
+                        Collections.sort(sub, new Comparator<Inning>() {
+                            @Override
+                            public int compare(Inning o1, Inning o2) {
+                                return Integer.parseInt(o1.getParams().get(hind))
+                                        - Integer.parseInt(o2.getParams().get(hind));
+                            }
+                        });
+                        
+                        if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                            oneBatFirstX_bt.put("< 1/5", oneBatFirstX_bt.get("< 1/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                            oneBatFirstX_bt.put("1/5 - 2/5", oneBatFirstX_bt.get("1/5 - 2/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                            oneBatFirstX_bt.put("2/5 - 3/5", oneBatFirstX_bt.get("2/5 - 3/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                            oneBatFirstX_bt.put("3/5 - 4/5", oneBatFirstX_bt.get("3/5 - 4/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                            oneBatFirstX_bt.put("4/5 - 5/5", oneBatFirstX_bt.get("4/5 - 5/5")+1 );
+                        }
+                        else{
+                            oneBatFirstX_bt.put("5/5 <", oneBatFirstX_bt.get("5/5 <")+1 );
+                        }
+                    } 
+                }
+                
+                request.setAttribute("oneBatFirstX_bt", oneBatFirstX_bt);
+                
+                
+                
+                Map<String,Integer> twoBowlFirstX_bt = new LinkedHashMap<>();
+                twoBowlFirstX_bt.put("< 1/5", 0);
+                twoBowlFirstX_bt.put("1/5 - 2/5", 0);
+                twoBowlFirstX_bt.put("2/5 - 3/5", 0);
+                twoBowlFirstX_bt.put("3/5 - 4/5", 0);
+                twoBowlFirstX_bt.put("4/5 - 5/5", 0);
+                twoBowlFirstX_bt.put("5/5 <", 0);
+                System.out.println("meh ::" + twoBowlFirstX.size());
+                if(twoBowlFirstX.size() > 5){
+                    for(int i = 0; i < twoBowlFirstX.size()-6; i++){
+                        int hind = 2;
+                        int curr = Integer.parseInt(twoBowlFirstX.get(i).getParams().get(hind));
+                        System.out.println("curr :: " + curr);
+                        
+                        List<Inning> sub = new ArrayList<>(twoBowlFirstX.subList(i+1, i+6));
+                        Collections.sort(sub, new Comparator<Inning>() {
+                            @Override
+                            public int compare(Inning o1, Inning o2) {
+                                return Integer.parseInt(o1.getParams().get(hind))
+                                        - Integer.parseInt(o2.getParams().get(hind));
+                            }
+                        });
+                        
+                        if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                            twoBowlFirstX_bt.put("< 1/5", twoBowlFirstX_bt.get("< 1/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                            twoBowlFirstX_bt.put("1/5 - 2/5", twoBowlFirstX_bt.get("1/5 - 2/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                            twoBowlFirstX_bt.put("2/5 - 3/5", twoBowlFirstX_bt.get("2/5 - 3/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                            twoBowlFirstX_bt.put("3/5 - 4/5", twoBowlFirstX_bt.get("3/5 - 4/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                            twoBowlFirstX_bt.put("4/5 - 5/5", twoBowlFirstX_bt.get("4/5 - 5/5")+1 );
+                        }
+                        else{
+                            twoBowlFirstX_bt.put("5/5 <", twoBowlFirstX_bt.get("5/5 <")+1 );
+                        }
+                    }
+                }
+                
+                request.setAttribute("twoBowlFirstX_bt", twoBowlFirstX_bt);
+                
+                Map<String,Integer> groundFirstX_bt = new LinkedHashMap<>();
+                groundFirstX_bt.put("< 1/5", 0);
+                groundFirstX_bt.put("1/5 - 2/5", 0);
+                groundFirstX_bt.put("2/5 - 3/5", 0);
+                groundFirstX_bt.put("3/5 - 4/5", 0);
+                groundFirstX_bt.put("4/5 - 5/5", 0);
+                groundFirstX_bt.put("5/5 <", 0);
+                
+                if(groundFirstX.size() > 5){
+                    for(int i = 0; i < groundFirstX.size()-6; i++){
+                        int hind = 2;
+                        int curr = Integer.parseInt(groundFirstX.get(i).getParams().get(hind));
+                        System.out.println("curr :: " + curr);
+                        
+                        List<Inning> sub = new ArrayList<>(groundFirstX.subList(i+1, i+6));
+                        Collections.sort(sub, new Comparator<Inning>() {
+                            @Override
+                            public int compare(Inning o1, Inning o2) {
+                                return Integer.parseInt(o1.getParams().get(hind))
+                                        - Integer.parseInt(o2.getParams().get(hind));
+                            }
+                        });
+                        
+                        if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                            groundFirstX_bt.put("< 1/5", groundFirstX_bt.get("< 1/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                            groundFirstX_bt.put("1/5 - 2/5", groundFirstX_bt.get("1/5 - 2/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                            groundFirstX_bt.put("2/5 - 3/5", groundFirstX_bt.get("2/5 - 3/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                            groundFirstX_bt.put("3/5 - 4/5", groundFirstX_bt.get("3/5 - 4/5")+1 );
+                        }
+                        else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                            groundFirstX_bt.put("4/5 - 5/5", groundFirstX_bt.get("4/5 - 5/5")+1 );
+                        }
+                        else{
+                            groundFirstX_bt.put("5/5 <", groundFirstX_bt.get("5/5 <")+1 );
+                        }
+                    }
+                }
+                
+                request.setAttribute("groundFirstX_bt", groundFirstX_bt);
+                
+                //10 datapoint back testing:
+                
+                if(true){
+                    Map<String,Integer> twoA_bt = new LinkedHashMap<>();
+                    twoA_bt.put("N", 0);
+                    twoA_bt.put("< 1/10", 0);
+                    twoA_bt.put("1/10 - 2/10", 0);
+                    twoA_bt.put("2/10 - 3/10", 0);
+                    twoA_bt.put("3/10 - 4/10", 0);
+                    twoA_bt.put("4/10 - 5/10", 0);
+                    twoA_bt.put("5/10 - 6/10", 0);
+                    twoA_bt.put("6/10 - 7/10", 0);
+                    twoA_bt.put("7/10 - 8/10", 0);
+                    twoA_bt.put("8/10 - 9/10", 0);
+                    twoA_bt.put("9/10 - 10/10", 0);
+                    twoA_bt.put("10/10 <", 0);
+                    twoA_bt.put("2-2-2-3 above", 0);
+                    twoA_bt.put("4-4-4-7 below", 0);
+                    twoA_bt.put("3-3-3-4 above", 0);
+                    twoA_bt.put("3-3-3-6 below", 0);
+                    twoA_bt.put("2 above", 0);
+                    twoA_bt.put("3 above", 0);
+                    twoA_bt.put("4 above", 0);
+                    twoA_bt.put("6 below", 0);
+                    twoA_bt.put("7 below", 0);
+                    twoA_bt.put("8 below", 0);
+
+                    int hind = 2;
+
+                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    oneMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+
+                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    twoMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    grMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+                    
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                        for(int i = 0; i < oneMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(oneMatch.get(i).getInningOne().getParams().get(hind));
+                            Timestamp currDate = oneMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(oneMatch.get(j).getInningOne());
+                                subA.add(oneMatch.get(j).getInningOne());
+                            }
+
+                            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(twoMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(twoMatch.get(j).getInningOne());
+                                subB.add(twoMatch.get(j).getInningOne());
+                            }
+                            
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            twoA_bt.put("N", twoA_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                twoA_bt.put("< 1/10", twoA_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                twoA_bt.put("1/10 - 2/10", twoA_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                twoA_bt.put("2/10 - 3/10", twoA_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                twoA_bt.put("3/10 - 4/10", twoA_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                twoA_bt.put("4/10 - 5/10", twoA_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                twoA_bt.put("5/10 - 6/10", twoA_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                twoA_bt.put("6/10 - 7/10", twoA_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                twoA_bt.put("7/10 - 8/10", twoA_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                twoA_bt.put("8/10 - 9/10", twoA_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                twoA_bt.put("9/10 - 10/10", twoA_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                twoA_bt.put("10/10 <", twoA_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        twoA_bt.put("2-2-2-3 above", twoA_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("2-2-2-3 above", twoA_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        twoA_bt.put("4-4-4-7 below", twoA_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("4-4-4-7 below", twoA_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        twoA_bt.put("3-3-3-4 above", twoA_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("3-3-3-4 above", twoA_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        twoA_bt.put("3-3-3-6 below", twoA_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("3-3-3-6 below", twoA_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        twoA_bt.put("2 above", twoA_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("2 above", twoA_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        twoA_bt.put("3 above", twoA_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("3 above", twoA_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        twoA_bt.put("4 above", twoA_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("4 above", twoA_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        twoA_bt.put("6 below", twoA_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("6 below", twoA_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        twoA_bt.put("7 below", twoA_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("7 below", twoA_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        twoA_bt.put("8 below", twoA_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoA_bt.put("8 below", twoA_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("twoA_bt", twoA_bt);
+                }
+                
+                
+                
+                if(true){
+                    
+                    Map<String,Integer> twoB_bt = new LinkedHashMap<>();
+                    twoB_bt.put("N", 0);
+                    twoB_bt.put("< 1/10", 0);
+                    twoB_bt.put("1/10 - 2/10", 0);
+                    twoB_bt.put("2/10 - 3/10", 0);
+                    twoB_bt.put("3/10 - 4/10", 0);
+                    twoB_bt.put("4/10 - 5/10", 0);
+                    twoB_bt.put("5/10 - 6/10", 0);
+                    twoB_bt.put("6/10 - 7/10", 0);
+                    twoB_bt.put("7/10 - 8/10", 0);
+                    twoB_bt.put("8/10 - 9/10", 0);
+                    twoB_bt.put("9/10 - 10/10", 0);
+                    twoB_bt.put("10/10 <", 0);
+                    twoB_bt.put("2-2-2-3 above", 0);
+                    twoB_bt.put("4-4-4-7 below", 0);
+                    twoB_bt.put("3-3-3-4 above", 0);
+                    twoB_bt.put("3-3-3-6 below", 0);
+                    twoB_bt.put("2 above", 0);
+                    twoB_bt.put("3 above", 0);
+                    twoB_bt.put("4 above", 0);
+                    twoB_bt.put("6 below", 0);
+                    twoB_bt.put("7 below", 0);
+                    twoB_bt.put("8 below", 0);
+
+                    int hind = 2;
+
+                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    oneMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+
+                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    twoMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+                    
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    grMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(twoMatch.get(i).getInningOne().getParams().get(hind));
+                            Timestamp currDate = twoMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(twoMatch.get(j).getInningOne());
+                                subB.add(twoMatch.get(j).getInningOne());
+                            }
+
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(oneMatch.get(j).getInningOne());
+                                subA.add(oneMatch.get(j).getInningOne());
+                            }
+
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            twoB_bt.put("N", twoB_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                twoB_bt.put("< 1/10", twoB_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                twoB_bt.put("1/10 - 2/10", twoB_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                twoB_bt.put("2/10 - 3/10", twoB_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                twoB_bt.put("3/10 - 4/10", twoB_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                twoB_bt.put("4/10 - 5/10", twoB_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                twoB_bt.put("5/10 - 6/10", twoB_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                twoB_bt.put("6/10 - 7/10", twoB_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                twoB_bt.put("7/10 - 8/10", twoB_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                twoB_bt.put("8/10 - 9/10", twoB_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                twoB_bt.put("9/10 - 10/10", twoB_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                twoB_bt.put("10/10 <", twoB_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        twoB_bt.put("2-2-2-3 above", twoB_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("2-2-2-3 above", twoB_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        twoB_bt.put("4-4-4-7 below", twoB_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("4-4-4-7 below", twoB_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        twoB_bt.put("3-3-3-4 above", twoB_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("3-3-3-4 above", twoB_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        twoB_bt.put("3-3-3-6 below", twoB_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("3-3-3-6 below", twoB_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        twoB_bt.put("2 above", twoB_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("2 above", twoB_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        twoB_bt.put("3 above", twoB_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("3 above", twoB_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        twoB_bt.put("4 above", twoB_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("4 above", twoB_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        twoB_bt.put("6 below", twoB_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("6 below", twoB_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        twoB_bt.put("7 below", twoB_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("7 below", twoB_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        twoB_bt.put("8 below", twoB_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    twoB_bt.put("8 below", twoB_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("twoB_bt", twoB_bt);
+                }
+                
+                
+//                if(true){
+//                    Map<String,Integer> twoLogic_bt = new LinkedHashMap<>();
+//                    twoLogic_bt.put("2-2-2-3 above", 0);
+//                    twoLogic_bt.put("4-4-4-7 below", 0);
+//                    
+//
+//                    int hind = 2;
+//
+//                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+//                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+//                    oneMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+//                    
+//                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+//                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+//                    twoMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+//                    
+//                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+//                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+//                    grMatch.removeIf(m -> (m.getInningOne().getParams().get(2).contains("-1")));
+//
+//                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+//
+//                        for(int i = 0; i < oneMatch.size()-6; i++){
+//
+//                            int curr = Integer.parseInt(oneMatch.get(i).getInningOne().getParams().get(hind));
+//                            Timestamp currDate = oneMatch.get(i).getMatchDate();
+//
+//
+//                            List<Inning> sub = new ArrayList<>();
+//                            List<Inning> subA = new ArrayList<>();
+//                            List<Inning> subB = new ArrayList<>();
+//                            List<Inning> subG = new ArrayList<>();
+//                            
+//                            for(int j = i+1; j < i+6; j++){
+//                                sub.add(oneMatch.get(j).getInningOne());
+//                                subA.add(oneMatch.get(j).getInningOne());
+//                            }
+//
+//                            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+//                            if(twoMatch.size() < 5){
+//                                break;
+//                            }
+//                            for(int j = 0; j < 5; j++){
+//                                sub.add(twoMatch.get(j).getInningOne());
+//                                subB.add(twoMatch.get(j).getInningOne());
+//                            }
+//                            
+//                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+//                            if(grMatch.size() >= 5){
+//                                for(int j = 0; j < 5; j++){
+//                                    subG.add(twoMatch.get(j).getInningOne());
+//                                }
+//                            }
+//
+//                            Comparator innComp = new Comparator<Inning>() {
+//                                    @Override
+//                                    public int compare(Inning o1, Inning o2) {
+//                                        return Integer.parseInt(o1.getParams().get(hind))
+//                                                - Integer.parseInt(o2.getParams().get(hind));
+//                                    }
+//                                };
+//
+//                            Collections.sort(sub, innComp);
+//                            Collections.sort(subA, innComp);
+//                            Collections.sort(subB, innComp);
+//                            Collections.sort(subG, innComp);
+//                            
+//                            
+//                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+//                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+//                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+//                                if(subG.size()==5){
+//                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+//                                        twoLogic_bt.put("2-2-2-3 above", twoLogic_bt.get("2-2-2-3 above")+1 );
+//                                    }
+//                                }
+//                                else{
+//                                    twoLogic_bt.put("2-2-2-3 above", twoLogic_bt.get("2-2-2-3 above")+1 );
+//                                }
+//                            }
+//                            
+//                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+//                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+//                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+//                                if(subG.size()==5){
+//                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+//                                        twoLogic_bt.put("4-4-4-7 below", twoLogic_bt.get("4-4-4-7 below")+1 );
+//                                    }
+//                                }
+//                                else{
+//                                    twoLogic_bt.put("4-4-4-7 below", twoLogic_bt.get("4-4-4-7 below")+1 );
+//                                }
+//                            }
+//                            
+//                        }
+//                    }
+//
+//                    request.setAttribute("twoLogic_bt", twoLogic_bt);
+//                }
+                
+                
+                
+                request.setAttribute("oneBatFirstX", oneBatFirstX.subList(0, Math.min(5, oneBatFirstX.size())));
+                request.setAttribute("twoBowlFirstX", twoBowlFirstX.subList(0, Math.min(5, twoBowlFirstX.size())));
                 request.setAttribute("groundFirstX", groundFirstX.subList(0, Math.min(5, groundFirstX.size())));
                 request.setAttribute("groundSecondX", groundSecondX.subList(0, Math.min(5, groundSecondX.size())));
                 oneBatFirst = oneBatFirst.subList(0, Math.min(5, oneBatFirst.size()));
@@ -2315,6 +6737,66 @@ public class getData extends HttpServlet {
 //                temp.setParams(ps);
                     oneBatFirstZ.add(temp);
                 }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamOne, matchType, 1);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    totMatches.removeIf(m -> (m.getResult().contains("D/L")));
+                    List<Inning> oZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        oZ.add(totMatches.get(i).getInningOne());
+                    }
+                    Map<String,Integer> oneBatFirstZ_bt = new LinkedHashMap<>();
+                    oneBatFirstZ_bt.put("< 1/5", 0);
+                    oneBatFirstZ_bt.put("1/5 - 2/5", 0);
+                    oneBatFirstZ_bt.put("2/5 - 3/5", 0);
+                    oneBatFirstZ_bt.put("3/5 - 4/5", 0);
+                    oneBatFirstZ_bt.put("4/5 - 5/5", 0);
+                    oneBatFirstZ_bt.put("5/5 <", 0);
+
+                    if(oZ.size() > 5){
+                        for(int i = 0; i < oZ.size()-6; i++){
+                            int hind = 6;
+                            int curr = Integer.parseInt(oZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(oZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                oneBatFirstZ_bt.put("< 1/5", oneBatFirstZ_bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                oneBatFirstZ_bt.put("1/5 - 2/5", oneBatFirstZ_bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                oneBatFirstZ_bt.put("2/5 - 3/5", oneBatFirstZ_bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                oneBatFirstZ_bt.put("3/5 - 4/5", oneBatFirstZ_bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                oneBatFirstZ_bt.put("4/5 - 5/5", oneBatFirstZ_bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                oneBatFirstZ_bt.put("5/5 <", oneBatFirstZ_bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("oneBatFirstZ_bt", oneBatFirstZ_bt);
+                }
+                
 
                 matches.clear();
                 List<Inning> twoBowlFirstZ = new ArrayList<>();
@@ -2331,6 +6813,65 @@ public class getData extends HttpServlet {
                         temp.setParams(params);
                     }
                     twoBowlFirstZ.add(temp);
+                }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getMatches(teamTwo, matchType, 2);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    totMatches.removeIf(m -> (m.getResult().contains("D/L")));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningOne());
+                    }
+                    Map<String,Integer> twoBowlFirstZ_bt = new LinkedHashMap<>();
+                    twoBowlFirstZ_bt.put("< 1/5", 0);
+                    twoBowlFirstZ_bt.put("1/5 - 2/5", 0);
+                    twoBowlFirstZ_bt.put("2/5 - 3/5", 0);
+                    twoBowlFirstZ_bt.put("3/5 - 4/5", 0);
+                    twoBowlFirstZ_bt.put("4/5 - 5/5", 0);
+                    twoBowlFirstZ_bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 6;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                twoBowlFirstZ_bt.put("< 1/5", twoBowlFirstZ_bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                twoBowlFirstZ_bt.put("1/5 - 2/5", twoBowlFirstZ_bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                twoBowlFirstZ_bt.put("2/5 - 3/5", twoBowlFirstZ_bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                twoBowlFirstZ_bt.put("3/5 - 4/5", twoBowlFirstZ_bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                twoBowlFirstZ_bt.put("4/5 - 5/5", twoBowlFirstZ_bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                twoBowlFirstZ_bt.put("5/5 <", twoBowlFirstZ_bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("twoBowlFirstZ_bt", twoBowlFirstZ_bt);
                 }
 
                 matches.clear();
@@ -2360,22 +6901,582 @@ public class getData extends HttpServlet {
                     groundSecondZ.add(temp2);
 
                 }
+                
+                if(true){
+                    List<Match> totMatches = new ArrayList<>();
+                    totMatches = db.getGroundInfo(groundName, matchType);
+                    totMatches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    totMatches.removeIf(m -> (m.getResult().contains("D/L")));
+                    List<Inning> tZ = new ArrayList<>();
+                    for(int i = 0; i < totMatches.size(); i++){
+                        tZ.add(totMatches.get(i).getInningOne());
+                    }
+                    Map<String,Integer> bt = new LinkedHashMap<>();
+                    bt.put("< 1/5", 0);
+                    bt.put("1/5 - 2/5", 0);
+                    bt.put("2/5 - 3/5", 0);
+                    bt.put("3/5 - 4/5", 0);
+                    bt.put("4/5 - 5/5", 0);
+                    bt.put("5/5 <", 0);
+
+                    if(tZ.size() > 5){
+                        for(int i = 0; i < tZ.size()-6; i++){
+                            int hind = 6;
+                            int curr = Integer.parseInt(tZ.get(i).getParams().get(hind));
+
+                            List<Inning> sub = new ArrayList<>(tZ.subList(i+1, i+6));
+                            Collections.sort(sub, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(hind))
+                                            - Integer.parseInt(o2.getParams().get(hind));
+                                }
+                            });
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                bt.put("< 1/5", bt.get("< 1/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind)) ){
+                                bt.put("1/5 - 2/5", bt.get("1/5 - 2/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind)) ){
+                                bt.put("2/5 - 3/5", bt.get("2/5 - 3/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind)) ){
+                                bt.put("3/5 - 4/5", bt.get("3/5 - 4/5")+1 );
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind)) 
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind)) ){
+                                bt.put("4/5 - 5/5", bt.get("4/5 - 5/5")+1 );
+                            }
+                            else{
+                                bt.put("5/5 <", bt.get("5/5 <")+1 );
+                            }
+                        } 
+                    }
+
+                    request.setAttribute("groundFirstZ_bt", bt);
+                }
+                
+                if(true){
+                    Map<String,Integer> A_bt = new LinkedHashMap<>();
+                    A_bt.put("N", 0);
+                    A_bt.put("< 1/10", 0);
+                    A_bt.put("1/10 - 2/10", 0);
+                    A_bt.put("2/10 - 3/10", 0);
+                    A_bt.put("3/10 - 4/10", 0);
+                    A_bt.put("4/10 - 5/10", 0);
+                    A_bt.put("5/10 - 6/10", 0);
+                    A_bt.put("6/10 - 7/10", 0);
+                    A_bt.put("7/10 - 8/10", 0);
+                    A_bt.put("8/10 - 9/10", 0);
+                    A_bt.put("9/10 - 10/10", 0);
+                    A_bt.put("10/10 <", 0);
+                    A_bt.put("2-2-2-3 above", 0);
+                    A_bt.put("4-4-4-7 below", 0);
+                    A_bt.put("3-3-3-4 above", 0);
+                    A_bt.put("3-3-3-6 below", 0);
+                    A_bt.put("2 above", 0);
+                    A_bt.put("3 above", 0);
+                    A_bt.put("4 above", 0);
+                    A_bt.put("6 below", 0);
+                    A_bt.put("7 below", 0);
+                    A_bt.put("8 below", 0);
+
+                    int hind = 6;
+
+                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    oneMatch.removeIf(m -> (m.getResult().contains("D/L")));
+
+                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    twoMatch.removeIf(m -> (m.getResult().contains("D/L")));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    grMatch.removeIf(m -> (m.getResult().contains("D/L")));
+                    
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                        for(int i = 0; i < oneMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(oneMatch.get(i).getInningOne().getParams().get(hind));
+                            Timestamp currDate = oneMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(oneMatch.get(j).getInningOne());
+                                subA.add(oneMatch.get(j).getInningOne());
+                            }
+
+                            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(twoMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(twoMatch.get(j).getInningOne());
+                                subB.add(twoMatch.get(j).getInningOne());
+                            }
+                            
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            A_bt.put("N", A_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                A_bt.put("< 1/10", A_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                A_bt.put("1/10 - 2/10", A_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                A_bt.put("2/10 - 3/10", A_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                A_bt.put("3/10 - 4/10", A_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                A_bt.put("4/10 - 5/10", A_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                A_bt.put("5/10 - 6/10", A_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                A_bt.put("6/10 - 7/10", A_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                A_bt.put("7/10 - 8/10", A_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                A_bt.put("8/10 - 9/10", A_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                A_bt.put("9/10 - 10/10", A_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                A_bt.put("10/10 <", A_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("totA_bt", A_bt);
+                }
+                
+                
+                
+                if(true){
+                    
+                    Map<String,Integer> B_bt = new LinkedHashMap<>();
+                    B_bt.put("N", 0);
+                    B_bt.put("< 1/10", 0);
+                    B_bt.put("1/10 - 2/10", 0);
+                    B_bt.put("2/10 - 3/10", 0);
+                    B_bt.put("3/10 - 4/10", 0);
+                    B_bt.put("4/10 - 5/10", 0);
+                    B_bt.put("5/10 - 6/10", 0);
+                    B_bt.put("6/10 - 7/10", 0);
+                    B_bt.put("7/10 - 8/10", 0);
+                    B_bt.put("8/10 - 9/10", 0);
+                    B_bt.put("9/10 - 10/10", 0);
+                    B_bt.put("10/10 <", 0);
+                    B_bt.put("2-2-2-3 above", 0);
+                    B_bt.put("4-4-4-7 below", 0);
+                    B_bt.put("3-3-3-4 above", 0);
+                    B_bt.put("3-3-3-6 below", 0);
+                    B_bt.put("2 above", 0);
+                    B_bt.put("3 above", 0);
+                    B_bt.put("4 above", 0);
+                    B_bt.put("6 below", 0);
+                    B_bt.put("7 below", 0);
+                    B_bt.put("8 below", 0);
+
+                    int hind = 6;
+
+                    List<Match> oneMatch = db.getMatches(teamOne, matchType, 1);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    oneMatch.removeIf(m -> (m.getResult().contains("D/L")));
+
+                    List<Match> twoMatch = db.getMatches(teamTwo, matchType, 2);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    twoMatch.removeIf(m -> (m.getResult().contains("D/L")));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    grMatch.removeIf(m -> (m.getResult().contains("D/L")));
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(twoMatch.get(i).getInningOne().getParams().get(hind));
+                            Timestamp currDate = twoMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(twoMatch.get(j).getInningOne());
+                                subB.add(twoMatch.get(j).getInningOne());
+                            }
+
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(oneMatch.get(j).getInningOne());
+                                subA.add(oneMatch.get(j).getInningOne());
+                            }
+
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningOne());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            B_bt.put("N", B_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                B_bt.put("< 1/10", B_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                B_bt.put("1/10 - 2/10", B_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                B_bt.put("2/10 - 3/10", B_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                B_bt.put("3/10 - 4/10", B_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                B_bt.put("4/10 - 5/10", B_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                B_bt.put("5/10 - 6/10", B_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                B_bt.put("6/10 - 7/10", B_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                B_bt.put("7/10 - 8/10", B_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                B_bt.put("8/10 - 9/10", B_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                B_bt.put("9/10 - 10/10", B_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                B_bt.put("10/10 <", B_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("totB_bt", B_bt);
+                }
 
                 request.setAttribute("oneBatFirstZ", oneBatFirstZ);
                 request.setAttribute("twoBowlFirstZ", twoBowlFirstZ);
                 request.setAttribute("groundFirstZ", groundFirstZ);
                 request.setAttribute("groundSecondZ", groundSecondZ);
 
-                out.println(oneBatFirst.size());
-                out.println(oneBatSecond.size());
-                out.println(twoBatFirst.size());
-                out.println(twoBatSecond.size());
-                out.println(oneBowlFirst.size());
-                out.println(oneBowlSecond.size());
-                out.println(twoBowlFirst.size());
-                out.println(twoBowlSecond.size());
-                out.println(groundFirst.size());
-                out.println(groundSecond.size());
+                
 
                 request.setAttribute("hth", hth);
 
@@ -2402,8 +7503,514 @@ public class getData extends HttpServlet {
 
             }
 
-        }
 
+    }
+    
+    private void secondBackTest(String teamOne, String teamTwo, String groundName, Date backDate, 
+            CricDB db, int matchType, HttpServletRequest request){
+        if(true){
+                    Map<String,Integer> A_bt = new LinkedHashMap<>();
+                    A_bt.put("N", 0);
+                    A_bt.put("< 1/10", 0);
+                    A_bt.put("1/10 - 2/10", 0);
+                    A_bt.put("2/10 - 3/10", 0);
+                    A_bt.put("3/10 - 4/10", 0);
+                    A_bt.put("4/10 - 5/10", 0);
+                    A_bt.put("5/10 - 6/10", 0);
+                    A_bt.put("6/10 - 7/10", 0);
+                    A_bt.put("7/10 - 8/10", 0);
+                    A_bt.put("8/10 - 9/10", 0);
+                    A_bt.put("9/10 - 10/10", 0);
+                    A_bt.put("10/10 <", 0);
+                    A_bt.put("2-2-2-3 above", 0);
+                    A_bt.put("4-4-4-7 below", 0);
+                    A_bt.put("3-3-3-4 above", 0);
+                    A_bt.put("3-3-3-6 below", 0);
+                    A_bt.put("2 above", 0);
+                    A_bt.put("3 above", 0);
+                    A_bt.put("4 above", 0);
+                    A_bt.put("6 below", 0);
+                    A_bt.put("7 below", 0);
+                    A_bt.put("8 below", 0);
+
+                    int hind = 1;
+
+                    List<Match> oneMatch = db.getMatches(teamTwo, matchType, 2);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> twoMatch = db.getMatches(teamOne, matchType, 1);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                        for(int i = 0; i < oneMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(oneMatch.get(i).getInningTwo().getParams().get(hind));
+                            Timestamp currDate = oneMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(oneMatch.get(j).getInningTwo());
+                                subA.add(oneMatch.get(j).getInningTwo());
+                            }
+
+                            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(twoMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(twoMatch.get(j).getInningTwo());
+                                subB.add(twoMatch.get(j).getInningTwo());
+                            }
+                            
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningTwo());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            A_bt.put("N", A_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                A_bt.put("< 1/10", A_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                A_bt.put("1/10 - 2/10", A_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                A_bt.put("2/10 - 3/10", A_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                A_bt.put("3/10 - 4/10", A_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                A_bt.put("4/10 - 5/10", A_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                A_bt.put("5/10 - 6/10", A_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                A_bt.put("6/10 - 7/10", A_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                A_bt.put("7/10 - 8/10", A_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                A_bt.put("8/10 - 9/10", A_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                A_bt.put("9/10 - 10/10", A_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                A_bt.put("10/10 <", A_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2-2-2-3 above", A_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4-4-4-7 below", A_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-4 above", A_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3-3-3-6 below", A_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("oneSecondA_bt", A_bt);
+                }
+                
+                
+                
+                if(true){
+                    
+                    Map<String,Integer> B_bt = new LinkedHashMap<>();
+                    B_bt.put("N", 0);
+                    B_bt.put("< 1/10", 0);
+                    B_bt.put("1/10 - 2/10", 0);
+                    B_bt.put("2/10 - 3/10", 0);
+                    B_bt.put("3/10 - 4/10", 0);
+                    B_bt.put("4/10 - 5/10", 0);
+                    B_bt.put("5/10 - 6/10", 0);
+                    B_bt.put("6/10 - 7/10", 0);
+                    B_bt.put("7/10 - 8/10", 0);
+                    B_bt.put("8/10 - 9/10", 0);
+                    B_bt.put("9/10 - 10/10", 0);
+                    B_bt.put("10/10 <", 0);
+                    B_bt.put("2-2-2-3 above", 0);
+                    B_bt.put("4-4-4-7 below", 0);
+                    B_bt.put("3-3-3-4 above", 0);
+                    B_bt.put("3-3-3-6 below", 0);
+                    B_bt.put("2 above", 0);
+                    B_bt.put("3 above", 0);
+                    B_bt.put("4 above", 0);
+                    B_bt.put("6 below", 0);
+                    B_bt.put("7 below", 0);
+                    B_bt.put("8 below", 0);
+
+                    int hind = 1;
+
+                    List<Match> oneMatch = db.getMatches(teamTwo, matchType, 2);
+                    oneMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> twoMatch = db.getMatches(teamOne, matchType, 1);
+                    twoMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    List<Match> grMatch = db.getGroundInfo(groundName, matchType);
+                    grMatch.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = Integer.parseInt(twoMatch.get(i).getInningTwo().getParams().get(hind));
+                            Timestamp currDate = twoMatch.get(i).getMatchDate();
+
+
+                            List<Inning> sub = new ArrayList<>();
+                            List<Inning> subA = new ArrayList<>();
+                            List<Inning> subB = new ArrayList<>();
+                            List<Inning> subG = new ArrayList<>();
+                            
+                            for(int j = i+1; j < i+6; j++){
+                                sub.add(twoMatch.get(j).getInningTwo());
+                                subB.add(twoMatch.get(j).getInningTwo());
+                            }
+
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
+                                break;
+                            }
+                            for(int j = 0; j < 5; j++){
+                                sub.add(oneMatch.get(j).getInningTwo());
+                                subA.add(oneMatch.get(j).getInningTwo());
+                            }
+
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
+                                for(int j = 0; j < 5; j++){
+                                    subG.add(twoMatch.get(j).getInningTwo());
+                                }
+                            }
+
+                            Comparator innComp = new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(hind))
+                                                - Integer.parseInt(o2.getParams().get(hind));
+                                    }
+                                };
+
+                            Collections.sort(sub, innComp);
+                            Collections.sort(subA, innComp);
+                            Collections.sort(subB, innComp);
+                            Collections.sort(subG, innComp);
+                            
+                            B_bt.put("N", B_bt.get("N")+1);
+
+                            if(curr < Integer.parseInt(sub.get(0).getParams().get(hind))){
+                                B_bt.put("< 1/10", B_bt.get("< 1/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(0).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                B_bt.put("1/10 - 2/10", B_bt.get("1/10 - 2/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                B_bt.put("2/10 - 3/10", B_bt.get("2/10 - 3/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                B_bt.put("3/10 - 4/10", B_bt.get("3/10 - 4/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(4).getParams().get(hind))){
+                                B_bt.put("4/10 - 5/10", B_bt.get("4/10 - 5/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(4).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                B_bt.put("5/10 - 6/10", B_bt.get("5/10 - 6/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                B_bt.put("6/10 - 7/10", B_bt.get("6/10 - 7/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                B_bt.put("7/10 - 8/10", B_bt.get("7/10 - 8/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(7).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(8).getParams().get(hind))){
+                                B_bt.put("8/10 - 9/10", B_bt.get("8/10 - 9/10")+1);
+                            }
+                            else if(curr >= Integer.parseInt(sub.get(8).getParams().get(hind))
+                                    && curr < Integer.parseInt(sub.get(9).getParams().get(hind))){
+                                B_bt.put("9/10 - 10/10", B_bt.get("9/10 - 10/10")+1);
+                            }
+                            else{
+                                B_bt.put("10/10 <", B_bt.get("10/10 <")+1);
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(1).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2-2-2-3 above", B_bt.get("2-2-2-3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(3).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4-4-4-7 below", B_bt.get("4-4-4-7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr >= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-4 above", B_bt.get("3-3-3-4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subA.get(2).getParams().get(hind))
+                                    && curr <= Integer.parseInt(subB.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3-3-3-6 below", B_bt.get("3-3-3-6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                }
+                            }
+                            
+                            if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
+                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                }
+                            }
+                            
+                            if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
+                                if(subG.size()==5){
+                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
+                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    }
+                                }
+                                else{
+                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                }
+                            }
+                        }
+                    }
+
+                    request.setAttribute("oneSecondB_bt", B_bt);
+                }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

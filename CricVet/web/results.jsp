@@ -48,7 +48,7 @@
             <h1 class="text-center">${teamOne} v/s ${teamTwo}</h1>
             <div class="row">
                 <div class="col-12">
-                    <h5 class="card-title">Head to head</h5>
+                    <h3 class="card-title">Head to head</h3>
 
 
 
@@ -83,16 +83,16 @@
 
             <div class="row" >
                 <div class ="col-12">
-                    <h5 class="card-title">Form Guide</h5>
+                    <h3 class="card-title">Form Guide</h3>
 
                     <table class="table table-bordered">
                         <tr class="thead-dark">
                             <th colspan="${fn:length(oneBatFirstY)}">${teamOne}</th>
                             <th>
                             <th colspan="${fn:length(twoBowlFirstY)}">${teamTwo}</th>
-                            <th>
+<!--                            <th>
 
-                            <th>Odds</th>
+                            <th>Score</th>-->
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${oneBatFirstY}">
@@ -108,7 +108,7 @@
                                     ${in.getParams().get(6)}
                                 </td>
                             </c:forEach>
-                            <td></td>
+<!--                            <td></td>
                             <td>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
@@ -117,7 +117,7 @@
                                     <input type="number" class="form-control" name="-1Left">
                                 </div>
 
-                            </td>
+                            </td>-->
 
 
                         </tr>
@@ -133,7 +133,7 @@
 
 
 
-                        <tr>
+<!--                        <tr>
                             <c:forEach var="in" items="${oneBatFirstY}">
                                 <td name="-1LeftOdd">
 
@@ -149,28 +149,7 @@
                             </c:forEach>
                             <td colspan="2"></td>
 
-                        </tr>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        </tr>-->
 
 
 
@@ -190,11 +169,11 @@
                                     ${in.getParams().get(7)}
                                 </td>
                             </c:forEach>
-                            <td></td>
+<!--                            <td></td>
 
                             <td>
                             </td>
-
+-->
 
                         </tr>
                     </table>
@@ -208,7 +187,7 @@
                     <c:when test="${loop.index == 0}">
                         <div class="row" >
                             <div class ="col-12">
-                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <h3 class="card-title">${headers.get(loop.index)}</h3>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
                                         <th colspan="${fn:length(oneBatFirstY)}">${teamOne}</th>
@@ -216,23 +195,23 @@
                                         <th colspan="${fn:length(twoBowlFirstY)}">${teamTwo}</th>
                                         <th>
                                         <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirstY}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="A">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoBowlFirstY}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="B">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirst}">
-                                            <td name="${loop.index}Gr">
+                                            <td name="${loop.index}Left" class="G">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -250,24 +229,33 @@
 
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${oneBatFirstY}">
+                                        <%--<c:forEach var="in" items="${oneBatFirstY}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${twoBowlFirstY}">
+                                        </c:forEach>--%>
+                                        <td name="${loop.index}LeftOdd" class="A" colspan="${fn:length(oneBatFirstY)}">
+                                        
+                                        </td>
+                                        <td></td>
+                                        <td name="${loop.index}LeftOdd" class="B" colspan="${fn:length(twoBowlFirstY)}">
+                                        
+                                        </td>
+                                        <%--<c:forEach var="in" items="${twoBowlFirstY}">
                                             <td name="${loop.index}LeftOdd">
 
                                             </td>
-                                        </c:forEach>
+                                        </c:forEach>--%>
                                             
-                                        <td>
-                                            <c:forEach var="in" items="${groundFirst}">
+                                        <td></td>
+                                        <td name="${loop.index}LeftOdd" class="G" colspan="${fn:length(groundFirst)}">
+                                        
+                                        </td>
+                                        <%--<c:forEach var="in" items="${groundFirst}">
                                             <td name="${loop.index}GrOdd">
                                                 
                                             </td>
-                                        </c:forEach>
+                                        </c:forEach>--%>
 
 
                                     </tr>
@@ -279,7 +267,7 @@
                     <c:when test="${loop.index == 4 || loop.index == 5}">
                         <div class="row" >
                             <div class ="col-12">
-                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <h3 class="card-title">${headers.get(loop.index)}</h3>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
                                         <th colspan="${fn:length(oneFS)}">${teamOne}</th>
@@ -287,23 +275,23 @@
                                         <th colspan="${fn:length(twoFS)}">${teamTwo}</th>
                                         <th>
                                         <th colspan="${fn:length(groundFirst)}">${groundName}</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${oneFS}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="A">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoFS}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="B">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirst}">
-                                            <td name="${loop.index}Gr">
+                                            <td name="${loop.index}Left" class="G">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -322,23 +310,23 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${oneFS}">
-                                            <td name="${loop.index}LeftOdd">
+                                        <%--<c:forEach var="in" items="${oneFS}">--%>
+                                            <td colspan="${fn:length(oneFS)}" name="${loop.index}LeftOdd" class="A">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                         <td>
-                                            <c:forEach var="in" items="${twoFS}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <%--<c:forEach var="in" items="${twoFS}">--%>
+                                            <td colspan="${fn:length(twoFS)}" name="${loop.index}LeftOdd" class="B">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                         <td>
-                                            <c:forEach var="in" items="${groundFirst}">
-                                            <td name="${loop.index}GrOdd">
+                                            <%--<c:forEach var="in" items="${groundFirst}">--%>
+                                            <td colspan="${fn:length(groundFirst)}" name="${loop.index}LeftOdd" class="G">
                                                 
-                                            </td>
-                                        </c:forEach>
+                                            </td>   
+                                        <%--</c:forEach>--%>
                                             
 
                                     </tr>
@@ -350,7 +338,7 @@
                     <c:when test="${loop.index == 2}">
                         <div class="row" >
                             <div class ="col-12">
-                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <h3 class="card-title">${headers.get(loop.index)}</h3>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
                                         <th colspan="${fn:length(oneBatFirstX)}">${teamOne} Batting First</th>
@@ -358,23 +346,23 @@
                                         <th colspan="${fn:length(twoBowlFirstX)}">${teamTwo} Bowling First</th>
                                         <th>
                                         <th colspan="${fn:length(groundFirstX)}">${groundName} First</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirstX}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="A">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoBowlFirstX}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="B">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirstX}">
-                                            <td name="${loop.index}Gr">
+                                            <td name="${loop.index}Left" class="G">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -393,30 +381,29 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${oneBatFirstX}">
-                                            <td name="${loop.index}LeftOdd">
+                                        <%--<c:forEach var="in" items="${oneBatFirstX}">--%>
+                                            <td colspan="${fn:length(oneBatFirstX)}" name="${loop.index}LeftOdd" class="A">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                         <td>
-                                            <c:forEach var="in" items="${twoBowlFirstX}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <%--<c:forEach var="in" items="${twoBowlFirstX}">--%>
+                                            <td colspan="${fn:length(twoBowlFirstX)}" name="${loop.index}LeftOdd" class="B">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
 
                                         <td>
-                                            <c:forEach var="in" items="${groundFirstX}">
-                                            <td name="${loop.index}GrOdd">
+                                            <%--<c:forEach var="in" items="${groundFirstX}">--%>
+                                            <td colspan="${fn:length(groundFirstX)}" name="${loop.index}LeftOdd" class="G">
                                                 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
 
 
                                     </tr>
-                                    
-                                    <tr>
-                                        <td>Sorted:
+                                    <tr class="thead-dark">
+                                        <th>Sorted:
                                     </tr>
                                     <tr>
                                     <%
@@ -486,6 +473,9 @@
                                         </c:forEach>
                                     </tr>
                                     <tr>
+                                        <td colspan="30">
+                                    </tr>
+                                    <tr>
                                         <c:forEach var="in" items="${ASs}">
                                             <td>
                                                 ${in.getParams().get(loop.index)}
@@ -493,7 +483,122 @@
                                         </c:forEach>
                                     </tr>
                                 </table>
-
+                                        
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(oneBatFirstX_bt)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(twoBowlFirstX_bt)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundFirstX_bt)}">${groundName} First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneBatFirstX_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${twoBowlFirstX_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundFirstX_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneBatFirstX_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${twoBowlFirstX_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundFirstX_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                               <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoA_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoA_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoA_bt}">
+                                            <td>
+                                                ${twoA_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoB_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoB_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoB_bt}">
+                                            <td>
+                                                ${twoB_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+                                
                             </div>
                         </div>
 
@@ -501,7 +606,7 @@
                     <c:when test="${loop.index==6}">
                         <div class="row" >
                             <div class ="col-12">
-                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <h3 class="card-title">${headers.get(loop.index)}</h3>
 
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
@@ -510,23 +615,23 @@
                                         <th colspan="${fn:length(twoBowlFirstZ)}">${teamTwo} Bowling First</th>
                                         <th>
                                         <th colspan="${fn:length(groundFirstZ)}">${groundName} First</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirstZ}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="A">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${twoBowlFirstZ}">
-                                            <td name="${loop.index}Left">
+                                        <c:forEach var="in" items="${twoBowlFirstZ}">
+                                            <td name="${loop.index}Left" class="B">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
-                                            <c:forEach var="in" items="${groundFirstZ}">
-                                            <td name="${loop.index}Gr">
+                                        <c:forEach var="in" items="${groundFirstZ}">
+                                            <td name="${loop.index}Left" class="G">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -545,24 +650,24 @@
                                     </tr>
 
                                     <tr>
-                                        <c:forEach var="in" items="${oneBatFirstZ}">
-                                            <td name="${loop.index}LeftOdd">
+                                        <%--<c:forEach var="in" items="${oneBatFirstZ}">--%>
+                                            <td colspan="${fn:length(oneBatFirstZ)}" name="${loop.index}LeftOdd" class="A">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                         <td>
-                                            <c:forEach var="in" items="${twoBowlFirstZ}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <%--<c:forEach var="in" items="${twoBowlFirstZ}">--%>
+                                            <td colspan="${fn:length(twoBowlFirstZ)}" name="${loop.index}LeftOdd" class="B">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                             
                                         <td>
-                                            <c:forEach var="in" items="${groundFirstZ}">
-                                            <td name="${loop.index}GrOdd">
+                                            <%--<c:forEach var="in" items="${groundFirstZ}">--%>
+                                            <td colspan="${fn:length(groundFirstZ)}" name="${loop.index}LeftOdd" class="G">
                                                 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
 
 
 
@@ -592,8 +697,8 @@
 
                                     </tr>
                                     
-                                    <tr>
-                                        <td>Sorted:
+                                    <tr class="thead-dark">
+                                        <th>Sorted:
                                     </tr>
                                     <tr>
                                     <%
@@ -680,6 +785,9 @@
                                         </c:forEach>
                                     </tr>
                                     <tr>
+                                        <td colspan="30">
+                                    </tr>
+                                    <tr>
                                         <c:forEach var="in" items="${ASs}">
                                             <td>
                                                 ${in.getParams().get(loop.index)}
@@ -687,6 +795,121 @@
                                         </c:forEach>
                                     </tr>
                                 </table>
+                                        
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(oneBatFirstZ_bt)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(twoBowlFirstZ_bt)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundFirstZ_bt)}">${groundName} First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneBatFirstZ_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${twoBowlFirstZ_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundFirstZ_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneBatFirstZ_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${twoBowlFirstZ_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundFirstZ_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${totA_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${totA_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${totA_bt}">
+                                            <td>
+                                                ${totA_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${totB_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${totB_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${totB_bt}">
+                                            <td>
+                                                ${totB_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
 
                             </div>
                         </div>
@@ -695,7 +918,7 @@
                     <c:otherwise>
                         <div class="row" >
                             <div class ="col-12">
-                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <h3 class="card-title">${headers.get(loop.index)}</h3>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
                                         <th colspan="${fn:length(oneBatFirst)}">${teamOne} Batting First</th>
@@ -703,23 +926,23 @@
                                         <th colspan="${fn:length(twoBowlFirst)}">${teamTwo} Bowling First</th>
                                         <th>
                                         <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${oneBatFirst}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="A">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${twoBowlFirst}">
-                                            <td name="${loop.index}Left">
+                                            <td name="${loop.index}Left" class="B">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundFirst}">
-                                            <td name="${loop.index}Gr">
+                                            <td name="${loop.index}Left" class="G">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -737,29 +960,29 @@
 
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${oneBatFirst}">
-                                            <td name="${loop.index}LeftOdd">
+                                        <%--<c:forEach var="in" items="${oneBatFirst}">--%>
+                                            <td colspan="${fn:length(oneBatFirst)}" name="${loop.index}LeftOdd" class="A">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                         <td>
-                                            <c:forEach var="in" items="${twoBowlFirst}">
-                                            <td name="${loop.index}LeftOdd">
+                                            <%--<c:forEach var="in" items="${twoBowlFirst}">--%>
+                                            <td colspan="${fn:length(twoBowlFirst)}" name="${loop.index}LeftOdd" class="B">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                             
                                         <td>
-                                            <c:forEach var="in" items="${groundFirst}">
-                                            <td name="${loop.index}GrOdd">
+                                            <%--<c:forEach var="in" items="${groundFirst}">--%>
+                                            <td colspan="${fn:length(groundFirst)}" name="${loop.index}LeftOdd" class="G">
                                                 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
 
                                     </tr>
                                     
-                                    <tr>
-                                        <td>Sorted:
+                                    <tr class="thead-dark">
+                                        <th>Sorted:
                                     </tr>
                                     <tr>
                                     <%
@@ -829,6 +1052,9 @@
                                         </c:forEach>
                                     </tr>
                                     <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    <tr>
                                         <c:forEach var="in" items="${ASs}">
                                             <td>
                                                 ${in.getParams().get(loop.index)}
@@ -836,6 +1062,239 @@
                                         </c:forEach>
                                     </tr>
                                 </table>
+                            <c:if test="${loop.index == 1}">
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(oneBatFirst1_bt)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(twoBowlFirst1_bt)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundFirst1_bt)}">${groundName} First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneBatFirst1_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${twoBowlFirst1_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundFirst1_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneBatFirst1_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${twoBowlFirst1_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundFirst1_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneA_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneA_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneA_bt}">
+                                            <td>
+                                                ${oneA_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneB_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneB_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneB_bt}">
+                                            <td>
+                                                ${oneB_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+                            </c:if>
+                                        
+                            <c:if test="${loop.index == 3}">
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(oneBatFirst3_bt)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(twoBowlFirst3_bt)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundFirst3_bt)}">${groundName} First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneBatFirst3_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${twoBowlFirst3_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundFirst3_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneBatFirst3_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${twoBowlFirst3_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundFirst3_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeA_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeA_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeA_bt}">
+                                            <td>
+                                                ${threeA_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeB_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeB_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeB_bt}">
+                                            <td>
+                                                ${threeB_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+                            </c:if>
 
                             </div>
                         </div>
@@ -868,7 +1327,7 @@
                     <c:when test="${loop.index == 1 || loop.index == 3}">
                         <div class="row" >
                             <div class ="col-12">
-                                <h5 class="card-title">${headers.get(loop.index)}</h5>
+                                <h3 class="card-title">${headers.get(loop.index)}</h3>
                                 <table class="table table-bordered">
                                     <tr class="thead-dark">
                                         <th colspan="${fn:length(twoBatSecond)}">${teamTwo} Batting Second</th>
@@ -876,23 +1335,23 @@
                                         <th colspan="${fn:length(oneBowlSecond)}">${teamOne} Bowling Second</th>
                                         <th>
                                         <th colspan="${fn:length(groundSecond)}">${groundName} Second</th>
-                                        <th>Odds</th>
+                                        <th>Score</th>
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${twoBatSecond}">
-                                            <td name="${loop.index}Left2">
+                                            <td name="${loop.index}Left2" class="A">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${oneBowlSecond}">
-                                            <td name="${loop.index}Left2">
+                                            <td name="${loop.index}Left2" class="B">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
                                         <td>
                                             <c:forEach var="in" items="${groundSecond}">
-                                            <td name="${loop.index}Gr2">
+                                            <td name="${loop.index}Left2"  class="G">
                                                 ${in.getParams().get(loop.index)}
                                             </td>
                                         </c:forEach>
@@ -910,28 +1369,28 @@
 
                                     </tr>
                                     <tr>
-                                        <c:forEach var="in" items="${twoBatSecond}">
-                                            <td name="${loop.index}Left2Odd">
+                                        <%--<c:forEach var="in" items="${twoBatSecond}">--%>
+                                            <td colspan="${fn:length(twoBatSecond)}" name="${loop.index}Left2Odd"  class="A">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                         <td>
-                                            <c:forEach var="in" items="${oneBowlSecond}">
-                                            <td name="${loop.index}Left2Odd">
+                                            <%--<c:forEach var="in" items="${oneBowlSecond}">--%>
+                                            <td colspan="${fn:length(oneBowlSecond)}" name="${loop.index}Left2Odd" class="B">
 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
 
                                         <td>
-                                            <c:forEach var="in" items="${groundSecond}">
-                                            <td name="${loop.index}Gr2Odd">
+                                            <%--<c:forEach var="in" items="${groundSecond}">--%>
+                                            <td colspan="${fn:length(groundSecond)}" name="${loop.index}Left2Odd"  class="G">
                                                 
                                             </td>
-                                        </c:forEach>
+                                        <%--</c:forEach>--%>
                                     </tr>
                                     
-                                    <tr>
-                                        <td>Sorted:
+                                    <tr class="thead-dark">
+                                        <th >Sorted:
                                     </tr>
                                     <tr>
                                     <%
@@ -1001,6 +1460,9 @@
                                         </c:forEach>
                                     </tr>
                                     <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    <tr>
                                         <c:forEach var="in" items="${ASs}">
                                             <td>
                                                 ${in.getParams().get(loop.index)}
@@ -1009,6 +1471,241 @@
                                     </tr>
                                 </table>
 
+                                        
+                                        
+                            <c:if test="${loop.index == 1}">
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(twoBatSecond1_bt)}">${teamTwo} Batting Second</th>
+                                        <th>
+                                        <th colspan="${fn:length(oneBowlSecond1_bt)}">${teamOne} Bowling Second</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundSecond1_bt)}">${groundName} Second</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoBatSecond1_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${oneBowlSecond1_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundSecond1_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoBatSecond1_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${oneBowlSecond1_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundSecond1_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Batting Second</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneSecondA_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneSecondA_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneSecondA_bt}">
+                                            <td>
+                                                ${oneSecondA_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamOne} Bowling Second</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneSecondB_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneSecondB_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${oneSecondB_bt}">
+                                            <td>
+                                                ${oneSecondB_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+                            </c:if>
+                                        
+                            <c:if test="${loop.index == 3}">
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(twoBatSecond3_bt)}">${teamTwo} Batting Second</th>
+                                        <th>
+                                        <th colspan="${fn:length(oneBowlSecond3_bt)}">${teamOne} Bowling Second</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundSecond3_bt)}">${groundName} Second</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoBatSecond3_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${oneBowlSecond3_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundSecond3_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${twoBatSecond3_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${oneBowlSecond3_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${groundSecond3_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeSecondA_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeSecondA_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeSecondA_bt}">
+                                            <td>
+                                                ${threeSecondA_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeSecondB_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeSecondB_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${threeSecondB_bt}">
+                                            <td>
+                                                ${threeSecondB_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+                            </c:if>
                             </div>
                         </div>
                     </c:when>
@@ -1025,132 +1722,87 @@
 
 
         <script type="text/javascript">
-            $(document).ready(function () {
-
-                var classes = ["-Left","-1Left", "0Left", "1Left", "2Left", "3Left", "4Left", "5Left", "6Left", 
-                    "1Left2", "3Left2", "0Gr", "1Gr", "2Gr", "3Gr", "4Gr", "5Gr", "6Gr", "1Gr2", "3Gr2"];
-
-                var i;
-                for (i = 0; i < classes.length; i++) {
-                    var nam = classes[i];
-
-                    var ind = 0;
-
-                    $('td[name="' + nam + 'Odd"]').each(function (i, obj) {
-                        
-                        if($('td[name="' + nam + '"]').eq(i).text().includes("D/L")){
-                            return;
-                        }
-                        
-                        var val = parseInt($('td[name="' + nam + '"]').eq(i).text());
-
-
-
-
-                        var num = 0;
-                        var den = 1;
-
-                        $('td[name="' + nam + '"]').each(function () {
-                            if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
-
-                            } else if (parseInt($(this).text()) >= parseInt(val)) {
-                                num++;
-                            } else if (parseInt($(this).text()) < parseInt(val)) {
-//                                alert($(this).text() +" :: "+ val);
-                                den++;
-                            }
-
-                        });
-
-                        $(this).text(den.toString() + "/" + num.toString());
-
-
-
-
-
-                    });
-
-                }
-            });
-
-
-            $("input").change(function () {
-
-                var inp = $(this).val();
-                
-                var name = $(this).attr("name");
-
-                $('td[name="' + name + '"]').each(function () {
-                    $(this).removeClass("greater");
-                    $(this).removeClass("lower");
-                    $('#' + name).text("@");
-                });
-
-
-                if (inp.length === 0) {
-                    $('td[name="' + name + '"]').each(function () {
-                        $(this).removeClass("greater");
-                        $(this).removeClass("lower");
-                        $('#' + name).text("@");
-                    });
-
-                } else {
-
-                    var num = 0;
-                    var den = 1;
-
-                    $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
-
-                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
-                            $(this).addClass("greater");
-                            num++;
-                        } else if (parseInt($(this).text()) < parseInt(inp)) {
-//                            alert($(this).text() +" :: "+ inp);
-                            $(this).addClass("lower");
-                            den++;
-                        }
-
-                    });
-
-                    $('#' + name).text(den.toString() + "/" + num.toString());
-
-                }
-            });
-
-            $("input").keyup(function () {
-
-                var inp = $(this).val();
-                
-                var name = $(this).attr("name");
-
-                $('td[name="' + name + '"]').each(function () {
-                    $(this).removeClass("greater");
-                    $(this).removeClass("lower");
-                    $('#' + name).text("@");
-                });
-
-
-                if (inp.length === 0) {
-                    $('td[name="' + name + '"]').each(function () {
-                        $(this).removeClass("greater");
-                        $(this).removeClass("lower");
-                        $('#' + name).text("@");
-                    });
-
-                } else {
-//                    var tds = $('td[name="' + name + '"]');
+//            $(document).ready(function () {
 //
-//                    var noOfTds = $('td[name="' + name + '"]');
+//                var classes = ["-Left","-1Left", "0Left", "1Left", "2Left", "3Left", "4Left", "5Left", "6Left", 
+//                    "1Left2", "3Left2", "0Gr", "1Gr", "2Gr", "3Gr", "4Gr", "5Gr", "6Gr", "1Gr2", "3Gr2"];
+//
+//                var i;
+//                for (i = 0; i < classes.length; i++) {
+//                    var nam = classes[i];
+//
+//                    var ind = 0;
+//
+//                    $('td[name="' + nam + 'Odd"]').each(function (i, obj) {
+//                        
+//                        if($('td[name="' + nam + '"]').eq(i).text().includes("D/L")){
+//                            return;
+//                        }
+//                        
+//                        var val = parseInt($('td[name="' + nam + '"]').eq(i).text());
+//
+//
+//
+//
+//                        var num = 0;
+//                        var den = 1;
+//
+//                        $('td[name="' + nam + '"]').each(function () {
+//                            if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
+//
+//                            } else if (parseInt($(this).text()) >= parseInt(val)) {
+//                                num++;
+//                            } else if (parseInt($(this).text()) < parseInt(val)) {
+////                                alert($(this).text() +" :: "+ val);
+//                                den++;
+//                            }
+//
+//                        });
+//
+//                        $(this).text(den.toString() + "/" + num.toString());
+//
+//
+//
+//
+//
+//                    });
+//
+//                }
+//            });
+
+
+            $("input").on('input', function () {
+
+                var inp = $(this).val();
+                
+                var name = $(this).attr("name");
+
+                $('td[name="' + name + '"]').each(function () {
+                    $(this).removeClass("greater");
+                    $(this).removeClass("lower");
+                    $('#' + name).text("@");
+                });
+
+
+                if (inp.length === 0) {
+                    $('td[name="' + name + '"]').each(function () {
+                        $(this).removeClass("greater");
+                        $(this).removeClass("lower");
+                        $('#' + name).text("@");
+                    });
+                    $('td[name="' + name + 'Odd"][class="A"]').text("");
+                    $('td[name="' + name + 'Odd"][class="B"]').text("");
+                    $('td[name="' + name + 'Odd"][class="G"]').text("");
+
+                } else {
 
                     var num = 0;
                     var den = 1;
 
-                    $('td[name="' + name + '"]').each(function () {
+                    $('td[name="' + name + '"].A,td[name="' + name + '"].B').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
-
                             $(this).addClass("greater");
                             num++;
                         } else if (parseInt($(this).text()) < parseInt(inp)) {
@@ -1162,9 +1814,110 @@
                     });
 
                     $('#' + name).text(den.toString() + "/" + num.toString());
+                    
+                    num = 0;
+                    den = 1;
+
+                    $('td[name="' + name + '"].A').each(function () {
+                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
+
+                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
+                            num++;
+                        } else if (parseInt($(this).text()) < parseInt(inp)) {
+                            den++;
+                        }
+
+                    });
+
+                    $('td[name="' + name + 'Odd"][class="A"]').text(den.toString() + "/" + num.toString());
+                    
+                    
+                    
+                    num = 0;
+                    den = 1;
+
+                    $('td[name="' + name + '"].B').each(function () {
+                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
+
+                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
+                            num++;
+                        } else if (parseInt($(this).text()) < parseInt(inp)) {
+                            den++;
+                        }
+
+                    });
+
+                    $('td[name="' + name + 'Odd"][class="B"]').text(den.toString() + "/" + num.toString());
+                    
+                    
+                    
+                    
+                    num = 0;
+                    den = 1;
+
+                    $('td[name="' + name + '"][class="G"]').each(function () {
+                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
+
+                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
+                            num++;
+                        } else if (parseInt($(this).text()) < parseInt(inp)) {
+                            den++;
+                        }
+
+                    });
+
+                    $('td[name="' + name + 'Odd"][class="G"]').text(den.toString() + "/" + num.toString());
 
                 }
             });
+
+//            $("input").keyup(function () {
+//
+//                var inp = $(this).val();
+//                
+//                var name = $(this).attr("name");
+//
+//                $('td[name="' + name + '"]').each(function () {
+//                    $(this).removeClass("greater");
+//                    $(this).removeClass("lower");
+//                    $('#' + name).text("@");
+//                });
+//
+//
+//                if (inp.length === 0) {
+//                    $('td[name="' + name + '"]').each(function () {
+//                        $(this).removeClass("greater");
+//                        $(this).removeClass("lower");
+//                        $('#' + name).text("@");
+//                    });
+//
+//                } else {
+////                    var tds = $('td[name="' + name + '"]');
+////
+////                    var noOfTds = $('td[name="' + name + '"]');
+//
+//                    var num = 0;
+//                    var den = 1;
+//
+//                    $('td[name="' + name + '"]').each(function () {
+//                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
+//
+//                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
+//
+//                            $(this).addClass("greater");
+//                            num++;
+//                        } else if (parseInt($(this).text()) < parseInt(inp)) {
+////                            alert($(this).text() +" :: "+ inp);
+//                            $(this).addClass("lower");
+//                            den++;
+//                        }
+//
+//                    });
+//
+//                    $('#' + name).text(den.toString() + "/" + num.toString());
+//
+//                }
+//            });
         </script>
 
     </body>
