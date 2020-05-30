@@ -440,14 +440,14 @@
                                         <th colspan="30">Back testing:
                                     </tr>
                                     <tr>
-                                        <th colspan="${fn:length(t_teamoneBatFirst0_bt)}">${teamOne} Batting First</th>
+                                        <th colspan="${fn:length(t_teamoneBatFirsttotruns_bt)}">${teamOne} Batting First</th>
                                         <th>
-                                        <th colspan="${fn:length(t_teamtwoBowlFirst0_bt)}">${teamTwo} Bowling First</th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirsttotruns_bt)}">${teamTwo} Bowling First</th>
                                         <th>
-                                        <th colspan="${fn:length(t_groundFirst1X0_bt)}">${t_groundName} First Inning</th>
+                                        <th colspan="${fn:length(t_groundFirstInningtotruns_bt)}">${t_groundName} First Inning</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="entry" items="${t_teamoneBatFirst0_bt}">
+                                        <c:forEach var="entry" items="${t_teamoneBatFirsttotruns_bt}">
                                             <td>
                                                 ${entry.key}
                                             </td>
@@ -455,7 +455,7 @@
                                             
                                         <td></td>
                                         
-                                        <c:forEach var="entry" items="${t_teamtwoBowlFirst0_bt}">
+                                        <c:forEach var="entry" items="${t_teamtwoBowlFirsttotruns_bt}">
                                             <td>
                                                 ${entry.key}
                                             </td>
@@ -463,14 +463,14 @@
                                             
                                         <td></td>
                                         
-                                        <c:forEach var="entry" items="${t_groundFirst1X0_bt}">
+                                        <c:forEach var="entry" items="${t_groundFirstInningtotruns_bt}">
                                             <td>
                                                 ${entry.key}
                                             </td>
                                         </c:forEach>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="entry" items="${t_teamoneBatFirst0_bt}">
+                                        <c:forEach var="entry" items="${t_teamoneBatFirsttotruns_bt}">
                                             <td>
                                                 ${entry.value}
                                             </td>
@@ -478,7 +478,7 @@
                                             
                                         <td></td>
                                         
-                                        <c:forEach var="entry" items="${t_teamtwoBowlFirst0_bt}">
+                                        <c:forEach var="entry" items="${t_teamtwoBowlFirsttotruns_bt}">
                                             <td>
                                                 ${entry.value}
                                             </td>
@@ -486,7 +486,7 @@
                                             
                                         <td></td>
                                         
-                                        <c:forEach var="entry" items="${t_groundFirst1X0_bt}">
+                                        <c:forEach var="entry" items="${t_groundFirstInningtotruns_bt}">
                                             <td>
                                                 ${entry.value}
                                             </td>
@@ -500,23 +500,23 @@
                                         <th colspan="30">${teamOne} Batting First</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="entry" items="${first0A_bt}">
+                                        <c:forEach var="entry" items="${ABatFirsttotruns_bt}">
                                             <td>
                                                 ${entry.key}
                                             </td>
                                         </c:forEach>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="entry" items="${first0A_bt}">
+                                        <c:forEach var="entry" items="${ABatFirsttotruns_bt}">
                                             <td>
                                                 ${entry.value}
                                             </td>
                                         </c:forEach>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="entry" items="${first0A_bt}">
+                                        <c:forEach var="entry" items="${ABatFirsttotruns_bt}">
                                             <td>
-                                                ${first0A_bt.get("N") - entry.value}
+                                                ${ABatFirsttotruns_bt.get("N") - entry.value}
                                             </td>
                                         </c:forEach>
                                     </tr>
@@ -529,23 +529,23 @@
                                         <th colspan="30">${teamTwo} Bowling First</th>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="entry" items="${first0B_bt}">
+                                        <c:forEach var="entry" items="${BBowlFirsttotruns_bt}">
                                             <td>
                                                 ${entry.key}
                                             </td>
                                         </c:forEach>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="entry" items="${first0B_bt}">
+                                        <c:forEach var="entry" items="${BBowlFirsttotruns_bt}">
                                             <td>
                                                 ${entry.value}
                                             </td>
                                         </c:forEach>
                                     </tr>
                                     <tr>
-                                        <c:forEach var="entry" items="${first0B_bt}">
+                                        <c:forEach var="entry" items="${BBowlFirsttotruns_bt}">
                                             <td>
-                                                ${first0B_bt.get("N") - entry.value}
+                                                ${BBowlFirsttotruns_bt.get("N") - entry.value}
                                             </td>
                                         </c:forEach>
                                     </tr>
@@ -710,6 +710,122 @@
                                     
                                 </table>
 
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamoneBatFirst1wicket_bt)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirst1wicket_bt)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirstInning1wicket_bt)}">${t_groundName} First Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatFirst1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlFirst1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFirstInning1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatFirst1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlFirst1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFirstInning1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatFirst1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatFirst1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatFirst1wicket_bt}">
+                                            <td>
+                                                ${ABatFirst1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlFirst1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlFirst1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlFirst1wicket_bt}">
+                                            <td>
+                                                ${BBowlFirst1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+
                             </div>
                         </div>
 
@@ -862,6 +978,122 @@
 
                                     
                                 </table>
+
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamoneBatFirstruns5_bt)}">${teamOne} Batting First</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlFirstruns5_bt)}">${teamTwo} Bowling First</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFirstInningruns5_bt)}">${t_groundName} First Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatFirstruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlFirstruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFirstInningruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatFirstruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlFirstruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFirstInningruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatFirstruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatFirstruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatFirstruns5_bt}">
+                                            <td>
+                                                ${ABatFirst1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling First</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlFirstruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlFirstruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlFirstruns5_bt}">
+                                            <td>
+                                                ${BBowlFirstruns5_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
 
                             </div>
                         </div>
@@ -1042,6 +1274,122 @@
                                 </tr>
                                 
                                 </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamtwoBatSecondtotruns_bt)}">${teamTwo} Batting Second Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamoneBowlSecondtotruns_bt)}">${teamOne} Bowling Second Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundSecondInningtotruns_bt)}">${t_groundName} Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatSecondtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlSecondtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundSecondInningtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatSecondtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlSecondtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundSecondInningtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Batting Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecondtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecondtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecondtotruns_bt}">
+                                            <td>
+                                                ${BBatSecondtotruns_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamOne} Bowling Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecondtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecondtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecondtotruns_bt}">
+                                            <td>
+                                                ${ABowlSecondtotruns_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
 
                             </div>
                         </div>
@@ -1198,6 +1546,122 @@
                                     
                                 </table>
 
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamtwoBatSecond1wicket_bt)}">${teamTwo} Batting Second Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamoneBowlSecond1wicket_bt)}">${teamOne} Bowling Second Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundSecondInning1wicket_bt)}">${t_groundName} Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatSecond1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlSecond1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundSecondInning1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatSecond1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlSecond1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundSecondInning1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Batting Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecond1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecond1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecond1wicket_bt}">
+                                            <td>
+                                                ${BBatSecond1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamOne} Bowling Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecond1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecond1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecond1wicket_bt}">
+                                            <td>
+                                                ${ABowlSecond1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+
                             </div>
                         </div>
 
@@ -1350,6 +1814,122 @@
                                     
                                     
                                 </table>
+
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamtwoBatSecondruns5_bt)}">${teamTwo} Batting Second Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamoneBowlSecondruns5_bt)}">${teamOne} Bowling Second Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundSecondInningruns5_bt)}">${t_groundName} Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatSecondruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlSecondruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundSecondInningruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatSecondruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlSecondruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundSecondInningruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Batting Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecondruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecondruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatSecondruns5_bt}">
+                                            <td>
+                                                ${BBatSecondruns5_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamOne} Bowling Second Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecondruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecondruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlSecondruns5_bt}">
+                                            <td>
+                                                ${ABowlSecondruns5_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
 
                             </div>
                         </div>
@@ -1533,6 +2113,122 @@
                                 </tr>
                                  
                                 </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamoneBatThirdtotruns_bt)}">${teamOne} Batting Third Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlThirdtotruns_bt)}">${teamTwo} Bowling Third Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundThirdInningtotruns_bt)}">${t_groundName} Third Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatThirdtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlThirdtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundThirdInningtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatThirdtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlThirdtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundThirdInningtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting Third</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThirdtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThirdtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThirdtotruns_bt}">
+                                            <td>
+                                                ${ABatThirdtotruns_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling Third</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThirdtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThirdtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThirdtotruns_bt}">
+                                            <td>
+                                                ${BBowlThirdtotruns_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
 
                             </div>
                         </div>
@@ -1688,6 +2384,122 @@
                                     
                                 </table>
 
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamoneBatThird1wicket_bt)}">${teamOne} Batting Third Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlThird1wicket_bt)}">${teamTwo} Bowling Third Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundThirdInning1wicket_bt)}">${t_groundName} Third Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatThird1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlThird1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundThirdInning1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatThird1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlThird1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundThirdInning1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting Third</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThird1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThird1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThird1wicket_bt}">
+                                            <td>
+                                                ${ABatThird1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling Third</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThird1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThird1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThird1wicket_bt}">
+                                            <td>
+                                                ${BBowlThird1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+
                             </div>
                         </div>
 
@@ -1842,6 +2654,122 @@
                                 </tr>
                                     
                                 </table>
+
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamoneBatThirdruns5_bt)}">${teamOne} Batting Third Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamtwoBowlThirdruns5_bt)}">${teamTwo} Bowling Third Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundThirdInningruns5_bt)}">${t_groundName} Third Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatThirdruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlThirdruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundThirdInningruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamoneBatThirdruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamtwoBowlThirdruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundThirdInningruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne} Batting Third</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThirdruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThirdruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABatThirdruns5_bt}">
+                                            <td>
+                                                ${ABatThirdruns5_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Bowling Third</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThirdruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThirdruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBowlThirdruns5_bt}">
+                                            <td>
+                                                ${BBowlThirdruns5_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
 
                             </div>
                         </div>
@@ -2022,6 +2950,122 @@
                                  
                                  
                                 </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamtwoBatFourthtotruns_bt)}">${teamTwo} Batting Fourth Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamoneBowlFourthtotruns_bt)}">${teamOne} Bowling Fourth Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFourthInningtotruns_bt)}">${t_groundName} Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatFourthtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlFourthtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFourthInningtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatFourthtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlFourthtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFourthInningtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Batting Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourthtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourthtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourthtotruns_bt}">
+                                            <td>
+                                                ${BBatFourthtotruns_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamOne} Bowling Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourthtotruns_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourthtotruns_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourthtotruns_bt}">
+                                            <td>
+                                                ${ABowlFourthtotruns_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
 
                             </div>
                         </div>
@@ -2179,6 +3223,122 @@
                                     
                                 </table>
 
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamtwoBatFourth1wicket_bt)}">${teamTwo} Batting Fourth Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamoneBowlFourth1wicket_bt)}">${teamOne} Bowling Fourth Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFourthInning1wicket_bt)}">${t_groundName} Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatFourth1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlFourth1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFourthInning1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatFourth1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlFourth1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFourthInning1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Batting Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourth1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourth1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourth1wicket_bt}">
+                                            <td>
+                                                ${BBatFourth1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamOne} Bowling Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourth1wicket_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourth1wicket_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourth1wicket_bt}">
+                                            <td>
+                                                ${ABowlFourth1wicket_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+
                             </div>
                         </div>
 
@@ -2326,12 +3486,128 @@
                                 <tr>
                                     <c:forEach var="in" items="${ASs}">
                                         <td>
-                                            ${in.getTotalruns() }
+                                            ${in.getRuns5wicket() }
                                         </td>
                                     </c:forEach>
                                 </tr>
                                     
                                 </table>
+
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(t_teamtwoBatFourthruns5_bt)}">${teamTwo} Batting Fourth Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_teamoneBowlFourthruns5_bt)}">${teamOne} Bowling Fourth Inning</th>
+                                        <th>
+                                        <th colspan="${fn:length(t_groundFourthInningruns5_bt)}">${t_groundName} Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatFourthruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlFourthruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFourthInningruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${t_teamtwoBatFourthruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_teamoneBowlFourthruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${t_groundFourthInningruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamTwo} Batting Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourthruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourthruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${BBatFourthruns5_bt}">
+                                            <td>
+                                                ${BBatFourthruns5_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamOne} Bowling Fourth Inning</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourthruns5_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourthruns5_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${ABowlFourthruns5_bt}">
+                                            <td>
+                                                ${ABowlFourthruns5_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
 
                             </div>
                         </div>

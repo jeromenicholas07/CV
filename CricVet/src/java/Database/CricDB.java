@@ -1755,7 +1755,7 @@ public class CricDB extends BaseDAO {
         
         System.out.println("WE ARE TRUE");
         switch (type) {
-//batting first
+//all matches at home
             case 0:
                 try {
                     con = getConnection();
@@ -1803,7 +1803,7 @@ public class CricDB extends BaseDAO {
                     try { con.close(); } catch (Exception e) { /* ignored */ }
                 }
                 break;
-                
+// all home matches batting first               
             case 1:
 
                 try {
