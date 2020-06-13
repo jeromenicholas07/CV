@@ -34,6 +34,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -569,7 +570,7 @@ public class CricDB extends BaseDAO {
         try {
             con = getConnection();
 
-            String sql = "select * from APP.TESTMATCH where (hometeam='" + teamName + "' OR awayteam='" + teamName + "') order by MATCHDATE DESC FETCH FIRST 30 ROWS ONLY";
+            String sql = "select * from APP.TESTMATCH where (hometeam='" + teamName + "' OR awayteam='" + teamName + "') order by MATCHDATE DESC";
 
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -2470,6 +2471,38 @@ public class CricDB extends BaseDAO {
     }
     
     
+    public String getLastMatchDate(){
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        String op = "(N/A)";
+        try {
+            con = getConnection();
+            String sql = "select * from APP.MATCHES order by MATCHDATE DESC FETCH FIRST 1 ROW ONLY";
+            stmt = con.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Timestamp matchDate = rs.getTimestamp("matchdate");
+                
+                op = matchDate.toLocalDateTime().format(DateTimeFormatter.ofPattern("d MMM uuuu"));
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+
+        return op;
+    }
 //    BaseDAO db = new BaseDAO();;
 
 }

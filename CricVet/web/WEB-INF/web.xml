@@ -55,12 +55,10 @@
     <servlet>
         <servlet-name>getData</servlet-name>
         <servlet-class>Servlets.getData</servlet-class>
-        
         <init-param>
             <param-name>compilerSourceVM</param-name>
             <param-value>1.8</param-value>
         </init-param>
-        
         <init-param>
             <param-name>compilerTargetVM</param-name>
             <param-value>1.8</param-value>
@@ -73,6 +71,10 @@
     <servlet>
         <servlet-name>getGroundData</servlet-name>
         <servlet-class>Servlets.getGroundData</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getLdate</servlet-name>
+        <servlet-class>Servlets.getLdate</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoadODI</servlet-name>
@@ -137,6 +139,10 @@
     <servlet-mapping>
         <servlet-name>getTest</servlet-name>
         <url-pattern>/getTest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getLdate</servlet-name>
+        <url-pattern>/getLdate</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

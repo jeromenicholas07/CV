@@ -592,18 +592,12 @@ public class getData extends HttpServlet {
                             BorC = "C";
                         }
 
-                        if (res.contains(" wicket")) {
-                            if (q.getHomeTeam().equalsIgnoreCase(teamOne)) {
-                                worl = "L";
-                            } else {
-                                worl = "W";
-                            }
-                        } else if (res.contains(" run")) {
-                            if (q.getHomeTeam().equalsIgnoreCase(teamOne)) {
-                                worl = "W";
-                            } else {
-                                worl = "L";
-                            }
+                        if (res.contains(teamOne)) {
+                            worl = "W";
+                            
+                        } else if (res.contains(teamTwo)) {
+                            worl = "L";
+                            
                         } else {
                             worl = "-";
                         }
@@ -776,6 +770,30 @@ public class getData extends HttpServlet {
                     getBackTesthomeruns5(teamOne,teamTwo, groundName, backDate, db,matchType, request);
                     getBackTesthome1wicket(teamOne,teamTwo, groundName, backDate, db,matchType, request);
 
+                    
+                    
+                    List<testInning> groundtotal = new ArrayList<>();
+                    matches = db.gettestGroundInfo(groundName,matchType);
+                    matches.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    for (testMatch q : matches) {
+                        int fours;
+                        int sixes;
+
+                        fours = q.getInningOne1().getFours()
+                                + q.getInningOne2().getFours() + q.getInningTwo1().getFours() + q.getInningTwo2().getFours();
+
+                        sixes = q.getInningOne1().getSixes()
+                                + q.getInningOne2().getSixes() + q.getInningTwo1().getSixes() + q.getInningTwo2().getSixes();
+
+                        testInning m = q.getInningOne1();
+                        m.setFours(fours);
+                        m.setSixes(sixes);
+                        groundtotal.add(m);
+
+                    }
+                    request.setAttribute("groundtotal", groundtotal);
+                    
 /*
                     if(true){
                         List<testMatch> totMatches = new ArrayList<>();
@@ -979,12 +997,12 @@ public class getData extends HttpServlet {
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -1149,66 +1167,66 @@ public class getData extends HttpServlet {
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -1238,12 +1256,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -1409,66 +1427,66 @@ public class getData extends HttpServlet {
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -1675,6 +1693,28 @@ public class getData extends HttpServlet {
                             k++;
                         }
                     }
+                    
+                    List<testInning> groundtotal = new ArrayList<>();
+                    matches = db.gettestGroundInfo(groundName,matchType);
+                    matches.removeIf(m -> (m.getMatchDate().after(backDate)));
+
+                    for (testMatch q : matches) {
+                        int fours;
+                        int sixes;
+
+                        fours = q.getInningOne1().getFours()
+                                + q.getInningOne2().getFours() + q.getInningTwo1().getFours() + q.getInningTwo2().getFours();
+
+                        sixes = q.getInningOne1().getSixes()
+                                + q.getInningOne2().getSixes() + q.getInningTwo1().getSixes() + q.getInningTwo2().getSixes();
+
+                        testInning m = q.getInningOne1();
+                        m.setFours(fours);
+                        m.setSixes(sixes);
+                        groundtotal.add(m);
+
+                    }
+                    request.setAttribute("groundtotal", groundtotal);
 
                     matches.clear();
                     k = 5;
@@ -1896,6 +1936,11 @@ public class getData extends HttpServlet {
 
                     t_oneBatFirst = t_oneBatFirst.subList(0, Math.min(5, t_oneBatFirst.size()));
                     t_twoBowlFirst = t_twoBowlFirst.subList(0, Math.min(5, t_twoBowlFirst.size()));
+                    
+                    
+                    
+                    
+
                     /*            t_groundFirst1 = t_groundFirst1.subList(0, Math.min(5, t_groundFirst1.size()));
             t_groundSecond1 = t_groundSecond1.subList(0, Math.min(5, t_groundSecond1.size()));
             t_groundFirst2 = t_groundFirst2.subList(0, Math.min(5, t_groundFirst2.size()));
@@ -2129,18 +2174,12 @@ public class getData extends HttpServlet {
                             BorC = "C";
                         }
 
-                        if (res.contains(" wicket")) {
-                            if (q.getHomeTeam().equalsIgnoreCase(teamOne)) {
-                                worl = "L";
-                            } else {
-                                worl = "W";
-                            }
-                        } else if (res.contains(" run")) {
-                            if (q.getHomeTeam().equalsIgnoreCase(teamOne)) {
-                                worl = "W";
-                            } else {
-                                worl = "L";
-                            }
+                        if (res.contains(teamOne)) {
+                            worl = "W";
+                            
+                        } else if (res.contains(teamTwo)) {
+                            worl = "L";
+                            
                         } else {
                             worl = "-";
                         }
@@ -2522,12 +2561,12 @@ public class getData extends HttpServlet {
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -2692,66 +2731,66 @@ public class getData extends HttpServlet {
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -2781,12 +2820,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -2952,66 +2991,66 @@ public class getData extends HttpServlet {
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -3823,12 +3862,12 @@ public class getData extends HttpServlet {
                     A_bt.put("4-4-4-7 below", 0);
                     A_bt.put("3-3-3-4 above", 0);
                     A_bt.put("3-3-3-6 below", 0);
-                    A_bt.put("2 above", 0);
-                    A_bt.put("3 above", 0);
-                    A_bt.put("4 above", 0);
-                    A_bt.put("6 below", 0);
-                    A_bt.put("7 below", 0);
-                    A_bt.put("8 below", 0);
+                    A_bt.put("2-2gr above", 0);
+                    A_bt.put("3-2gr above", 0);
+                    A_bt.put("4-3gr above", 0);
+                    A_bt.put("6-3gr below", 0);
+                    A_bt.put("7-4gr below", 0);
+                    A_bt.put("8-4gr below", 0);
 
                     int hind = 3;
 
@@ -3987,66 +4026,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -4076,12 +4115,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 3;
 
@@ -4241,66 +4280,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -4465,12 +4504,12 @@ public class getData extends HttpServlet {
                     A_bt.put("4-4-4-7 below", 0);
                     A_bt.put("3-3-3-4 above", 0);
                     A_bt.put("3-3-3-6 below", 0);
-                    A_bt.put("2 above", 0);
-                    A_bt.put("3 above", 0);
-                    A_bt.put("4 above", 0);
-                    A_bt.put("6 below", 0);
-                    A_bt.put("7 below", 0);
-                    A_bt.put("8 below", 0);
+                    A_bt.put("2-2gr above", 0);
+                    A_bt.put("3-2gr above", 0);
+                    A_bt.put("4-3gr above", 0);
+                    A_bt.put("6-3gr below", 0);
+                    A_bt.put("7-4gr below", 0);
+                    A_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -4629,66 +4668,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -4718,12 +4757,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -4883,66 +4922,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -4969,12 +5008,12 @@ public class getData extends HttpServlet {
                     A_bt.put("4-4-4-7 below", 0);
                     A_bt.put("3-3-3-4 above", 0);
                     A_bt.put("3-3-3-6 below", 0);
-                    A_bt.put("2 above", 0);
-                    A_bt.put("3 above", 0);
-                    A_bt.put("4 above", 0);
-                    A_bt.put("6 below", 0);
-                    A_bt.put("7 below", 0);
-                    A_bt.put("8 below", 0);
+                    A_bt.put("2-2gr above", 0);
+                    A_bt.put("3-2gr above", 0);
+                    A_bt.put("4-3gr above", 0);
+                    A_bt.put("6-3gr below", 0);
+                    A_bt.put("7-4gr below", 0);
+                    A_bt.put("8-4gr below", 0);
 
                     int hind = 3;
 
@@ -5133,66 +5172,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -5222,12 +5261,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 3;
 
@@ -5387,66 +5426,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -5968,12 +6007,12 @@ public class getData extends HttpServlet {
                     twoA_bt.put("4-4-4-7 below", 0);
                     twoA_bt.put("3-3-3-4 above", 0);
                     twoA_bt.put("3-3-3-6 below", 0);
-                    twoA_bt.put("2 above", 0);
-                    twoA_bt.put("3 above", 0);
-                    twoA_bt.put("4 above", 0);
-                    twoA_bt.put("6 below", 0);
-                    twoA_bt.put("7 below", 0);
-                    twoA_bt.put("8 below", 0);
+                    twoA_bt.put("2-2gr above", 0);
+                    twoA_bt.put("3-2gr above", 0);
+                    twoA_bt.put("4-3gr above", 0);
+                    twoA_bt.put("6-3gr below", 0);
+                    twoA_bt.put("7-4gr below", 0);
+                    twoA_bt.put("8-4gr below", 0);
 
                     int hind = 2;
 
@@ -6135,66 +6174,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        twoA_bt.put("2 above", twoA_bt.get("2 above")+1 );
+                                        twoA_bt.put("2-2gr above", twoA_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    twoA_bt.put("2 above", twoA_bt.get("2 above")+1 );
+                                    twoA_bt.put("2-2gr above", twoA_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        twoA_bt.put("3 above", twoA_bt.get("3 above")+1 );
+                                        twoA_bt.put("3-2gr above", twoA_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    twoA_bt.put("3 above", twoA_bt.get("3 above")+1 );
+                                    twoA_bt.put("3-2gr above", twoA_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        twoA_bt.put("4 above", twoA_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        twoA_bt.put("4-3gr above", twoA_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    twoA_bt.put("4 above", twoA_bt.get("4 above")+1 );
+                                    twoA_bt.put("4-3gr above", twoA_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        twoA_bt.put("6 below", twoA_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        twoA_bt.put("6-3gr below", twoA_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    twoA_bt.put("6 below", twoA_bt.get("6 below")+1 );
+                                    twoA_bt.put("6-3gr below", twoA_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        twoA_bt.put("7 below", twoA_bt.get("7 below")+1 );
+                                        twoA_bt.put("7-4gr below", twoA_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    twoA_bt.put("7 below", twoA_bt.get("7 below")+1 );
+                                    twoA_bt.put("7-4gr below", twoA_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        twoA_bt.put("8 below", twoA_bt.get("8 below")+1 );
+                                        twoA_bt.put("8-4gr below", twoA_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    twoA_bt.put("8 below", twoA_bt.get("8 below")+1 );
+                                    twoA_bt.put("8-4gr below", twoA_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -6224,12 +6263,12 @@ public class getData extends HttpServlet {
                     twoB_bt.put("4-4-4-7 below", 0);
                     twoB_bt.put("3-3-3-4 above", 0);
                     twoB_bt.put("3-3-3-6 below", 0);
-                    twoB_bt.put("2 above", 0);
-                    twoB_bt.put("3 above", 0);
-                    twoB_bt.put("4 above", 0);
-                    twoB_bt.put("6 below", 0);
-                    twoB_bt.put("7 below", 0);
-                    twoB_bt.put("8 below", 0);
+                    twoB_bt.put("2-2gr above", 0);
+                    twoB_bt.put("3-2gr above", 0);
+                    twoB_bt.put("4-3gr above", 0);
+                    twoB_bt.put("6-3gr below", 0);
+                    twoB_bt.put("7-4gr below", 0);
+                    twoB_bt.put("8-4gr below", 0);
 
                     int hind = 2;
 
@@ -6392,66 +6431,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        twoB_bt.put("2 above", twoB_bt.get("2 above")+1 );
+                                        twoB_bt.put("2-2gr above", twoB_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    twoB_bt.put("2 above", twoB_bt.get("2 above")+1 );
+                                    twoB_bt.put("2-2gr above", twoB_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        twoB_bt.put("3 above", twoB_bt.get("3 above")+1 );
+                                        twoB_bt.put("3-2gr above", twoB_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    twoB_bt.put("3 above", twoB_bt.get("3 above")+1 );
+                                    twoB_bt.put("3-2gr above", twoB_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        twoB_bt.put("4 above", twoB_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        twoB_bt.put("4-3gr above", twoB_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    twoB_bt.put("4 above", twoB_bt.get("4 above")+1 );
+                                    twoB_bt.put("4-3gr above", twoB_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        twoB_bt.put("6 below", twoB_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        twoB_bt.put("6-3gr below", twoB_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    twoB_bt.put("6 below", twoB_bt.get("6 below")+1 );
+                                    twoB_bt.put("6-3gr below", twoB_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        twoB_bt.put("7 below", twoB_bt.get("7 below")+1 );
+                                        twoB_bt.put("7-4gr below", twoB_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    twoB_bt.put("7 below", twoB_bt.get("7 below")+1 );
+                                    twoB_bt.put("7-4gr below", twoB_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        twoB_bt.put("8 below", twoB_bt.get("8 below")+1 );
+                                        twoB_bt.put("8-4gr below", twoB_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    twoB_bt.put("8 below", twoB_bt.get("8 below")+1 );
+                                    twoB_bt.put("8-4gr below", twoB_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -6994,12 +7033,12 @@ public class getData extends HttpServlet {
                     A_bt.put("4-4-4-7 below", 0);
                     A_bt.put("3-3-3-4 above", 0);
                     A_bt.put("3-3-3-6 below", 0);
-                    A_bt.put("2 above", 0);
-                    A_bt.put("3 above", 0);
-                    A_bt.put("4 above", 0);
-                    A_bt.put("6 below", 0);
-                    A_bt.put("7 below", 0);
-                    A_bt.put("8 below", 0);
+                    A_bt.put("2-2gr above", 0);
+                    A_bt.put("3-2gr above", 0);
+                    A_bt.put("4-3gr above", 0);
+                    A_bt.put("6-3gr below", 0);
+                    A_bt.put("7-4gr below", 0);
+                    A_bt.put("8-4gr below", 0);
 
                     int hind = 6;
 
@@ -7161,66 +7200,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -7250,12 +7289,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 6;
 
@@ -7418,66 +7457,66 @@ public class getData extends HttpServlet {
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -8274,12 +8313,12 @@ public class getData extends HttpServlet {
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -8444,66 +8483,66 @@ public class getData extends HttpServlet {
                                 if(curr >= sub.get(1).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -8530,12 +8569,12 @@ public class getData extends HttpServlet {
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -8700,66 +8739,66 @@ public class getData extends HttpServlet {
                                 if(curr >= sub.get(1).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -8786,12 +8825,12 @@ public class getData extends HttpServlet {
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -8956,66 +8995,66 @@ public class getData extends HttpServlet {
                                 if(curr >= sub.get(1).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -9042,12 +9081,12 @@ public class getData extends HttpServlet {
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -9212,66 +9251,66 @@ public class getData extends HttpServlet {
                                 if(curr >= sub.get(1).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -9300,12 +9339,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -9471,66 +9510,66 @@ public class getData extends HttpServlet {
                             if(curr >= sub.get(1).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -9558,12 +9597,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -9729,66 +9768,66 @@ public class getData extends HttpServlet {
                             if(curr >= sub.get(1).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -9815,12 +9854,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -9986,66 +10025,66 @@ public class getData extends HttpServlet {
                             if(curr >= sub.get(1).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -10073,12 +10112,12 @@ public class getData extends HttpServlet {
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -10244,66 +10283,66 @@ public class getData extends HttpServlet {
                             if(curr >= sub.get(1).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -11068,12 +11107,12 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -11238,66 +11277,66 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                                 if(curr >= sub.get(1).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -11324,12 +11363,12 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -11494,66 +11533,66 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                                 if(curr >= sub.get(1).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -11580,12 +11619,12 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -11750,66 +11789,66 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                                 if(curr >= sub.get(1).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -11836,12 +11875,12 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -12006,66 +12045,66 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                                 if(curr >= sub.get(1).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getRuns5wicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getRuns5wicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getRuns5wicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getRuns5wicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getRuns5wicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -12094,12 +12133,12 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -12265,66 +12304,66 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                             if(curr >= sub.get(1).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -12352,12 +12391,12 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -12523,66 +12562,66 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                             if(curr >= sub.get(1).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -12609,12 +12648,12 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -12780,66 +12819,66 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                             if(curr >= sub.get(1).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -12867,12 +12906,12 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -13038,66 +13077,66 @@ private void getBackTestawayruns5(String teamOne, String teamTwo, String groundN
                             if(curr >= sub.get(1).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getRuns5wicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getRuns5wicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getRuns5wicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getRuns5wicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getRuns5wicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -13231,7 +13270,7 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                             } 
                         }
 
-                        request.setAttribute("t_teamoneBatThirdtotruns_bt", bt);
+                        request.setAttribute("t_teamoneBatThird1wicket_bt", bt);
                     }
 
                     if(true){
@@ -13862,12 +13901,12 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -14032,66 +14071,66 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getFirstwicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getFirstwicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -14118,12 +14157,12 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -14288,66 +14327,66 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getFirstwicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getFirstwicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -14374,12 +14413,12 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -14544,66 +14583,66 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getFirstwicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getFirstwicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -14630,12 +14669,12 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -14800,66 +14839,66 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getFirstwicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getFirstwicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -14888,12 +14927,12 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -15059,66 +15098,66 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getFirstwicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getFirstwicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -15146,12 +15185,12 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -15317,66 +15356,66 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getFirstwicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getFirstwicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -15403,12 +15442,12 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -15574,66 +15613,66 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getFirstwicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getFirstwicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -15661,12 +15700,12 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -15832,66 +15871,66 @@ private void getBackTestaway1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getFirstwicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getFirstwicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -16025,7 +16064,7 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             } 
                         }
 
-                        request.setAttribute("t_teamoneBatThirdtotruns_bt", bt);
+                        request.setAttribute("t_teamoneBatThird1wicket_bt", bt);
                     }
 
                     if(true){
@@ -16656,12 +16695,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -16826,66 +16865,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getFirstwicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getFirstwicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -16912,12 +16951,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -17082,66 +17121,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getFirstwicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getFirstwicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -17168,12 +17207,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -17338,66 +17377,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getFirstwicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getFirstwicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -17424,12 +17463,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -17594,66 +17633,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getFirstwicket()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getFirstwicket()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getFirstwicket()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getFirstwicket()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getFirstwicket()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getFirstwicket()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -17682,12 +17721,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -17853,66 +17892,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getFirstwicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getFirstwicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -17940,12 +17979,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -18111,66 +18150,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getFirstwicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getFirstwicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -18197,12 +18236,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -18368,66 +18407,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getFirstwicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getFirstwicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -18455,12 +18494,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -18626,66 +18665,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getFirstwicket()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getFirstwicket()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getFirstwicket()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getFirstwicket()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getFirstwicket()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getFirstwicket()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -19450,12 +19489,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -19620,66 +19659,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -19706,12 +19745,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -19876,66 +19915,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -19962,12 +20001,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -20132,66 +20171,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -20218,12 +20257,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -20388,66 +20427,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -20476,12 +20515,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -20647,66 +20686,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -20734,12 +20773,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -20905,66 +20944,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -20991,12 +21030,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -21162,66 +21201,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -21249,12 +21288,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -21420,66 +21459,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -22244,12 +22283,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -22414,66 +22453,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -22500,12 +22539,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -22670,66 +22709,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -22756,12 +22795,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -22926,66 +22965,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -23012,12 +23051,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                         A_bt.put("4-4-4-7 below", 0);
                         A_bt.put("3-3-3-4 above", 0);
                         A_bt.put("3-3-3-6 below", 0);
-                        A_bt.put("2 above", 0);
-                        A_bt.put("3 above", 0);
-                        A_bt.put("4 above", 0);
-                        A_bt.put("6 below", 0);
-                        A_bt.put("7 below", 0);
-                        A_bt.put("8 below", 0);
+                        A_bt.put("2-2gr above", 0);
+                        A_bt.put("3-2gr above", 0);
+                        A_bt.put("4-3gr above", 0);
+                        A_bt.put("6-3gr below", 0);
+                        A_bt.put("7-4gr below", 0);
+                        A_bt.put("8-4gr below", 0);
 
                         int hind = 1;
 
@@ -23182,66 +23221,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                                 if(curr >= sub.get(1).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                            A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(2).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                            A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
 
                                 if(curr >= sub.get(3).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr >= subG.get(1).getTotalruns()){
-                                            A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        if(curr >= subG.get(2).getTotalruns()){
+                                            A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(5).getTotalruns()){
                                     if(subG.size()==5){
-                                        if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        if(curr <= subG.get(2).getTotalruns()){
+                                            A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(6).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                            A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
 
                                 if(curr <= sub.get(7).getTotalruns()){
                                     if(subG.size()==5){
                                         if(curr <= subG.get(3).getTotalruns()){
-                                            A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                            A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                         }
                                     }
                                     else{
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                             }
@@ -23270,12 +23309,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -23441,66 +23480,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -23528,12 +23567,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -23699,66 +23738,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -23785,12 +23824,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -23956,66 +23995,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -24043,12 +24082,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -24214,66 +24253,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= sub.get(1).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(2).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= sub.get(3).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr >= subG.get(1).getTotalruns()){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= subG.get(2).getTotalruns()){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(5).getTotalruns()){
                                 if(subG.size()==5){
-                                    if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= subG.get(2).getTotalruns()){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(6).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= sub.get(7).getTotalruns()){
                                 if(subG.size()==5){
                                     if(curr <= subG.get(3).getTotalruns()){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -24306,12 +24345,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     A_bt.put("4-4-4-7 below", 0);
                     A_bt.put("3-3-3-4 above", 0);
                     A_bt.put("3-3-3-6 below", 0);
-                    A_bt.put("2 above", 0);
-                    A_bt.put("3 above", 0);
-                    A_bt.put("4 above", 0);
-                    A_bt.put("6 below", 0);
-                    A_bt.put("7 below", 0);
-                    A_bt.put("8 below", 0);
+                    A_bt.put("2-2gr above", 0);
+                    A_bt.put("3-2gr above", 0);
+                    A_bt.put("4-3gr above", 0);
+                    A_bt.put("6-3gr below", 0);
+                    A_bt.put("7-4gr below", 0);
+                    A_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -24470,66 +24509,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                        A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("2 above", A_bt.get("2 above")+1 );
+                                    A_bt.put("2-2gr above", A_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                        A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("3 above", A_bt.get("3 above")+1 );
+                                    A_bt.put("3-2gr above", A_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("4 above", A_bt.get("4 above")+1 );
+                                    A_bt.put("4-3gr above", A_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("6 below", A_bt.get("6 below")+1 );
+                                    A_bt.put("6-3gr below", A_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                        A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("7 below", A_bt.get("7 below")+1 );
+                                    A_bt.put("7-4gr below", A_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                        A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    A_bt.put("8 below", A_bt.get("8 below")+1 );
+                                    A_bt.put("8-4gr below", A_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }
@@ -24559,12 +24598,12 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                     B_bt.put("4-4-4-7 below", 0);
                     B_bt.put("3-3-3-4 above", 0);
                     B_bt.put("3-3-3-6 below", 0);
-                    B_bt.put("2 above", 0);
-                    B_bt.put("3 above", 0);
-                    B_bt.put("4 above", 0);
-                    B_bt.put("6 below", 0);
-                    B_bt.put("7 below", 0);
-                    B_bt.put("8 below", 0);
+                    B_bt.put("2-2gr above", 0);
+                    B_bt.put("3-2gr above", 0);
+                    B_bt.put("4-3gr above", 0);
+                    B_bt.put("6-3gr below", 0);
+                    B_bt.put("7-4gr below", 0);
+                    B_bt.put("8-4gr below", 0);
 
                     int hind = 1;
 
@@ -24724,66 +24763,66 @@ private void getBackTesthome1wicket(String teamOne, String teamTwo, String groun
                             if(curr >= Integer.parseInt(sub.get(1).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                        B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("2 above", B_bt.get("2 above")+1 );
+                                    B_bt.put("2-2gr above", B_bt.get("2-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(2).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                        B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("3 above", B_bt.get("3 above")+1 );
+                                    B_bt.put("3-2gr above", B_bt.get("3-2gr above")+1 );
                                 }
                             }
                             
                             if(curr >= Integer.parseInt(sub.get(3).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr >= Integer.parseInt(subG.get(1).getParams().get(hind))){
-                                        B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    if(curr >= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("4 above", B_bt.get("4 above")+1 );
+                                    B_bt.put("4-3gr above", B_bt.get("4-3gr above")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(5).getParams().get(hind))){
                                 if(subG.size()==5){
-                                    if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    if(curr <= Integer.parseInt(subG.get(2).getParams().get(hind))){
+                                        B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("6 below", B_bt.get("6 below")+1 );
+                                    B_bt.put("6-3gr below", B_bt.get("6-3gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(6).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                        B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("7 below", B_bt.get("7 below")+1 );
+                                    B_bt.put("7-4gr below", B_bt.get("7-4gr below")+1 );
                                 }
                             }
                             
                             if(curr <= Integer.parseInt(sub.get(7).getParams().get(hind))){
                                 if(subG.size()==5){
                                     if(curr <= Integer.parseInt(subG.get(3).getParams().get(hind))){
-                                        B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                        B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                     }
                                 }
                                 else{
-                                    B_bt.put("8 below", B_bt.get("8 below")+1 );
+                                    B_bt.put("8-4gr below", B_bt.get("8-4gr below")+1 );
                                 }
                             }
                         }

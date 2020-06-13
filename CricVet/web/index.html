@@ -83,11 +83,11 @@ and open the template in the editor.
         </style>
     </head>
     <body>
-        
         <div class="container-fluid bg1">
             <div class="left" onclick="location.href = '/CricVet/LoadAll';">
+                <p id="load-text"></p>
                 <h2 class="al">Load</h2>
-
+                
             </div>
             <div class="rightTop" onclick="location.href = '/CricVet/queryPage.jsp';">
                 <h2 class="al">Matches</h2>
@@ -113,6 +113,19 @@ and open the template in the editor.
             }
             );
 
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/CricVet/getLdate", //servlet URL that gets first option as parameter and returns JSON of to-be-populated options
+                type: "GET", //request type, can be GET
+                cache: false, //do not cache returned data
+                
+            }).done(function (data) {
+                var l = $("#load-text");
+                l.append(data);
+                
+            });
+        });
         </script>
 
 

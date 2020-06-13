@@ -47,6 +47,7 @@
                     <th colspan=4>3rd Inning  
                         <th colspan=4>4th Inning  
                     <th colspan=4> Result 
+                    <th colspan="2">Home/Away
                     </tr>
                                 <tr class=thead-dark >
                                     <th>Date
@@ -87,6 +88,9 @@
                                     
                                     <th>Win/Lose Margin
                                     <th>Ground
+                                        
+                                    <th>Team at Home
+                                    <th>Team at Away
                     
                                 </tr>
                 <c:forEach var="match" items="${matches}" varStatus="m">
@@ -120,7 +124,8 @@
                     <td>${match.getResult()}
                     <td>${match.getGroundName()}
 
-                       
+                    <td>${match.getteamathome()}
+                    <td>${match.getteamataway()}
                     
                 </tr>
                 </c:forEach>
