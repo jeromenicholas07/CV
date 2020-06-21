@@ -47,14 +47,14 @@ public class getDB extends HttpServlet {
 
             int matchType = Integer.parseInt(request.getParameter("tournament"));
             String teamOne = request.getParameter("teamName1");
+            String homeoraway = request.getParameter("homeoraway");
             
             if(matchType == 1){
                 
-                    int i;
-
+                if(homeoraway.equals("Home")){
                     List<testMatch> matches = new ArrayList<>();
 
-                    matches = db.getteamtestMatch(teamOne);
+                    matches = db.gettesthome(teamOne,matchType,0);
            
 
                     request.setAttribute("team", teamOne);
@@ -63,6 +63,21 @@ public class getDB extends HttpServlet {
             
                     RequestDispatcher dispatcher = request.getRequestDispatcher("/showtest.jsp");
                     dispatcher.forward(request, response);
+            }
+                else{
+
+                    List<testMatch> matches = new ArrayList<>();
+
+                    matches = db.gettestaway(teamOne,matchType,0);
+           
+
+                    request.setAttribute("team", teamOne);
+            
+                    request.setAttribute("matches", matches);
+            
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/showtest.jsp");
+                    dispatcher.forward(request, response);
+            }
             }
             
             else{

@@ -93,6 +93,13 @@
                                 
                             </div>
                             
+                            <div class="form-group row">
+                                <div class="col-12 teams">
+                                    <select class="form-control form-control-sm required" id="homeorawaySelect" name="homeoraway">
+                                        <option value="-1">Home or Away</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="form-group row">
                                 <div class="col-12 teams">
@@ -130,22 +137,19 @@
                                     
                                 });
                             });
+                            
+                            
+                            var sel = document.getElementById('homeorawaySelect');
+                            var opt1 = document.createElement('option');
+                            opt1.appendChild( document.createTextNode('Home') );
+                            opt1.value = 'Home'; 
+                            sel.appendChild(opt1);
+                            var opt2 = document.createElement('option');
+                            opt2.appendChild( document.createTextNode('Away') );
+                            opt2.value = 'Away'; 
+                            sel.appendChild(opt2);
 
-                            $.ajax({
-                                url: "/CricVet/getGrounds", //servlet URL that gets first option as parameter and returns JSON of to-be-populated options
-                                type: "POST", //request type, can be GET
-                                cache: false, //do not cache returned data
-                                data: {matchType: id}, //data to be sent to the server
-                                dataType: "json"//type of data returned
-                            }).done(function (data) {
-                                $('.teams').show();
-                                //                    alert(data);
-                                var gs = $("#groundSelect");
-                                $.each(data, function (index, value) {
-                                    gs.append($("<option />").val(value).text(value));
-                                    //                        alert(index +" : " + value);
-                                });
-                            });
+                            
                         });
 
 //                        function validate() {
