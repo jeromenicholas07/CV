@@ -7578,10 +7578,17 @@ public class getData extends HttpServlet {
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -7641,10 +7648,17 @@ public class getData extends HttpServlet {
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -7705,10 +7719,17 @@ public class getData extends HttpServlet {
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -8288,10 +8309,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -8351,10 +8379,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -8415,10 +8450,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -8999,10 +9041,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -9063,10 +9112,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -9128,10 +9184,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -9711,10 +9774,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -9775,10 +9845,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
@@ -9839,10 +9916,17 @@ if(true){
                         
                         List<testInning> tZ = new ArrayList<>();
                         for(int i = 0; i < totMatches.size(); i++){
-                            tZ.add(totMatches.get(i).getInningOne1());
-                            tZ.add(totMatches.get(i).getInningOne2());
-                            tZ.add(totMatches.get(i).getInningTwo1());
-                            tZ.add(totMatches.get(i).getInningTwo2());
+                            int fours;
+                        	int sixes;
+                        	fours = totMatches.get(i).getInningOne1().getFours()
+                                	+ totMatches.get(i).getInningOne2().getFours() + totMatches.get(i).getInningTwo1().getFours() + totMatches.get(i).getInningTwo2().getFours();
+
+                        	sixes = totMatches.get(i).getInningOne1().getSixes()
+                                	+ totMatches.get(i).getInningOne2().getSixes() + totMatches.get(i).getInningTwo1().getSixes() + totMatches.get(i).getInningTwo2().getSixes();
+                        	testInning m = totMatches.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	tZ.add(m);
                         }
                         
                         Map<String,Integer> bt = new LinkedHashMap<>();
