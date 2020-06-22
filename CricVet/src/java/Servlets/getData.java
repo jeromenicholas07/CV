@@ -7823,8 +7823,7 @@ public class getData extends HttpServlet {
                         grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                         grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                        List<testInning> oneMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < oneMatch.size(); i++){
+                        for(int i = 0; i < oneMatch.size(); i++){
                     		
                             int fours;
                         	int sixes;
@@ -7836,51 +7835,44 @@ public class getData extends HttpServlet {
                         	testInning m = oneMatch.get(i).getInningOne1();
                         	m.setFours(fours);
                         	m.setSixes(sixes);
-                        	oneMatchInning.add(m);
+                        	oneMatch.get(i).setInningOne1(m);
                         }
 
-                        for(int i = 0; i < oneMatch.size()-6; i++){        
-                        	Date currDate = oneMatch.get(i).getMatchDate();
-                        	twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                        	grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                        for(int i = 0; i < twoMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = twoMatch.get(i).getInningOne1().getFours()
+                                	+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        	sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                	+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = twoMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	twoMatch.get(i).setInningOne1(m);
                         }
 
-                        List<testInning> twoMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < twoMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = twoMatch.get(i).getInningOne1().getFours()
-                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+                        for(int i = 0; i < grMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = grMatch.get(i).getInningOne1().getFours()
+                                	+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
 
-                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
-                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = twoMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			twoMatchInning.add(m);
-                        		}
-                        
-
-                        List<testInning> grMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < grMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = grMatch.get(i).getInningOne1().getFours()
-                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
-
-                        			sixes = grMatch.get(i).getInningOne1().getSixes()
-                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = grMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			grMatchInning.add(m);
-                        		}
+                        	sixes = grMatch.get(i).getInningOne1().getSixes()
+                                	+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = grMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	grMatch.get(i).setInningOne1(m);
+                        }
 
 
-                        if(oneMatchInning.size() > 5 && twoMatchInning.size() > 5){
-                            for(int i = 0; i < oneMatchInning.size()-6; i++){
+                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatch.size()-6; i++){
 
-                                int curr = oneMatchInning.get(i).getFours();
+                                int curr = oneMatch.get(i).getInningOne1().getFours();
                                 Date currDate = oneMatch.get(i).getMatchDate();
 
 
@@ -7890,24 +7882,23 @@ public class getData extends HttpServlet {
                                 List<testInning> subG = new ArrayList<>();
 
                                 for(int j = i+1; j < i+6; j++){
-                                    sub.add(oneMatchInning.get(j));
-                                    subA.add(oneMatchInning.get(j));
+                                    sub.add(oneMatch.get(j).getInningOne1());
+                                    subA.add(oneMatch.get(j).getInningOne1());
                                 }
 
-                                
-                                if(twoMatchInning.size() < 5){
+                                twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(twoMatch.size() < 5){
                                     break;
                                 }
                                 for(int j = 0; j < 5; j++){
-                                    sub.add(twoMatchInning.get(j));
-                                    subB.add(twoMatchInning.get(j));
+                                    sub.add(twoMatch.get(j).getInningOne1());
+                                    subB.add(twoMatch.get(j).getInningOne1());
                                 }
 
-                                
-
-                                if(grMatchInning.size() >= 5){
+                                grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(grMatch.size() >= 5){
                                     for(int j = 0; j < 5; j++){
-                                        subG.add(grMatchInning.get(j));
+                                        subG.add(grMatch.get(j).getInningOne1());
                                     }
                                 }
 
@@ -8092,7 +8083,7 @@ public class getData extends HttpServlet {
                         request.setAttribute("onetotalfours_bt", A_bt);
                     }
 
-					if(true){
+if(true){
                     
                     Map<String,Integer> B_bt = new LinkedHashMap<>();
                     B_bt.put("N", 0);
@@ -8135,64 +8126,57 @@ public class getData extends HttpServlet {
                     grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                     grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                    List<testInning> twoMatchInning = new ArrayList<>();
-                    for(int i = 0; i < twoMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = twoMatch.get(i).getInningOne1().getFours()
-                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
-
-                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
-                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = twoMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			twoMatchInning.add(m);
-                    }
-
-                    for(int i = 0; i < twoMatch.size()-6; i++){
-                    	Date currDate = twoMatch.get(i).getMatchDate();
-                    	oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-						grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-					}
-                    
-                    List<testInning> oneMatchInning = new ArrayList<>();
                     for(int i = 0; i < oneMatch.size(); i++){
                     		
-                            	int fours;
-                        		int sixes;
-                        		fours = oneMatch.get(i).getInningOne1().getFours()
+                            int fours;
+                        	int sixes;
+                        	fours = oneMatch.get(i).getInningOne1().getFours()
                                 	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
 
-                        		sixes = oneMatch.get(i).getInningOne1().getSixes()
+                        	sixes = oneMatch.get(i).getInningOne1().getSixes()
                                 	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
-                        		testInning m = oneMatch.get(i).getInningOne1();
-                        		m.setFours(fours);
-                        		m.setSixes(sixes);
-                        		oneMatchInning.add(m);
-                        	}
-                    
-                    List<testInning> grMatchInning = new ArrayList<>();
-                    for(int i = 0; i < grMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = grMatch.get(i).getInningOne1().getFours()
-                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+                        	testInning m = oneMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	oneMatch.get(i).setInningOne1(m);
+                        }
 
-                        			sixes = grMatch.get(i).getInningOne1().getSixes()
-                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = grMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			grMatchInning.add(m);
-                        		}
+                        for(int i = 0; i < twoMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = twoMatch.get(i).getInningOne1().getFours()
+                                	+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
+                        	sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                	+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = twoMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	twoMatch.get(i).setInningOne1(m);
+                        }
 
-                    if(oneMatchInning.size() > 5 && twoMatchInning.size() > 5){
+                        for(int i = 0; i < grMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = grMatch.get(i).getInningOne1().getFours()
+                                	+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
 
-                        for(int i = 0; i < twoMatchInning.size()-6; i++){
+                        	sixes = grMatch.get(i).getInningOne1().getSixes()
+                                	+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = grMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	grMatch.get(i).setInningOne1(m);
+                        }
 
-                            int curr = twoMatchInning.get(i).getFours();
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = twoMatch.get(i).getInningOne1().getFours();
+                            Date currDate = twoMatch.get(i).getMatchDate();
 
 
                             List<testInning> sub = new ArrayList<>();
@@ -8201,23 +8185,23 @@ public class getData extends HttpServlet {
                             List<testInning> subG = new ArrayList<>();
                             
                             for(int j = i+1; j < i+6; j++){
-                                sub.add(twoMatchInning.get(j));
-                                subB.add(twoMatchInning.get(j));
+                                sub.add(twoMatch.get(j).getInningOne1());
+                                subB.add(twoMatch.get(j).getInningOne1());
                             }
 
-                            
-                            if(oneMatchInning.size() < 5){
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
                                 break;
                             }
                             for(int j = 0; j < 5; j++){
-                                sub.add(oneMatchInning.get(j));
-                                subA.add(oneMatchInning.get(j));
+                                sub.add(oneMatch.get(j).getInningOne1());
+                                subA.add(oneMatch.get(j).getInningOne1());
                             }
 
-                            
-                            if(grMatchInning.size() >= 5){
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
                                 for(int j = 0; j < 5; j++){
-                                    subG.add(grMatchInning.get(j));
+                                    subG.add(grMatch.get(j).getInningOne1());
                                 }
                             }
 
@@ -8661,9 +8645,7 @@ public class getData extends HttpServlet {
                         grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                         grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                        
-                        List<testInning> oneMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < oneMatch.size(); i++){
+                        for(int i = 0; i < oneMatch.size(); i++){
                     		
                             int fours;
                         	int sixes;
@@ -8675,50 +8657,44 @@ public class getData extends HttpServlet {
                         	testInning m = oneMatch.get(i).getInningOne1();
                         	m.setFours(fours);
                         	m.setSixes(sixes);
-                        	oneMatchInning.add(m);
+                        	oneMatch.get(i).setInningOne1(m);
                         }
-                        for(int i = 0; i < oneMatchInning.size()-6; i++){
-                        Date currDate = oneMatch.get(i).getMatchDate();
-						twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                        grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                    }
-                                List<testInning> twoMatchInning = new ArrayList<>();
-                    			for(int i = 0; i < twoMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = twoMatch.get(i).getInningOne1().getFours()
-                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
-                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = twoMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			twoMatchInning.add(m);
-                        		}
+                        for(int i = 0; i < twoMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = twoMatch.get(i).getInningOne1().getFours()
+                                	+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                       	
-                                List<testInning> grMatchInning = new ArrayList<>();
-                    			for(int i = 0; i < grMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = grMatch.get(i).getInningOne1().getFours()
-                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+                        	sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                	+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = twoMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	twoMatch.get(i).setInningOne1(m);
+                        }
 
-                        			sixes = grMatch.get(i).getInningOne1().getSixes()
-                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = grMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			grMatchInning.add(m);
-                        		}
+                        for(int i = 0; i < grMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = grMatch.get(i).getInningOne1().getFours()
+                                	+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
 
+                        	sixes = grMatch.get(i).getInningOne1().getSixes()
+                                	+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = grMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	grMatch.get(i).setInningOne1(m);
+                        }
 
-                        if(oneMatchInning.size() > 5 && twoMatchInning.size() > 5){
-                            for(int i = 0; i < oneMatchInning.size()-6; i++){
+                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatch.size()-6; i++){
 
-                                int curr = oneMatchInning.get(i).getFours();
-                                
+                                int curr = oneMatch.get(i).getInningOne1().getFours();
+                                Date currDate = oneMatch.get(i).getMatchDate();
 
 
                                 List<testInning> sub = new ArrayList<>();
@@ -8727,24 +8703,23 @@ public class getData extends HttpServlet {
                                 List<testInning> subG = new ArrayList<>();
 
                                 for(int j = i+1; j < i+6; j++){
-                                    sub.add(oneMatchInning.get(j));
-                                    subA.add(oneMatchInning.get(j));
+                                    sub.add(oneMatch.get(j).getInningOne1());
+                                    subA.add(oneMatch.get(j).getInningOne1());
                                 }
 
-                                
-                                if(twoMatchInning.size() < 5){
+                                twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(twoMatch.size() < 5){
                                     break;
                                 }
                                 for(int j = 0; j < 5; j++){
-                                    sub.add(twoMatchInning.get(j));
-                                    subB.add(twoMatchInning.get(j));
+                                    sub.add(twoMatch.get(j).getInningOne1());
+                                    subB.add(twoMatch.get(j).getInningOne1());
                                 }
 
-                                
-
-                                if(grMatchInning.size() >= 5){
+                                grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(grMatch.size() >= 5){
                                     for(int j = 0; j < 5; j++){
-                                        subG.add(grMatchInning.get(j));
+                                        subG.add(grMatch.get(j).getInningOne1());
                                     }
                                 }
 
@@ -8929,7 +8904,7 @@ public class getData extends HttpServlet {
                         request.setAttribute("onetotalfours_bt", A_bt);
                     }
 
-					if(true){
+if(true){
                     
                     Map<String,Integer> B_bt = new LinkedHashMap<>();
                     B_bt.put("N", 0);
@@ -8972,65 +8947,57 @@ public class getData extends HttpServlet {
                     grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                     grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                    List<testInning> twoMatchInning = new ArrayList<>();
-                    for(int i = 0; i < twoMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = twoMatch.get(i).getInningOne1().getFours()
-                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
-
-                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
-                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = twoMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			twoMatchInning.add(m);
-                    }
-
-                    for(int i = 0; i < twoMatch.size()-6; i++){
-                    Date currDate = twoMatch.get(i).getMatchDate();
-					oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-					grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-				}
-
-                    List<testInning> oneMatchInning = new ArrayList<>();
-                   	for(int i = 0; i < oneMatch.size(); i++){
+                    for(int i = 0; i < oneMatch.size(); i++){
                     		
-                            	int fours;
-                        		int sixes;
-                        		fours = oneMatch.get(i).getInningOne1().getFours()
+                            int fours;
+                        	int sixes;
+                        	fours = oneMatch.get(i).getInningOne1().getFours()
                                 	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
 
-                        		sixes = oneMatch.get(i).getInningOne1().getSixes()
+                        	sixes = oneMatch.get(i).getInningOne1().getSixes()
                                 	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
-                        		testInning m = oneMatch.get(i).getInningOne1();
-                        		m.setFours(fours);
-                        		m.setSixes(sixes);
-                        		oneMatchInning.add(m);
-                        	}
+                        	testInning m = oneMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	oneMatch.get(i).setInningOne1(m);
+                        }
 
-                    
-                    List<testInning> grMatchInning = new ArrayList<>();
-                   	for(int i = 0; i < grMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = grMatch.get(i).getInningOne1().getFours()
-                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+                        for(int i = 0; i < twoMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = twoMatch.get(i).getInningOne1().getFours()
+                                	+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                        			sixes = grMatch.get(i).getInningOne1().getSixes()
-                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = grMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			grMatchInning.add(m);
-                        	}
+                        	sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                	+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = twoMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	twoMatch.get(i).setInningOne1(m);
+                        }
 
-                    if(oneMatchInning.size() > 5 && twoMatchInning.size() > 5){
+                        for(int i = 0; i < grMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = grMatch.get(i).getInningOne1().getFours()
+                                	+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
 
-                        for(int i = 0; i < twoMatchInning.size()-6; i++){
+                        	sixes = grMatch.get(i).getInningOne1().getSixes()
+                                	+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = grMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	grMatch.get(i).setInningOne1(m);
+                        }
 
-                            int curr = twoMatchInning.get(i).getFours();
-                            
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = twoMatch.get(i).getInningOne1().getFours();
+                            Date currDate = twoMatch.get(i).getMatchDate();
 
 
                             List<testInning> sub = new ArrayList<>();
@@ -9039,23 +9006,23 @@ public class getData extends HttpServlet {
                             List<testInning> subG = new ArrayList<>();
                             
                             for(int j = i+1; j < i+6; j++){
-                                sub.add(twoMatchInning.get(j));
-                                subB.add(twoMatchInning.get(j));
+                                sub.add(twoMatch.get(j).getInningOne1());
+                                subB.add(twoMatch.get(j).getInningOne1());
                             }
 
-                            
-                            if(oneMatchInning.size() < 5){
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
                                 break;
                             }
                             for(int j = 0; j < 5; j++){
-                                sub.add(oneMatchInning.get(j));
-                                subA.add(oneMatchInning.get(j));
+                                sub.add(oneMatch.get(j).getInningOne1());
+                                subA.add(oneMatch.get(j).getInningOne1());
                             }
 
-                            
-                            if(grMatchInning.size() >= 5){
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
                                 for(int j = 0; j < 5; j++){
-                                    subG.add(grMatchInning.get(j));
+                                    subG.add(grMatch.get(j).getInningOne1());
                                 }
                             }
 
@@ -9501,8 +9468,7 @@ public class getData extends HttpServlet {
                         grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                         grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                        List<testInning> oneMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < oneMatch.size(); i++){
+                        for(int i = 0; i < oneMatch.size(); i++){
                     		
                             int fours;
                         	int sixes;
@@ -9514,51 +9480,44 @@ public class getData extends HttpServlet {
                         	testInning m = oneMatch.get(i).getInningOne1();
                         	m.setFours(fours);
                         	m.setSixes(sixes);
-                        	oneMatchInning.add(m);
+                        	oneMatch.get(i).setInningOne1(m);
                         }
-                        for(int i = 0; i < oneMatch.size()-6; i++){
-                        Date currDate = oneMatch.get(i).getMatchDate();
-                        twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                        grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                    }
-                        List<testInning> twoMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < twoMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = twoMatch.get(i).getInningOne1().getFours()
-                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
-                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = twoMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			twoMatchInning.add(m);
-                        		}
+                        for(int i = 0; i < twoMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = twoMatch.get(i).getInningOne1().getFours()
+                                	+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                        
+                        	sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                	+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = twoMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	twoMatch.get(i).setInningOne1(m);
+                        }
 
-                        List<testInning> grMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < grMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = grMatch.get(i).getInningOne1().getFours()
-                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+                        for(int i = 0; i < grMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = grMatch.get(i).getInningOne1().getFours()
+                                	+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
 
-                        			sixes = grMatch.get(i).getInningOne1().getSixes()
-                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = grMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			grMatchInning.add(m);
-                        		}
+                        	sixes = grMatch.get(i).getInningOne1().getSixes()
+                                	+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = grMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	grMatch.get(i).setInningOne1(m);
+                        }
 
+                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatch.size()-6; i++){
 
-                        if(oneMatchInning.size() > 5 && twoMatchInning.size() > 5){
-                            for(int i = 0; i < oneMatchInning.size()-6; i++){
-
-                                int curr = oneMatchInning.get(i).getSixes();
-                                
+                                int curr = oneMatch.get(i).getInningOne1().getSixes();
+                                Date currDate = oneMatch.get(i).getMatchDate();
 
 
                                 List<testInning> sub = new ArrayList<>();
@@ -9567,22 +9526,23 @@ public class getData extends HttpServlet {
                                 List<testInning> subG = new ArrayList<>();
 
                                 for(int j = i+1; j < i+6; j++){
-                                    sub.add(oneMatchInning.get(j));
-                                    subA.add(oneMatchInning.get(j));
+                                    sub.add(oneMatch.get(j).getInningOne1());
+                                    subA.add(oneMatch.get(j).getInningOne1());
                                 }
 
-                                
-                                if(twoMatchInning.size() < 5){
+                                twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(twoMatch.size() < 5){
                                     break;
                                 }
                                 for(int j = 0; j < 5; j++){
-                                    sub.add(twoMatchInning.get(j));
-                                    subB.add(twoMatchInning.get(j));
+                                    sub.add(twoMatch.get(j).getInningOne1());
+                                    subB.add(twoMatch.get(j).getInningOne1());
                                 }
 
-                                if(grMatchInning.size() >= 5){
+                                grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(grMatch.size() >= 5){
                                     for(int j = 0; j < 5; j++){
-                                        subG.add(grMatchInning.get(j));
+                                        subG.add(grMatch.get(j).getInningOne1());
                                     }
                                 }
 
@@ -9767,7 +9727,7 @@ public class getData extends HttpServlet {
                         request.setAttribute("onetotalsixes_bt", A_bt);
                     }
 
-					if(true){
+if(true){
                     
                     Map<String,Integer> B_bt = new LinkedHashMap<>();
                     B_bt.put("N", 0);
@@ -9810,62 +9770,57 @@ public class getData extends HttpServlet {
                     grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                     grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                    List<testInning> twoMatchInning = new ArrayList<>();
-                    for(int i = 0; i < twoMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = twoMatch.get(i).getInningOne1().getFours()
-                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
-
-                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
-                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = twoMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			twoMatchInning.add(m);
-                    }
-                    for(int i = 0; i < twoMatchInning.size()-6; i++){
-                    Date currDate = twoMatch.get(i).getMatchDate();
-					oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-					grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-				}
-                    List<testInning> oneMatchInning = new ArrayList<>();
-                   	for(int i = 0; i < oneMatch.size(); i++){
+                    for(int i = 0; i < oneMatch.size(); i++){
                     		
-                            	int fours;
-                        		int sixes;
-                        		fours = oneMatch.get(i).getInningOne1().getFours()
+                            int fours;
+                        	int sixes;
+                        	fours = oneMatch.get(i).getInningOne1().getFours()
                                 	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
 
-                        		sixes = oneMatch.get(i).getInningOne1().getSixes()
+                        	sixes = oneMatch.get(i).getInningOne1().getSixes()
                                 	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
-                        		testInning m = oneMatch.get(i).getInningOne1();
-                        		m.setFours(fours);
-                        		m.setSixes(sixes);
-                        		oneMatchInning.add(m);
-                        	}
-					
-                    List<testInning> grMatchInning = new ArrayList<>();
-                    for(int i = 0; i < grMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = grMatch.get(i).getInningOne1().getFours()
-                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+                        	testInning m = oneMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	oneMatch.get(i).setInningOne1(m);
+                        }
 
-                        			sixes = grMatch.get(i).getInningOne1().getSixes()
-                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = grMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			grMatchInning.add(m);
-                        		}
+                        for(int i = 0; i < twoMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = twoMatch.get(i).getInningOne1().getFours()
+                                	+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                    if(oneMatchInning.size() > 5 && twoMatchInning.size() > 5){
+                        	sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                	+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = twoMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	twoMatch.get(i).setInningOne1(m);
+                        }
 
-                        for(int i = 0; i < twoMatchInning.size()-6; i++){
+                        for(int i = 0; i < grMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = grMatch.get(i).getInningOne1().getFours()
+                                	+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
 
-                            int curr = twoMatchInning.get(i).getSixes();
-                            
+                        	sixes = grMatch.get(i).getInningOne1().getSixes()
+                                	+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = grMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	grMatch.get(i).setInningOne1(m);
+                        }
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = twoMatch.get(i).getInningOne1().getSixes();
+                            Date currDate = twoMatch.get(i).getMatchDate();
 
 
                             List<testInning> sub = new ArrayList<>();
@@ -9874,23 +9829,23 @@ public class getData extends HttpServlet {
                             List<testInning> subG = new ArrayList<>();
                             
                             for(int j = i+1; j < i+6; j++){
-                                sub.add(twoMatchInning.get(j));
-                                subB.add(twoMatchInning.get(j));
+                                sub.add(twoMatch.get(j).getInningOne1());
+                                subB.add(twoMatch.get(j).getInningOne1());
                             }
 
-                            
-                            if(oneMatchInning.size() < 5){
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
                                 break;
                             }
                             for(int j = 0; j < 5; j++){
-                                sub.add(oneMatchInning.get(j));
-                                subA.add(oneMatchInning.get(j));
+                                sub.add(oneMatch.get(j).getInningOne1());
+                                subA.add(oneMatch.get(j).getInningOne1());
                             }
 
-                            
-                            if(grMatchInning.size() >= 5){
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
                                 for(int j = 0; j < 5; j++){
-                                    subG.add(grMatchInning.get(j));
+                                    subG.add(grMatch.get(j).getInningOne1());
                                 }
                             }
 
@@ -10336,9 +10291,7 @@ public class getData extends HttpServlet {
                         grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                         grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                        
-                        List<testInning> oneMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < oneMatch.size(); i++){
+                        for(int i = 0; i < oneMatch.size(); i++){
                     		
                             int fours;
                         	int sixes;
@@ -10350,48 +10303,44 @@ public class getData extends HttpServlet {
                         	testInning m = oneMatch.get(i).getInningOne1();
                         	m.setFours(fours);
                         	m.setSixes(sixes);
-                        	oneMatchInning.add(m);
+                        	oneMatch.get(i).setInningOne1(m);
                         }
-                        for(int i = 0; i < oneMatch.size()-6; i++){
-                        Date currDate = oneMatch.get(i).getMatchDate();
-						twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-						grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-					}
-                        List<testInning> twoMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < twoMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = twoMatch.get(i).getInningOne1().getFours()
-                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
-                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = twoMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			twoMatchInning.add(m);
-                        		}
-						
-                        List<testInning> grMatchInning = new ArrayList<>();
-                    	for(int i = 0; i < grMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = grMatch.get(i).getInningOne1().getFours()
-                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+                        for(int i = 0; i < twoMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = twoMatch.get(i).getInningOne1().getFours()
+                                	+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                        			sixes = grMatch.get(i).getInningOne1().getSixes()
-                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = grMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			grMatchInning.add(m);
-                        		}
+                        	sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                	+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = twoMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	twoMatch.get(i).setInningOne1(m);
+                        }
 
-                        if(oneMatchInning.size() > 5 && twoMatchInning.size() > 5){
-                            for(int i = 0; i < oneMatchInning.size()-6; i++){
+                        for(int i = 0; i < grMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = grMatch.get(i).getInningOne1().getFours()
+                                	+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
 
-                                int curr = oneMatchInning.get(i).getSixes();
-                                
+                        	sixes = grMatch.get(i).getInningOne1().getSixes()
+                                	+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = grMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	grMatch.get(i).setInningOne1(m);
+                        }
+
+                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatch.size()-6; i++){
+
+                                int curr = oneMatch.get(i).getInningOne1().getSixes();
+                                Date currDate = oneMatch.get(i).getMatchDate();
 
 
                                 List<testInning> sub = new ArrayList<>();
@@ -10400,24 +10349,23 @@ public class getData extends HttpServlet {
                                 List<testInning> subG = new ArrayList<>();
 
                                 for(int j = i+1; j < i+6; j++){
-                                    sub.add(oneMatchInning.get(j));
-                                    subA.add(oneMatchInning.get(j));
+                                    sub.add(oneMatch.get(j).getInningOne1());
+                                    subA.add(oneMatch.get(j).getInningOne1());
                                 }
 
-                                
-                                if(twoMatchInning.size() < 5){
+                                twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(twoMatch.size() < 5){
                                     break;
                                 }
                                 for(int j = 0; j < 5; j++){
-                                    sub.add(twoMatchInning.get(j));
-                                    subB.add(twoMatchInning.get(j));
+                                    sub.add(twoMatch.get(j).getInningOne1());
+                                    subB.add(twoMatch.get(j).getInningOne1());
                                 }
 
-                                
-
-                                if(grMatchInning.size() >= 5){
+                                grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                                if(grMatch.size() >= 5){
                                     for(int j = 0; j < 5; j++){
-                                        subG.add(grMatchInning.get(j));
+                                        subG.add(grMatch.get(j).getInningOne1());
                                     }
                                 }
 
@@ -10602,7 +10550,7 @@ public class getData extends HttpServlet {
                         request.setAttribute("onetotalsixes_bt", A_bt);
                     }
 
-					if(true){
+			if(true){
                     
                     Map<String,Integer> B_bt = new LinkedHashMap<>();
                     B_bt.put("N", 0);
@@ -10645,62 +10593,57 @@ public class getData extends HttpServlet {
                     grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                     grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                    List<testInning> twoMatchInning = new ArrayList<>();
-                    for(int i = 0; i < twoMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = twoMatch.get(i).getInningOne1().getFours()
-                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
-
-                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
-                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = twoMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			twoMatchInning.add(m);
-                    }
-                    for(int i = 0; i < twoMatch.size()-6; i++){
-                    Date currDate = twoMatch.get(i).getMatchDate();
-					oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-					grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-				}
-                    List<testInning> oneMatchInning = new ArrayList<>();
                     for(int i = 0; i < oneMatch.size(); i++){
                     		
-                            	int fours;
-                        		int sixes;
-                        		fours = oneMatch.get(i).getInningOne1().getFours()
+                            int fours;
+                        	int sixes;
+                        	fours = oneMatch.get(i).getInningOne1().getFours()
                                 	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
 
-                        		sixes = oneMatch.get(i).getInningOne1().getSixes()
+                        	sixes = oneMatch.get(i).getInningOne1().getSixes()
                                 	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
-                        		testInning m = oneMatch.get(i).getInningOne1();
-                        		m.setFours(fours);
-                        		m.setSixes(sixes);
-                        		oneMatchInning.add(m);
-                        	}
-					
-                    List<testInning> grMatchInning = new ArrayList<>();
-                    for(int i = 0; i < grMatch.size(); i++){
-                            		int fours;
-                        			int sixes;
-                        			fours = grMatch.get(i).getInningOne1().getFours()
-                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+                        	testInning m = oneMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	oneMatch.get(i).setInningOne1(m);
+                        }
 
-                        			sixes = grMatch.get(i).getInningOne1().getSixes()
-                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
-                        			testInning m = grMatch.get(i).getInningOne1();
-                        			m.setFours(fours);
-                        			m.setSixes(sixes);
-                        			grMatchInning.add(m);
-                        	}
+                        for(int i = 0; i < twoMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = twoMatch.get(i).getInningOne1().getFours()
+                                	+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
 
-                    if(oneMatchInning.size() > 5 && twoMatchInning.size() > 5){
+                        	sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                	+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = twoMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	twoMatch.get(i).setInningOne1(m);
+                        }
 
-                        for(int i = 0; i < twoMatchInning.size()-6; i++){
+                        for(int i = 0; i < grMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = grMatch.get(i).getInningOne1().getFours()
+                                	+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
 
-                            int curr = twoMatchInning.get(i).getSixes();
-                            
+                        	sixes = grMatch.get(i).getInningOne1().getSixes()
+                                	+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = grMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	grMatch.get(i).setInningOne1(m);
+                        }
+
+                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+
+                        for(int i = 0; i < twoMatch.size()-6; i++){
+
+                            int curr = twoMatch.get(i).getInningOne1().getSixes();
+                            Date currDate = twoMatch.get(i).getMatchDate();
 
 
                             List<testInning> sub = new ArrayList<>();
@@ -10709,23 +10652,23 @@ public class getData extends HttpServlet {
                             List<testInning> subG = new ArrayList<>();
                             
                             for(int j = i+1; j < i+6; j++){
-                                sub.add(twoMatchInning.get(j));
-                                subB.add(twoMatchInning.get(j));
+                                sub.add(twoMatch.get(j).getInningOne1());
+                                subB.add(twoMatch.get(j).getInningOne1());
                             }
 
-                            
-                            if(oneMatchInning.size() < 5){
+                            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(oneMatch.size() < 5){
                                 break;
                             }
                             for(int j = 0; j < 5; j++){
-                                sub.add(oneMatchInning.get(j));
-                                subA.add(oneMatchInning.get(j));
+                                sub.add(oneMatch.get(j).getInningOne1());
+                                subA.add(oneMatch.get(j).getInningOne1());
                             }
 
-                            
-                            if(grMatchInning.size() >= 5){
+                            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            if(grMatch.size() >= 5){
                                 for(int j = 0; j < 5; j++){
-                                    subG.add(grMatchInning.get(j));
+                                    subG.add(grMatch.get(j).getInningOne1());
                                 }
                             }
 
