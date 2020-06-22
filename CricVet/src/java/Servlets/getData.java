@@ -7823,10 +7823,27 @@ public class getData extends HttpServlet {
                         grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                         grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
-                            for(int i = 0; i < oneMatch.size()-6; i++){
+                        List<testInning> oneMatchInning = new ArrayList<>();
+                    	for(int i = 0; i < oneMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = oneMatch.get(i).getInningOne1().getFours()
+                                	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
 
-                                int curr = oneMatch.get(i).getInningOne1().getFours();
+                        	sixes = oneMatch.get(i).getInningOne1().getSixes()
+                                	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = oneMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	oneMatchInning.add(m)
+                        }
+
+
+                        if(oneMatchInning.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatchInning.size()-6; i++){
+
+                                int curr = oneMatchInning.get(i).getFours();
                                 Date currDate = oneMatch.get(i).getMatchDate();
 
 
@@ -7836,23 +7853,53 @@ public class getData extends HttpServlet {
                                 List<testInning> subG = new ArrayList<>();
 
                                 for(int j = i+1; j < i+6; j++){
-                                    sub.add(oneMatch.get(j).getInningOne1());
-                                    subA.add(oneMatch.get(j).getInningOne1());
+                                    sub.add(oneMatchInning.get(j));
+                                    subA.add(oneMatchInning.get(j));
                                 }
 
                                 twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                                if(twoMatch.size() < 5){
+                               	List<testInning> twoMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < twoMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = twoMatch.get(i).getInningOne1().getFours()
+                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = twoMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			twoMatchInning.add(m)
+                        		}
+                                if(twoMatchInning.size() < 5){
                                     break;
                                 }
                                 for(int j = 0; j < 5; j++){
-                                    sub.add(twoMatch.get(j).getInningOne1());
-                                    subB.add(twoMatch.get(j).getInningOne1());
+                                    sub.add(twoMatchInning.get(j));
+                                    subB.add(twoMatchInning.get(j));
                                 }
 
                                 grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                                if(grMatch.size() >= 5){
+
+                                List<testInning> grMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < grMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = grMatch.get(i).getInningOne1().getFours()
+                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = grMatch.get(i).getInningOne1().getSixes()
+                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = grMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			grMatchInning.add(m)
+                        		}
+
+                                if(grMatchInning.size() >= 5){
                                     for(int j = 0; j < 5; j++){
-                                        subG.add(twoMatch.get(j).getInningOne1());
+                                        subG.add(twoMatchInning.get(j));
                                     }
                                 }
 
@@ -8037,7 +8084,7 @@ public class getData extends HttpServlet {
                         request.setAttribute("onetotalfours_bt", A_bt);
                     }
 
-if(true){
+					if(true){
                     
                     Map<String,Integer> B_bt = new LinkedHashMap<>();
                     B_bt.put("N", 0);
@@ -8080,11 +8127,26 @@ if(true){
                     grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                     grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
+                    List<testInning> twoMatchInning = new ArrayList<>();
+                    for(int i = 0; i < twoMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = twoMatch.get(i).getInningOne1().getFours()
+                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = twoMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			twoMatchInning.add(m)
+                    }
+
                     if(oneMatch.size() > 5 && twoMatch.size() > 5){
 
                         for(int i = 0; i < twoMatch.size()-6; i++){
 
-                            int curr = twoMatch.get(i).getInningOne1().getFours();
+                            int curr = twoMatchInning.get(i).getFours();
                             Date currDate = twoMatch.get(i).getMatchDate();
 
 
@@ -8094,23 +8156,52 @@ if(true){
                             List<testInning> subG = new ArrayList<>();
                             
                             for(int j = i+1; j < i+6; j++){
-                                sub.add(twoMatch.get(j).getInningOne1());
-                                subB.add(twoMatch.get(j).getInningOne1());
+                                sub.add(twoMatchInning.get(j));
+                                subB.add(twoMatchInning.get(j));
                             }
 
                             oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                            if(oneMatch.size() < 5){
+                            List<testInning> oneMatchInning = new ArrayList<>();
+                    		for(int i = 0; i < oneMatch.size(); i++){
+                    		
+                            	int fours;
+                        		int sixes;
+                        		fours = oneMatch.get(i).getInningOne1().getFours()
+                                	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
+
+                        		sixes = oneMatch.get(i).getInningOne1().getSixes()
+                                	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
+                        		testInning m = oneMatch.get(i).getInningOne1();
+                        		m.setFours(fours);
+                        		m.setSixes(sixes);
+                        		oneMatchInning.add(m)
+                        	}
+                            if(oneMatchInning.size() < 5){
                                 break;
                             }
                             for(int j = 0; j < 5; j++){
-                                sub.add(oneMatch.get(j).getInningOne1());
-                                subA.add(oneMatch.get(j).getInningOne1());
+                                sub.add(oneMatchInning.get(j));
+                                subA.add(oneMatchInning.get(j));
                             }
 
                             grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                            if(grMatch.size() >= 5){
+                            List<testInning> grMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < grMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = grMatch.get(i).getInningOne1().getFours()
+                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = grMatch.get(i).getInningOne1().getSixes()
+                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = grMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			grMatchInning.add(m)
+                        		}
+                            if(grMatchInning.size() >= 5){
                                 for(int j = 0; j < 5; j++){
-                                    subG.add(twoMatch.get(j).getInningOne1());
+                                    subG.add(twoMatchInning.get(j));
                                 }
                             }
 
@@ -8554,10 +8645,27 @@ if(true){
                         grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                         grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
-                            for(int i = 0; i < oneMatch.size()-6; i++){
+                        
+                        List<testInning> oneMatchInning = new ArrayList<>();
+                    	for(int i = 0; i < oneMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = oneMatch.get(i).getInningOne1().getFours()
+                                	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
 
-                                int curr = oneMatch.get(i).getInningOne1().getFours();
+                        	sixes = oneMatch.get(i).getInningOne1().getSixes()
+                                	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = oneMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	oneMatchInning.add(m)
+                        }
+
+                        if(oneMatchInning.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatchInning.size()-6; i++){
+
+                                int curr = oneMatchInning.get(i).getFours();
                                 Date currDate = oneMatch.get(i).getMatchDate();
 
 
@@ -8567,23 +8675,52 @@ if(true){
                                 List<testInning> subG = new ArrayList<>();
 
                                 for(int j = i+1; j < i+6; j++){
-                                    sub.add(oneMatch.get(j).getInningOne1());
-                                    subA.add(oneMatch.get(j).getInningOne1());
+                                    sub.add(oneMatchInning.get(j));
+                                    subA.add(oneMatchInning.get(j));
                                 }
 
                                 twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                                if(twoMatch.size() < 5){
+                                List<testInning> twoMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < twoMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = twoMatch.get(i).getInningOne1().getFours()
+                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = twoMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			twoMatchInning.add(m)
+                        		}
+                                if(twoMatchInning.size() < 5){
                                     break;
                                 }
                                 for(int j = 0; j < 5; j++){
-                                    sub.add(twoMatch.get(j).getInningOne1());
-                                    subB.add(twoMatch.get(j).getInningOne1());
+                                    sub.add(twoMatchInning.get(j));
+                                    subB.add(twoMatchInning.get(j));
                                 }
 
                                 grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                                if(grMatch.size() >= 5){
+                                List<testInning> grMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < grMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = grMatch.get(i).getInningOne1().getFours()
+                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = grMatch.get(i).getInningOne1().getSixes()
+                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = grMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			grMatchInning.add(m)
+                        		}
+
+                                if(grMatchInning.size() >= 5){
                                     for(int j = 0; j < 5; j++){
-                                        subG.add(twoMatch.get(j).getInningOne1());
+                                        subG.add(twoMatchInning.get(j));
                                     }
                                 }
 
@@ -8811,7 +8948,22 @@ if(true){
                     grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                     grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                    List<testInning> twoMatchInning = new ArrayList<>();
+                    for(int i = 0; i < twoMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = twoMatch.get(i).getInningOne1().getFours()
+                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = twoMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			twoMatchInning.add(m)
+                    }
+
+                    if(oneMatch.size() > 5 && twoMatchInning.size() > 5){
 
                         for(int i = 0; i < twoMatch.size()-6; i++){
 
@@ -8830,18 +8982,47 @@ if(true){
                             }
 
                             oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            List<testInning> oneMatchInning = new ArrayList<>();
+                    		for(int i = 0; i < oneMatch.size(); i++){
+                    		
+                            	int fours;
+                        		int sixes;
+                        		fours = oneMatch.get(i).getInningOne1().getFours()
+                                	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
+
+                        		sixes = oneMatch.get(i).getInningOne1().getSixes()
+                                	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
+                        		testInning m = oneMatch.get(i).getInningOne1();
+                        		m.setFours(fours);
+                        		m.setSixes(sixes);
+                        		oneMatchInning.add(m)
+                        	}
                             if(oneMatch.size() < 5){
                                 break;
                             }
                             for(int j = 0; j < 5; j++){
-                                sub.add(oneMatch.get(j).getInningOne1());
-                                subA.add(oneMatch.get(j).getInningOne1());
+                                sub.add(oneMatchInning.get(j));
+                                subA.add(oneMatchInning.get(j));
                             }
 
                             grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            List<testInning> grMatchInning = new ArrayList<>();
+                    		for(int i = 0; i < grMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = grMatch.get(i).getInningOne1().getFours()
+                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = grMatch.get(i).getInningOne1().getSixes()
+                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = grMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			grMatchInning.add(m)
+                        	}
                             if(grMatch.size() >= 5){
                                 for(int j = 0; j < 5; j++){
-                                    subG.add(twoMatch.get(j).getInningOne1());
+                                    subG.add(twoMatchInning.get(j));
                                 }
                             }
 
@@ -9287,10 +9468,27 @@ if(true){
                         grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                         grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
-                            for(int i = 0; i < oneMatch.size()-6; i++){
+                        List<testInning> oneMatchInning = new ArrayList<>();
+                    	for(int i = 0; i < oneMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = oneMatch.get(i).getInningOne1().getFours()
+                                	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
 
-                                int curr = oneMatch.get(i).getInningOne1().getSixes();
+                        	sixes = oneMatch.get(i).getInningOne1().getSixes()
+                                	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = oneMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	oneMatchInning.add(m)
+                        }
+
+
+                        if(oneMatchInning.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatchInning.size()-6; i++){
+
+                                int curr = oneMatchInning.get(i).getSixes();
                                 Date currDate = oneMatch.get(i).getMatchDate();
 
 
@@ -9300,23 +9498,53 @@ if(true){
                                 List<testInning> subG = new ArrayList<>();
 
                                 for(int j = i+1; j < i+6; j++){
-                                    sub.add(oneMatch.get(j).getInningOne1());
-                                    subA.add(oneMatch.get(j).getInningOne1());
+                                    sub.add(oneMatchInning.get(j));
+                                    subA.add(oneMatchInning.get(j));
                                 }
 
                                 twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                                if(twoMatch.size() < 5){
+                               	List<testInning> twoMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < twoMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = twoMatch.get(i).getInningOne1().getFours()
+                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = twoMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			twoMatchInning.add(m)
+                        		}
+                                if(twoMatchInning.size() < 5){
                                     break;
                                 }
                                 for(int j = 0; j < 5; j++){
-                                    sub.add(twoMatch.get(j).getInningOne1());
-                                    subB.add(twoMatch.get(j).getInningOne1());
+                                    sub.add(twoMatchInning.get(j));
+                                    subB.add(twoMatchInning.get(j));
                                 }
 
                                 grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                                if(grMatch.size() >= 5){
+
+                                List<testInning> grMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < grMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = grMatch.get(i).getInningOne1().getFours()
+                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = grMatch.get(i).getInningOne1().getSixes()
+                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = grMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			grMatchInning.add(m)
+                        		}
+
+                                if(grMatchInning.size() >= 5){
                                     for(int j = 0; j < 5; j++){
-                                        subG.add(twoMatch.get(j).getInningOne1());
+                                        subG.add(twoMatchInning.get(j));
                                     }
                                 }
 
@@ -9501,7 +9729,7 @@ if(true){
                         request.setAttribute("onetotalsixes_bt", A_bt);
                     }
 
-if(true){
+					if(true){
                     
                     Map<String,Integer> B_bt = new LinkedHashMap<>();
                     B_bt.put("N", 0);
@@ -9544,11 +9772,26 @@ if(true){
                     grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                     grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
+                    List<testInning> twoMatchInning = new ArrayList<>();
+                    for(int i = 0; i < twoMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = twoMatch.get(i).getInningOne1().getFours()
+                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = twoMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			twoMatchInning.add(m)
+                    }
+
                     if(oneMatch.size() > 5 && twoMatch.size() > 5){
 
                         for(int i = 0; i < twoMatch.size()-6; i++){
 
-                            int curr = twoMatch.get(i).getInningOne1().getSixes();
+                            int curr = twoMatchInning.get(i).getSixes();
                             Date currDate = twoMatch.get(i).getMatchDate();
 
 
@@ -9558,23 +9801,52 @@ if(true){
                             List<testInning> subG = new ArrayList<>();
                             
                             for(int j = i+1; j < i+6; j++){
-                                sub.add(twoMatch.get(j).getInningOne1());
-                                subB.add(twoMatch.get(j).getInningOne1());
+                                sub.add(twoMatchInning.get(j));
+                                subB.add(twoMatchInning.get(j));
                             }
 
                             oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                            if(oneMatch.size() < 5){
+                            List<testInning> oneMatchInning = new ArrayList<>();
+                    		for(int i = 0; i < oneMatch.size(); i++){
+                    		
+                            	int fours;
+                        		int sixes;
+                        		fours = oneMatch.get(i).getInningOne1().getFours()
+                                	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
+
+                        		sixes = oneMatch.get(i).getInningOne1().getSixes()
+                                	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
+                        		testInning m = oneMatch.get(i).getInningOne1();
+                        		m.setFours(fours);
+                        		m.setSixes(sixes);
+                        		oneMatchInning.add(m)
+                        	}
+                            if(oneMatchInning.size() < 5){
                                 break;
                             }
                             for(int j = 0; j < 5; j++){
-                                sub.add(oneMatch.get(j).getInningOne1());
-                                subA.add(oneMatch.get(j).getInningOne1());
+                                sub.add(oneMatchInning.get(j));
+                                subA.add(oneMatchInning.get(j));
                             }
 
                             grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                            if(grMatch.size() >= 5){
+                            List<testInning> grMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < grMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = grMatch.get(i).getInningOne1().getFours()
+                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = grMatch.get(i).getInningOne1().getSixes()
+                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = grMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			grMatchInning.add(m)
+                        		}
+                            if(grMatchInning.size() >= 5){
                                 for(int j = 0; j < 5; j++){
-                                    subG.add(twoMatch.get(j).getInningOne1());
+                                    subG.add(twoMatchInning.get(j));
                                 }
                             }
 
@@ -10020,10 +10292,27 @@ if(true){
                         grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                         grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                        if(oneMatch.size() > 5 && twoMatch.size() > 5){
-                            for(int i = 0; i < oneMatch.size()-6; i++){
+                        
+                        List<testInning> oneMatchInning = new ArrayList<>();
+                    	for(int i = 0; i < oneMatch.size(); i++){
+                    		
+                            int fours;
+                        	int sixes;
+                        	fours = oneMatch.get(i).getInningOne1().getFours()
+                                	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
 
-                                int curr = oneMatch.get(i).getInningOne1().getSixes();
+                        	sixes = oneMatch.get(i).getInningOne1().getSixes()
+                                	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
+                        	testInning m = oneMatch.get(i).getInningOne1();
+                        	m.setFours(fours);
+                        	m.setSixes(sixes);
+                        	oneMatchInning.add(m)
+                        }
+
+                        if(oneMatchInning.size() > 5 && twoMatch.size() > 5){
+                            for(int i = 0; i < oneMatchInning.size()-6; i++){
+
+                                int curr = oneMatchInning.get(i).getSixes();
                                 Date currDate = oneMatch.get(i).getMatchDate();
 
 
@@ -10033,23 +10322,52 @@ if(true){
                                 List<testInning> subG = new ArrayList<>();
 
                                 for(int j = i+1; j < i+6; j++){
-                                    sub.add(oneMatch.get(j).getInningOne1());
-                                    subA.add(oneMatch.get(j).getInningOne1());
+                                    sub.add(oneMatchInning.get(j));
+                                    subA.add(oneMatchInning.get(j));
                                 }
 
                                 twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                                if(twoMatch.size() < 5){
+                                List<testInning> twoMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < twoMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = twoMatch.get(i).getInningOne1().getFours()
+                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = twoMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			twoMatchInning.add(m)
+                        		}
+                                if(twoMatchInning.size() < 5){
                                     break;
                                 }
                                 for(int j = 0; j < 5; j++){
-                                    sub.add(twoMatch.get(j).getInningOne1());
-                                    subB.add(twoMatch.get(j).getInningOne1());
+                                    sub.add(twoMatchInning.get(j));
+                                    subB.add(twoMatchInning.get(j));
                                 }
 
                                 grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
-                                if(grMatch.size() >= 5){
+                                List<testInning> grMatchInning = new ArrayList<>();
+                    			for(int i = 0; i < grMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = grMatch.get(i).getInningOne1().getFours()
+                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = grMatch.get(i).getInningOne1().getSixes()
+                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = grMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			grMatchInning.add(m)
+                        		}
+
+                                if(grMatchInning.size() >= 5){
                                     for(int j = 0; j < 5; j++){
-                                        subG.add(twoMatch.get(j).getInningOne1());
+                                        subG.add(twoMatchInning.get(j));
                                     }
                                 }
 
@@ -10234,7 +10552,7 @@ if(true){
                         request.setAttribute("onetotalsixes_bt", A_bt);
                     }
 
-			if(true){
+					if(true){
                     
                     Map<String,Integer> B_bt = new LinkedHashMap<>();
                     B_bt.put("N", 0);
@@ -10277,7 +10595,22 @@ if(true){
                     grMatch.removeIf(m -> (m.getInningOne1().getRuns5wicket() == -1));
                     grMatch.removeIf(m -> (m.getInningOne1().getTotalruns() == 0));
 
-                    if(oneMatch.size() > 5 && twoMatch.size() > 5){
+                    List<testInning> twoMatchInning = new ArrayList<>();
+                    for(int i = 0; i < twoMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = twoMatch.get(i).getInningOne1().getFours()
+                                			+ twoMatch.get(i).getInningOne2().getFours() + twoMatch.get(i).getInningTwo1().getFours() + twoMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = twoMatch.get(i).getInningOne1().getSixes()
+                                			+ twoMatch.get(i).getInningOne2().getSixes() + twoMatch.get(i).getInningTwo1().getSixes() + twoMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = twoMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			twoMatchInning.add(m)
+                    }
+
+                    if(oneMatch.size() > 5 && twoMatchInning.size() > 5){
 
                         for(int i = 0; i < twoMatch.size()-6; i++){
 
@@ -10296,18 +10629,47 @@ if(true){
                             }
 
                             oneMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            List<testInning> oneMatchInning = new ArrayList<>();
+                    		for(int i = 0; i < oneMatch.size(); i++){
+                    		
+                            	int fours;
+                        		int sixes;
+                        		fours = oneMatch.get(i).getInningOne1().getFours()
+                                	+ oneMatch.get(i).getInningOne2().getFours() + oneMatch.get(i).getInningTwo1().getFours() + oneMatch.get(i).getInningTwo2().getFours();
+
+                        		sixes = oneMatch.get(i).getInningOne1().getSixes()
+                                	+ oneMatch.get(i).getInningOne2().getSixes() + oneMatch.get(i).getInningTwo1().getSixes() + oneMatch.get(i).getInningTwo2().getSixes();
+                        		testInning m = oneMatch.get(i).getInningOne1();
+                        		m.setFours(fours);
+                        		m.setSixes(sixes);
+                        		oneMatchInning.add(m)
+                        	}
                             if(oneMatch.size() < 5){
                                 break;
                             }
                             for(int j = 0; j < 5; j++){
-                                sub.add(oneMatch.get(j).getInningOne1());
-                                subA.add(oneMatch.get(j).getInningOne1());
+                                sub.add(oneMatchInning.get(j));
+                                subA.add(oneMatchInning.get(j));
                             }
 
                             grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+                            List<testInning> grMatchInning = new ArrayList<>();
+                    		for(int i = 0; i < grMatch.size(); i++){
+                            		int fours;
+                        			int sixes;
+                        			fours = grMatch.get(i).getInningOne1().getFours()
+                                			+ grMatch.get(i).getInningOne2().getFours() + grMatch.get(i).getInningTwo1().getFours() + grMatch.get(i).getInningTwo2().getFours();
+
+                        			sixes = grMatch.get(i).getInningOne1().getSixes()
+                                			+ grMatch.get(i).getInningOne2().getSixes() + grMatch.get(i).getInningTwo1().getSixes() + grMatch.get(i).getInningTwo2().getSixes();
+                        			testInning m = grMatch.get(i).getInningOne1();
+                        			m.setFours(fours);
+                        			m.setSixes(sixes);
+                        			grMatchInning.add(m)
+                        	}
                             if(grMatch.size() >= 5){
                                 for(int j = 0; j < 5; j++){
-                                    subG.add(twoMatch.get(j).getInningOne1());
+                                    subG.add(twoMatchInning.get(j));
                                 }
                             }
 
