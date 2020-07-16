@@ -833,10 +833,10 @@
                                             int num = 0;
                                             int den = 0;
                                             for(testInning ti : Ab){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -845,10 +845,10 @@
                                             num = 0;
                                             den = 0;
                                             for(testInning ti : Bb){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -872,10 +872,10 @@
                                             Tb.addAll(Ab);
                                             Tb.addAll(Bb);
                                             for(testInning ti : Tb){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -1759,10 +1759,10 @@
                                             int num = 0;
                                             int den = 0;
                                             for(testInning ti : Ab){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -1771,10 +1771,10 @@
                                             num = 0;
                                             den = 0;
                                             for(testInning ti : Bb){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -1798,10 +1798,10 @@
                                             Tb.addAll(Ab);
                                             Tb.addAll(Bb);
                                             for(testInning ti : Tb){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -2687,10 +2687,10 @@
                                             int num = 0;
                                             int den = 0;
                                             for(testInning ti : Ab){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -2699,10 +2699,10 @@
                                             num = 0;
                                             den = 0;
                                             for(testInning ti : Bb){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -2726,10 +2726,10 @@
                                             Tb.addAll(Ab);
                                             Tb.addAll(Bb);
                                             for(testInning ti : Tb){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -3600,10 +3600,10 @@
                                             int num = 0;
                                             int den = 0;
                                             for(testInning ti : Ab){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -3612,10 +3612,10 @@
                                             num = 0;
                                             den = 0;
                                             for(testInning ti : Bb){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -3639,10 +3639,10 @@
                                             Tb.addAll(Ab);
                                             Tb.addAll(Bb);
                                             for(testInning ti : Tb){
-                                                if(ti.getWinner().trim().charAt(0) == 'B'){
+                                                if(ti.getWinner().trim().contains("B/W") || ti.getWinner().trim().contains("C/L")){
                                                     num++;
                                                 }
-                                                else if(ti.getWinner().trim().charAt(0) == 'C'){
+                                                else if(ti.getWinner().trim().contains("B/L") || ti.getWinner().trim().contains("C/W")){
                                                     den++;
                                                 }
                                             }
@@ -4503,6 +4503,7 @@
                         $(this).addClass("grey-div");
                     }
                 });
+                $('div.btn').click()
             }); 
             $("input").on('input', function () {
 

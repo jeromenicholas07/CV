@@ -33,6 +33,9 @@
             .teams{
                 display: none;
             }
+            .test-side{
+                display: none;
+            }
 
             .outer {
                 display: table;
@@ -86,7 +89,7 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-12 teams">
-                                    <select class="form-control form-control required" id="teamSelect1" name="teamName1">
+                                    <select class="form-control form-control required" id="teamSelect1" name="teamName1" >
                                         <option value="-1">Select Team</option>
                                     </select>
                                 </div>
@@ -94,9 +97,10 @@
                             </div>
                             
                             <div class="form-group row">
-                                <div class="col-12 teams">
-                                    <select class="form-control form-control-sm required" id="homeorawaySelect" name="homeoraway">
-                                        <option value="-1">Home or Away</option>
+                                <div class="col-12 test-side">
+                                    <select class="form-control form-control-sm" id="homeorawaySelect" name="homeoraway">
+                                        <option value="Home" default>Home</option>
+                                        <option value="Away">Away</option>
                                     </select>
                                 </div>
                             </div>
@@ -120,7 +124,10 @@
                             $('#teamSelect1').empty().append('<option selected="selected" value="-1">Select Team</option>');
                             
                             var id = $(this).children(":selected").attr("value");
-                            
+                            if(id !== "1"){
+                                $('.test-side').hide();
+                            }
+                                
                             $.ajax({
                                 url: "/CricVet/getTeams", //servlet URL that gets first option as parameter and returns JSON of to-be-populated options
                                 type: "POST", //request type, can be GET
@@ -129,7 +136,9 @@
                                 dataType: "json"//type of data returned
                             }).done(function (data) {
                                 $('.teams').show();
-                                
+                                if(id === "1"){
+                                    $('.test-side').show();
+                                }
                                 var team1 = $("#teamSelect1");
                                 
                                 $.each(data, function (index, value) {
@@ -139,15 +148,15 @@
                             });
                             
                             
-                            var sel = document.getElementById('homeorawaySelect');
-                            var opt1 = document.createElement('option');
-                            opt1.appendChild( document.createTextNode('Home') );
-                            opt1.value = 'Home'; 
-                            sel.appendChild(opt1);
-                            var opt2 = document.createElement('option');
-                            opt2.appendChild( document.createTextNode('Away') );
-                            opt2.value = 'Away'; 
-                            sel.appendChild(opt2);
+//                            var sel = document.getElementById('homeorawaySelect');
+//                            var opt1 = document.createElement('option');
+//                            opt1.appendChild( document.createTextNode('Home') );
+//                            opt1.value = 'Home'; 
+//                            sel.appendChild(opt1);
+//                            var opt2 = document.createElement('option');
+//                            opt2.appendChild( document.createTextNode('Away') );
+//                            opt2.value = 'Away'; 
+//                            sel.appendChild(opt2);
 
                             
                         });
