@@ -157,10 +157,15 @@ public class DataFetch {
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
 
-                Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
-                String homeTeamName = home.select("span.cscore_name.cscore_name--long").text().trim();
+               
+                Elements teamName = matchPage.getElementsByClass("team-name");
+                Element home = teamName.first();
+                Element away = teamName.last();
+                String homeTeamName = home.select("span").attr("title");
+                String awayTeamName = away.select("span").attr("title");
+                
 
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
@@ -173,8 +178,8 @@ public class DataFetch {
                 }
                 String homeTeamId = urlParts[pos];  //#todo
 
-                Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                String awayTeamName = away.select("span.cscore_name.cscore_name--long").text().trim();
+                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
+                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text().trim();
 
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
@@ -187,9 +192,9 @@ public class DataFetch {
                 }
                 String awayTeamId = urlParts[pos];  //#todo
 
-                String homeScore = home.select("div.cscore_score").get(0).text();
-                String awayScore = away.select("div.cscore_score").get(0).text();
-
+                //String homeScore = home.select("div.cscore_score").get(0).text();
+                //String awayScore = away.select("div.cscore_score").get(0).text();
+/*
                 Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
                 if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
                     unloaded.put("LIVE:" + mId, url);
@@ -197,9 +202,21 @@ public class DataFetch {
                     continue MATCHLABEL;
                 }
 
-                Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
+
+*/
+
+                Elements scores = matchPage.getElementsByClass("score-run");
+                String homeScore = scores.first().text();
+                String awayScore = scores.last().text();
+
+                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
+                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
+           
+                
+                //String tossResult = detailsColumn.get(1).text();
+                //System.out.println("TOss:"+ tossResult);
+                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                String tossResult = detailsTable.select("tr").get(1).text();
 
                 String battingFirst;
                 if (tossResult.contains(homeTeamName)) {
@@ -235,8 +252,9 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String result = winner.select("span").first().text();
+                //Elements winner = matchPage.getElementsByClass("cscore_notes");
+                //String result = winner.select("span").first().text();
+                String result = matchPage.getElementsByClass("summary").text();
 
                 String BorC = "";
                 if(result.contains("No result")){continue;}
@@ -402,10 +420,13 @@ public class DataFetch {
                     }
                 }
 
-                Elements ground = matchPage.getElementsByClass("stadium-details");
-                Elements sp = ground.select("span");
-                String groundName = sp.text();
-                String groundLink = ground.select("a").first().attr("href");
+                String groundName = detailsTable.select("tr").get(0).text();
+                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+
+                //Elements ground = matchPage.getElementsByClass("stadium-details");
+                //Elements sp = ground.select("span");
+                //String groundName = sp.text();
+                //String groundLink = ground.select("a").first().attr("href");
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
@@ -489,11 +510,14 @@ public class DataFetch {
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
 
 
-                Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
-                String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
+                Elements teamName = matchPage.getElementsByClass("team-name");
+                Element home = teamName.first();
+                Element away = teamName.last();
+                String homeTeamName = home.select("span").attr("title");
+                String awayTeamName = away.select("span").attr("title");
 
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
@@ -506,8 +530,8 @@ public class DataFetch {
                 }
                 String homeTeamId = urlParts[pos];  //#todo
 
-                Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
+                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
                 List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
                         
                 if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
@@ -523,19 +547,24 @@ public class DataFetch {
                 }
                 String awayTeamId = urlParts[pos];  //#todo
 
-                String homeScore = home.select("div.cscore_score").get(0).text();
-                String awayScore = away.select("div.cscore_score").get(0).text();
-
+                //String homeScore = home.select("div.cscore_score").get(0).text();
+                //String awayScore = away.select("div.cscore_score").get(0).text();
+                Elements scores = matchPage.getElementsByClass("score-run");
+                String homeScore = scores.first().text();
+                String awayScore = scores.last().text();
+/*
                 Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
                 if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
                 }
-
-                Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
+*/
+                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
+                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
+                //String tossResult = detailsColumn.get(1).text();
+                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                String tossResult = detailsTable.select("tr").get(1).text();
 
                 String battingFirst;
                 if (tossResult.contains(homeTeamName)) {
@@ -571,8 +600,9 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String result = winner.select("span").first().text();
+                String result = matchPage.getElementsByClass("summary").text();
+                //Elements winner = matchPage.getElementsByClass("cscore_notes");
+                //String result = winner.select("span").first().text();
 
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
@@ -747,11 +777,12 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
-
-                Elements ground = matchPage.getElementsByClass("stadium-details");
-                Elements sp = ground.select("span");
-                String groundName = sp.text();
-                String groundLink = ground.select("a").first().attr("href");
+                String groundName = detailsTable.select("tr").get(0).text();
+                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+                //Elements ground = matchPage.getElementsByClass("stadium-details");
+                //Elements sp = ground.select("span");
+                //String groundName = sp.text();
+                //match-headerString groundLink = ground.select("a").first().attr("href");
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
@@ -834,12 +865,16 @@ public class DataFetch {
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
 
                 
 
-                Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
-                String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
+                Elements teamName = matchPage.getElementsByClass("team-name");
+                Element home = teamName.first();
+                Element away = teamName.last();
+                String homeTeamName = home.select("span").attr("title");
+                String awayTeamName = away.select("span").attr("title");
+                
 
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
@@ -852,8 +887,8 @@ public class DataFetch {
                 }
                 String homeTeamId = urlParts[pos];  //#todo
 
-                Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
+                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
 
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
@@ -866,19 +901,25 @@ public class DataFetch {
                 }
                 String awayTeamId = urlParts[pos];  //#todo
 
-                String homeScore = home.select("div.cscore_score").get(0).text();
-                String awayScore = away.select("div.cscore_score").get(0).text();
-
+                //String homeScore = home.select("div.cscore_score").get(0).text();
+                //String awayScore = away.select("div.cscore_score").get(0).text();
+                Elements scores = matchPage.getElementsByClass("score-run");
+                String homeScore = scores.first().text();
+                String awayScore = scores.last().text();
+/*
                 Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
                 if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
                 }
+*/
+                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
+                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
+                //String tossResult = detailsColumn.get(1).text();
 
-                Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
+                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                String tossResult = detailsTable.select("tr").get(1).text();
 
                 String battingFirst;
                 if (tossResult.contains(homeTeamName)) {
@@ -914,8 +955,9 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String result = winner.select("span").first().text();
+                //Elements winner = matchPage.getElementsByClass("cscore_notes");
+                //String result = winner.select("span").first().text();
+                String result = matchPage.getElementsByClass("summary").text();
 
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
@@ -1070,11 +1112,13 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
+                String groundName = detailsTable.select("tr").get(0).text();
+                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
 
-                Elements ground = matchPage.getElementsByClass("stadium-details");
-                Elements sp = ground.select("span");
-                String groundName = sp.text();
-                String groundLink = ground.select("a").first().attr("href");
+                //Elements ground = matchPage.getElementsByClass("stadium-details");
+                //Elements sp = ground.select("span");
+                //String groundName = sp.text();
+                //String groundLink = ground.select("a").first().attr("href");
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
@@ -1152,12 +1196,15 @@ public class DataFetch {
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
 
                 
 
-                Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
-                String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
+                Elements teamName = matchPage.getElementsByClass("team-name");
+                Element home = teamName.first();
+                Element away = teamName.last();
+                String homeTeamName = home.select("span").attr("title");
+                String awayTeamName = away.select("span").attr("title");
 
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
@@ -1170,8 +1217,8 @@ public class DataFetch {
                 }
                 String homeTeamId = urlParts[pos];  //#todo
 
-                Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
+                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
 
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
@@ -1184,19 +1231,25 @@ public class DataFetch {
                 }
                 String awayTeamId = urlParts[pos];  //#todo
 
-                String homeScore = home.select("div.cscore_score").get(0).text();
-                String awayScore = away.select("div.cscore_score").get(0).text();
-
+                //String homeScore = home.select("div.cscore_score").get(0).text();
+                //String awayScore = away.select("div.cscore_score").get(0).text();
+				Elements scores = matchPage.getElementsByClass("score-run");
+                String homeScore = scores.first().text();
+                String awayScore = scores.last().text();
+/*               
                 Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
                 if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
                 }
+*/
 
-                Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
+                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
+                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
+                //String tossResult = detailsColumn.get(1).text();
+                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                String tossResult = detailsTable.select("tr").get(1).text();
 
                 String battingFirst;
                 if (tossResult.contains(homeTeamName)) {
@@ -1232,8 +1285,10 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String result = winner.select("span").first().text();
+                String result = matchPage.getElementsByClass("summary").text();
+
+                //Elements winner = matchPage.getElementsByClass("cscore_notes");
+                //String result = winner.select("span").first().text();
 
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
@@ -1387,11 +1442,12 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
-
-                Elements ground = matchPage.getElementsByClass("stadium-details");
-                Elements sp = ground.select("span");
-                String groundName = sp.text();
-                String groundLink = ground.select("a").first().attr("href");
+                String groundName = detailsTable.select("tr").get(0).text();
+                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+                //Elements ground = matchPage.getElementsByClass("stadium-details");
+                //Elements sp = ground.select("span");
+                //String groundName = sp.text();
+                //String groundLink = ground.select("a").first().attr("href");
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
@@ -1471,12 +1527,15 @@ public class DataFetch {
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
 
                 
 
-                Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
-                String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
+                Elements teamName = matchPage.getElementsByClass("team-name");
+                Element home = teamName.first();
+                Element away = teamName.last();
+                String homeTeamName = home.select("span").attr("title");
+                String awayTeamName = away.select("span").attr("title");
 
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
@@ -1489,8 +1548,8 @@ public class DataFetch {
                 }
                 String homeTeamId = urlParts[pos];  //#todo
 
-                Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
+                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
 
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
@@ -1503,21 +1562,27 @@ public class DataFetch {
                 }
                 String awayTeamId = urlParts[pos];  //#todo
 
-                String homeScore = home.select("div.cscore_score").get(0).text();
-                String awayScore = away.select("div.cscore_score").get(0).text();
-
+                //String homeScore = home.select("div.cscore_score").get(0).text();
+                //String awayScore = away.select("div.cscore_score").get(0).text();
+                Elements scores = matchPage.getElementsByClass("score-run");
+                String homeScore = scores.first().text();
+                String awayScore = scores.last().text();
+/*
                 Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
                 if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
                 }
+*/
 
-                Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
-
+                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
+                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
+                //String tossResult = detailsColumn.get(1).text();
+                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                String tossResult = detailsTable.select("tr").get(1).text();
                 String battingFirst;
+
                 if (tossResult.contains(homeTeamName)) {
                     if (tossResult.contains("bat")) {
                         battingFirst = homeTeamName;
@@ -1551,8 +1616,9 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String result = winner.select("span").first().text();
+                //Elements winner = matchPage.getElementsByClass("cscore_notes");
+                //String result = winner.select("span").first().text();
+                String result = matchPage.getElementsByClass("summary").text();
 
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
@@ -1708,11 +1774,12 @@ public class DataFetch {
                     }
 
                 }
-
-                Elements ground = matchPage.getElementsByClass("stadium-details");
-                Elements sp = ground.select("span");
-                String groundName = sp.text();
-                String groundLink = ground.select("a").first().attr("href");
+                String groundName = detailsTable.select("tr").get(0).text();
+                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+                //Elements ground = matchPage.getElementsByClass("stadium-details");
+                //Elements sp = ground.select("span");
+                //String groundName = sp.text();
+                //String groundLink = ground.select("a").first().attr("href");
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
@@ -1793,12 +1860,13 @@ public class DataFetch {
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
 
-                
-
-                Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
-                String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
+                Elements teamName = matchPage.getElementsByClass("team-name");
+                Element home = teamName.first();
+                Element away = teamName.last();
+                String homeTeamName = home.select("span").attr("title");
+                String awayTeamName = away.select("span").attr("title");
 
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
@@ -1811,8 +1879,8 @@ public class DataFetch {
                 }
                 String homeTeamId = urlParts[pos];  //#todo
 
-                Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
+                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
 
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
@@ -1825,20 +1893,25 @@ public class DataFetch {
                 }
                 String awayTeamId = urlParts[pos];  //#todo
 
-                String homeScore = home.select("div.cscore_score").get(0).text();
-                String awayScore = away.select("div.cscore_score").get(0).text();
-
+                //String homeScore = home.select("div.cscore_score").get(0).text();
+                //String awayScore = away.select("div.cscore_score").get(0).text();
+                Elements scores = matchPage.getElementsByClass("score-run");
+                String homeScore = scores.first().text();
+                String awayScore = scores.last().text();
+                /*
                 Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
                 if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
                 }
-
-                Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
-
+*/
+                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
+                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
+                //String tossResult = detailsColumn.get(1).text();
+		Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                String tossResult = detailsTable.select("tr").get(1).text();
+                String result = matchPage.getElementsByClass("summary").text();
                 String battingFirst;
                 if (tossResult.contains(homeTeamName)) {
                     if (tossResult.contains("bat")) {
@@ -1873,8 +1946,8 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String result = winner.select("span").first().text();
+                //Elements winner = matchPage.getElementsByClass("cscore_notes");
+                //String result = winner.select("span").first().text();
 
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
@@ -2028,11 +2101,12 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
-
-                Elements ground = matchPage.getElementsByClass("stadium-details");
-                Elements sp = ground.select("span");
-                String groundName = sp.text();
-                String groundLink = ground.select("a").first().attr("href");
+                String groundName = detailsTable.select("tr").get(0).text();
+                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+                //Elements ground = matchPage.getElementsByClass("stadium-details");
+                //Elements sp = ground.select("span");
+                //String groundName = sp.text();
+                //String groundLink = ground.select("a").first().attr("href");
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
@@ -2111,12 +2185,15 @@ public class DataFetch {
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
 
                 
 
-                Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
-                String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
+                Elements teamName = matchPage.getElementsByClass("team-name");
+                Element home = teamName.first();
+                Element away = teamName.last();
+                String homeTeamName = home.select("span").attr("title");
+                String awayTeamName = away.select("span").attr("title");
 
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
@@ -2129,8 +2206,8 @@ public class DataFetch {
                 }
                 String homeTeamId = urlParts[pos];  //#todo
 
-                Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
+                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
                 List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
                         
                 if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
@@ -2146,19 +2223,25 @@ public class DataFetch {
                 }
                 String awayTeamId = urlParts[pos];  //#todo
 
-                String homeScore = home.select("div.cscore_score").get(0).text();
-                String awayScore = away.select("div.cscore_score").get(0).text();
-
+                //String homeScore = home.select("div.cscore_score").get(0).text();
+                //String awayScore = away.select("div.cscore_score").get(0).text();
+                Elements scores = matchPage.getElementsByClass("score-run");
+                String homeScore = scores.first().text();
+                String awayScore = scores.last().text();
+                /*
                 Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
                 if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
                 }
+*/
+                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
+                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
+                //String tossResult = detailsColumn.get(1).text();
 
-                Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
+				Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                String tossResult = detailsTable.select("tr").get(1).text();
 
                 String battingFirst;
                 if (tossResult.contains(homeTeamName)) {
@@ -2194,8 +2277,9 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String result = winner.select("span").first().text();
+				String result = matchPage.getElementsByClass("summary").text();
+                //Elements winner = matchPage.getElementsByClass("cscore_notes");
+                //String result = winner.select("span").first().text();
 
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
@@ -2351,11 +2435,12 @@ public class DataFetch {
                     }
 
                 }
-
-                Elements ground = matchPage.getElementsByClass("stadium-details");
-                Elements sp = ground.select("span");
-                String groundName = sp.text();
-                String groundLink = ground.select("a").first().attr("href");
+                String groundName = detailsTable.select("tr").get(0).text();
+                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+                //Elements ground = matchPage.getElementsByClass("stadium-details");
+                //Elements sp = ground.select("span");
+                //String groundName = sp.text();
+                //String groundLink = ground.select("a").first().attr("href");
 
                 Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
                 db.addMatch(m);
@@ -2382,7 +2467,7 @@ public class DataFetch {
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
 
-        int year = 2020;//Calendar.getInstance().get(Calendar.YEAR);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
 
         for (int y = year; y >= 2016; y--) {
             Document matches;
@@ -2447,16 +2532,18 @@ public class DataFetch {
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("layout-bc");
+                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
 
                 LocalDate matchDate = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-
-                Element matchDateElement = teamsTopDivision.select("div.cscore_info-overview").first();
+                
+                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
+                //System.out.println("MatchDateIs:" + matchDateElement.text());
                 String[] parts = matchDateElement.text().trim().split(",");
                 String[] parts2 = parts[parts.length - 1].split("-");
                 String[] parts3 = parts2[1].split(" ");
                 String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+                //System.out.println("This is:" + matchDateString);
 
                 try {
                     matchDate = LocalDate.parse(matchDateString.trim(), df);
@@ -2469,10 +2556,14 @@ public class DataFetch {
                     System.out.println("Match " + mId + " this week.");
                     continue;
                 }
-
-                Elements home = teamsTopDivision.select("li.cscore_item.cscore_item--home");
-                String homeTeamName = home.select("span.cscore_name.cscore_name--long").text();
-
+                
+                
+                Elements teamName = matchPage.getElementsByClass("team-name");
+                Element home = teamName.first();
+                Element away = teamName.last();
+                String homeTeamName = home.select("span").attr("title");
+                String awayTeamName = away.select("span").attr("title");
+                
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
                 int pos = 0;
@@ -2484,16 +2575,12 @@ public class DataFetch {
                 }
                 String homeTeamId = urlParts[pos];  //#todo
 
-                Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
+                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
+                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
                 
                 List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
                         
                 if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
-                    
-                
-                
-
                 String awayTeamUrl = away.select("a").attr("href");
                 urlParts = awayTeamUrl.split("/");
                 pos = 0;
@@ -2507,32 +2594,40 @@ public class DataFetch {
 
                 // String homeScore = home.select("div.cscore_score").get(0).text();
                 // String awayScore = away.select("div.cscore_score").get(0).text();
-                String homeScore = home.select("div.cscore_score").text();
-                String awayScore = away.select("div.cscore_score").text();
-
+                //String homeScore = home.select("score-run").text();
+                //String awayScore = away.select("score-run").text();
+                
+                Elements scores = matchPage.getElementsByClass("score-run");
+                String homeScore = scores.first().text();
+                String awayScore = scores.last().text();
                 // System.out.println(awayScore);
                 if (awayScore.contains("f/o") || homeScore.contains("f/o")) {
                     foflag = 1;
-
                 }
-
+/*
                 Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
                 if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
                 }
+*/
 
-                Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                String tossResult = detailsColumn.get(1).text();
+                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
+                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
+                
+                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                String tossResult = detailsTable.select("tr").get(1).text();
+                //System.out.println("THE result:"+ tossResult);
+                /*
                 if (tossResult.contains("bat") || tossResult.contains("field")){
                     tossResult = tossResult;
                 }
                 else{
-                    tossResult = detailsColumn.get(2).text();
+                    System.out.println("TRIAL");
+                    //tossResult = detailsTable.get(0).text(); ie Toss result might be in next row
                 }
-
+*/
                 String battingFirst;
                 if (tossResult.contains(homeTeamName)) {
                     if (tossResult.contains("bat")) {
@@ -2563,9 +2658,11 @@ public class DataFetch {
                         break;
                     }
                 }
+                String result = matchPage.getElementsByClass("summary").text();
+                //System.out.println("winner:"+ winners);
 
-                Elements winner = matchPage.getElementsByClass("cscore_notes");
-                String result = winner.select("span").first().text();
+                //Elements winner = matchPage.getElementsByClass("cscore_notes");
+                //String result = winner.select("span").first().text();
 
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
@@ -2672,6 +2769,7 @@ public class DataFetch {
                     params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(totalRuns - afterFifthWicketScore));
                     params.add(BorC);
+                    //System.out.println("Params are: " +params);
 
                     if (inning == 1) {
                         one = new testInning(6, params);
@@ -2686,11 +2784,13 @@ public class DataFetch {
                     }
 
                 }
-
-                Elements ground = matchPage.getElementsByClass("stadium-details");
-                Elements sp = ground.select("span");
-                String groundName = sp.text();
-                String groundLink = ground.select("a").first().attr("href");
+                String groundName = detailsTable.select("tr").get(0).text();
+                System.out.println("GROUNDNAME IS :"+ groundName);
+                //Elements ground = matchPage.getElementsByClass("stadium-details");
+                //Elements sp = ground.select("span");
+                //String groundName = sp.text();
+                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+                System.out.println("GROUNDLINK IS :" + groundLink);
                 String teamathome = db.checkhomeoraway(homeTeamName, awayTeamName, groundName);
                 String teamataway = db.getawayteam(homeTeamName, awayTeamName, groundName);
                 System.out.println("AWAYTEAM IS " + teamataway);
@@ -2712,12 +2812,14 @@ public class DataFetch {
                     continue;
                 }
             }
+
             catch (Exception ex) {
                 ex.printStackTrace();
                 ret = false;
                 unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
 
             }
+
         }
 
         return ret;
