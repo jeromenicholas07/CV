@@ -292,6 +292,7 @@ public class DataFetch {
 
                 Inning one = null;
                 Inning two = null;
+                /*
                 for (int inning = 1; inning <= 2; inning++) {
                     String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -411,6 +412,131 @@ public class DataFetch {
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
                     params.add(BorC);
+
+                    if (inning == 1) {
+                        one = new Inning(8, params);
+                    }
+                    if (inning == 2) {
+                        two = new Inning(8, params);
+                    }
+                }
+*/
+                //NEW API
+
+                for (int inning = 1; inning <= 2; inning++) {
+                    List<JSONObject> ballList = new ArrayList<>();     
+                    int wicketCount = 0;
+                    int firstOverScore = 0;
+                    int sixOverScore = 0;
+                    int lastFiveOverScore = -1;
+                    int lastFlag = -1;
+                    int firstWicketScore = -1;
+                    int fourCount = 0;
+                    int sixCount = 0;
+                    int totalRuns = 0;
+
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+
+                    for (int i = 1; i <= pageCount; i++) {
+                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                        String body;
+                        System.out.println("trying test :" + currentPageUrl);
+                        try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + currentPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(body);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            System.out.println("it:" + it + " url: " + currentPageUrl);
+                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
+                             //   continue;
+                            //}
+                            ballList.add(jItem);
+
+                            if (jItem.has("matchWicket")) {
+                                wicketCount++;
+                            }
+
+                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
+                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
+                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") >=15){
+                                lastFiveOverScore += jItem.getInt("runs");
+                            }
+
+                           /* ?????
+                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                    lastFlag = 1;
+                                }
+                            }
+*/
+                           /*
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+*/
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+                            if (jItem.getInt("runs") == 4) {
+                                fourCount++;
+                            }
+                            if (jItem.getInt("runs") == 6) {
+                                sixCount++;
+                            }
+                            totalRuns += jItem.getInt("runs");
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+
+                        }
+                    }
+
+                    if (lastFiveOverScore != -1) {
+                        lastFiveOverScore++;
+                    }
+                     
+                    List<String> params = new ArrayList<>();
+                    params.add(String.valueOf(firstOverScore));
+                    params.add(String.valueOf(sixOverScore));
+                    params.add(String.valueOf(lastFiveOverScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf(sixCount));
+                    params.add(String.valueOf(totalRuns));
+                    params.add(BorC);
+
+                    //System.out.println("Params are: " +params);
 
                     if (inning == 1) {
                         one = new Inning(8, params);
@@ -639,6 +765,8 @@ public class DataFetch {
 
                 Inning one = null;
                 Inning two = null;
+
+/* OLD API
                 for (int inning = 1; inning <= 2; inning++) {
                     String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=" + inning + "&section=cricinfo";
 
@@ -777,6 +905,129 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
+                */
+                for (int inning = 1; inning <= 2; inning++) {
+                    List<JSONObject> ballList = new ArrayList<>();     
+                    int firstOverScore = 0;
+                    int tenOverScore = 0;
+                    int lastFlag = -1;
+                    int lastTenOverScore = -1;
+                    int firstWicketScore = -1;
+                    int fourCount = 0;
+                    int sixCount = 0;
+                    int totalRuns = 0;
+
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+
+                    for (int i = 1; i <= pageCount; i++) {
+                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                        String body;
+                        System.out.println("trying test :" + currentPageUrl);
+                        try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + currentPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(body);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            System.out.println("it:" + it + " url: " + currentPageUrl);
+                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
+                             //   continue;
+                            //}
+                            ballList.add(jItem);
+/*
+                            if (jItem.has("matchWicket")) {
+                                wicketCount++;
+                            }
+*/
+                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
+                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") == 9 && jItem.getInt("ball") == 6){
+                                tenOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") >=40){
+                                lastTenOverScore += jItem.getInt("runs");
+                            }
+
+                           /* ?????
+                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                    lastFlag = 1;
+                                }
+                            }
+*/
+                           /*
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+*/
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+                            if (jItem.getInt("runs") == 4) {
+                                fourCount++;
+                            }
+                            if (jItem.getInt("runs") == 6) {
+                                sixCount++;
+                            }
+                            totalRuns += jItem.getInt("runs");
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+
+                        }
+                    }
+
+                    if (lastTenOverScore != -1) {
+                        lastTenOverScore++;
+                    }
+                     
+                    List<String> params = new ArrayList<>();
+                    params.add(String.valueOf(firstOverScore));
+                    params.add(String.valueOf(tenOverScore));
+                    params.add(String.valueOf(lastTenOverScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf(sixCount));
+                    params.add(String.valueOf(totalRuns));
+                    params.add(BorC);
+
+                    //System.out.println("Params are: " +params);
+
+                    if (inning == 1) {
+                        one = new Inning(8, params);
+                    }
+                    if (inning == 2) {
+                        two = new Inning(8, params);
+                    }
+                }
+
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
                 //Elements ground = matchPage.getElementsByClass("stadium-details");
@@ -993,6 +1244,7 @@ public class DataFetch {
 
                 Inning one = null;
                 Inning two = null;
+                /* OLD API
                 for (int inning = 1; inning <= 2; inning++) {
                     String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -1104,6 +1356,129 @@ public class DataFetch {
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
                     params.add(BorC);
+
+                    if (inning == 1) {
+                        one = new Inning(8, params);
+                    }
+                    if (inning == 2) {
+                        two = new Inning(8, params);
+                    }
+                }
+                */
+                for (int inning = 1; inning <= 2; inning++) {
+                    List<JSONObject> ballList = new ArrayList<>();     
+                    int wicketCount = 0;
+                    int firstOverScore = 0;
+                    int sixOverScore = 0;
+                    int lastFiveOverScore = -1;
+                    int lastFlag = -1;
+                    int firstWicketScore = -1;
+                    int fourCount = 0;
+                    int sixCount = 0;
+                    int totalRuns = 0;
+
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+
+                    for (int i = 1; i <= pageCount; i++) {
+                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                        String body;
+                        System.out.println("trying test :" + currentPageUrl);
+                        try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + currentPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(body);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            System.out.println("it:" + it + " url: " + currentPageUrl);
+                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
+                             //   continue;
+                            //}
+                            ballList.add(jItem);
+
+                            if (jItem.has("matchWicket")) {
+                                wicketCount++;
+                            }
+
+                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
+                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
+                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") >=15){
+                                lastFiveOverScore += jItem.getInt("runs");
+                            }
+
+                           /* ?????
+                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                    lastFlag = 1;
+                                }
+                            }
+*/
+                           /*
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+*/
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+                            if (jItem.getInt("runs") == 4) {
+                                fourCount++;
+                            }
+                            if (jItem.getInt("runs") == 6) {
+                                sixCount++;
+                            }
+                            totalRuns += jItem.getInt("runs");
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+
+                        }
+                    }
+
+                    if (lastFiveOverScore != -1) {
+                        lastFiveOverScore++;
+                    }
+                     
+                    List<String> params = new ArrayList<>();
+                    params.add(String.valueOf(firstOverScore));
+                    params.add(String.valueOf(sixOverScore));
+                    params.add(String.valueOf(lastFiveOverScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf(sixCount));
+                    params.add(String.valueOf(totalRuns));
+                    params.add(BorC);
+
+                    //System.out.println("Params are: " +params);
 
                     if (inning == 1) {
                         one = new Inning(8, params);
@@ -1325,6 +1700,7 @@ public class DataFetch {
 
                 Inning one = null;
                 Inning two = null;
+                /*
                 for (int inning = 1; inning <= 2; inning++) {
                     String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -1434,6 +1810,129 @@ public class DataFetch {
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
                     params.add(BorC);
+
+                    if (inning == 1) {
+                        one = new Inning(8, params);
+                    }
+                    if (inning == 2) {
+                        two = new Inning(8, params);
+                    }
+                }
+                */
+                for (int inning = 1; inning <= 2; inning++) {
+                    List<JSONObject> ballList = new ArrayList<>();     
+                    int wicketCount = 0;
+                    int firstOverScore = 0;
+                    int sixOverScore = 0;
+                    int lastFiveOverScore = -1;
+                    int lastFlag = -1;
+                    int firstWicketScore = -1;
+                    int fourCount = 0;
+                    int sixCount = 0;
+                    int totalRuns = 0;
+
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+
+                    for (int i = 1; i <= pageCount; i++) {
+                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                        String body;
+                        System.out.println("trying test :" + currentPageUrl);
+                        try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + currentPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(body);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            System.out.println("it:" + it + " url: " + currentPageUrl);
+                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
+                             //   continue;
+                            //}
+                            ballList.add(jItem);
+
+                            if (jItem.has("matchWicket")) {
+                                wicketCount++;
+                            }
+
+                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
+                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
+                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") >=15){
+                                lastFiveOverScore += jItem.getInt("runs");
+                            }
+
+                           /* ?????
+                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                    lastFlag = 1;
+                                }
+                            }
+*/
+                           /*
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+*/
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+                            if (jItem.getInt("runs") == 4) {
+                                fourCount++;
+                            }
+                            if (jItem.getInt("runs") == 6) {
+                                sixCount++;
+                            }
+                            totalRuns += jItem.getInt("runs");
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+
+                        }
+                    }
+
+                    if (lastFiveOverScore != -1) {
+                        lastFiveOverScore++;
+                    }
+                     
+                    List<String> params = new ArrayList<>();
+                    params.add(String.valueOf(firstOverScore));
+                    params.add(String.valueOf(sixOverScore));
+                    params.add(String.valueOf(lastFiveOverScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf(sixCount));
+                    params.add(String.valueOf(totalRuns));
+                    params.add(BorC);
+
+                    //System.out.println("Params are: " +params);
 
                     if (inning == 1) {
                         one = new Inning(8, params);
@@ -1655,6 +2154,7 @@ public class DataFetch {
 
                 Inning one = null;
                 Inning two = null;
+                /* OLD API
                 for (int inning = 1; inning <= 2; inning++) {
                     String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -1773,6 +2273,129 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
 
+                }
+                */
+                for (int inning = 1; inning <= 2; inning++) {
+                    List<JSONObject> ballList = new ArrayList<>();     
+                    int wicketCount = 0;
+                    int firstOverScore = 0;
+                    int sixOverScore = 0;
+                    int lastFiveOverScore = -1;
+                    int lastFlag = -1;
+                    int firstWicketScore = -1;
+                    int fourCount = 0;
+                    int sixCount = 0;
+                    int totalRuns = 0;
+
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+
+                    for (int i = 1; i <= pageCount; i++) {
+                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                        String body;
+                        System.out.println("trying test :" + currentPageUrl);
+                        try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + currentPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(body);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            System.out.println("it:" + it + " url: " + currentPageUrl);
+                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
+                             //   continue;
+                            //}
+                            ballList.add(jItem);
+
+                            if (jItem.has("matchWicket")) {
+                                wicketCount++;
+                            }
+
+                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
+                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
+                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") >=15){
+                                lastFiveOverScore += jItem.getInt("runs");
+                            }
+
+                           /* ?????
+                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                    lastFlag = 1;
+                                }
+                            }
+*/
+                           /*
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+*/
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+                            if (jItem.getInt("runs") == 4) {
+                                fourCount++;
+                            }
+                            if (jItem.getInt("runs") == 6) {
+                                sixCount++;
+                            }
+                            totalRuns += jItem.getInt("runs");
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+
+                        }
+                    }
+
+                    if (lastFiveOverScore != -1) {
+                        lastFiveOverScore++;
+                    }
+                     
+                    List<String> params = new ArrayList<>();
+                    params.add(String.valueOf(firstOverScore));
+                    params.add(String.valueOf(sixOverScore));
+                    params.add(String.valueOf(lastFiveOverScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf(sixCount));
+                    params.add(String.valueOf(totalRuns));
+                    params.add(BorC);
+
+                    //System.out.println("Params are: " +params);
+
+                    if (inning == 1) {
+                        one = new Inning(8, params);
+                    }
+                    if (inning == 2) {
+                        two = new Inning(8, params);
+                    }
                 }
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
@@ -1983,6 +2606,7 @@ public class DataFetch {
 
                 Inning one = null;
                 Inning two = null;
+                /*
                 for (int inning = 1; inning <= 2; inning++) {
                     String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -2093,6 +2717,129 @@ public class DataFetch {
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(totalRuns));
                     params.add(BorC);
+
+                    if (inning == 1) {
+                        one = new Inning(8, params);
+                    }
+                    if (inning == 2) {
+                        two = new Inning(8, params);
+                    }
+                }
+                */
+                for (int inning = 1; inning <= 2; inning++) {
+                    List<JSONObject> ballList = new ArrayList<>();     
+                    int wicketCount = 0;
+                    int firstOverScore = 0;
+                    int sixOverScore = 0;
+                    int lastFiveOverScore = -1;
+                    int lastFlag = -1;
+                    int firstWicketScore = -1;
+                    int fourCount = 0;
+                    int sixCount = 0;
+                    int totalRuns = 0;
+
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+
+                    for (int i = 1; i <= pageCount; i++) {
+                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                        String body;
+                        System.out.println("trying test :" + currentPageUrl);
+                        try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + currentPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(body);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            System.out.println("it:" + it + " url: " + currentPageUrl);
+                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
+                             //   continue;
+                            //}
+                            ballList.add(jItem);
+
+                            if (jItem.has("matchWicket")) {
+                                wicketCount++;
+                            }
+
+                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
+                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
+                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") >=15){
+                                lastFiveOverScore += jItem.getInt("runs");
+                            }
+
+                           /* ?????
+                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                    lastFlag = 1;
+                                }
+                            }
+*/
+                           /*
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+*/
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+                            if (jItem.getInt("runs") == 4) {
+                                fourCount++;
+                            }
+                            if (jItem.getInt("runs") == 6) {
+                                sixCount++;
+                            }
+                            totalRuns += jItem.getInt("runs");
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+
+                        }
+                    }
+
+                    if (lastFiveOverScore != -1) {
+                        lastFiveOverScore++;
+                    }
+                     
+                    List<String> params = new ArrayList<>();
+                    params.add(String.valueOf(firstOverScore));
+                    params.add(String.valueOf(sixOverScore));
+                    params.add(String.valueOf(lastFiveOverScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf(sixCount));
+                    params.add(String.valueOf(totalRuns));
+                    params.add(BorC);
+
+                    //System.out.println("Params are: " +params);
 
                     if (inning == 1) {
                         one = new Inning(8, params);
@@ -2316,6 +3063,7 @@ public class DataFetch {
 
                 Inning one = null;
                 Inning two = null;
+                /* OLD API
                 for (int inning = 1; inning <= 2; inning++) {
                     String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -2434,6 +3182,128 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
 
+                }
+                */
+                for (int inning = 1; inning <= 2; inning++) {
+                    List<JSONObject> ballList = new ArrayList<>();     
+                    int wicketCount = 0;
+                    int firstOverScore = 0;
+                    int sixOverScore = 0;
+                    int lastFiveOverScore = -1;
+                    int lastFlag = -1;
+                    int firstWicketScore = -1;
+                    int fourCount = 0;
+                    int sixCount = 0;
+                    int totalRuns = 0;
+
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+
+                    for (int i = 1; i <= pageCount; i++) {
+                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                        String body;
+                        System.out.println("trying test :" + currentPageUrl);
+                        try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + currentPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(body);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            System.out.println("it:" + it + " url: " + currentPageUrl);
+                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
+                             //   continue;
+                            //}
+                            ballList.add(jItem);
+
+                            if (jItem.has("matchWicket")) {
+                                wicketCount++;
+                            }
+
+                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
+                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
+                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if(jItem.getInt("over") >=15){
+                                lastFiveOverScore += jItem.getInt("runs");
+                            }
+
+                           /* ?????
+                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                    lastFlag = 1;
+                                }
+                            }
+*/
+                           /* if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") && afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+*/
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+                            if (jItem.getInt("runs") == 4) {
+                                fourCount++;
+                            }
+                            if (jItem.getInt("runs") == 6) {
+                                sixCount++;
+                            }
+                            totalRuns += jItem.getInt("runs");
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+
+                        }
+                    }
+
+                    if (lastFiveOverScore != -1) {
+                        lastFiveOverScore++;
+                    }
+                     
+                    List<String> params = new ArrayList<>();
+                    params.add(String.valueOf(firstOverScore));
+                    params.add(String.valueOf(sixOverScore));
+                    params.add(String.valueOf(lastFiveOverScore));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf(sixCount));
+                    params.add(String.valueOf(totalRuns));
+                    params.add(BorC);
+
+                    //System.out.println("Params are: " +params);
+
+                    if (inning == 1) {
+                        one = new Inning(8, params);
+                    }
+                    if (inning == 2) {
+                        two = new Inning(8, params);
+                    }
                 }
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
@@ -2682,7 +3552,7 @@ public class DataFetch {
                 testInning two = null;
                 testInning three = null;
                 testInning four = null;
-
+/*
                 for (int inning = 1; inning <= 4; inning++) {
                     List<JSONObject> ballList = new ArrayList<>();
                     int totalRuns = 0;
@@ -2756,6 +3626,107 @@ public class DataFetch {
                                 sixCount++;
                             }
                             totalRuns += jItem.getInt("scoreValue");
+                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+
+                        }
+                    }
+                    
+                    if(afterFifthWicketScore == -1){afterFifthWicketScore++;}
+                    List<String> params = new ArrayList<>();
+                    params.add(String.valueOf(totalRuns));
+                    params.add(String.valueOf(sixCount));
+                    params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                    params.add(String.valueOf(totalRuns - afterFifthWicketScore));
+                    params.add(BorC);
+                    //System.out.println("Params are: " +params);
+
+                    if (inning == 1) {
+                        one = new testInning(6, params);
+
+                    } else if (inning == 2) {
+                        two = new testInning(6, params);
+
+                    } else if (inning == 3) {
+                        three = new testInning(6, params);
+                    } else if (inning == 4) {
+                        four = new testInning(6, params);
+                    }
+
+                }
+                */
+                for (int inning = 1; inning <= 4; inning++) {
+                    List<JSONObject> ballList = new ArrayList<>();
+                    int totalRuns = 0;
+                    int firstWicketScore = -1;
+                    int sixCount = 0;
+                    int afterFifthWicketScore = -1;
+                    int fourCount = 0;
+
+                    int wicketCount = 0;
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+
+                    for (int i = 1; i <= pageCount; i++) {
+                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                        String body;
+                        System.out.println("trying test :" + currentPageUrl);
+                        try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + currentPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(body);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            System.out.println("it:" + it + " url: " + currentPageUrl);
+                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
+                             //   continue;
+                            //}
+                            ballList.add(jItem);
+
+                            if (jItem.has("matchWicket")) {
+                                wicketCount++;
+                                System.out.println("CHECK HERE:" + homeTeamName + " vs " + awayTeamName + "  " + wicketCount + "    " + jItem.getJSONObject("currentInning").getInt("runs"));
+                            }
+
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") && afterFifthWicketScore == -1) {
+                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+
+                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                            }
+                            if (jItem.getInt("runs") == 4) {
+                                fourCount++;
+                            }
+                            if (jItem.getInt("runs") == 6) {
+                                sixCount++;
+                            }
+                            totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
 
                         }
