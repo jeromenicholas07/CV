@@ -204,6 +204,14 @@ public class DataFetch {
 
 
 */
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                Element checkLive = topTabs.select("a").first();
+                //System.out.println("THIS IS :" + checkLive.text());
+                if(checkLive.text() == "Live"){
+                    unloaded.put("LIVE:" + mId, url);
+                    ret = false;
+                    continue MATCHLABEL;
+                }
 
                 Elements scores = matchPage.getElementsByClass("score-run");
                 String homeScore = scores.first().text();
@@ -686,6 +694,15 @@ public class DataFetch {
                     continue MATCHLABEL;
                 }
 */
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                Element checkLive = topTabs.select("a").first();
+                //System.out.println("THIS IS :" + checkLive.text());
+                if(checkLive.text() == "Live"){
+                    unloaded.put("LIVE:" + mId, url);
+                    ret = false;
+                    continue MATCHLABEL;
+                }
+                
                 //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 //String tossResult = detailsColumn.get(1).text();
@@ -1165,6 +1182,15 @@ public class DataFetch {
                     continue MATCHLABEL;
                 }
 */
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                Element checkLive = topTabs.select("a").first();
+                //System.out.println("THIS IS :" + checkLive.text());
+                if(checkLive.text() == "Live"){
+                    unloaded.put("LIVE:" + mId, url);
+                    ret = false;
+                    continue MATCHLABEL;
+                }
+                
                 //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 //String tossResult = detailsColumn.get(1).text();
@@ -1619,7 +1645,15 @@ public class DataFetch {
                     continue MATCHLABEL;
                 }
 */
-
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                Element checkLive = topTabs.select("a").first();
+                //System.out.println("THIS IS :" + checkLive.text());
+                if(checkLive.text() == "Live"){
+                    unloaded.put("LIVE:" + mId, url);
+                    ret = false;
+                    continue MATCHLABEL;
+                }
+                
                 //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 //String tossResult = detailsColumn.get(1).text();
@@ -2074,7 +2108,15 @@ public class DataFetch {
                     continue MATCHLABEL;
                 }
 */
-
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                Element checkLive = topTabs.select("a").first();
+                //System.out.println("THIS IS :" + checkLive.text());
+                if(checkLive.text() == "Live"){
+                    unloaded.put("LIVE:" + mId, url);
+                    ret = false;
+                    continue MATCHLABEL;
+                }
+                
                 //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 //String tossResult = detailsColumn.get(1).text();
@@ -2529,6 +2571,15 @@ public class DataFetch {
                     continue MATCHLABEL;
                 }
 */
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                Element checkLive = topTabs.select("a").first();
+                //System.out.println("THIS IS :" + checkLive.text());
+                if(checkLive.text() == "Live"){
+                    unloaded.put("LIVE:" + mId, url);
+                    ret = false;
+                    continue MATCHLABEL;
+                }
+                
                 //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 //String tossResult = detailsColumn.get(1).text();
@@ -2983,6 +3034,16 @@ public class DataFetch {
                     continue MATCHLABEL;
                 }
 */
+                    
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                Element checkLive = topTabs.select("a").first();
+                //System.out.println("THIS IS :" + checkLive.text());
+                if(checkLive.text() == "Live"){
+                    unloaded.put("LIVE:" + mId, url);
+                    ret = false;
+                    continue MATCHLABEL;
+                }
+                
                 //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 //String tossResult = detailsColumn.get(1).text();
@@ -3481,8 +3542,16 @@ public class DataFetch {
                     ret = false;
                     continue MATCHLABEL;
                 }
-*/
-
+*/              
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                Element checkLive = topTabs.select("a").first();
+                //System.out.println("THIS IS :" + checkLive.text());
+                if(checkLive.text() == "Live"){
+                    unloaded.put("LIVE:" + mId, url);
+                    ret = false;
+                    continue MATCHLABEL;
+                }
+            
                 //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 
@@ -3710,7 +3779,7 @@ public class DataFetch {
 
                             if (jItem.has("matchWicket")) {
                                 wicketCount++;
-                                System.out.println("CHECK HERE:" + homeTeamName + " vs " + awayTeamName + "  " + wicketCount + "    " + jItem.getJSONObject("currentInning").getInt("runs"));
+                                //System.out.println("CHECK HERE:" + homeTeamName + " vs " + awayTeamName + "  " + wicketCount + "    " + jItem.getJSONObject("currentInning").getInt("runs"));
                             }
 
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") && afterFifthWicketScore == -1) {
