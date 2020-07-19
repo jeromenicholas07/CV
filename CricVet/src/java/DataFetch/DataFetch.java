@@ -503,13 +503,13 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           /* ?????
+                           
                            if (jItem.getInt("over") == 15 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
                             }
-*/
+
                            /*
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
                                 afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
@@ -532,6 +532,10 @@ public class DataFetch {
 
                     if (lastFiveOverScore != -1) {
                         lastFiveOverScore++;
+                    }
+                    
+                    if (lastFlag == 1) {
+                        lastFiveOverScore = -1;
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -994,13 +998,11 @@ public class DataFetch {
                                 lastTenOverScore += jItem.getInt("runs");
                             }
 
-                           /* ?????
-                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                           if (jItem.getInt("over") == 40 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
                             }
-*/
                            /*
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
                                 afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
@@ -1023,6 +1025,9 @@ public class DataFetch {
 
                     if (lastTenOverScore != -1) {
                         lastTenOverScore++;
+                    }
+                    if (lastFlag == 1) {
+                        lastTenOverScore = -1;
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -1463,13 +1468,11 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           /* ?????
                            if (jItem.getInt("over") == 15 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
                             }
-*/
                            /*
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
                                 afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
@@ -1492,6 +1495,10 @@ public class DataFetch {
 
                     if (lastFiveOverScore != -1) {
                         lastFiveOverScore++;
+                    }
+                    
+                    if (lastFlag == 1) {
+                        lastFiveOverScore = -1;
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -1925,13 +1932,11 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           /* ?????
                            if (jItem.getInt("over") == 15 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
                             }
-*/
                            /*
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
                                 afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
@@ -1954,6 +1959,10 @@ public class DataFetch {
 
                     if (lastFiveOverScore != -1) {
                         lastFiveOverScore++;
+                    }
+                    
+                    if (lastFlag == 1) {
+                        lastFiveOverScore = -1;
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -2389,13 +2398,11 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           /* ?????
                            if (jItem.getInt("over") == 15 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
                             }
-*/
                            /*
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
                                 afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
@@ -2418,6 +2425,9 @@ public class DataFetch {
 
                     if (lastFiveOverScore != -1) {
                         lastFiveOverScore++;
+                    }
+                    if (lastFlag == 1) {
+                        lastFiveOverScore = -1;
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -2849,13 +2859,11 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           /* ?????
                            if (jItem.getInt("over") == 15 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
                             }
-*/
                            /*
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
                                 afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
@@ -2878,6 +2886,10 @@ public class DataFetch {
 
                     if (lastFiveOverScore != -1) {
                         lastFiveOverScore++;
+                    }
+                    
+                    if (lastFlag == 1) {
+                        lastFiveOverScore = -1;
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -3317,13 +3329,11 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           /* ?????
                            if (jItem.getInt("over") == 15 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
                             }
-*/
                            /* if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") && afterFifthWicketScore == -1) {
                                 afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
@@ -3345,6 +3355,9 @@ public class DataFetch {
 
                     if (lastFiveOverScore != -1) {
                         lastFiveOverScore++;
+                    }
+                    if (lastFlag == 1) {
+                        lastFiveOverScore = -1;
                     }
                      
                     List<String> params = new ArrayList<>();
