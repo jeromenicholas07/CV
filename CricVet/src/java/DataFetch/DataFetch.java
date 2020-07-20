@@ -519,10 +519,25 @@ public class DataFetch {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
                             if (jItem.getInt("runs") == 4) {
-                                fourCount++;
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" FOUR")){
+                                    //System.out.println("CONTAINS FOUR");
+                                    fourCount++;                            
+                        }
+                                /*
+                                else{
+                                    System.out.println("DOES NOT CONTAIN FOUR");
+                                }
+                                */
                             }
-                            if (jItem.getInt("runs") == 6) {
-                                sixCount++;
+                                
+                                
+                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" SIX")){
+                                    //System.out.println("CONTAINS SIX");
+                                    sixCount++;                            
+                        }
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -1012,10 +1027,25 @@ public class DataFetch {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
                             if (jItem.getInt("runs") == 4) {
-                                fourCount++;
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" FOUR")){
+                                    //System.out.println("CONTAINS FOUR");
+                                    fourCount++;                            
+                        }
+                                /*
+                                else{
+                                    System.out.println("DOES NOT CONTAIN FOUR");
+                                }
+                                */
                             }
-                            if (jItem.getInt("runs") == 6) {
-                                sixCount++;
+                                
+                                
+                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" SIX")){
+                                    //System.out.println("CONTAINS SIX");
+                                    sixCount++;                            
+                        }
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -1482,10 +1512,25 @@ public class DataFetch {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
                             if (jItem.getInt("runs") == 4) {
-                                fourCount++;
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" FOUR")){
+                                    //System.out.println("CONTAINS FOUR");
+                                    fourCount++;                            
+                        }
+                                /*
+                                else{
+                                    System.out.println("DOES NOT CONTAIN FOUR");
+                                }
+                                */
                             }
-                            if (jItem.getInt("runs") == 6) {
-                                sixCount++;
+                                
+                                
+                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" SIX")){
+                                    //System.out.println("CONTAINS SIX");
+                                    sixCount++;                            
+                        }
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -1946,10 +1991,25 @@ public class DataFetch {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
                             if (jItem.getInt("runs") == 4) {
-                                fourCount++;
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" FOUR")){
+                                    //System.out.println("CONTAINS FOUR");
+                                    fourCount++;                            
+                        }
+                                /*
+                                else{
+                                    System.out.println("DOES NOT CONTAIN FOUR");
+                                }
+                                */
                             }
-                            if (jItem.getInt("runs") == 6) {
-                                sixCount++;
+                                
+                                
+                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" SIX")){
+                                    //System.out.println("CONTAINS SIX");
+                                    sixCount++;                            
+                        }
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -2412,10 +2472,25 @@ public class DataFetch {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
                             if (jItem.getInt("runs") == 4) {
-                                fourCount++;
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" FOUR")){
+                                    //System.out.println("CONTAINS FOUR");
+                                    fourCount++;                            
+                        }
+                                /*
+                                else{
+                                    System.out.println("DOES NOT CONTAIN FOUR");
+                                }
+                                */
                             }
-                            if (jItem.getInt("runs") == 6) {
-                                sixCount++;
+                                
+                                
+                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" SIX")){
+                                    //System.out.println("CONTAINS SIX");
+                                    sixCount++;                            
+                        }
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -2873,10 +2948,25 @@ public class DataFetch {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
                             if (jItem.getInt("runs") == 4) {
-                                fourCount++;
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" FOUR")){
+                                    //System.out.println("CONTAINS FOUR");
+                                    fourCount++;                            
+                        }
+                                /*
+                                else{
+                                    System.out.println("DOES NOT CONTAIN FOUR");
+                                }
+                                */
                             }
-                            if (jItem.getInt("runs") == 6) {
-                                sixCount++;
+                                
+                                
+                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" SIX")){
+                                    //System.out.println("CONTAINS SIX");
+                                    sixCount++;                            
+                        }
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -3342,10 +3432,25 @@ public class DataFetch {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
                             if (jItem.getInt("runs") == 4) {
-                                fourCount++;
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" FOUR")){
+                                    //System.out.println("CONTAINS FOUR");
+                                    fourCount++;                            
+                        }
+                                /*
+                                else{
+                                    System.out.println("DOES NOT CONTAIN FOUR");
+                                }
+                                */
                             }
-                            if (jItem.getInt("runs") == 6) {
-                                sixCount++;
+                                
+                                
+                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" SIX")){
+                                    //System.out.println("CONTAINS SIX");
+                                    sixCount++;                            
+                        }
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -3803,10 +3908,25 @@ public class DataFetch {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
                             if (jItem.getInt("runs") == 4) {
-                                fourCount++;
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" FOUR")){
+                                    //System.out.println("CONTAINS FOUR");
+                                    fourCount++;                            
+                        }
+                                /*
+                                else{
+                                    System.out.println("DOES NOT CONTAIN FOUR");
+                                }
+                                */
                             }
-                            if (jItem.getInt("runs") == 6) {
-                                sixCount++;
+                                
+                                
+                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
+                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
+                                if(jItem.getString("shortText").contains(" SIX")){
+                                    //System.out.println("CONTAINS SIX");
+                                    sixCount++;                            
+                        }
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
