@@ -56,26 +56,30 @@
                                     <th>Toss
                     
                     
-                                    <th>Inning runs                
+                                    <th>Inning runs 
+                                    <th>Fours 
                                     <th>Sixes
                                     <th>1st Wicket
                                     <th>Runs after 5th Wicket
                     
                     
                    
-                                    <th>Inning runs                
+                                    <th>Inning runs
+                                    <th>Fours
                                     <th>Sixes
                                     <th>1st Wicket
                                     <th>Runs after 5th Wicket
                     
                   
-                                    <th>Inning runs                
+                                    <th>Inning runs
+                                    <th>Fours
                                     <th>Sixes
                                     <th>1st Wicket
                                     <th>Runs after 5th Wicket
                     
                     
-                                    <th>Inning runs                
+                                    <th>Inning runs  
+                                    <th>Fours
                                     <th>Sixes
                                     <th>1st Wicket
                                     <th>Runs after 5th Wicket
@@ -100,21 +104,25 @@
                     <td>${match.getAwayTeam()}
                     <td>${match.getTossWinner()}
                     <td>${match.getInningOne1().getTotalruns()}
+                    <td>${match.getInningOne1().getFours()}
                     <td>${match.getInningOne1().getSixes()}
                     <td>${match.getInningOne1().getFirstwicket()}
                     <td>${match.getInningOne1().getRuns5wicket()}
                         
                     <td>${match.getInningTwo1().getTotalruns()}
+                    <td>${match.getInningOne1().getFours()}
                     <td>${match.getInningTwo1().getSixes()}
                     <td>${match.getInningTwo1().getFirstwicket()}
                     <td>${match.getInningTwo1().getRuns5wicket()}
                         
                     <td>${match.getInningOne2().getTotalruns()}
+                    <td>${match.getInningOne1().getFours()}
                     <td>${match.getInningOne2().getSixes()}
                     <td>${match.getInningOne2().getFirstwicket()}
                     <td>${match.getInningOne2().getRuns5wicket()}
                         
                     <td>${match.getInningTwo2().getTotalruns()}
+                    <td>${match.getInningOne1().getFours()}
                     <td>${match.getInningTwo2().getSixes()}
                     <td>${match.getInningTwo2().getFirstwicket()}
                     <td>${match.getInningTwo2().getRuns5wicket()}

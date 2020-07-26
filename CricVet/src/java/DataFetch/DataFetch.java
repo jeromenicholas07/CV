@@ -432,6 +432,8 @@ public class DataFetch {
                 //NEW API
 
                 for (int inning = 1; inning <= 2; inning++) {
+                    String fourcheck = " FOUR";
+                    String sixcheck = " SIX";
                     List<JSONObject> ballList = new ArrayList<>();     
                     int wicketCount = 0;
                     int firstOverScore = 0;
@@ -504,7 +506,7 @@ public class DataFetch {
                             }
 
                            
-                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
@@ -518,27 +520,13 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if (jItem.getInt("runs") == 4) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" FOUR")){
-                                    //System.out.println("CONTAINS FOUR");
-                                    fourCount++;                            
-                        }
-                                /*
-                                else{
-                                    System.out.println("DOES NOT CONTAIN FOUR");
-                                }
-                                */
+                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                fourCount++;
                             }
-                                
-                                
-                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" SIX")){
-                                    //System.out.println("CONTAINS SIX");
-                                    sixCount++;                            
-                        }
+                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                sixCount++;
                             }
+                           
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
 
@@ -551,6 +539,15 @@ public class DataFetch {
                     
                     if (lastFlag == 1) {
                         lastFiveOverScore = -1;
+                    }
+
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -943,6 +940,8 @@ public class DataFetch {
                 }
                 */
                 for (int inning = 1; inning <= 2; inning++) {
+                    String fourcheck = " FOUR";
+                    String sixcheck = " SIX";                   
                     List<JSONObject> ballList = new ArrayList<>();     
                     int firstOverScore = 0;
                     int tenOverScore = 0;
@@ -1013,7 +1012,7 @@ public class DataFetch {
                                 lastTenOverScore += jItem.getInt("runs");
                             }
 
-                           if (jItem.getInt("over") == 40 && lastFlag == -1) {
+                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
@@ -1026,26 +1025,11 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if (jItem.getInt("runs") == 4) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" FOUR")){
-                                    //System.out.println("CONTAINS FOUR");
-                                    fourCount++;                            
-                        }
-                                /*
-                                else{
-                                    System.out.println("DOES NOT CONTAIN FOUR");
-                                }
-                                */
+                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                fourCount++;
                             }
-                                
-                                
-                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" SIX")){
-                                    //System.out.println("CONTAINS SIX");
-                                    sixCount++;                            
-                        }
+                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                sixCount++;
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -1058,6 +1042,15 @@ public class DataFetch {
                     }
                     if (lastFlag == 1) {
                         lastTenOverScore = -1;
+                    }
+
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -1427,6 +1420,8 @@ public class DataFetch {
                 }
                 */
                 for (int inning = 1; inning <= 2; inning++) {
+                    String fourcheck = " FOUR";
+                    String sixcheck = " SIX";
                     List<JSONObject> ballList = new ArrayList<>();     
                     int wicketCount = 0;
                     int firstOverScore = 0;
@@ -1498,7 +1493,7 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
@@ -1511,26 +1506,11 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if (jItem.getInt("runs") == 4) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" FOUR")){
-                                    //System.out.println("CONTAINS FOUR");
-                                    fourCount++;                            
-                        }
-                                /*
-                                else{
-                                    System.out.println("DOES NOT CONTAIN FOUR");
-                                }
-                                */
+                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                fourCount++;
                             }
-                                
-                                
-                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" SIX")){
-                                    //System.out.println("CONTAINS SIX");
-                                    sixCount++;                            
-                        }
+                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                sixCount++;
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -1545,6 +1525,15 @@ public class DataFetch {
                     if (lastFlag == 1) {
                         lastFiveOverScore = -1;
                     }
+
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }	
                      
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(firstOverScore));
@@ -1906,6 +1895,8 @@ public class DataFetch {
                 }
                 */
                 for (int inning = 1; inning <= 2; inning++) {
+                    String fourcheck = " FOUR";
+                    String sixcheck = " SIX";
                     List<JSONObject> ballList = new ArrayList<>();     
                     int wicketCount = 0;
                     int firstOverScore = 0;
@@ -1977,7 +1968,7 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
@@ -1990,26 +1981,11 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if (jItem.getInt("runs") == 4) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" FOUR")){
-                                    //System.out.println("CONTAINS FOUR");
-                                    fourCount++;                            
-                        }
-                                /*
-                                else{
-                                    System.out.println("DOES NOT CONTAIN FOUR");
-                                }
-                                */
+                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                fourCount++;
                             }
-                                
-                                
-                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" SIX")){
-                                    //System.out.println("CONTAINS SIX");
-                                    sixCount++;                            
-                        }
+                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                sixCount++;
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -2023,6 +1999,15 @@ public class DataFetch {
                     
                     if (lastFlag == 1) {
                         lastFiveOverScore = -1;
+                    }
+
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -2387,6 +2372,8 @@ public class DataFetch {
                 }
                 */
                 for (int inning = 1; inning <= 2; inning++) {
+                    String fourcheck = " FOUR";
+                    String sixcheck = " SIX";
                     List<JSONObject> ballList = new ArrayList<>();     
                     int wicketCount = 0;
                     int firstOverScore = 0;
@@ -2458,7 +2445,7 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
@@ -2471,26 +2458,11 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if (jItem.getInt("runs") == 4) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" FOUR")){
-                                    //System.out.println("CONTAINS FOUR");
-                                    fourCount++;                            
-                        }
-                                /*
-                                else{
-                                    System.out.println("DOES NOT CONTAIN FOUR");
-                                }
-                                */
+                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                fourCount++;
                             }
-                                
-                                
-                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" SIX")){
-                                    //System.out.println("CONTAINS SIX");
-                                    sixCount++;                            
-                        }
+                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                sixCount++;
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -2503,6 +2475,15 @@ public class DataFetch {
                     }
                     if (lastFlag == 1) {
                         lastFiveOverScore = -1;
+                    }
+
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -2863,6 +2844,8 @@ public class DataFetch {
                 }
                 */
                 for (int inning = 1; inning <= 2; inning++) {
+                    String fourcheck = " FOUR";
+                    String sixcheck = " SIX";
                     List<JSONObject> ballList = new ArrayList<>();     
                     int wicketCount = 0;
                     int firstOverScore = 0;
@@ -2934,7 +2917,7 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
@@ -2947,26 +2930,11 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if (jItem.getInt("runs") == 4) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" FOUR")){
-                                    //System.out.println("CONTAINS FOUR");
-                                    fourCount++;                            
-                        }
-                                /*
-                                else{
-                                    System.out.println("DOES NOT CONTAIN FOUR");
-                                }
-                                */
+                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                fourCount++;
                             }
-                                
-                                
-                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" SIX")){
-                                    //System.out.println("CONTAINS SIX");
-                                    sixCount++;                            
-                        }
+                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                sixCount++;
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -2980,6 +2948,15 @@ public class DataFetch {
                     
                     if (lastFlag == 1) {
                         lastFiveOverScore = -1;
+                    }
+
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -3348,6 +3325,8 @@ public class DataFetch {
                 }
                 */
                 for (int inning = 1; inning <= 2; inning++) {
+                    String fourcheck = " FOUR";
+                    String sixcheck = " SIX";
                     List<JSONObject> ballList = new ArrayList<>();     
                     int wicketCount = 0;
                     int firstOverScore = 0;
@@ -3419,7 +3398,7 @@ public class DataFetch {
                                 lastFiveOverScore += jItem.getInt("runs");
                             }
 
-                           if (jItem.getInt("over") == 15 && lastFlag == -1) {
+                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
                                 if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
                                     lastFlag = 1;
                                 }
@@ -3431,26 +3410,11 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if (jItem.getInt("runs") == 4) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" FOUR")){
-                                    //System.out.println("CONTAINS FOUR");
-                                    fourCount++;                            
-                        }
-                                /*
-                                else{
-                                    System.out.println("DOES NOT CONTAIN FOUR");
-                                }
-                                */
+                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                fourCount++;
                             }
-                                
-                                
-                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" SIX")){
-                                    //System.out.println("CONTAINS SIX");
-                                    sixCount++;                            
-                        }
+                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                sixCount++;
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
@@ -3463,6 +3427,15 @@ public class DataFetch {
                     }
                     if (lastFlag == 1) {
                         lastFiveOverScore = -1;
+                    }
+
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else{
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
                     }
                      
                     List<String> params = new ArrayList<>();
@@ -3843,6 +3816,8 @@ public class DataFetch {
                 }
                 */
                 for (int inning = 1; inning <= 4; inning++) {
+                    String fourcheck = " FOUR";
+                    String sixcheck = " SIX";
                     List<JSONObject> ballList = new ArrayList<>();
                     int totalRuns = 0;
                     int firstWicketScore = -1;
@@ -3907,40 +3882,50 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if (jItem.getInt("runs") == 4) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" FOUR")){
-                                    //System.out.println("CONTAINS FOUR");
-                                    fourCount++;                            
-                        }
-                                /*
-                                else{
-                                    System.out.println("DOES NOT CONTAIN FOUR");
-                                }
-                                */
+                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                fourCount++;
                             }
-                                
-                                
-                            if (jItem.getInt("runs") == 6 || jItem.getInt("runs") == 7 ) {
-                                //System.out.println("SHORTTEXT : " + jItem.getString("shortText"));
-                                if(jItem.getString("shortText").contains(" SIX")){
-                                    //System.out.println("CONTAINS SIX");
-                                    sixCount++;                            
-                        }
+                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                sixCount++;
                             }
                             totalRuns += jItem.getInt("runs");
                             //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
 
                         }
                     }
-                    
+
+/*
+                    if(inning == 1){
+                        StringTokenizer st = new StringTokenizer(homeScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else if(inning==2){
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else if(inning==3){
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+                    else if(inning==4){
+                        StringTokenizer st = new StringTokenizer(awayScore, " /");
+                        totalRuns = Integer.parseInt(st.nextToken());
+                    }
+*/
+                    if(afterFifthWicketScore == -1){
+                        afterFifthWicketScore++;
+                    }
+                    else{
+                        afterFifthWicketScore = totalRuns - afterFifthWicketScore;
+                    }
+
                     if(afterFifthWicketScore == -1){afterFifthWicketScore++;}
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(totalRuns));
                     params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(fourCount));
                     params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(totalRuns - afterFifthWicketScore));
+                    params.add(String.valueOf(afterFifthWicketScore));
                     params.add(BorC);
                     //System.out.println("Params are: " +params);
 
