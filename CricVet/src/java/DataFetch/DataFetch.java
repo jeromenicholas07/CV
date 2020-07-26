@@ -207,7 +207,7 @@ public class DataFetch {
                 Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
                 Element checkLive = topTabs.select("a").first();
                 //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text() == "Live"){
+                if(checkLive.text().contains("Live")){
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
@@ -713,7 +713,7 @@ public class DataFetch {
                 Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
                 Element checkLive = topTabs.select("a").first();
                 //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text() == "Live"){
+                if(checkLive.text().contains("Live")){
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
@@ -1213,7 +1213,7 @@ public class DataFetch {
                 Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
                 Element checkLive = topTabs.select("a").first();
                 //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text() == "Live"){
+                if(checkLive.text().contains("Live")){
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
@@ -1689,7 +1689,7 @@ public class DataFetch {
                 Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
                 Element checkLive = topTabs.select("a").first();
                 //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text() == "Live"){
+                if(checkLive.text().contains("Live")){
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
@@ -2165,7 +2165,7 @@ public class DataFetch {
                 Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
                 Element checkLive = topTabs.select("a").first();
                 //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text() == "Live"){
+                if(checkLive.text().contains("Live")){
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
@@ -2640,7 +2640,7 @@ public class DataFetch {
                 Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
                 Element checkLive = topTabs.select("a").first();
                 //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text() == "Live"){
+                if(checkLive.text().contains("Live")){
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
@@ -3117,7 +3117,7 @@ public class DataFetch {
                 Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
                 Element checkLive = topTabs.select("a").first();
                 //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text() == "Live"){
+                if(checkLive.text().contains("Live")){
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
@@ -3637,7 +3637,8 @@ public class DataFetch {
                 Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
                 Element checkLive = topTabs.select("a").first();
                 //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text() == "Live"){
+                if(checkLive.text().contains("Live")){ 
+                    System.out.println("MATCH IS LIVE");
                     unloaded.put("LIVE:" + mId, url);
                     ret = false;
                     continue MATCHLABEL;
