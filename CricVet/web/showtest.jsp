@@ -42,10 +42,10 @@
             
                     <tr class=thead-dark>
                     <th colspan=4>
-                    <th colspan=4>1st Inning  
-                    <th colspan=4>2nd Inning  
-                    <th colspan=4>3rd Inning  
-                        <th colspan=4>4th Inning  
+                    <th colspan=5>1st Inning  
+                    <th colspan=5>2nd Inning  
+                    <th colspan=5>3rd Inning  
+                        <th colspan=5>4th Inning  
                     <th colspan=4> Result 
                     <th colspan="2">Home/Away
                     </tr>

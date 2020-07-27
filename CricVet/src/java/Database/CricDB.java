@@ -34,6 +34,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2477,6 +2478,7 @@ public class CricDB extends BaseDAO {
         ResultSet rs = null;
 
         String op = "(N/A)";
+        Timestamp lastDate = new Timestamp(0);
         try {
             con = getConnection();
             String sql = "select * from APP.MATCHES order by MATCHDATE DESC FETCH FIRST 1 ROW ONLY";
@@ -2489,7 +2491,32 @@ public class CricDB extends BaseDAO {
                 String awayTeam = rs.getString("awayteam");
                 Timestamp matchDate = rs.getTimestamp("matchdate");
                 
+                lastDate = matchDate;
                 op = matchDate.toLocalDateTime().format(DateTimeFormatter.ofPattern("d MMM uuuu"));
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        
+        try {
+            con = getConnection();
+            String sql = "select * from APP.TESTMATCH order by MATCHDATE DESC FETCH FIRST 1 ROW ONLY";
+            stmt = con.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Date matchDate = rs.getDate("matchdate");
+                
+                if(matchDate.after(lastDate)){
+                    op = matchDate.toLocalDate().format(DateTimeFormatter.ofPattern("d MMM uuuu"));
+                }
+                
             }
 
             con.close();
