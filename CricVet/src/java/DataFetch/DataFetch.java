@@ -14,6 +14,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -301,7 +302,7 @@ public class DataFetch {
  */               
                 
 /* USE OLD API FOR MATCHDATE
-*/
+
                 
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -324,6 +325,50 @@ public class DataFetch {
                     ret = false;
                     unloaded.put("Date parse error", url);
                     continue;
+                }
+*/
+                LocalDateTime matchDate = LocalDateTime.now();
+                LocalDate matchDate1 = LocalDate.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+                String matchDateString = null;
+                String timeString = null;
+                
+                for(int i = 0; i<11; i++){
+                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                        System.out.println(matchDateElement);
+                        String[] parts = matchDateElement.split(" ");
+                        //String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
+                        
+                    }
+
+                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
+                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
+                   		System.out.println(timeElement);
+                   		String[] parts = timeElement.split(" ");
+                   		String[] parts2 = parts[5].split("\\.");
+                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
+                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
+
+
+                   }
+                    
+                }
+
+                //String matchDateTimeString = matchDateString + "T" + timeString
+                //System.out.println("MATCHDATE IS :" + matchDateString);
+                //System.out.println("Time IS :" + timeString);
+                LocalTime time = LocalTime.parse(timeString);
+                
+                try {
+                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
+                    matchDate = matchDate1.atTime(time);
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
 
@@ -830,7 +875,7 @@ public class DataFetch {
  */               
                 
 /* USE OLD API FOR MATCHDATE
-*/
+
                 
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -853,6 +898,71 @@ public class DataFetch {
                     ret = false;
                     unloaded.put("Date parse error", url);
                     continue;
+                }
+*/
+                LocalDateTime matchDate = LocalDateTime.now();
+                LocalDate matchDate1 = LocalDate.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+                String matchDateString = null;
+                String timeString = null;
+                LocalTime time = null;
+                
+                for(int i = 0; i<11; i++){
+                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                        System.out.println(matchDateElement);
+                        String[] parts = matchDateElement.split(" ");
+                        //String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
+                        
+                    }
+                   try{
+                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
+                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
+                   		System.out.println(timeElement);
+                   		String[] parts = timeElement.split(" ");
+                   		String[] parts2 = parts[5].split("\\.");
+                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
+                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
+
+
+                   }
+                   }
+                   catch(Exception ex){
+                       System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                   }
+                    
+                }
+
+                //String matchDateTimeString = matchDateString + "T" + timeString
+                //System.out.println("MATCHDATE IS :" + matchDateString);
+                //System.out.println("Time IS :" + timeString);
+                try{
+                time = LocalTime.parse(timeString);
+                }
+                catch(Exception ex){
+                    System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                    
+                }
+                
+                try {
+                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
+                    matchDate = matchDate1.atTime(time);
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 Inning one = null;
@@ -1360,7 +1470,7 @@ public class DataFetch {
  */               
                 
 /* USE OLD API FOR MATCHDATE
-*/
+
                 
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -1383,6 +1493,71 @@ public class DataFetch {
                     ret = false;
                     unloaded.put("Date parse error", url);
                     continue;
+                }
+*/
+                LocalDateTime matchDate = LocalDateTime.now();
+                LocalDate matchDate1 = LocalDate.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+                String matchDateString = null;
+                String timeString = null;
+                LocalTime time = null;
+                
+                for(int i = 0; i<11; i++){
+                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                        System.out.println(matchDateElement);
+                        String[] parts = matchDateElement.split(" ");
+                        //String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
+                        
+                    }
+                   try{
+                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
+                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
+                   		System.out.println(timeElement);
+                   		String[] parts = timeElement.split(" ");
+                   		String[] parts2 = parts[5].split("\\.");
+                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
+                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
+
+
+                   }
+                   }
+                   catch(Exception ex){
+                       System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                   }
+                    
+                }
+
+                //String matchDateTimeString = matchDateString + "T" + timeString
+                //System.out.println("MATCHDATE IS :" + matchDateString);
+                //System.out.println("Time IS :" + timeString);
+                try{
+                time = LocalTime.parse(timeString);
+                }
+                catch(Exception ex){
+                    System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                    
+                }
+                
+                try {
+                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
+                    matchDate = matchDate1.atTime(time);
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 Inning one = null;
@@ -1867,7 +2042,7 @@ public class DataFetch {
  */               
                 
 /* USE OLD API FOR MATCHDATE
-*/
+
                 
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -1890,6 +2065,71 @@ public class DataFetch {
                     ret = false;
                     unloaded.put("Date parse error", url);
                     continue;
+                }
+*/
+                LocalDateTime matchDate = LocalDateTime.now();
+                LocalDate matchDate1 = LocalDate.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+                String matchDateString = null;
+                String timeString = null;
+                LocalTime time = null;
+                
+                for(int i = 0; i<11; i++){
+                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                        System.out.println(matchDateElement);
+                        String[] parts = matchDateElement.split(" ");
+                        //String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
+                        
+                    }
+                   try{
+                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
+                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
+                   		System.out.println(timeElement);
+                   		String[] parts = timeElement.split(" ");
+                   		String[] parts2 = parts[5].split("\\.");
+                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
+                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
+
+
+                   }
+                   }
+                   catch(Exception ex){
+                       System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                   }
+                    
+                }
+
+                //String matchDateTimeString = matchDateString + "T" + timeString
+                //System.out.println("MATCHDATE IS :" + matchDateString);
+                //System.out.println("Time IS :" + timeString);
+                try{
+                time = LocalTime.parse(timeString);
+                }
+                catch(Exception ex){
+                    System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                    
+                }
+                
+                try {
+                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
+                    matchDate = matchDate1.atTime(time);
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 Inning one = null;
@@ -2371,7 +2611,7 @@ public class DataFetch {
  */               
                 
 /* USE OLD API FOR MATCHDATE
-*/
+
                 
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -2396,6 +2636,71 @@ public class DataFetch {
                     continue;
                 }
                 
+*/
+                LocalDateTime matchDate = LocalDateTime.now();
+                LocalDate matchDate1 = LocalDate.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+                String matchDateString = null;
+                String timeString = null;
+                LocalTime time = null;
+                
+                for(int i = 0; i<11; i++){
+                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                        System.out.println(matchDateElement);
+                        String[] parts = matchDateElement.split(" ");
+                        //String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
+                        
+                    }
+                   try{
+                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
+                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
+                   		System.out.println(timeElement);
+                   		String[] parts = timeElement.split(" ");
+                   		String[] parts2 = parts[5].split("\\.");
+                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
+                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
+
+
+                   }
+                   }
+                   catch(Exception ex){
+                       System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                   }
+                    
+                }
+
+                //String matchDateTimeString = matchDateString + "T" + timeString
+                //System.out.println("MATCHDATE IS :" + matchDateString);
+                //System.out.println("Time IS :" + timeString);
+                try{
+                time = LocalTime.parse(timeString);
+                }
+                catch(Exception ex){
+                    System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                    
+                }
+                
+                try {
+                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
+                    matchDate = matchDate1.atTime(time);
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 Inning one = null;
                 Inning two = null;
@@ -2876,7 +3181,7 @@ public class DataFetch {
  */               
                 
 /* USE OLD API FOR MATCHDATE
-*/
+
                 
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -2899,6 +3204,71 @@ public class DataFetch {
                     ret = false;
                     unloaded.put("Date parse error", url);
                     continue;
+                }
+*/
+                LocalDateTime matchDate = LocalDateTime.now();
+                LocalDate matchDate1 = LocalDate.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+                String matchDateString = null;
+                String timeString = null;
+                LocalTime time = null;
+                
+                for(int i = 0; i<11; i++){
+                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                        System.out.println(matchDateElement);
+                        String[] parts = matchDateElement.split(" ");
+                        //String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
+                        
+                    }
+                   try{
+                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
+                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
+                   		System.out.println(timeElement);
+                   		String[] parts = timeElement.split(" ");
+                   		String[] parts2 = parts[5].split("\\.");
+                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
+                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
+
+
+                   }
+                   }
+                   catch(Exception ex){
+                       System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                   }
+                    
+                }
+
+                //String matchDateTimeString = matchDateString + "T" + timeString
+                //System.out.println("MATCHDATE IS :" + matchDateString);
+                //System.out.println("Time IS :" + timeString);
+                try{
+                time = LocalTime.parse(timeString);
+                }
+                catch(Exception ex){
+                    System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                    
+                }
+                
+                try {
+                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
+                    matchDate = matchDate1.atTime(time);
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 Inning one = null;
@@ -3386,7 +3756,7 @@ public class DataFetch {
  */               
                 
 /* USE OLD API FOR MATCHDATE
-*/
+
                 
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
@@ -3409,6 +3779,71 @@ public class DataFetch {
                     ret = false;
                     unloaded.put("Date parse error", url);
                     continue;
+                }
+*/
+                LocalDateTime matchDate = LocalDateTime.now();
+                LocalDate matchDate1 = LocalDate.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+
+                String matchDateString = null;
+                String timeString = null;
+                LocalTime time = null;
+                
+                for(int i = 0; i<11; i++){
+                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                        System.out.println(matchDateElement);
+                        String[] parts = matchDateElement.split(" ");
+                        //String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
+                        
+                    }
+                   try{
+                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
+                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
+                   		System.out.println(timeElement);
+                   		String[] parts = timeElement.split(" ");
+                   		String[] parts2 = parts[5].split("\\.");
+                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
+                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
+
+
+                   }
+                   }
+                   catch(Exception ex){
+                       System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                   }
+                    
+                }
+
+                //String matchDateTimeString = matchDateString + "T" + timeString
+                //System.out.println("MATCHDATE IS :" + matchDateString);
+                //System.out.println("Time IS :" + timeString);
+                try{
+                time = LocalTime.parse(timeString);
+                }
+                catch(Exception ex){
+                    System.out.println("TIME NOT FOUND");
+                       System.out.println(url);
+                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                       unloaded.put("" + mId, url);
+                       ret = false;
+                       continue MATCHLABEL;
+                    
+                }
+                
+                try {
+                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
+                    matchDate = matchDate1.atTime(time);
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 Inning one = null;
@@ -3765,23 +4200,52 @@ public class DataFetch {
                 String[] splitUrl = matchUrl.split("/");
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
+                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
                 
-                
-
+        
                 LocalDate matchDate = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
  /*               
                 String matchDateElement = detailsTable.select("tr").get(9).text();
                 String[] parts = matchDateElement.trim().split("-");
                 System.out.println("MatchDate is :" + matchDateElement);
 
 */
+
+                String matchDateString = null;
+                
+                for(int i = 6; i<10; i++){
+                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                        System.out.println(matchDateElement);
+                        String[] parts = matchDateElement.split(" ");
+                        String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts2[0].trim() + " " + parts[4].trim();                        
+                        
+                    }
+                    
+                }
+                System.out.println("MATCHDATE IS :" + matchDateString);
+                
+                try {
+                    matchDate = LocalDate.parse(matchDateString.trim(), df);
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (matchDate.equals(LocalDate.now().minusDays(7))) {
+                    System.out.println("Match " + mId + " this week.");
+                    continue;
+                }
+               
+            /*    
                 Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
                 String[] parts = matchDateElement.text().trim().split(",");
                 String[] parts2 = parts[parts.length - 2].split("-");
                 String[] parts3 = parts2[1].split(" ");
                 String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                //System.out.println("This is:" + matchDateString);
+                System.out.println("This is:" + matchDateString);
 
                 try {
                     matchDate = LocalDate.parse(matchDateString.trim(), df);
@@ -3795,7 +4259,7 @@ public class DataFetch {
                     continue;
                 }
                 
-                
+        */        
                 Elements teamName = matchPage.getElementsByClass("team-name");
                 Element home = teamName.first();
                 Element away = teamName.last();
@@ -3863,7 +4327,7 @@ public class DataFetch {
                 //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 
-                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                
                 String tossResult = detailsTable.select("tr").get(1).text();
                 //System.out.println("THE result:"+ tossResult);
                 /*
