@@ -274,7 +274,35 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+/* Get MATCHDATE using summary page               
+                LocalDateTime matchDate = LocalDateTime.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
+                
+                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
+                String[] parts = matchDateElement.text().trim().split(",");
+                //String[] parts2 = parts[parts.length - 2].split("-");
+                //String[] parts3 = parts2[1].split(" ");
+                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+                String matchDateString = parts[parts.length-2];
+                System.out.println("MATCHDATE IS :" + matchDateString);
+                
+                try {
+                    matchDate = LocalDateTime.parse(matchDateString.trim());
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
+                if (matchDate.equals(LocalDate.now().minusDays(7))) {
+                    System.out.println("Match " + mId + " this week.");
+                    continue;
+                }
+                System.out.println("MATCH DATE IS :" + matchDate);
+ */               
+                
+/* USE OLD API FOR MATCHDATE
+*/
+                
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -287,10 +315,11 @@ public class DataFetch {
                     continue;
                 }
 
+                
                 JSONObject dj = new JSONObject(dJson);
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
                 try {
-                    matchDate = LocalDateTime.parse(date);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
                     unloaded.put("Date parse error", url);
@@ -774,6 +803,35 @@ public class DataFetch {
                     BorC = "-";
                 }
                 
+                /* Get MATCHDATE using summary page               
+                LocalDateTime matchDate = LocalDateTime.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
+                
+                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
+                String[] parts = matchDateElement.text().trim().split(",");
+                //String[] parts2 = parts[parts.length - 2].split("-");
+                //String[] parts3 = parts2[1].split(" ");
+                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+                String matchDateString = parts[parts.length-2];
+                System.out.println("MATCHDATE IS :" + matchDateString);
+                
+                try {
+                    matchDate = LocalDateTime.parse(matchDateString.trim());
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (matchDate.equals(LocalDate.now().minusDays(7))) {
+                    System.out.println("Match " + mId + " this week.");
+                    continue;
+                }
+                System.out.println("MATCH DATE IS :" + matchDate);
+ */               
+                
+/* USE OLD API FOR MATCHDATE
+*/
+                
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -786,10 +844,11 @@ public class DataFetch {
                     continue;
                 }
 
+                
                 JSONObject dj = new JSONObject(dJson);
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
                 try {
-                    matchDate = LocalDateTime.parse(date);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
                     unloaded.put("Date parse error", url);
@@ -1274,6 +1333,35 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+                /* Get MATCHDATE using summary page               
+                LocalDateTime matchDate = LocalDateTime.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
+                
+                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
+                String[] parts = matchDateElement.text().trim().split(",");
+                //String[] parts2 = parts[parts.length - 2].split("-");
+                //String[] parts3 = parts2[1].split(" ");
+                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+                String matchDateString = parts[parts.length-2];
+                System.out.println("MATCHDATE IS :" + matchDateString);
+                
+                try {
+                    matchDate = LocalDateTime.parse(matchDateString.trim());
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (matchDate.equals(LocalDate.now().minusDays(7))) {
+                    System.out.println("Match " + mId + " this week.");
+                    continue;
+                }
+                System.out.println("MATCH DATE IS :" + matchDate);
+ */               
+                
+/* USE OLD API FOR MATCHDATE
+*/
+                
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -1286,10 +1374,11 @@ public class DataFetch {
                     continue;
                 }
 
+                
                 JSONObject dj = new JSONObject(dJson);
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
                 try {
-                    matchDate = LocalDateTime.parse(date);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
                     unloaded.put("Date parse error", url);
@@ -1751,6 +1840,35 @@ public class DataFetch {
                     BorC = "-";
                 }
                 
+                /* Get MATCHDATE using summary page               
+                LocalDateTime matchDate = LocalDateTime.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
+                
+                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
+                String[] parts = matchDateElement.text().trim().split(",");
+                //String[] parts2 = parts[parts.length - 2].split("-");
+                //String[] parts3 = parts2[1].split(" ");
+                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+                String matchDateString = parts[parts.length-2];
+                System.out.println("MATCHDATE IS :" + matchDateString);
+                
+                try {
+                    matchDate = LocalDateTime.parse(matchDateString.trim());
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (matchDate.equals(LocalDate.now().minusDays(7))) {
+                    System.out.println("Match " + mId + " this week.");
+                    continue;
+                }
+                System.out.println("MATCH DATE IS :" + matchDate);
+ */               
+                
+/* USE OLD API FOR MATCHDATE
+*/
+                
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -1763,10 +1881,11 @@ public class DataFetch {
                     continue;
                 }
 
+                
                 JSONObject dj = new JSONObject(dJson);
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
                 try {
-                    matchDate = LocalDateTime.parse(date);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
                     unloaded.put("Date parse error", url);
@@ -2225,6 +2344,35 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+                /* Get MATCHDATE using summary page               
+                LocalDateTime matchDate = LocalDateTime.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
+                
+                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
+                String[] parts = matchDateElement.text().trim().split(",");
+                //String[] parts2 = parts[parts.length - 2].split("-");
+                //String[] parts3 = parts2[1].split(" ");
+                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+                String matchDateString = parts[parts.length-2];
+                System.out.println("MATCHDATE IS :" + matchDateString);
+                
+                try {
+                    matchDate = LocalDateTime.parse(matchDateString.trim());
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (matchDate.equals(LocalDate.now().minusDays(7))) {
+                    System.out.println("Match " + mId + " this week.");
+                    continue;
+                }
+                System.out.println("MATCH DATE IS :" + matchDate);
+ */               
+                
+/* USE OLD API FOR MATCHDATE
+*/
+                
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -2237,10 +2385,11 @@ public class DataFetch {
                     continue;
                 }
 
+                
                 JSONObject dj = new JSONObject(dJson);
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
                 try {
-                    matchDate = LocalDateTime.parse(date);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
                     unloaded.put("Date parse error", url);
@@ -2699,6 +2848,36 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+                
+                /* Get MATCHDATE using summary page               
+                LocalDateTime matchDate = LocalDateTime.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
+                
+                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
+                String[] parts = matchDateElement.text().trim().split(",");
+                //String[] parts2 = parts[parts.length - 2].split("-");
+                //String[] parts3 = parts2[1].split(" ");
+                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+                String matchDateString = parts[parts.length-2];
+                System.out.println("MATCHDATE IS :" + matchDateString);
+                
+                try {
+                    matchDate = LocalDateTime.parse(matchDateString.trim());
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (matchDate.equals(LocalDate.now().minusDays(7))) {
+                    System.out.println("Match " + mId + " this week.");
+                    continue;
+                }
+                System.out.println("MATCH DATE IS :" + matchDate);
+ */               
+                
+/* USE OLD API FOR MATCHDATE
+*/
+                
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -2711,10 +2890,11 @@ public class DataFetch {
                     continue;
                 }
 
+                
                 JSONObject dj = new JSONObject(dJson);
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
                 try {
-                    matchDate = LocalDateTime.parse(date);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
                     unloaded.put("Date parse error", url);
@@ -3127,7 +3307,7 @@ public class DataFetch {
                 //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 //String tossResult = detailsColumn.get(1).text();
 
-				Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+		Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
                 String tossResult = detailsTable.select("tr").get(1).text();
 
                 String battingFirst;
@@ -3164,7 +3344,7 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-				String result = matchPage.getElementsByClass("summary").text();
+		String result = matchPage.getElementsByClass("summary").text();
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
 
@@ -3179,6 +3359,35 @@ public class DataFetch {
                     BorC = "-";
                 }
                 
+                /* Get MATCHDATE using summary page               
+                LocalDateTime matchDate = LocalDateTime.now();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
+                
+                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
+                String[] parts = matchDateElement.text().trim().split(",");
+                //String[] parts2 = parts[parts.length - 2].split("-");
+                //String[] parts3 = parts2[1].split(" ");
+                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
+                String matchDateString = parts[parts.length-2];
+                System.out.println("MATCHDATE IS :" + matchDateString);
+                
+                try {
+                    matchDate = LocalDateTime.parse(matchDateString.trim());
+                } catch (DateTimeParseException ex) {
+                    System.out.print("<h1> error parsing date:" + matchDateString);
+                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (matchDate.equals(LocalDate.now().minusDays(7))) {
+                    System.out.println("Match " + mId + " this week.");
+                    continue;
+                }
+                System.out.println("MATCH DATE IS :" + matchDate);
+ */               
+                
+/* USE OLD API FOR MATCHDATE
+*/
+                
                 String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
 
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -3191,10 +3400,11 @@ public class DataFetch {
                     continue;
                 }
 
+                
                 JSONObject dj = new JSONObject(dJson);
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
                 try {
-                    matchDate = LocalDateTime.parse(date);
+                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
+                matchDate = LocalDateTime.parse(date);
                 } catch (DateTimeParseException ex) {
                     ret = false;
                     unloaded.put("Date parse error", url);
@@ -3555,14 +3765,20 @@ public class DataFetch {
                 String[] splitUrl = matchUrl.split("/");
 
                 Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
+                
+                
 
                 LocalDate matchDate = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
+ /*               
+                String matchDateElement = detailsTable.select("tr").get(9).text();
+                String[] parts = matchDateElement.trim().split("-");
+                System.out.println("MatchDate is :" + matchDateElement);
+
+*/
                 Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                //System.out.println("MatchDateIs:" + matchDateElement.text());
                 String[] parts = matchDateElement.text().trim().split(",");
-                String[] parts2 = parts[parts.length - 1].split("-");
+                String[] parts2 = parts[parts.length - 2].split("-");
                 String[] parts3 = parts2[1].split(" ");
                 String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
                 //System.out.println("This is:" + matchDateString);
