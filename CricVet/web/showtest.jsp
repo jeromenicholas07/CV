@@ -45,8 +45,8 @@
                     <th colspan=5>1st Inning  
                     <th colspan=5>2nd Inning  
                     <th colspan=5>3rd Inning  
-                    <th colspan=5>4th Inning  
-                    <th colspan=3> Result 
+                        <th colspan=5>4th Inning  
+                    <th colspan=4> Result 
                     <th colspan="2">Home/Away
                     </tr>
                                 <tr class=thead-dark >
