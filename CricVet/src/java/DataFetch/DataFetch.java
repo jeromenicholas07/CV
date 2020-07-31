@@ -333,6 +333,8 @@ public class DataFetch {
 
                 String matchDateString = null;
                 String timeString = null;
+                LocalTime time = null;
+                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
                 
                 for(int i = 0; i<11; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
@@ -361,7 +363,16 @@ public class DataFetch {
                 //String matchDateTimeString = matchDateString + "T" + timeString
                 //System.out.println("MATCHDATE IS :" + matchDateString);
                 //System.out.println("Time IS :" + timeString);
-                LocalTime time = LocalTime.parse(timeString);
+                if(timeString != null && timeString.length() == 8){
+                time = LocalTime.parse(timeString,tf);
+                }
+                else if(timeString !=null && timeString.length() == 7){
+                    timeString = "0" + timeString;
+                    time = LocalTime.parse(timeString,tf);
+                }
+                else{
+        		time = LocalTime.parse("00:00:00");
+        		}
                 
                 try {
                     matchDate1 = LocalDate.parse(matchDateString.trim(), df);
@@ -903,6 +914,7 @@ public class DataFetch {
                 LocalDateTime matchDate = LocalDateTime.now();
                 LocalDate matchDate1 = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
 
                 String matchDateString = null;
                 String timeString = null;
@@ -913,12 +925,12 @@ public class DataFetch {
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
                         String[] parts = matchDateElement.split(" ");
-                        //String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                        String[] parts2 = parts[2].split(",");
+                        matchDateString = parts[3].trim() + " " + parts2[0].trim() + " " + parts[4].trim();
                         //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
                         
                     }
-                   try{
+                   
                    if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
                    		String timeElement = detailsTable.select("tr").get(i).text().trim();
                    		System.out.println(timeElement);
@@ -928,16 +940,7 @@ public class DataFetch {
                    		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
 
 
-                   }
-                   }
-                   catch(Exception ex){
-                       System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                   }
+                   }                   
                     
                 }
 
@@ -945,7 +948,17 @@ public class DataFetch {
                 //System.out.println("MATCHDATE IS :" + matchDateString);
                 //System.out.println("Time IS :" + timeString);
                 try{
-                time = LocalTime.parse(timeString);
+                    if(timeString != null && timeString.length() == 8){
+                time = LocalTime.parse(timeString,tf);
+                }
+                else if(timeString !=null && timeString.length() == 7){
+                    timeString = "0" + timeString;
+                    time = LocalTime.parse(timeString,tf);
+                }
+                else{
+        		time = LocalTime.parse("00:00:00");
+        		}
+                
                 }
                 catch(Exception ex){
                     System.out.println("TIME NOT FOUND");
@@ -1498,6 +1511,7 @@ public class DataFetch {
                 LocalDateTime matchDate = LocalDateTime.now();
                 LocalDate matchDate1 = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
 
                 String matchDateString = null;
                 String timeString = null;
@@ -1513,7 +1527,7 @@ public class DataFetch {
                         //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
                         
                     }
-                   try{
+                   
                    if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
                    		String timeElement = detailsTable.select("tr").get(i).text().trim();
                    		System.out.println(timeElement);
@@ -1524,15 +1538,6 @@ public class DataFetch {
 
 
                    }
-                   }
-                   catch(Exception ex){
-                       System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                   }
                     
                 }
 
@@ -1540,7 +1545,17 @@ public class DataFetch {
                 //System.out.println("MATCHDATE IS :" + matchDateString);
                 //System.out.println("Time IS :" + timeString);
                 try{
-                time = LocalTime.parse(timeString);
+                    if(timeString != null && timeString.length() == 8){
+                time = LocalTime.parse(timeString,tf);
+                }
+                else if(timeString !=null && timeString.length() == 7){
+                    timeString = "0" + timeString;
+                    time = LocalTime.parse(timeString,tf);
+                }
+                else{
+        		time = LocalTime.parse("00:00:00");
+        		}
+                
                 }
                 catch(Exception ex){
                     System.out.println("TIME NOT FOUND");
@@ -2070,7 +2085,8 @@ public class DataFetch {
                 LocalDateTime matchDate = LocalDateTime.now();
                 LocalDate matchDate1 = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-
+                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
+                
                 String matchDateString = null;
                 String timeString = null;
                 LocalTime time = null;
@@ -2085,7 +2101,7 @@ public class DataFetch {
                         //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
                         
                     }
-                   try{
+                   
                    if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
                    		String timeElement = detailsTable.select("tr").get(i).text().trim();
                    		System.out.println(timeElement);
@@ -2096,15 +2112,7 @@ public class DataFetch {
 
 
                    }
-                   }
-                   catch(Exception ex){
-                       System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                   }
+                   
                     
                 }
 
@@ -2112,7 +2120,16 @@ public class DataFetch {
                 //System.out.println("MATCHDATE IS :" + matchDateString);
                 //System.out.println("Time IS :" + timeString);
                 try{
-                time = LocalTime.parse(timeString);
+                if(timeString != null && timeString.length() == 8){
+                time = LocalTime.parse(timeString,tf);
+                }
+                else if(timeString !=null && timeString.length() == 7){
+                    timeString = "0" + timeString;
+                    time = LocalTime.parse(timeString,tf);
+                }
+                else{
+        		time = LocalTime.parse("00:00:00");
+        		}
                 }
                 catch(Exception ex){
                     System.out.println("TIME NOT FOUND");
@@ -2640,7 +2657,8 @@ public class DataFetch {
                 LocalDateTime matchDate = LocalDateTime.now();
                 LocalDate matchDate1 = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-
+                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
+                
                 String matchDateString = null;
                 String timeString = null;
                 LocalTime time = null;
@@ -2655,7 +2673,7 @@ public class DataFetch {
                         //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
                         
                     }
-                   try{
+                   
                    if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
                    		String timeElement = detailsTable.select("tr").get(i).text().trim();
                    		System.out.println(timeElement);
@@ -2666,15 +2684,7 @@ public class DataFetch {
 
 
                    }
-                   }
-                   catch(Exception ex){
-                       System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                   }
+                  
                     
                 }
 
@@ -2682,7 +2692,16 @@ public class DataFetch {
                 //System.out.println("MATCHDATE IS :" + matchDateString);
                 //System.out.println("Time IS :" + timeString);
                 try{
-                time = LocalTime.parse(timeString);
+                if(timeString != null && timeString.length() == 8){
+                time = LocalTime.parse(timeString,tf);
+                }
+                else if(timeString !=null && timeString.length() == 7){
+                    timeString = "0" + timeString;
+                    time = LocalTime.parse(timeString,tf);
+                }
+                else{
+        		time = LocalTime.parse("00:00:00");
+        		}
                 }
                 catch(Exception ex){
                     System.out.println("TIME NOT FOUND");
@@ -3209,6 +3228,7 @@ public class DataFetch {
                 LocalDateTime matchDate = LocalDateTime.now();
                 LocalDate matchDate1 = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
 
                 String matchDateString = null;
                 String timeString = null;
@@ -3224,7 +3244,7 @@ public class DataFetch {
                         //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
                         
                     }
-                   try{
+                   
                    if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
                    		String timeElement = detailsTable.select("tr").get(i).text().trim();
                    		System.out.println(timeElement);
@@ -3235,15 +3255,7 @@ public class DataFetch {
 
 
                    }
-                   }
-                   catch(Exception ex){
-                       System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                   }
+                   
                     
                 }
 
@@ -3251,7 +3263,16 @@ public class DataFetch {
                 //System.out.println("MATCHDATE IS :" + matchDateString);
                 //System.out.println("Time IS :" + timeString);
                 try{
-                time = LocalTime.parse(timeString);
+                if(timeString != null && timeString.length() == 8){
+                time = LocalTime.parse(timeString,tf);
+                }
+                else if(timeString !=null && timeString.length() == 7){
+                    timeString = "0" + timeString;
+                    time = LocalTime.parse(timeString,tf);
+                }
+                else{
+        		time = LocalTime.parse("00:00:00");
+        		}
                 }
                 catch(Exception ex){
                     System.out.println("TIME NOT FOUND");
@@ -3784,6 +3805,7 @@ public class DataFetch {
                 LocalDateTime matchDate = LocalDateTime.now();
                 LocalDate matchDate1 = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
+                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
 
                 String matchDateString = null;
                 String timeString = null;
@@ -3799,7 +3821,7 @@ public class DataFetch {
                         //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
                         
                     }
-                   try{
+                   
                    if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
                    		String timeElement = detailsTable.select("tr").get(i).text().trim();
                    		System.out.println(timeElement);
@@ -3810,15 +3832,8 @@ public class DataFetch {
 
 
                    }
-                   }
-                   catch(Exception ex){
-                       System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                   }
+                   
+                   
                     
                 }
 
@@ -3826,7 +3841,16 @@ public class DataFetch {
                 //System.out.println("MATCHDATE IS :" + matchDateString);
                 //System.out.println("Time IS :" + timeString);
                 try{
-                time = LocalTime.parse(timeString);
+                if(timeString != null && timeString.length() == 8){
+                time = LocalTime.parse(timeString,tf);
+                }
+                else if(timeString !=null && timeString.length() == 7){
+                    timeString = "0" + timeString;
+                    time = LocalTime.parse(timeString,tf);
+                }
+                else{
+        		time = LocalTime.parse("00:00:00");
+        		}
                 }
                 catch(Exception ex){
                     System.out.println("TIME NOT FOUND");
@@ -4214,7 +4238,7 @@ public class DataFetch {
 
                 String matchDateString = null;
                 
-                for(int i = 6; i<10; i++){
+                for(int i = 0; i<10; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
