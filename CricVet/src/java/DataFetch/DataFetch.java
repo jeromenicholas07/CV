@@ -335,8 +335,9 @@ public class DataFetch {
                 String timeString = null;
                 LocalTime time = null;
                 DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
+                int table_len = detailsTable.select("tr").size();
                 
-                for(int i = 0; i<11; i++){
+                for(int i = 0; i<table_len; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
@@ -919,8 +920,9 @@ public class DataFetch {
                 String matchDateString = null;
                 String timeString = null;
                 LocalTime time = null;
+                int table_len = detailsTable.select("tr").size();
                 
-                for(int i = 0; i<11; i++){
+                for(int i = 0; i<table_len; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
@@ -1516,8 +1518,10 @@ public class DataFetch {
                 String matchDateString = null;
                 String timeString = null;
                 LocalTime time = null;
+                int table_len = detailsTable.select("tr").size();
+
                 
-                for(int i = 0; i<11; i++){
+                for(int i = 0; i<table_len; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
@@ -2090,8 +2094,9 @@ public class DataFetch {
                 String matchDateString = null;
                 String timeString = null;
                 LocalTime time = null;
-                
-                for(int i = 0; i<11; i++){
+                int table_len = detailsTable.select("tr").size();
+
+                for(int i = 0; i<table_len; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
@@ -2662,8 +2667,9 @@ public class DataFetch {
                 String matchDateString = null;
                 String timeString = null;
                 LocalTime time = null;
+                int table_len = detailsTable.select("tr").size();
                 
-                for(int i = 0; i<11; i++){
+                for(int i = 0; i<table_len; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
@@ -3233,8 +3239,9 @@ public class DataFetch {
                 String matchDateString = null;
                 String timeString = null;
                 LocalTime time = null;
+                int table_len = detailsTable.select("tr").size();
                 
-                for(int i = 0; i<11; i++){
+                for(int i = 0; i<table_len; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
@@ -3810,8 +3817,9 @@ public class DataFetch {
                 String matchDateString = null;
                 String timeString = null;
                 LocalTime time = null;
+                int table_len = detailsTable.select("tr").size();
                 
-                for(int i = 0; i<11; i++){
+                for(int i = 0; i<table_len; i++){
                     if(detailsTable.select("tr").get(i).text().contains("Match days")){
                         String matchDateElement = detailsTable.select("tr").get(i).text().trim();
                         System.out.println(matchDateElement);
