@@ -174,6 +174,7 @@
                                         }
                                         if(op.contains("W")){
                                             num++;
+                                            
                                         }
                                         else if(op.contains("L")){
                                             den++;
@@ -219,6 +220,273 @@
 
                 </div>
             </div>
+            <div class="row" >
+                            <div class ="col-12">
+                                <h3 class="card-title">Total Boundaries</h3>
+                                <table class="table table-bordered">
+                                    <tr class="thead-dark">
+                                        <th colspan="${fn:length(oneboundaries)}">${teamOne}</th>
+                                        <th>
+                                        <th colspan="${fn:length(twoboundaries)}">${teamTwo}</th>
+                                        <th>
+                                        <th colspan="${fn:length(groundboundaries)}">${groundName}</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${oneboundaries}">
+                                            <td >
+                                                ${in.getParams().get(4)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${twoboundaries}">
+                                            <td>
+                                                ${in.getParams().get(4)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                            <c:forEach var="in" items="${groundboundaries}">
+                                            <td >
+                                                ${in.getParams().get(4)}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+
+                                    <tr class="thead-dark">
+                                        <th colspan="12">Sorted:</th>
+                                        <th colspan="20">
+
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" name="bLeft" 
+                                                          id="bLeft">Score calc.</span>
+                                                </div>
+                                                <input type="number" class="form-control" name="bLeft">
+                                            </div>
+                                            <!--<input type="number" id="bLeft" >-->
+                                        </th>
+                                    </tr>
+                                    
+                                    <tr>
+                                    <%
+                                        
+                                    if(true){
+                                        
+                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneboundaries"));
+                                        Collections.sort(As, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(4)) 
+                                                        - Integer.parseInt(o2.getParams().get(4));
+                                            }
+                                        });
+                                        pageContext.setAttribute("As", As);
+                                        
+                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoboundaries"));
+                                        Collections.sort(Bs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(4)) 
+                                                        - Integer.parseInt(o2.getParams().get(4));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Bs", Bs);
+
+                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundboundaries"));
+                                        Collections.sort(Gs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(4)) 
+                                                        - Integer.parseInt(o2.getParams().get(4));
+                                            }
+                                        });
+                                        pageContext.setAttribute("Gs", Gs);
+                                        
+                                        List<Inning> ASs = new ArrayList<Inning>();
+                                        ASs.addAll(As);
+                                        ASs.addAll(Bs);
+                                        Collections.sort(ASs, new Comparator<Inning>() {
+                                            @Override
+                                            public int compare(Inning o1, Inning o2) {
+                                                return Integer.parseInt(o1.getParams().get(4)) 
+                                                        - Integer.parseInt(o2.getParams().get(4));
+                                            }
+                                        });
+                                        pageContext.setAttribute("ASs", ASs);
+                                        
+                                    }
+                                    %>
+                                        <c:forEach var="in" items="${As}">
+                                            <td name="bLeft" class="A">
+                                                ${in.getParams().get(4)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Bs}">
+                                            <td name="bLeft" class="B">
+                                                ${in.getParams().get(4)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${Gs}">
+                                            <td name="bLeft" class="G">
+                                                ${in.getParams().get(4)}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="${fn:length(As)}" name="bLeftOdd" class="A">
+
+                                        </td>
+                                        <td>
+                                        <td colspan="${fn:length(Bs)}" name="$bLeftOdd" class="B">
+
+                                        </td>
+                                            
+                                        <td>
+                                        <td colspan="${fn:length(Gs)}" name="$bLeftOdd" class="G">
+                                                
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="in" items="${ASs}">
+                                            <td name="$bLeft">
+                                                ${in.getParams().get(4)}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="${fn:length(ASs)}" name="bLeftOdd" class="T"></td>
+                                    </tr>
+                                </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr class="thead-light">
+                                        <th colspan="30">Back testing:
+                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                                          </svg>
+                                        </div>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="${fn:length(boundariesA_bt)}">${teamOne}</th>
+                                        <th>
+                                        <th colspan="${fn:length(boundariesB_bt)}">${teamTwo}</th>
+                                        <th>
+                                        <th colspan="${fn:length(boundariesG_bt)}">${groundName}</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${boundariesA_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${boundariesB_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${boundariesG_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${boundariesA_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${boundariesB_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                            
+                                        <td></td>
+                                        
+                                        <c:forEach var="entry" items="${boundariesG_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                </table>
+                                    
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th colspan="30">${teamOne}</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${boundariesTA_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${boundariesTA_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${boundariesTA_bt}">
+                                            <td>
+                                                ${boundariesTA_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="30"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <th colspan="30">${teamTwo}</th>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${boundariesTB_bt}">
+                                            <td>
+                                                ${entry.key}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${boundariesTB_bt}">
+                                            <td>
+                                                ${entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                                    <tr>
+                                        <c:forEach var="entry" items="${boundariesTB_bt}">
+                                            <td>
+                                                ${boundariesTB_bt.get("N") - entry.value}
+                                            </td>
+                                        </c:forEach>
+                                    </tr>
+                               </table>
+                                
+                            
+                            
+                                
+                            </div>
+                        </div>
 
             <h2>First Inning</h2>
             <c:forEach var="h" begin="0" end="6" varStatus="loop">
@@ -759,6 +1027,9 @@
                             </div>
                         </div>
                     </c:when>
+                    
+                 
+                                    
                     <c:when test="${loop.index == 2}">
                         <div class="row" >
                             <div class ="col-12">
