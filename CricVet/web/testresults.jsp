@@ -806,9 +806,9 @@
                             <th colspan="20">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text" name="A" id="A">@</span>
+                                        <span class="input-group-text" name="O" id="O">@</span>
                                     </div>
-                                    <input type="number" class="form-control" name="A">
+                                    <input type="number" class="form-control" name="O">
                                 </div>
 
                             </th>
@@ -862,46 +862,46 @@
                         }
                         %>
                             <c:forEach var="in" items="${As}">
-                                <td name="A" class="A">
+                                <td name="O" class="A">
                                     ${in.getFours() }
                                 </td>
                             </c:forEach>
                             <td>
                             <c:forEach var="in" items="${Bs}">
-                                <td name="A" class="B">
+                                <td name="O" class="B">
                                    ${in.getFours() }
                                 </td>
                             </c:forEach>
                             <td>
                             <c:forEach var="in" items="${Gs}">
-                                <td name="A" class="G">
+                                <td name="O" class="G">
                                    ${in.getFours() }
                                 </td>
                             </c:forEach>
                         </tr>
                         <tr>
-                            <td colspan="${fn:length(As)}" name="AOdd" class="A">
+                            <td colspan="${fn:length(As)}" name="OOdd" class="A">
 
                             </td>
                             <td>
-                            <td colspan="${fn:length(Bs)}" name="AOdd" class="B">
+                            <td colspan="${fn:length(Bs)}" name="OOdd" class="B">
 
                             </td>
 
                             <td>
-                            <td colspan="${fn:length(Gs)}" name="AOdd" class="G">
+                            <td colspan="${fn:length(Gs)}" name="OOdd" class="G">
 
                             </td>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${ASs}">
-                                <td name="A">
+                                <td name="O">
                                     ${in.getFours() }
                                 </td>
                             </c:forEach>
                         </tr>
                         <tr>
-                            <td colspan="${fn:length(ASs)}" name="AOdd" class="T">
+                            <td colspan="${fn:length(ASs)}" name="OOdd" class="T">
                         </tr>
 
 
@@ -1078,9 +1078,9 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="D" id="D">@</span>
+                                                    <span class="input-group-text" name="P" id="P">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="D">
+                                                <input type="number" class="form-control" name="P">
                                             </div>
                                         </th>
                                     </tr>
@@ -1134,47 +1134,47 @@
                                     }
                                     %>
                                         <c:forEach var="in" items="${As}">
-                                            <td name="D" class="A">
+                                            <td name="P" class="A">
                                                 ${in.getFours() }
                                             </td>
                                         </c:forEach>
                                         <td>
                                         <c:forEach var="in" items="${Bs}">
-                                            <td name="D" class="B">
+                                            <td name="P" class="B">
                                                ${in.getFours() }
                                             </td>
                                         </c:forEach>
                                         <td>
                                         <c:forEach var="in" items="${Gs}">
-                                            <td name="D" class="G">
+                                            <td name="P" class="G">
                                                 ${in.getFours() }
                                             </td>
                                         </c:forEach>
                                     </tr>
 
                                     <tr>
-                                        <td colspan="${fn:length(As)}" name="DOdd" class="A">
+                                        <td colspan="${fn:length(As)}" name="POdd" class="A">
 
                                         </td>
                                         <td>
-                                        <td colspan="${fn:length(Bs)}" name="DOdd" class="B">
+                                        <td colspan="${fn:length(Bs)}" name="POdd" class="B">
 
                                         </td>
                                         <td>
-                                        <td colspan="${fn:length(Gs)}" name="DOdd" class="G">
+                                        <td colspan="${fn:length(Gs)}" name="POdd" class="G">
 
                                         </td>
                                         
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${ASs}">
-                                            <td name="D">
+                                            <td name="P">
                                                 ${in.getFours() }
                                             </td>
                                         </c:forEach>
                                     </tr>
                                     <tr>
-                                        <td colspan="${fn:length(ASs)}" name="DOdd" class="T"></td>
+                                        <td colspan="${fn:length(ASs)}" name="POdd" class="T"></td>
                                     </tr>
                                     
                                     
@@ -2001,9 +2001,9 @@
 
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="D" id="D">@</span>
+                                                    <span class="input-group-text" name="Q" id="Q">@</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="D">
+                                                <input type="number" class="form-control" name="Q">
                                             </div>
                                         </th>
                                     </tr>
@@ -2057,47 +2057,47 @@
                                     }
                                     %>
                                         <c:forEach var="in" items="${As}">
-                                            <td name="D" class="A">
+                                            <td name="Q" class="A">
                                                 ${in.getFirstwicket() }
                                             </td>
                                         </c:forEach>
                                         <td>
                                         <c:forEach var="in" items="${Bs}">
-                                            <td name="D" class="B">
+                                            <td name="Q" class="B">
                                                ${in.getFirstwicket() }
                                             </td>
                                         </c:forEach>
                                         <td>
                                         <c:forEach var="in" items="${Gs}">
-                                            <td name="D" class="G">
+                                            <td name="Q" class="G">
                                                 ${in.getFirstwicket() }
                                             </td>
                                         </c:forEach>
                                     </tr>
 
                                     <tr>
-                                        <td colspan="${fn:length(As)}" name="DOdd" class="A">
+                                        <td colspan="${fn:length(As)}" name="QOdd" class="A">
 
                                         </td>
                                         <td>
-                                        <td colspan="${fn:length(Bs)}" name="DOdd" class="B">
+                                        <td colspan="${fn:length(Bs)}" name="QOdd" class="B">
 
                                         </td>
                                         <td>
-                                        <td colspan="${fn:length(Gs)}" name="DOdd" class="G">
+                                        <td colspan="${fn:length(Gs)}" name="QOdd" class="G">
 
                                         </td>
                                         
                                     </tr>
                                     <tr>
                                         <c:forEach var="in" items="${ASs}">
-                                            <td name="D">
+                                            <td name="Q">
                                                 ${in.getFirstwicket() }
                                             </td>
                                         </c:forEach>
                                     </tr>
                                     <tr>
-                                        <td colspan="${fn:length(ASs)}" name="DOdd" class="T"></td>
+                                        <td colspan="${fn:length(ASs)}" name="QOdd" class="T"></td>
                                     </tr>
                                     
                                     
