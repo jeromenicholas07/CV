@@ -4167,11 +4167,13 @@ public class DataFetch {
         List<String> matchLinks = new ArrayList<>();
 
         int year = Calendar.getInstance().get(Calendar.YEAR);
+        
 
         for (int y = year; y >= 2016; y--) {
             Document matches;
             try {
                 matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=1;id=" + y + ";type=year").get();
+                //matches = Jsoup.connect("https://www.espncricinfo.com/series/19495/scorecard/1198241/england-vs-pakistan-1st-test-england-v-pakistan-2020").get();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=1;id=" + y + ";type=year");
@@ -4265,11 +4267,13 @@ public class DataFetch {
                     System.out.print("<h1> error parsing date:" + matchDateString);
                     Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                /*
 
                 if (matchDate.equals(LocalDate.now().minusDays(7))) {
                     System.out.println("Match " + mId + " this week.");
                     continue;
                 }
+                */
                
             /*    
                 Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
@@ -4539,6 +4543,7 @@ public class DataFetch {
                     int fourCount = 0;
 
                     int wicketCount = 0;
+                    //String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=19495&eventId=1198241&period=" + inning +"&page=1&filter=full&liveTest=false";
                     String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
                     String json;
                     try {
@@ -4553,6 +4558,7 @@ public class DataFetch {
                     int pageCount = j.getJSONObject("pagination").getInt("pageCount");
 
                     for (int i = 1; i <= pageCount; i++) {
+                        //String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=19495&eventId=1198241&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
                         String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
 
                         String body;
