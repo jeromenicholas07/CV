@@ -43,6 +43,7 @@ import models.testInning;
 import models.testMatch;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.StringTokenizer;
 
 /**
@@ -264,7 +265,7 @@ public class DataFetch {
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
                 String result = matchPage.getElementsByClass("summary").text();
-
+/*
                 String BorC = "";
                 if(result.contains("No result")){continue;}
                 
@@ -274,6 +275,42 @@ public class DataFetch {
                     BorC = "B";
                 } else {
                     BorC = "-";
+                }
+                */
+                Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
+                Elements homewinnerIcon = home.select("i");
+                Elements awaywinnerIcon = away.select("i");
+                
+                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
+                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
+                String BorC = "";
+                
+                if(homewinnerIcon.size() > 0){
+                    System.out.println("HOME WIN ICON EXISTS ");
+                    if(battingFirst == homeTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("homeTeam is :" + homeTeamName);                   
+                        BorC = "B";
+                    }
+                    else if(battingFirst == awayTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("awayTeamName is :" + awayTeamName); 
+                        BorC="C";
+                    }
+                   
+                }
+                else if(awaywinnerIcon.size() > 0){
+                    System.out.println("AWAY WIN ICON EXISTS");
+                    if(battingFirst == awayTeamName){
+                        BorC = "B";
+                    }
+                    else if(battingFirst == homeTeamName){
+                        BorC="C";
+                    }
+                    
+                }
+                else{
+                    BorC="D";
                 }
 /* Get MATCHDATE using summary page               
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -574,6 +611,8 @@ public class DataFetch {
                              //   continue;
                             //}
                             ballList.add(jItem);
+                            
+                            
 
                             if (jItem.has("matchWicket")) {
                                 wicketCount++;
@@ -618,6 +657,7 @@ public class DataFetch {
 
                         }
                     }
+                    
 
                     if (lastFiveOverScore != -1) {
                         lastFiveOverScore++;
@@ -655,6 +695,55 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
+                    
+
+                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+                    
+                    Boolean hasOver = false;
+                    
+                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
+                    String lastBody;
+                    try {
+                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + lastPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(lastBody);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            
+                            if(jItem.getInt("over") >= 19){
+                                hasOver = true;
+                                break;
+                            }
+                                
+                            }
+                        if(result.contains("D/L"))
+                            if(hasOver == false){
+                                result = result + " -1";
+                        }
 
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
@@ -848,7 +937,7 @@ public class DataFetch {
                 String result = matchPage.getElementsByClass("summary").text();
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
-
+/*
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
                 
@@ -859,7 +948,42 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+   */
+   				Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
+                Elements homewinnerIcon = home.select("i");
+                Elements awaywinnerIcon = away.select("i");
                 
+                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
+                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
+                String BorC = "";
+                
+                if(homewinnerIcon.size() > 0){
+                    System.out.println("HOME WIN ICON EXISTS ");
+                    if(battingFirst == homeTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("homeTeam is :" + homeTeamName);                   
+                        BorC = "B";
+                    }
+                    else if(battingFirst == awayTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("awayTeamName is :" + awayTeamName); 
+                        BorC="C";
+                    }
+                   
+                }
+                else if(awaywinnerIcon.size() > 0){
+                    System.out.println("AWAY WIN ICON EXISTS");
+                    if(battingFirst == awayTeamName){
+                        BorC = "B";
+                    }
+                    else if(battingFirst == homeTeamName){
+                        BorC="C";
+                    }
+                    
+                }
+                else{
+                    BorC="D";
+                }             
                 /* Get MATCHDATE using summary page               
                 LocalDateTime matchDate = LocalDateTime.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
@@ -1256,6 +1380,54 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
+                
+                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+                    
+                    Boolean hasOver = false;
+                    
+                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
+                    String lastBody;
+                    try {
+                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + lastPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(lastBody);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            
+                            if(jItem.getInt("over") >= 47){
+                                hasOver = true;
+                                break;
+                            }
+                                
+                            }
+                        if(result.contains("D/L"))
+                            if(hasOver == false){
+                                result = result + " -1";
+                        }
 
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
@@ -1447,7 +1619,7 @@ public class DataFetch {
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
                 String result = matchPage.getElementsByClass("summary").text();
-
+/*
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
                 
@@ -1457,6 +1629,42 @@ public class DataFetch {
                     BorC = "B";
                 } else {
                     BorC = "-";
+                }
+                */
+                Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
+                Elements homewinnerIcon = home.select("i");
+                Elements awaywinnerIcon = away.select("i");
+                
+                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
+                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
+                String BorC = "";
+                
+                if(homewinnerIcon.size() > 0){
+                    System.out.println("HOME WIN ICON EXISTS ");
+                    if(battingFirst == homeTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("homeTeam is :" + homeTeamName);                   
+                        BorC = "B";
+                    }
+                    else if(battingFirst == awayTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("awayTeamName is :" + awayTeamName); 
+                        BorC="C";
+                    }
+                   
+                }
+                else if(awaywinnerIcon.size() > 0){
+                    System.out.println("AWAY WIN ICON EXISTS");
+                    if(battingFirst == awayTeamName){
+                        BorC = "B";
+                    }
+                    else if(battingFirst == homeTeamName){
+                        BorC="C";
+                    }
+                    
+                }
+                else{
+                    BorC="D";
                 }
                 /* Get MATCHDATE using summary page               
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -1836,7 +2044,56 @@ public class DataFetch {
                     if (inning == 2) {
                         two = new Inning(8, params);
                     }
+
                 }
+
+                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+                    
+                    Boolean hasOver = false;
+                    
+                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
+                    String lastBody;
+                    try {
+                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + lastPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(lastBody);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            
+                            if(jItem.getInt("over") >= 19){
+                                hasOver = true;
+                                break;
+                            }
+                                
+                            }
+                        if(result.contains("D/L"))
+                            if(hasOver == false){
+                                result = result + " -1";
+                        }
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
 
@@ -2022,7 +2279,7 @@ public class DataFetch {
 
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
-
+/*
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
                 
@@ -2033,7 +2290,42 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+ */
+				Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
+                Elements homewinnerIcon = home.select("i");
+                Elements awaywinnerIcon = away.select("i");
                 
+                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
+                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
+                String BorC = "";
+                
+                if(homewinnerIcon.size() > 0){
+                    System.out.println("HOME WIN ICON EXISTS ");
+                    if(battingFirst == homeTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("homeTeam is :" + homeTeamName);                   
+                        BorC = "B";
+                    }
+                    else if(battingFirst == awayTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("awayTeamName is :" + awayTeamName); 
+                        BorC="C";
+                    }
+                   
+                }
+                else if(awaywinnerIcon.size() > 0){
+                    System.out.println("AWAY WIN ICON EXISTS");
+                    if(battingFirst == awayTeamName){
+                        BorC = "B";
+                    }
+                    else if(battingFirst == homeTeamName){
+                        BorC="C";
+                    }
+                    
+                }
+                else{
+                    BorC="D";
+                }               
                 /* Get MATCHDATE using summary page               
                 LocalDateTime matchDate = LocalDateTime.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
@@ -2410,6 +2702,55 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
+
+                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+                    
+                    Boolean hasOver = false;
+                    
+                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
+                    String lastBody;
+                    try {
+                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + lastPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(lastBody);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            
+                            if(jItem.getInt("over") >= 19){
+                                hasOver = true;
+                                break;
+                            }
+                                
+                            }
+                        if(result.contains("D/L"))
+                            if(hasOver == false){
+                                result = result + " -1";
+                        }
+
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
                 //Elements ground = matchPage.getElementsByClass("stadium-details");
@@ -2595,7 +2936,7 @@ public class DataFetch {
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
                 String result = matchPage.getElementsByClass("summary").text();
-
+/*
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
                 
@@ -2605,6 +2946,42 @@ public class DataFetch {
                     BorC = "B";
                 } else {
                     BorC = "-";
+                }
+                */
+                Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
+                Elements homewinnerIcon = home.select("i");
+                Elements awaywinnerIcon = away.select("i");
+                
+                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
+                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
+                String BorC = "";
+                
+                if(homewinnerIcon.size() > 0){
+                    System.out.println("HOME WIN ICON EXISTS ");
+                    if(battingFirst == homeTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("homeTeam is :" + homeTeamName);                   
+                        BorC = "B";
+                    }
+                    else if(battingFirst == awayTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("awayTeamName is :" + awayTeamName); 
+                        BorC="C";
+                    }
+                   
+                }
+                else if(awaywinnerIcon.size() > 0){
+                    System.out.println("AWAY WIN ICON EXISTS");
+                    if(battingFirst == awayTeamName){
+                        BorC = "B";
+                    }
+                    else if(battingFirst == homeTeamName){
+                        BorC="C";
+                    }
+                    
+                }
+                else{
+                    BorC="D";
                 }
                 /* Get MATCHDATE using summary page               
                 LocalDateTime matchDate = LocalDateTime.now();
@@ -2984,6 +3361,53 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
+                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+                    
+                    Boolean hasOver = false;
+                    
+                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
+                    String lastBody;
+                    try {
+                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + lastPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(lastBody);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            
+                            if(jItem.getInt("over") >= 19){
+                                hasOver = true;
+                                break;
+                            }
+                                
+                            }
+                        if(result.contains("D/L"))
+                            if(hasOver == false){
+                                result = result + " -1";
+                        }
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
                 //Elements ground = matchPage.getElementsByClass("stadium-details");
@@ -3167,7 +3591,7 @@ public class DataFetch {
 
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
-
+/*
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
                 
@@ -3178,7 +3602,42 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+ */
+ 				Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
+                Elements homewinnerIcon = home.select("i");
+                Elements awaywinnerIcon = away.select("i");
                 
+                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
+                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
+                String BorC = "";
+                
+                if(homewinnerIcon.size() > 0){
+                    System.out.println("HOME WIN ICON EXISTS ");
+                    if(battingFirst == homeTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("homeTeam is :" + homeTeamName);                   
+                        BorC = "B";
+                    }
+                    else if(battingFirst == awayTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("awayTeamName is :" + awayTeamName); 
+                        BorC="C";
+                    }
+                   
+                }
+                else if(awaywinnerIcon.size() > 0){
+                    System.out.println("AWAY WIN ICON EXISTS");
+                    if(battingFirst == awayTeamName){
+                        BorC = "B";
+                    }
+                    else if(battingFirst == homeTeamName){
+                        BorC="C";
+                    }
+                    
+                }
+                else{
+                    BorC="D";
+                }               
                 /* Get MATCHDATE using summary page               
                 LocalDateTime matchDate = LocalDateTime.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
@@ -3556,6 +4015,53 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
+                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+                    
+                    Boolean hasOver = false;
+                    
+                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
+                    String lastBody;
+                    try {
+                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + lastPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(lastBody);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            
+                            if(jItem.getInt("over") >= 19){
+                                hasOver = true;
+                                break;
+                            }
+                                
+                            }
+                        if(result.contains("D/L"))
+                            if(hasOver == false){
+                                result = result + " -1";
+                        }
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
                 //Elements ground = matchPage.getElementsByClass("stadium-details");
@@ -3742,10 +4248,10 @@ public class DataFetch {
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
-		String result = matchPage.getElementsByClass("summary").text();
+				String result = matchPage.getElementsByClass("summary").text();
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
-
+/*
                 String BorC = "";                
                 if(result.contains("No result")){continue;}
                 
@@ -3756,7 +4262,42 @@ public class DataFetch {
                 } else {
                     BorC = "-";
                 }
+ */
+ 				Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
+                Elements homewinnerIcon = home.select("i");
+                Elements awaywinnerIcon = away.select("i");
                 
+                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
+                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
+                String BorC = "";
+                
+                if(homewinnerIcon.size() > 0){
+                    System.out.println("HOME WIN ICON EXISTS ");
+                    if(battingFirst == homeTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("homeTeam is :" + homeTeamName);                   
+                        BorC = "B";
+                    }
+                    else if(battingFirst == awayTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("awayTeamName is :" + awayTeamName); 
+                        BorC="C";
+                    }
+                   
+                }
+                else if(awaywinnerIcon.size() > 0){
+                    System.out.println("AWAY WIN ICON EXISTS");
+                    if(battingFirst == awayTeamName){
+                        BorC = "B";
+                    }
+                    else if(battingFirst == homeTeamName){
+                        BorC="C";
+                    }
+                    
+                }
+                else{
+                    BorC="D";
+                }               
                 /* Get MATCHDATE using summary page               
                 LocalDateTime matchDate = LocalDateTime.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
@@ -4134,6 +4675,53 @@ public class DataFetch {
                         two = new Inning(8, params);
                     }
                 }
+                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
+                    String json;
+                    try {
+                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                        unloaded.put("" + mId, url);
+                        ret = false;
+                        continue MATCHLABEL;
+                    }
+                    JSONObject j = new JSONObject(json);
+                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
+                    
+                    Boolean hasOver = false;
+                    
+                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
+                    String lastBody;
+                    try {
+                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
+                        } catch (Exception ex) {
+                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("misiing JSON : " + lastPageUrl);
+                            unloaded.put("" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        JSONObject jObj = new JSONObject();
+                        try {
+                            jObj = new JSONObject(lastBody);
+                        } catch (JSONException je) {
+                            unloaded.put("CORRUPT:" + mId, url);
+                            ret = false;
+                            continue MATCHLABEL;
+                        }
+                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                            
+                            if(jItem.getInt("over") >= 19){
+                                hasOver = true;
+                                break;
+                            }
+                                
+                            }
+                        if(result.contains("D/L"))
+                            if(hasOver == false){
+                                result = result + " -1";
+                        }
                 String groundName = detailsTable.select("tr").get(0).text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
                 //Elements ground = matchPage.getElementsByClass("stadium-details");
@@ -4158,6 +4746,41 @@ public class DataFetch {
     }
 
     public boolean loadTestData() {
+
+    	Map<String,Integer> teamIndex = new LinkedHashMap<>();
+    	Document indexes = null;
+
+    	try {
+                indexes = Jsoup.connect("https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index").get();
+                //matches = Jsoup.connect("https://www.espncricinfo.com/series/19495/scorecard/1198241/england-vs-pakistan-1st-test-england-v-pakistan-2020").get();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                unloaded.put(ex.getMessage() + ":", "https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index");
+            }
+
+        Element elemTeams = indexes.getElementsByClass("teams-section").first();
+        Elements links = elemTeams.select("a");
+        String href;
+
+        for(int i = 0; i< links.size(); i++){
+  				href = links.get(i).attr("href");
+                                String[] parts = href.split("/");
+                                String country = parts[5];
+                                int id = Integer.parseInt(parts[4]);
+                                teamIndex.put(country,id);
+                                
+		}
+/*        
+        for (String key : teamIndex.keySet())
+                {
+                    System.out.println("Key: " + key);   
+                    System.out.println("VAL: " + teamIndex.get(key));
+                }
+
+*/
+        //System.out.println(teamIndex);
+       // System.out.println(teamIndex.get("afghanistan"));
+
 
         boolean ret = true;
 
@@ -4302,6 +4925,8 @@ public class DataFetch {
                 String homeTeamName = home.select("span").attr("title");
                 String awayTeamName = away.select("span").attr("title");
                 
+             
+                
                 String homeTeamUrl = home.select("a").attr("href");
                 String[] urlParts = homeTeamUrl.split("/");
                 int pos = 0;
@@ -4389,6 +5014,8 @@ public class DataFetch {
                         battingFirst = homeTeamName;
                     }
                 }
+                
+                
 
                 int seriesPos = 0;
                 for (int i = 0; i < splitUrl.length; i++) {
@@ -4405,13 +5032,48 @@ public class DataFetch {
                         break;
                     }
                 }
+                
                 String result = matchPage.getElementsByClass("summary").text();
                 //System.out.println("winner:"+ winners);
 
                 //Elements winner = matchPage.getElementsByClass("cscore_notes");
                 //String result = winner.select("span").first().text();
-
-                String BorC = "";                
+                Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
+                Elements homewinnerIcon = home.select("i");
+                Elements awaywinnerIcon = away.select("i");
+                
+                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
+                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
+                String BorC = "";
+                
+                if(homewinnerIcon.size() > 0){
+                    System.out.println("HOME WIN ICON EXISTS ");
+                    if(battingFirst == homeTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("homeTeam is :" + homeTeamName);                   
+                        BorC = "B";
+                    }
+                    else if(battingFirst == awayTeamName){
+                        //System.out.println("BATTING TEAM IS : " + battingFirst);
+                        //System.out.println("awayTeamName is :" + awayTeamName); 
+                        BorC="C";
+                    }
+                   
+                }
+                else if(awaywinnerIcon.size() > 0){
+                    //System.out.println("AWAY WIN ICON EXISTS");
+                    if(battingFirst == awayTeamName){
+                        BorC = "B";
+                    }
+                    else if(battingFirst == homeTeamName){
+                        BorC="C";
+                    }
+                    
+                }
+                else{
+                    BorC="D";
+                }
+ /*               
                 if(result.contains("No result")){continue;}
                 
                 if (result.contains(" wicket")) {
@@ -4421,7 +5083,7 @@ public class DataFetch {
                 } else {
                     BorC = "D";
                 }
-
+*/
                 String seriesNo = splitUrl[seriesPos];
                 String eventNo = splitUrl[eventNoPos];
 
@@ -4668,8 +5330,70 @@ public class DataFetch {
                 //String groundName = sp.text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
                 System.out.println("GROUNDLINK IS :" + groundLink);
-                String teamathome = db.checkhomeoraway(homeTeamName, awayTeamName, groundName);
-                String teamataway = db.getawayteam(homeTeamName, awayTeamName, groundName);
+                
+                String homeName;
+                String awayName;
+                String[] parts = homeTeamName.split(" ");
+                if(parts.length > 1) {
+                    homeName = parts[0] + "-" + parts[1];
+                    
+                }
+                else{
+                    homeName = homeTeamName;
+                }
+                
+                String[] parts2 = awayTeamName.split(" ");
+                if(parts2.length > 1) {
+                    awayName = parts2[0] + "-" + parts2[1];
+                    
+                }
+                else{
+                    awayName = awayTeamName;
+                }
+                
+                System.out.println("home team is : " + homeName.toLowerCase());
+                int homeTeamIndex = teamIndex.get(homeName.toLowerCase());                
+                System.out.println(homeTeamIndex);
+                System.out.println("away team is : " + awayName.toLowerCase());
+                int awayTeamIndex = teamIndex.get(awayName.toLowerCase());
+                System.out.println(awayTeamIndex);
+                
+                
+                Document homeTeamGrounds = null;
+                try {
+                homeTeamGrounds = Jsoup.connect("https://www.espncricinfo.com/ci/content/ground/grounds.html?object_id=index&country=" + homeTeamIndex).get();
+                //matches = Jsoup.connect("https://www.espncricinfo.com/series/19495/scorecard/1198241/england-vs-pakistan-1st-test-england-v-pakistan-2020").get();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                unloaded.put(ex.getMessage() + ":", "https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index");
+            }
+                Document awayTeamGrounds=null;
+                try {
+                awayTeamGrounds = Jsoup.connect("https://www.espncricinfo.com/ci/content/ground/grounds.html?object_id=index&country=" + awayTeamIndex).get();
+                //matches = Jsoup.connect("https://www.espncricinfo.com/series/19495/scorecard/1198241/england-vs-pakistan-1st-test-england-v-pakistan-2020").get();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                unloaded.put(ex.getMessage() + ":", "https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index");
+            }
+                
+                String homeGroundNames = homeTeamGrounds.getElementsByClass("grdLinks").text();
+                System.out.println("HOME GROUND NAMES : " + homeGroundNames);
+                
+                String awayGroundNames = awayTeamGrounds.getElementsByClass("grdLinks").text();
+                System.out.println("HOME GROUND NAMES : " + awayGroundNames);
+                String teamathome;
+                String teamataway;
+                
+                if(homeGroundNames.contains(groundName)){
+                    teamathome = homeTeamName;
+                    teamataway = awayTeamName;
+                }
+                else{
+                    teamathome = awayTeamName;
+                    teamataway = homeTeamName;
+                }
+                //String teamathome = db.checkhomeoraway(homeTeamName, awayTeamName, groundName);
+                //String teamataway = db.getawayteam(homeTeamName, awayTeamName, groundName);
                 System.out.println("AWAYTEAM IS " + teamataway);
 
                 if (foflag == 0) {
