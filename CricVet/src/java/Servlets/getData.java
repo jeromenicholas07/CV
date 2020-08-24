@@ -5884,6 +5884,10 @@ public class getData extends HttpServlet {
                     temp.setParams(ps);
                     groundboundaries.add(temp);
                 }
+                
+                groundboundaries = groundboundaries.subList(0, Math.min(5, groundboundaries.size()));
+                
+                
                 request.setAttribute("groundboundaries", groundboundaries);
                 
                 

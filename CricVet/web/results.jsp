@@ -90,10 +90,7 @@
                                     int num = 0;
                                     int den = 0;
                                     for(Inning i : hth){
-                                        String op = i.getParams().get(7);
-                                        if(op.contains("D/L")){
-                                            continue;
-                                        }
+                                        String op = i.getParams().get(7);                                       
                                         if(op.contains("W")){
                                             num++;
                                         }
@@ -167,28 +164,26 @@
                                     
                                     int num = 0;
                                     int den = 0;
+                                    int numA = 0;
+                                    int denA = 0;
                                     for(Inning i : a){
                                         String op = i.getParams().get(7);
-                                        if(op.contains("D/L")){
-                                            continue;
-                                        }
+                                        
                                         if(op.contains("W")){
-                                            num++;
+                                            numA++;
                                             
                                         }
                                         else if(op.contains("L")){
-                                            den++;
+                                            denA++;
                                         }
                                     }
-                                    request.setAttribute("fg_a", num+"/"+den);
+                                    
                                     
                                     int numB = 0;
                                     int denB = 0;
                                     for(Inning i : b){
                                         String op = i.getParams().get(7);
-                                        if(op.contains("D/L")){
-                                            continue;
-                                        }
+                                        
                                         if(op.contains("W")){
                                             numB++;
                                         }
@@ -197,6 +192,10 @@
                                         }
                                     }
                                     request.setAttribute("fg_b", numB+"/"+denB);
+                                    num = numA + denB;
+                                    den = denA + numB;
+                                    
+                                    request.setAttribute("fg_a", num+"/"+den);
                                     request.setAttribute("fg_tot", (num+numB)+"/"+(den+denB));
                                     
                                 
@@ -1056,6 +1055,26 @@
                                         
                                     </tr>
                                     <tr>
+                                        <c:forEach var="in" items="${oneBatFirstZ1}">
+                                            <td >
+                                                ${in.getParams().get(6)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${twoBowlFirstZ1}">
+                                            <td >
+                                                ${in.getParams().get(7)}
+                                            </td>
+                                        </c:forEach>
+                                        <td>
+                                        <c:forEach var="in" items="${groundFirstZ}">
+                                            <td >
+                                                ${in.getParams().get(7)}
+                                            </td>
+                                        </c:forEach>
+                                        
+                                    </tr>
+                                    <tr>
                                         <%
                                      
                                         if(true){
@@ -1069,9 +1088,7 @@
                                             int num = 0;
                                             int den = 0;
                                             for(Inning ti : Ab){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
+                                                
                                                 if(ti.getParams().get(7).trim().charAt(0) == 'B'){
                                                     num++;
                                                 }
@@ -1084,9 +1101,7 @@
                                             num = 0;
                                             den = 0;
                                             for(Inning ti : Bb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
+                                                
                                                 if(ti.getParams().get(7).trim().charAt(0) == 'B'){
                                                     num++;
                                                 }
@@ -1099,9 +1114,7 @@
                                             num = 0;
                                             den = 0;
                                             for(Inning ti : Gb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
+                                                
                                                 if(ti.getParams().get(7).trim().charAt(0) == 'B'){
                                                     num++;
                                                 }
@@ -1117,9 +1130,7 @@
                                             Tb.addAll(Ab);
                                             Tb.addAll(Bb);
                                             for(Inning ti : Tb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
+                                                
                                                 if(ti.getParams().get(7).trim().charAt(0) == 'B'){
                                                     num++;
                                                 }
