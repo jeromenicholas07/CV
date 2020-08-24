@@ -91,6 +91,9 @@ public class getDB extends HttpServlet {
             dbMatch temp;
 
             for (int i = 0; i < matches.size(); i++) {
+            	if(matches.get(i).getResult().contains("-1")){
+            		continue;
+            	}
                 String matchDate;
                 String oppTeam;
                 String tossWinner;
@@ -128,19 +131,49 @@ public class getDB extends HttpServlet {
 
                 if (matches.get(i).getResult().contains("run")) {
                     if (matches.get(i).getHomeTeam().equals(teamOne)) {
-                        result = "W";
+                    	if(matches.get(i).getResult().contains("D/L")){
+									result = "W " + "D/L";
+                    	}
+                    	else{
+                    		result = "W";
+                    	}
+                        				
                     } else {
-                        result = "L";
+              			if(matches.get(i).getResult().contains("D/L")){
+              				result = "L " + "D/L";
+              			}
+              			else{
+              				result = "L";
+              			}
+                        
                     }
                 } else if (matches.get(i).getResult().contains("wicket")) {
                     if (matches.get(i).getHomeTeam().equals(teamOne)) {
-                        result = "L";
+                    	if (matches.get(i).getResult().contains("D/L")) {
+                    		result = "L " + "D/L";
+                    	}
+                    	else{
+                    		result = "L";
+                    	}
+                       
                     } else {
-                        result = "W";
+                    	if(matches.get(i).getResult().contains("D/L")){
+                    		result = "W " + "D/L";
+                    	}
+                    	else{
+                    		result = "W";
+                    	}
+                        
                     }
                 } else {
-                    result = "-";
+                	if(matches.get(i).getResult().contains("D/L")){
+                    result = "- " + "D/L";
                 }
+                else{
+                	result = "-";
+                }
+                }
+
 
                 Inning one;
                 Inning two;
