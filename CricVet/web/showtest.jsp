@@ -50,6 +50,7 @@
                     <th colspan="2">Home/Away
                     </tr>
                                 <tr class=thead-dark >
+                                    <th> ID
                                     <th>Date
                                     <th>Home
                                     <th>Away
@@ -99,6 +100,12 @@
                                 </tr>
                 <c:forEach var="match" items="${matches}" varStatus="m">
                 <tr>
+                    <td>
+                    <form action="testmatchidDB" method ="POST">
+                    <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
+                    <input type="submit" value = ${match.getMatchId()} >
+                </form> </td>
+                    
                     <td>${match.getMatchDate()}
                     <td>${match.getHomeTeam()}
                     <td>${match.getAwayTeam()}
