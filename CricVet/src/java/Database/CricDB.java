@@ -80,17 +80,17 @@ public class CricDB extends BaseDAO {
 //                String ground16 = r.getString("GROUND16");
 //                String ground17 = r.getString("GROUND17");
 //                String ground18 = r.getString("GROUND18");
-//                
+//
 //            if(groundName.equals(ground1)||groundName.equals(ground2)||groundName.equals(ground3)||groundName.equals(ground4)||groundName.equals(ground5)||groundName.equals(ground6)||groundName.equals(ground7)||groundName.equals(ground8)||groundName.equals(ground9)||groundName.equals(ground10)||groundName.equals(ground11)||groundName.equals(ground12)||groundName.equals(ground13)||groundName.equals(ground14)||groundName.equals(ground15)||groundName.equals(ground16)||groundName.equals(ground17)||groundName.equals(ground18)){
 //                 hometeam = teamOne;
 //                 return hometeam;
-//                
+//
 //            }
 //            else{
 //                hometeam = teamTwo;
 //                return hometeam;
 //            }
-//            
+//
 //            }
 //            con.close();
 //
@@ -102,11 +102,11 @@ public class CricDB extends BaseDAO {
 //            try { con.close(); } catch (Exception e) { /* ignored */ }
 //        }
         return teamOne;
-        
+
     }
-    
+
     public void addtestMatch(testMatch match) throws Exception{
-        
+
         Connection con = null;
         Statement s = null;
         ResultSet r = null;
@@ -192,7 +192,7 @@ public class CricDB extends BaseDAO {
             if (rs.next()) {
                 id = rs.getInt(1);
             }
-              
+
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
@@ -358,6 +358,120 @@ public class CricDB extends BaseDAO {
         return matches;
     }
     
+    public Match getMatchfromID(int matchID) {
+
+        Match m = null;
+        Connection con = null;
+        Statement stmt=null;
+        ResultSet rs=null;
+
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.Matches where matchid =" + matchID + "  order by MATCHDATE DESC";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Timestamp matchDate = rs.getTimestamp("matchdate");
+                String tossWinner = rs.getString("tosswinner");
+                String battingFirst = rs.getString("battingfirst");
+                int inning1_id = rs.getInt("inning1_id");
+                int inning2_id = rs.getInt("inning2_id");
+                String homeScore = rs.getString("homescore");
+                String awayscore = rs.getString("awayscore");
+                String result = rs.getString("result");
+                String groundName = rs.getString("groundname");
+                int matchType = rs.getInt("matchtype");
+
+                Inning inningOne = getInning(inning1_id);
+                Inning inningTwo = getInning(inning2_id);
+
+                m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
+
+            }
+
+            con.close();
+
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return m;
+    }
+
+    public testMatch gettestMatchfromID(int matchID) {
+
+        testMatch m = null;
+        Connection con = null;
+        Statement stmt=null;
+        ResultSet rs=null;
+
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.TESTMATCH where matchid =" + matchID + "  order by MATCHDATE DESC";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+
+                int matchId = rs.getInt("matchid");
+                String homeTeam = rs.getString("hometeam");
+                String awayTeam = rs.getString("awayteam");
+                Date matchDate = rs.getDate("matchdate");
+                String tossWinner = rs.getString("tosswinner");
+                String battingFirst = rs.getString("battingfirst");
+                int one1 = rs.getInt("one1id");
+                int two1 = rs.getInt("two1id");
+                int one2 = rs.getInt("one2id");
+                int two2 = rs.getInt("two2id");
+                String homeScore = rs.getString("homescore");
+                String awayscore = rs.getString("awayscore");
+                String result = rs.getString("result");
+                String groundName = rs.getString("groundname");
+                int matchType = rs.getInt("matchtype");
+                String teamathome = rs.getString("teamathome");
+                String teamataway = rs.getString("teamataway");
+                testInning inningOne1 = gettestInning(one1);
+                testInning inningTwo1 = gettestInning(two1);
+                testInning inningOne2 = gettestInning(one2);
+                testInning inningTwo2 = gettestInning(two2);
+
+                testInning inningOne = gettestInning(one1);
+                testInning inningTwo = gettestInning(two1);
+                testInning inningThree = gettestInning(one2);
+                testInning inningFour = gettestInning(two2);
+
+                m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, matchType,teamathome,teamataway);
+
+            }
+
+            con.close();
+
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return m;
+    }
+
+
+
+
     public List<testMatch> gettestDB(String TeamName) {
         List<testMatch> matches = new ArrayList<>();
 
@@ -565,7 +679,7 @@ public class CricDB extends BaseDAO {
                     + "	PARAM4 VARCHAR(20),\n"
                     + "	PARAM5 VARCHAR(20),\n"
                     + "	PARAM6 VARCHAR(20) )";
-                    
+
 
             con = getConnection();
             stmt = con.createStatement();
@@ -683,7 +797,7 @@ public class CricDB extends BaseDAO {
             try { stmt.close(); } catch (Exception e) {  }
             try { con.close(); } catch (Exception e) {  }
         }
-//        
+//
 //        try {
 //            String sql = "UPDATE APP.MATCHES SET HOMETEAM = 'Delhi Capitals' WHERE HOMETEAM = 'Delhi Daredevils' ";
 //
@@ -699,7 +813,7 @@ public class CricDB extends BaseDAO {
 //            try { stmt.close(); } catch (Exception e) { }
 //            try { con.close(); } catch (Exception e) {  }
 //        }
-//        
+//
 //        try {
 //            String sql = "UPDATE APP.MATCHES SET awayteam = 'Delhi Capitals' WHERE awayteam = 'Delhi Daredevils' ";
 //
@@ -716,18 +830,18 @@ public class CricDB extends BaseDAO {
 //            try { con.close(); } catch (Exception e) {  }
 //        }
 //
-//        
+//
 //        try {
 //            String sql = "UPDATE APP.MATCHES SET tosswinner = 'Delhi Capitals , elected to field first' WHERE tosswinner = 'Delhi Daredevils , elected to field first' ";
 //
 //            con = getConnection();
 //            stmt = con.createStatement();
 //            stmt.execute(sql);
-//            
+//
 //            sql = "UPDATE APP.MATCHES SET tosswinner = 'Delhi Capitals , elected to bat first' WHERE tosswinner = 'Delhi Daredevils , elected to bat first' ";
 //            Statement st = con.createStatement();
 //            st.execute(sql);
-//            
+//
 //
 //            con.close();
 //        } catch (SQLException ex) {
@@ -739,7 +853,7 @@ public class CricDB extends BaseDAO {
 //        }
 
     }
-    
+
     public Inning gettestInning(int id) {
         Connection con = null;
         Statement stmt = null;
@@ -874,6 +988,172 @@ public class CricDB extends BaseDAO {
         }
     }
 
+    public void updateMatch(int matchID, Match m, Inning one, Inning two) {
+
+        Connection con = null;
+        Statement s = null;
+        ResultSet rs = null;
+        Statement s2 = null;
+        Statement s3 = null;
+
+
+        try {
+            con = getConnection();
+            String sq0 = "update APP.MATCHES SET HOMETEAM=?, AWAYTEAM=?, MATCHDATE=?, TOSSWINNER=?, BATTINGFIRST=?, HOMESCORE=?, AWAYSCORE=?, RESULT=?, GROUNDNAME=?, MATCHTYPE=? WHERE MATCHID=" + matchID;
+            PreparedStatement ps0 = con.prepareStatement(sq0);
+            ps0.setString(1,m.getHomeTeam());
+            ps0.setString(2,m.getAwayTeam());
+            ps0.setTimestamp(3,m.getMatchDate());
+            ps0.setString(4,m.getTossWinner());
+            ps0.setString(5,m.getBattingFirst());
+            ps0.setString(6,m.getHomeScore());
+            ps0.setString(7,m.getAwayScore());
+            ps0.setString(8,m.getResult());
+            ps0.setString(9,m.getGroundName());
+            ps0.setInt(10,m.getMatchType());
+
+            ps0.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+        try {
+            con = getConnection();
+            String sq = "select * from APP.MATCHES WHERE MATCHID=" + matchID;
+            s = con.createStatement();
+            rs = s.executeQuery(sq);
+            if (rs.next()) {
+                        int inning1_id = rs.getInt("inning1_id");
+                        int inning2_id = rs.getInt("inning2_id");
+
+//                int matchType = rs.getInt("matchtype");
+
+                        String sq1 = "update APP.INNINGS SET PARAM1 =?,PARAM2=?,PARAM3=?,PARAM4=?,PARAM5=?,PARAM6=?,PARAM7=? WHERE ID = " + inning1_id;
+
+                        String sq2 = "update APP.INNINGS SET PARAM1 =?,PARAM2=?,PARAM3=?,PARAM4=?,PARAM5=?,PARAM6=?,PARAM7=? WHERE ID = " + inning2_id;
+
+                        PreparedStatement ps = con.prepareStatement(sq1);
+                        for (int it = 1; it <=7; it++) {
+                                 ps.setString(it, one.getParams().get(it - 1));
+                            }
+                        PreparedStatement ps2 = con.prepareStatement(sq2);
+                        for (int it = 1; it <=7; it++) {
+                                 ps2.setString(it, two.getParams().get(it - 1));
+                            }
+                        ps.executeUpdate();
+                        ps2.executeUpdate();
+
+
+
+
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            //todo: show that ur unable to connect to db
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { s.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
+    public void updatetestMatch(int matchID,testMatch m, testInning one1, testInning two1,testInning one2,testInning two2) {
+
+        Connection con = null;
+        Statement s = null;
+        ResultSet rs = null;
+        Statement s2 = null;
+        Statement s3 = null;
+
+        try {
+            con = getConnection();
+            String sq0 = "update APP.TESTMATCH SET HOMETEAM=?, AWAYTEAM=?, MATCHDATE=?, TOSSWINNER=?, BATTINGFIRST=?, HOMESCORE=?, AWAYSCORE=?, RESULT=?, GROUNDNAME=?, MATCHTYPE=?,TEAMATHOME=?,TEAMATAWAY=? WHERE MATCHID=" + matchID;
+            PreparedStatement ps0 = con.prepareStatement(sq0);
+            ps0.setString(1,m.getHomeTeam());
+            ps0.setString(2,m.getAwayTeam());
+            ps0.setDate(3,m.getMatchDate());
+            ps0.setString(4,m.getTossWinner());
+            ps0.setString(5,m.getBattingFirst());
+            ps0.setString(6,m.getHomeScore());
+            ps0.setString(7,m.getAwayScore());
+            ps0.setString(8,m.getResult());
+            ps0.setString(9,m.getGroundName());
+            ps0.setInt(10,m.getMatchType());
+            ps0.setString(11,m.getteamathome());
+            ps0.setString(12,m.getteamataway());
+
+            ps0.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            con = getConnection();
+            String sq = "select * from APP.TESTMATCH WHERE MATCHID=" + matchID;
+            s = con.createStatement();
+            rs = s.executeQuery(sq);
+            if (rs.next()) {
+                        int one1id = rs.getInt("one1id");
+                        int two1id = rs.getInt("two1id");
+                        int one2id = rs.getInt("one2id");
+                        int two2id = rs.getInt("two2id");
+
+//                int matchType = rs.getInt("matchtype");
+
+                        String sq1 = "update APP.TESTINNING SET TOTALRUNS =?,SIXES=?,FOURS=?,FIRSTWICKET=?,RUNS5WICKET=? WHERE ID = " + one1id;
+
+                        String sq2 = "update APP.TESTINNING SET TOTALRUNS =?,SIXES=?,FOURS=?,FIRSTWICKET=?,RUNS5WICKET=? WHERE ID = " + two1id;
+
+                        String sq3 = "update APP.TESTINNING SET TOTALRUNS =?,SIXES=?,FOURS=?,FIRSTWICKET=?,RUNS5WICKET=? WHERE ID = " + one2id;
+
+                        String sq4 = "update APP.TESTINNING SET TOTALRUNS =?,SIXES=?,FOURS=?,FIRSTWICKET=?,RUNS5WICKET=? WHERE ID = " + two2id;
+
+                        PreparedStatement ps = con.prepareStatement(sq1);
+                        for (int it = 1; it <=5; it++) {
+                                 ps.setString(it, one1.getParams().get(it - 1));
+                            }
+
+                        PreparedStatement ps2 = con.prepareStatement(sq2);
+                        for (int it = 1; it <=5; it++) {
+                                 ps2.setString(it, two1.getParams().get(it - 1));
+                            }
+
+                        PreparedStatement ps3 = con.prepareStatement(sq3);
+                        for (int it = 1; it <=5; it++) {
+                                 ps3.setString(it, one2.getParams().get(it - 1));
+                            }
+
+                        PreparedStatement ps4 = con.prepareStatement(sq4);
+                        for (int it = 1; it <=5; it++) {
+                                 ps4.setString(it, two2.getParams().get(it - 1));
+                            }
+
+                        ps.executeUpdate();
+                        ps2.executeUpdate();
+                        ps3.executeUpdate();
+                        ps4.executeUpdate();
+
+
+
+
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            //todo: show that ur unable to connect to db
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { s.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+    }
+
     public int addInning(Inning i) throws Exception{
         int id = -1;
         Connection con = null;
@@ -926,13 +1206,13 @@ public class CricDB extends BaseDAO {
         else if(type.equals(TestType.AWAY)){
             addCondn = "AND teamataway = '" + teamName + "' ";
         }
-        
+
         switch (caseNo) {
             case 0:
                 try {
                     con = getConnection();
                     String sql = "select * from APP.TESTMATCH where (hometeam = '" + teamName + "' OR awayteam = '" + teamName + "' ) "+ addCondn +"  ORDER BY MATCHDATE DESC";
-                    
+
                     stmt = con.prepareStatement(sql);
                     rs = stmt.executeQuery();
 
@@ -1066,9 +1346,9 @@ public class CricDB extends BaseDAO {
             default:
                 break;
             }
-            return testmatches;   
+            return testmatches;
         }
-    
+
     public List<Match> getMatches(String teamName, int matchType, int type) {
 
         List<Match> matches = new ArrayList<>();
@@ -1456,8 +1736,8 @@ public class CricDB extends BaseDAO {
             try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return teams;
-    }   
-    
+    }
+
     public String getLastMatchDate(){
         Connection con = null;
         PreparedStatement stmt = null;
@@ -1539,7 +1819,7 @@ public class CricDB extends BaseDAO {
 
             while (rs.next()) {
                 String mName = rs.getString("matchid");
-                matches.add(mName);   
+                matches.add(mName);
             }
             con.close();
         } catch (SQLException ex) {

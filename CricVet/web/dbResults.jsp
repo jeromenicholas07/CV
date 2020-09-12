@@ -42,6 +42,8 @@
             <thead class="thead-dark">
                 <tr><th colspan="20"><h2>${team}</h2></tr>
                 <tr>
+                    
+                    <th rowspan="2">Match ID </th>
                     <th rowspan="2">Date</th>
                     <th rowspan="2">Opp.</th>
                     <th rowspan="2">Toss</th>
@@ -62,6 +64,19 @@
             </thead>
             <c:forEach var="match" items="${matches}" varStatus="m">
                 <tr>
+<%--                  
+               <td>
+                    <form action="edit.jsp" method ="GET">
+                    <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
+                    <input type="submit" value = ${match.getMatchId()} >
+                </form> </td>
+--%>
+                <td>
+                    <form action="matchidDB" method ="POST">
+                    <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
+                    <input type="submit" value = ${match.getMatchId()} >
+                </form> </td>
+                    
                     <td>${match.getMatchDate()}
                     <td>${match.getOppTeam()}
                     <td>${match.getToss()}

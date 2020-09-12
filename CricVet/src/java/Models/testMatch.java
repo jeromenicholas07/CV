@@ -58,7 +58,7 @@ public class testMatch {
     public String getGroundName() {
         return groundName;
     }
-    public void setGroundName(String teamathome) {
+    public void setGroundName(String groundName) {
         this.groundName = groundName;
     }
     public String getteamathome() {

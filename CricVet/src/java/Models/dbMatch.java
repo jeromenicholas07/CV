@@ -19,8 +19,10 @@ public class dbMatch {
     
     private Inning one;
     private Inning two;
+    private int matchId;
 
-    public dbMatch(String matchDate, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two) {
+    public dbMatch(int matchId, String matchDate, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two) {
+        this.matchId = matchId;
         this.matchDate = matchDate;
         this.oppTeam = oppTeam;
         this.toss = toss;
@@ -30,7 +32,12 @@ public class dbMatch {
         this.one = one;
         this.two = two;
     }
-
+    public int getMatchId() {
+        return matchId;
+    }
+    public void setMatchId(int matchId) {
+        this.matchId = matchId;
+    }
     public String getMatchDate() {
         return matchDate;
     }

@@ -40,6 +40,18 @@
         <servlet-name>getLdate</servlet-name>
         <servlet-class>Servlets.getLdate</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>matchidDB</servlet-name>
+        <servlet-class>Servlets.matchidDB</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editDB</servlet-name>
+        <servlet-class>Servlets.editDB</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>testmatchidDB</servlet-name>
+        <servlet-class>Servlets.testmatchidDB</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadAll</servlet-name>
         <url-pattern>/LoadAll</url-pattern>
@@ -71,6 +83,18 @@
     <servlet-mapping>
         <servlet-name>getLdate</servlet-name>
         <url-pattern>/getLdate</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>matchidDB</servlet-name>
+        <url-pattern>/matchidDB</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editDB</servlet-name>
+        <url-pattern>/editDB</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>testmatchidDB</servlet-name>
+        <url-pattern>/testmatchidDB</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

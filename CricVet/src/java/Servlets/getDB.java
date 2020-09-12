@@ -71,12 +71,14 @@ public class getDB extends HttpServlet {
             	if(matches.get(i).getResult().contains("-1")){
             		continue;
             	}
+                int matchId;
                 String matchDate;
                 String oppTeam;
                 String tossWinner;
                 String BorC;
                 String result;
-
+                
+                matchId = matches.get(i).getMatchId();
                 DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
                 System.out.println(matches.get(i).getMatchId());
                 Timestamp ts = matches.get(i).getMatchDate();
@@ -166,7 +168,7 @@ public class getDB extends HttpServlet {
 
                 int totalSixes = Integer.parseInt(one.getParams().get(5)) + Integer.parseInt(two.getParams().get(5));
 
-                temp = new dbMatch(matchDate, oppTeam, tossWinner, BorC, result, totalSixes, one, two);
+                temp = new dbMatch(matchId,matchDate, oppTeam, tossWinner, BorC, result, totalSixes, one, two);
                 dbMatches.add(temp);
 
             }
