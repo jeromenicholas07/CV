@@ -30,27 +30,31 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import models.*;
-import models.testInning;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import views.LoadODI;
-import models.*;
-import models.testInning;
 import models.testMatch;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author DELL
  */
 public class DataFetch {
+    List<MatchReport> reports = new ArrayList<>();
+
+    public List<MatchReport> getReports() {
+        return reports;
+    }
+    
 
     Map<String, String> unloaded = new HashMap<>();
 
@@ -90,4702 +94,376 @@ public class DataFetch {
     }
 
     int yr = 2017;
+    Pattern matchIdFinder = Pattern.compile("/ci/engine/match/(.*)\\.html");
+    Pattern teamIndexFinder = Pattern.compile("/team/_/id/(.*)/(.*)");
 
     CricDB db = new CricDB();
 
-    public boolean loadIPLData() {
-        boolean ret = true;
-
+    public List<MatchReport> loadData() {
         String baseUrl = "http://stats.espncricinfo.com/";
-        int matchType = 117;
-        List<String> matchLinks = new ArrayList<>();
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        for (int y = year; y >= yr; y--) {
+        
+        List<Integer> matchTypes = Arrays.asList(117, 2, 158, 159, 748, 205, 3);
+        for(int matchType : matchTypes){
+            List<String> loadedMatchIDs = db.getLoadedMatchIDs(matchType);
+            List<String> matchLinks = new ArrayList<>();
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            for (int y = year; y >= yr; y--) {
 
-            Document matches;
-            try {
-                matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=117;type=season").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=117;type=season");
-                ret = false;
-                continue;
-            }
-            if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                continue;
-            }
-            Elements rows = matches.getElementsByClass("data1");
-
-            for (int i = (rows.size() - 1); i >= 0; i--) {
-                Element m = rows.get(i);
-                Elements cols = m.getElementsByClass("data-link");
-
-                String matchLink = cols.last().attr("href");
-                matchLinks.add(matchLink);
-            }
-        }
-
-        MATCHLABEL:
-        for (String matchLink : matchLinks) {
-            try {
-
-                int mPos = 0;
-                String[] mParts = matchLink.split("/");
-                for (int i = 0; i < mParts.length; i++) {
-                    if (mParts[i].equals("match")) {
-                        mPos = i + 1;
-                        break;
-                    }
+                Document matches;
+                String matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy="+matchType+";type=season";
+                try {
+                    matches = Jsoup.connect(matchListPage).get();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    reports.add(new MatchReport(matchListPage, MatchStatus.N_A, ex));
+                    continue;
                 }
-                String mid = mParts[mPos];
-                int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
-
-                if (db.checkMatchEntry(mId)) {
-                    System.out.println("Match " + mId + " exists");
+                if (matches == null && matches.getElementsByClass("data1").first() == null) {
+                    reports.add(new MatchReport(matchListPage, MatchStatus.N_A, new Exception("Data null.")));
                     continue;
                 }
 
-                String url = baseUrl + matchLink;
+                Elements rows = matches.getElementsByClass("data1");
+                for (int i = (rows.size() - 1); i >= 0; i--) {
+                    Element m = rows.get(i);
+                    Elements cols = m.getElementsByClass("data-link");
 
-                Document matchPage;
-                try {
-                    matchPage = Jsoup.connect(url).followRedirects(true).get();
-                } catch (Exception ex) {
-                    Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    unloaded.put("" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                String matchUrl = matchPage.baseUri();
-                String[] splitUrl = matchUrl.split("/");
-
-                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
-
-               
-                Elements teamName = matchPage.getElementsByClass("team-name");
-                Element home = teamName.first();
-                Element away = teamName.last();
-                String homeTeamName = home.select("span").attr("title");
-                String awayTeamName = away.select("span").attr("title");
-                
-
-                String homeTeamUrl = home.select("a").attr("href");
-                String[] urlParts = homeTeamUrl.split("/");
-                int pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String homeTeamId = urlParts[pos];  //#todo
-
-                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text().trim();
-
-                String awayTeamUrl = away.select("a").attr("href");
-                urlParts = awayTeamUrl.split("/");
-                pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String awayTeamId = urlParts[pos];  //#todo
-
-                //String homeScore = home.select("div.cscore_score").get(0).text();
-                //String awayScore = away.select("div.cscore_score").get(0).text();
-/*
-                Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
-                if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-
-
-*/
-                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                Element checkLive = topTabs.select("a").first();
-                //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text().contains("Live")){
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-
-                Elements scores = matchPage.getElementsByClass("score-run");
-                String homeScore = scores.first().text();
-                String awayScore = scores.last().text();
-
-                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-           
-                
-                //String tossResult = detailsColumn.get(1).text();
-                //System.out.println("TOss:"+ tossResult);
-                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                String tossResult = detailsTable.select("tr").get(1).text();
-
-                String battingFirst;
-                if (tossResult.contains(homeTeamName)) {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = homeTeamName;
-                    } else {
-                        battingFirst = awayTeamName;
-                    }
-                } else {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = awayTeamName;
-                    } else {
-                        battingFirst = homeTeamName;
-                    }
-                }
-
-                int seriesPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("series")) {
-                        seriesPos = i + 1;
-                        break;
-                    }
-                }
-
-                int eventNoPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
-                        eventNoPos = i + 1;
-                        break;
-                    }
-                }
-
-                String seriesNo = splitUrl[seriesPos];
-                String eventNo = splitUrl[eventNoPos];
-
-                //Elements winner = matchPage.getElementsByClass("cscore_notes");
-                //String result = winner.select("span").first().text();
-                String result = matchPage.getElementsByClass("summary").text();
-/*
-                String BorC = "";
-                if(result.contains("No result")){continue;}
-                
-                if (result.contains(" wicket")) {
-                    BorC = "C";
-                } else if (result.contains(" run")) {
-                    BorC = "B";
-                } else {
-                    BorC = "-";
-                }
-                */
-                Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
-                Elements homewinnerIcon = home.select("i");
-                Elements awaywinnerIcon = away.select("i");
-                
-                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
-                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
-                String BorC = "";
-                
-                if(homewinnerIcon.size() > 0){
-                    System.out.println("HOME WIN ICON EXISTS ");
-                    if(battingFirst == homeTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("homeTeam is :" + homeTeamName);                   
-                        BorC = "B";
-                    }
-                    else if(battingFirst == awayTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("awayTeamName is :" + awayTeamName); 
-                        BorC="C";
-                    }
-                   
-                }
-                else if(awaywinnerIcon.size() > 0){
-                    System.out.println("AWAY WIN ICON EXISTS");
-                    if(battingFirst == awayTeamName){
-                        BorC = "B";
-                    }
-                    else if(battingFirst == homeTeamName){
-                        BorC="C";
-                    }
-                    
-                }
-                else{
-                    BorC="D";
-                }
-/* Get MATCHDATE using summary page               
-                LocalDateTime matchDate = LocalDateTime.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
-                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                String[] parts = matchDateElement.text().trim().split(",");
-                //String[] parts2 = parts[parts.length - 2].split("-");
-                //String[] parts3 = parts2[1].split(" ");
-                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                String matchDateString = parts[parts.length-2];
-                System.out.println("MATCHDATE IS :" + matchDateString);
-                
-                try {
-                    matchDate = LocalDateTime.parse(matchDateString.trim());
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
-                System.out.println("MATCH DATE IS :" + matchDate);
- */               
-                
-/* USE OLD API FOR MATCHDATE
-
-                
-                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                LocalDateTime matchDate = LocalDateTime.now();
-                String dJson = "";
-                try {
-                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
-                } catch (Exception ex) {
-                    ret = false;
-                    unloaded.put("Date acquire error", url);
-                    continue;
-                }
-
-                
-                JSONObject dj = new JSONObject(dJson);
-                try {
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
-                matchDate = LocalDateTime.parse(date);
-                } catch (DateTimeParseException ex) {
-                    ret = false;
-                    unloaded.put("Date parse error", url);
-                    continue;
-                }
-*/
-                LocalDateTime matchDate = LocalDateTime.now();
-                LocalDate matchDate1 = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-
-                String matchDateString = null;
-                String timeString = null;
-                LocalTime time = null;
-                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
-                int table_len = detailsTable.select("tr").size();
-                
-                for(int i = 0; i<table_len; i++){
-                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
-                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
-                        System.out.println(matchDateElement);
-                        String[] parts = matchDateElement.split(" ");
-                        //String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
-                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
-                        
-                    }
-
-                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
-                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
-                   		System.out.println(timeElement);
-                   		String[] parts = timeElement.split(" ");
-                   		String[] parts2 = parts[5].split("\\.");
-                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
-                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
-
-
-                   }
-                    
-                }
-
-                //String matchDateTimeString = matchDateString + "T" + timeString
-                //System.out.println("MATCHDATE IS :" + matchDateString);
-                //System.out.println("Time IS :" + timeString);
-                if(timeString != null && timeString.length() == 8){
-                time = LocalTime.parse(timeString,tf);
-                }
-                else if(timeString !=null && timeString.length() == 7){
-                    timeString = "0" + timeString;
-                    time = LocalTime.parse(timeString,tf);
-                }
-                else{
-        		time = LocalTime.parse("00:00:00");
-        		}
-                
-                try {
-                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
-                    matchDate = matchDate1.atTime(time);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-
-                Inning one = null;
-                Inning two = null;
-                /*
-                for (int inning = 1; inning <= 2; inning++) {
-                    String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("commentary").getInt("pageCount");
-
-                    List<JSONObject> ballList = new ArrayList<>();
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFiveOverScore = -1;
-                    int lastFlag = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
-                                + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
-
-                        String body;
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
+                    String matchLink = cols.last().attr("href");
+                    String url = baseUrl + matchLink;
+                    Matcher idMatcher = matchIdFinder.matcher(matchLink);
+                    if(idMatcher.find()){
+                        String currId = idMatcher.group(1);
+                        if(loadedMatchIDs.contains(currId)){
+                           reports.add(new MatchReport(url, MatchStatus.ALREADY_LOADED, null)) ;
                         }
-
-                        JSONObject jObj = new JSONObject();
-
-                        try {
-                            jObj = new JSONObject(body);
-
-                        } catch (JSONException je) {
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
+                        else{
+                            matchLinks.add(matchLink);
                         }
-
-                        //                    out.print("<td> " + i + "(" + jObj.getJSONObject("commentary").getInt("pageIndex")+")");
-                        for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
-                            JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                                continue;
-                            }
-
-                            ballList.add(jItem);
-                            //                        out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
-                            //                        out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
-
-                            if (jItem.getJSONObject("over").getInt("unique") == 0) {
-                                firstOverScore += jItem.getInt("scoreValue");
-//                                out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
-//                                out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") < 6) {
-                                sixOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") >= 15) {
-                                lastFiveOverScore += jItem.getInt("scoreValue");
-                            }
-
-                            if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
-                                if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-
-                            if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-                                fourCount++;
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 4) {
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("scoreValue");
-                        }
-                    }
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-                    
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
                     }
                     else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
+                        reports.add(new MatchReport(url, MatchStatus.UNLOADED, new Exception("Unable to extract matchId")));
                     }
                 }
-*/
-                //NEW API
+            }
 
-                for (int inning = 1; inning <= 2; inning++) {
-                    String fourcheck = " FOUR";
-                    String sixcheck = " SIX";
-                    List<JSONObject> ballList = new ArrayList<>();     
-                    int wicketCount = 0;
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFiveOverScore = -1;
-                    int lastFlag = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
+            MATCHLABEL:
+            for (String matchLink : matchLinks) {
+                String url = baseUrl + matchLink;
+                try {
 
-                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
-
-                        String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
+                    int mId = -1;
+                    try{
+                        Matcher idMatcher = matchIdFinder.matcher(matchLink);
+                        if(idMatcher.find()){
+                            String currId = idMatcher.group(1);
+                            mId = Integer.parseInt(currId);
                         }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
+                        else{
+                            throw new Exception("Couldn't extract match ID");
                         }
-
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                             //   continue;
-                            //}
-                            ballList.add(jItem);
-                            
-                            
-
-                            if (jItem.has("matchWicket")) {
-                                wicketCount++;
-                            }
-
-                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
-                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
-                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") >=15){
-                                lastFiveOverScore += jItem.getInt("runs");
-                            }
-
-                           
-                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
-                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-
-                           /*
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
-                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-*/
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
-                                fourCount++;
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
-                                sixCount++;
-                            }
-                           
-                            totalRuns += jItem.getInt("runs");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
+                        if(mId == -1){
+                            throw new Exception("Couldn't extract match ID");
                         }
                     }
-                    
-
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-                    
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
+                    catch(Exception e){
+                        reports.add(new MatchReport(url, MatchStatus.UNLOADED, e));
                     }
 
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
+
+
+                    Document matchPage = Jsoup.connect(url).followRedirects(true).get();
+                    String matchUrl = matchPage.baseUri();
+                    String[] splitUrl = matchUrl.split("/");
+
+                    Elements teamName = matchPage.getElementsByClass("team-name");
+                    if(teamName.size() != 2){
+                        throw new Exception("home/away name selector.size() did not return 2");
+                    }
+                    Element home = teamName.first();
+                    Element away = teamName.last();
+                    String homeTeamName = home.select("span").attr("title");
+                    String awayTeamName = away.select("span").attr("title");
+
+                    Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                    List<String> tabTexts = topTabs.select("a").eachText();
+                    if(tabTexts.contains("Live")){
+                        throw new Exception("Live match");
+                    }
+
+                    Elements scores = matchPage.getElementsByClass("score-run");
+                    if(scores.size() != 2){
+                        throw new Exception("home/away score selector.size() did not return 2");
+                    }
+                    String homeScore = scores.first().text();
+                    String awayScore = scores.last().text();
+
+
+                    int seriesPos = 0;
+                    for (int i = 0; i < splitUrl.length; i++) {
+                        if (splitUrl[i].equals("series")) {
+                            seriesPos = i + 1;
+                            break;
+                        }
+                    }
+
+                    int eventNoPos = 0;
+                    for (int i = 0; i < splitUrl.length; i++) {
+                        if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
+                            eventNoPos = i + 1;
+                            break;
+                        }
+                    }
+
+                    String seriesNo = splitUrl[seriesPos];
+                    String eventNo = splitUrl[eventNoPos];
+
+                    if(!eventNo.equals(String.valueOf(mId))){
+                        throw new Exception("Event no.("+eventNo+") doesnt equal matchID("+mId+")");
+                    }
+
+                    String summaryText = matchPage.getElementsByClass("summary").first().text();
+
+                    Elements homewinnerIcon = home.select("i");
+                    Elements awaywinnerIcon = away.select("i");
+
+                    String BCW ;
+                    if(homewinnerIcon.size() > 0){
+                        BCW = "B";
+                    }
+                    else if(awaywinnerIcon.size() > 0){
+                        BCW="C";
+                    }
+                    else if(summaryText.contains(" tied") || summaryText.contains(" drawn")){
+                        BCW="D";
                     }
                     else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
+                        BCW = "--";
                     }
-                     
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
 
-                    //System.out.println("Params are: " +params);
+                    Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
+                    String tossResult = "N/A";
 
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-                    
+                    LocalDateTime matchDate = LocalDateTime.now();
+                    LocalDate matchDate1 = LocalDate.now();
+                    DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
 
-                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-                    
-                    Boolean hasOver = false;
-                    
-                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
-                    String lastBody;
-                    try {
-                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + lastPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(lastBody);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            
-                            if(jItem.getInt("over") >= 19){
-                                hasOver = true;
-                                break;
-                            }
-                                
-                            }
-                        if(result.contains("D/L"))
-                            if(hasOver == false){
-                                result = result + " -1";
+                    String matchDateString = null;
+                    String timeString = null;
+                    LocalTime time = null;
+                    DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
+
+                    for(int i = 0; i< detailsTable.select("tr").size(); i++){
+                        if(detailsTable.select("tr").get(i).text().contains("Match days")){
+                            String matchDateElement = detailsTable.select("tr").get(i).text().trim();
+                            System.out.println(matchDateElement);
+                            String[] parts = matchDateElement.split(" ");
+                            //String[] parts2 = parts[2].split(",");
+                            matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
+                            //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
+
                         }
 
-                String groundName = detailsTable.select("tr").get(0).text();
-                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+                       if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
+                                    String timeElement = detailsTable.select("tr").get(i).text().trim();
+                                    System.out.println(timeElement);
+                                    String[] parts = timeElement.split(" ");
+                                    String[] parts2 = parts[5].split("\\.");
+                                    //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
+                                    timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
 
-                //Elements ground = matchPage.getElementsByClass("stadium-details");
-                //Elements sp = ground.select("span");
-                //String groundName = sp.text();
-                //String groundLink = ground.select("a").first().attr("href");
 
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
-                db.addMatch(m);
+                       }
+                       if(detailsTable.select("tr").get(i).text().contains("Toss")){
+                           tossResult = detailsTable.select("tr").get(i).text();
+                       }
 
-                skipAndConti:
-                ;
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                ret = false;
-
-                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
-            }
-        }
-        return ret;
-    }
-
-    public boolean loadODIData() {
-        boolean ret = true;
-
-        int matchType = 2;
-        String baseUrl = "http://stats.espncricinfo.com/";
-        List<String> matchLinks = new ArrayList<>();
-
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        for (int y = year; y >= yr; y--) {
-            Document matches;
-            try {
-                matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=2;id=" + y + ";type=year").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=2;id=" + y + ";type=year");
-                continue;
-            }
-            if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                continue;
-            }
-
-            Elements rows = matches.getElementsByClass("data1");
-
-            for (int i = (rows.size() - 1); i >= 0; i--) {
-                Element m = rows.get(i);
-                Elements cols = m.getElementsByClass("data-link");
-
-                String matchLink = cols.last().attr("href");
-                matchLinks.add(matchLink);
-            }
-        }
-
-        MATCHLABEL:
-        for (String matchLink : matchLinks) {
-            try {
-
-                int mPos = 0;
-                String[] mParts = matchLink.split("/");
-                for (int i = 0; i < mParts.length; i++) {
-                    if (mParts[i].equals("match")) {
-                        mPos = i + 1;
-                        break;
                     }
-                }
-                String mid = mParts[mPos];
-                int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
 
-                if (db.checkMatchEntry(mId)) {
-                    System.out.println("Match " + mId + " exists");
-                    continue;
-                }
-
-                String url = baseUrl + matchLink;
-
-                Document matchPage;
-                try {
-                    matchPage = Jsoup.connect(url).followRedirects(true).get();
-                } catch (Exception ex) {
-                    Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    unloaded.put("" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                String matchUrl = matchPage.baseUri();
-                String[] splitUrl = matchUrl.split("/");
-
-                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
-
-
-                Elements teamName = matchPage.getElementsByClass("team-name");
-                Element home = teamName.first();
-                Element away = teamName.last();
-                String homeTeamName = home.select("span").attr("title");
-                String awayTeamName = away.select("span").attr("title");
-
-                String homeTeamUrl = home.select("a").attr("href");
-                String[] urlParts = homeTeamUrl.split("/");
-                int pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String homeTeamId = urlParts[pos];  //#todo
-
-                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
-                List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
-                        
-                if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
-
-                String awayTeamUrl = away.select("a").attr("href");
-                urlParts = awayTeamUrl.split("/");
-                pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String awayTeamId = urlParts[pos];  //#todo
-
-                //String homeScore = home.select("div.cscore_score").get(0).text();
-                //String awayScore = away.select("div.cscore_score").get(0).text();
-                Elements scores = matchPage.getElementsByClass("score-run");
-                String homeScore = scores.first().text();
-                String awayScore = scores.last().text();
-/*
-                Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
-                if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-*/
-                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                Element checkLive = topTabs.select("a").first();
-                //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text().contains("Live")){
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                
-                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                //String tossResult = detailsColumn.get(1).text();
-                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                String tossResult = detailsTable.select("tr").get(1).text();
-
-                String battingFirst;
-                if (tossResult.contains(homeTeamName)) {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = homeTeamName;
-                    } else {
-                        battingFirst = awayTeamName;
-                    }
-                } else {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = awayTeamName;
-                    } else {
-                        battingFirst = homeTeamName;
-                    }
-                }
-
-                int seriesPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("series")) {
-                        seriesPos = i + 1;
-                        break;
-                    }
-                }
-
-                int eventNoPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
-                        eventNoPos = i + 1;
-                        break;
-                    }
-                }
-
-                String seriesNo = splitUrl[seriesPos];
-                String eventNo = splitUrl[eventNoPos];
-
-                String result = matchPage.getElementsByClass("summary").text();
-                //Elements winner = matchPage.getElementsByClass("cscore_notes");
-                //String result = winner.select("span").first().text();
-/*
-                String BorC = "";                
-                if(result.contains("No result")){continue;}
-                
-                if (result.contains(" wicket")) {
-                    BorC = "C";
-                } else if (result.contains(" run")) {
-                    BorC = "B";
-                } else {
-                    BorC = "-";
-                }
-   */
-   				Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
-                Elements homewinnerIcon = home.select("i");
-                Elements awaywinnerIcon = away.select("i");
-                
-                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
-                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
-                String BorC = "";
-                
-                if(homewinnerIcon.size() > 0){
-                    System.out.println("HOME WIN ICON EXISTS ");
-                    if(battingFirst == homeTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("homeTeam is :" + homeTeamName);                   
-                        BorC = "B";
-                    }
-                    else if(battingFirst == awayTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("awayTeamName is :" + awayTeamName); 
-                        BorC="C";
-                    }
-                   
-                }
-                else if(awaywinnerIcon.size() > 0){
-                    System.out.println("AWAY WIN ICON EXISTS");
-                    if(battingFirst == awayTeamName){
-                        BorC = "B";
-                    }
-                    else if(battingFirst == homeTeamName){
-                        BorC="C";
-                    }
-                    
-                }
-                else{
-                    BorC="D";
-                }             
-                /* Get MATCHDATE using summary page               
-                LocalDateTime matchDate = LocalDateTime.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
-                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                String[] parts = matchDateElement.text().trim().split(",");
-                //String[] parts2 = parts[parts.length - 2].split("-");
-                //String[] parts3 = parts2[1].split(" ");
-                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                String matchDateString = parts[parts.length-2];
-                System.out.println("MATCHDATE IS :" + matchDateString);
-                
-                try {
-                    matchDate = LocalDateTime.parse(matchDateString.trim());
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
-                System.out.println("MATCH DATE IS :" + matchDate);
- */               
-                
-/* USE OLD API FOR MATCHDATE
-
-                
-                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                LocalDateTime matchDate = LocalDateTime.now();
-                String dJson = "";
-                try {
-                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
-                } catch (Exception ex) {
-                    ret = false;
-                    unloaded.put("Date acquire error", url);
-                    continue;
-                }
-
-                
-                JSONObject dj = new JSONObject(dJson);
-                try {
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
-                matchDate = LocalDateTime.parse(date);
-                } catch (DateTimeParseException ex) {
-                    ret = false;
-                    unloaded.put("Date parse error", url);
-                    continue;
-                }
-*/
-                LocalDateTime matchDate = LocalDateTime.now();
-                LocalDate matchDate1 = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
-
-                String matchDateString = null;
-                String timeString = null;
-                LocalTime time = null;
-                int table_len = detailsTable.select("tr").size();
-                
-                for(int i = 0; i<table_len; i++){
-                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
-                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
-                        System.out.println(matchDateElement);
-                        String[] parts = matchDateElement.split(" ");
-                        String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts2[0].trim() + " " + parts[4].trim();
-                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
-                        
-                    }
-                   
-                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
-                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
-                   		System.out.println(timeElement);
-                   		String[] parts = timeElement.split(" ");
-                   		String[] parts2 = parts[5].split("\\.");
-                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
-                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
-
-
-                   }                   
-                    
-                }
-
-                //String matchDateTimeString = matchDateString + "T" + timeString
-                //System.out.println("MATCHDATE IS :" + matchDateString);
-                //System.out.println("Time IS :" + timeString);
-                try{
                     if(timeString != null && timeString.length() == 8){
-                time = LocalTime.parse(timeString,tf);
-                }
-                else if(timeString !=null && timeString.length() == 7){
-                    timeString = "0" + timeString;
                     time = LocalTime.parse(timeString,tf);
-                }
-                else{
-        		time = LocalTime.parse("00:00:00");
-        		}
-                
-                }
-                catch(Exception ex){
-                    System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                    
-                }
-                
-                try {
+                    }
+                    else if(timeString !=null && timeString.length() == 7){
+                        timeString = "0" + timeString;
+                        time = LocalTime.parse(timeString,tf);
+                    }
+                    else{
+                            time = LocalTime.parse("00:00:00");
+                            }
+
                     matchDate1 = LocalDate.parse(matchDateString.trim(), df);
                     matchDate = matchDate1.atTime(time);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
 
-                Inning one = null;
-                Inning two = null;
 
-/* OLD API
-                for (int inning = 1; inning <= 2; inning++) {
-                    String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=" + inning + "&section=cricinfo";
-
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        System.out.println(commentaryUrl);
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
+                    Inning one = null;
+                    Inning two = null;
+                    //NEW API
+                    int firstX = 5;
+                    int lastX = 14;
+                    int majorOv = 19;
+                    if(matchType == 2){
+                        firstX = 9;
+                        lastX = 39;
+                        majorOv = 47;
                     }
-                    System.out.println(commentaryUrl);
 
-                    JSONObject j = new JSONObject(json);
-//                while (true) {
-//                    int
-//                    try {
-//                        j = new JSONObject(json);
-//                        break;
-//                    } catch (JSONException je) {
-//
-//                        je.printStackTrace();
-//                    }
-//                }
-                    int pageCount = j.getJSONObject("commentary").getInt("pageCount");
 
-                    List<JSONObject> ballList = new ArrayList<>();
-                    int firstOverScore = 0;
-                    int tenOverScore = 0;
-                    int lastFlag = -1;
-                    int lastTenOverScore = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
+                    boolean majorityPlayed = false;
+                    for (int inning = 1; inning <= 2; inning++) {
+                        String fourcheck = " FOUR";
+                        String sixcheck = " SIX";
+                        int firstOverScore = 0;
+                        int XOverScore = 0;
+                        int lastXOverScore = -1;
+                        int firstWicketScore = -1;
+                        int fourCount = 0;
+                        int sixCount = 0;
+                        int totalRuns = 0;
+                        if(inning == 1){
+                            StringTokenizer st = new StringTokenizer(homeScore, " /");
+                            totalRuns = Integer.parseInt(st.nextToken());
+                        }
+                        else{
+                            StringTokenizer st = new StringTokenizer(awayScore, " /");
+                            totalRuns = Integer.parseInt(st.nextToken());
+                        }
 
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
-                                + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
-
-                        String body;
+                        String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
+                        String json;
                         try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                            json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
                         } catch (Exception ex) {
-                            System.out.println(currentPageUrl);
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
+                            throw new Exception("Unable to access page", new Exception(commentaryUrl));
                         }
-                        System.out.println(currentPageUrl);
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        //                    out.print("<td> " + i + "(" + jObj.getJSONObject("commentary").getInt("pageIndex")+")");
+                        JSONObject j = new JSONObject(json);
+                        int pageCount = j.getJSONObject("pagination").getInt("pageCount");
 
-                        for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
-                            JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
-                            if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                                continue;
+                        for (int i = 1; i <= pageCount; i++) {
+                            String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
+
+                            String body;
+                            System.out.println("trying test :" + currentPageUrl);
+                            try {
+                                body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
+                            } catch (Exception ex) {
+                                throw new Exception("Unable to access page", new Exception(currentPageUrl));
+                            }
+                            JSONObject jObj = new JSONObject();
+                            try {
+                                jObj = new JSONObject(body);
+                            } catch (JSONException je) {
+                                throw new JSONException(currentPageUrl, je);
                             }
 
-                            ballList.add(jItem);
-                            //                        out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
-                            //                        out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
+                            for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
+                                JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
+                                System.out.println("it:" + it + " url: " + currentPageUrl);
 
-                            if (jItem.getJSONObject("over").getInt("unique") == 0) {
-                                firstOverScore += jItem.getInt("scoreValue");
-//                                out.print("<td>" + jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("over").getFloat("overs")  );
-//                                out.print(" (" +jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it).getJSONObject("playType").getString("description") + ")");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") < 10) {
-                                tenOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") >= 40 && jItem.getJSONObject("over").getInt("unique") <= 50) {
-                                lastTenOverScore += jItem.getInt("scoreValue");
-                            }
+                                if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
+                                    firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                                }
 
-                            if (jItem.getJSONObject("over").getFloat("unique") == 40.01 && lastFlag == -1) {
-                                if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
-                                    lastFlag = 1;
+                                if(jItem.getInt("over") == firstX && jItem.getInt("ball") == 6){
+                                    XOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                                }
+
+                                if(jItem.getInt("over") == lastX && jItem.getInt("ball") == 6){
+                                    lastXOverScore = totalRuns - jItem.getJSONObject("currentInning").getInt("runs");
+                                    if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                        lastXOverScore = -1;
+                                    }
+                                }
+
+                                if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
+                                    firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                                }
+                                try{
+                                    if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                        fourCount++;
+                                    }
+                                    if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                        sixCount++;
+                                    }
+                                }
+                                catch(JSONException e){
+                                    System.out.println(e.getMessage());
+                                }
+
+                                if(inning == 1){
+                                    if(jItem.getInt("over") >= majorOv ){
+                                        majorityPlayed = true;
+                                    }
                                 }
                             }
+                        }
 
-                            if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-                                fourCount++;
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 4) {
-                                sixCount++;
-                            }
+                        List<String> params = new ArrayList<>();
+                        params.add(String.valueOf(firstOverScore));
+                        params.add(String.valueOf(XOverScore));
+                        params.add(String.valueOf(lastXOverScore));
+                        params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
+                        params.add(String.valueOf(fourCount));
+                        params.add(String.valueOf(sixCount));
+                        params.add(String.valueOf(totalRuns));
+                        params.add(BCW);
 
-                            totalRuns += jItem.getInt("scoreValue");
+                        //System.out.println("Params are: " +params);
+
+                        if (inning == 1) {
+                            one = new Inning(params);
+                        }
+                        if (inning == 2) {
+                            two = new Inning(params);
                         }
                     }
-                    if (lastTenOverScore != -1) {
-                        lastTenOverScore++;
+
+                    if(!majorityPlayed && summaryText.contains("D/L")){
+                        summaryText = summaryText.concat(" MAJ_QUIT");
                     }
 
-                    if (lastFlag == 1) {
-                        lastTenOverScore = -1;
-                    }
+                    String groundName = detailsTable.select("tr").get(0).text();
+                    String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
 
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }                   
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(tenOverScore));
-                    params.add(String.valueOf(lastTenOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
+                    Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, BCW, one, two, homeScore, awayScore, summaryText, groundName, matchType);
+                    db.addMatch(m);
+                    reports.add(new MatchReport(url, MatchStatus.LOADED, null));
 
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    reports.add(new MatchReport(url, MatchStatus.UNLOADED, ex));
                 }
-                */
-                for (int inning = 1; inning <= 2; inning++) {
-                    String fourcheck = " FOUR";
-                    String sixcheck = " SIX";                   
-                    List<JSONObject> ballList = new ArrayList<>();     
-                    int firstOverScore = 0;
-                    int tenOverScore = 0;
-                    int lastFlag = -1;
-                    int lastTenOverScore = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
-
-                        String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                             //   continue;
-                            //}
-                            ballList.add(jItem);
-/*
-                            if (jItem.has("matchWicket")) {
-                                wicketCount++;
-                            }
-*/
-                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
-                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") == 9 && jItem.getInt("ball") == 6){
-                                tenOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") >=40){
-                                lastTenOverScore += jItem.getInt("runs");
-                            }
-
-                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
-                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-                           /*
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
-                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-*/
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
-                                fourCount++;
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("runs");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
-                        }
-                    }
-
-                    if (lastTenOverScore != -1) {
-                        lastTenOverScore++;
-                    }
-                    if (lastFlag == 1) {
-                        lastTenOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                     
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(tenOverScore));
-                    params.add(String.valueOf(lastTenOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    //System.out.println("Params are: " +params);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-                
-                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-                    
-                    Boolean hasOver = false;
-                    
-                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
-                    String lastBody;
-                    try {
-                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + lastPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(lastBody);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            
-                            if(jItem.getInt("over") >= 47){
-                                hasOver = true;
-                                break;
-                            }
-                                
-                            }
-                        if(result.contains("D/L"))
-                            if(hasOver == false){
-                                result = result + " -1";
-                        }
-
-                String groundName = detailsTable.select("tr").get(0).text();
-                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
-                //Elements ground = matchPage.getElementsByClass("stadium-details");
-                //Elements sp = ground.select("span");
-                //String groundName = sp.text();
-                //match-headerString groundLink = ground.select("a").first().attr("href");
-
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
-                db.addMatch(m);
-                }
-                else{
-                    continue;
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                ret = false;
-                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
-
             }
         }
-
-        return ret;
+        return reports;
     }
 
-    public boolean loadBBLData() {
-        boolean ret = true;
-
-        int matchType = 158;
-        String baseUrl = "http://stats.espncricinfo.com/";
-        List<String> matchLinks = new ArrayList<>();
-
-        int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
-        for (int y = year; y >= yr; y--) {
-            Document matches;
-            try {
-                matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=158;type=season").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=158;type=season");
-                continue;
-            }
-            if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                continue;
-            }
-            Elements rows = matches.getElementsByClass("data1");
-
-            for (int i = (rows.size() - 1); i >= 0; i--) {
-                Element m = rows.get(i);
-                Elements cols = m.getElementsByClass("data-link");
-
-                String matchLink = cols.last().attr("href");
-                matchLinks.add(matchLink);
-            }
-        }
-
-        MATCHLABEL:
-        for (String matchLink : matchLinks) {
-            try {
-                int mPos = 0;
-                String[] mParts = matchLink.split("/");
-                for (int i = 0; i < mParts.length; i++) {
-                    if (mParts[i].equals("match")) {
-                        mPos = i + 1;
-                        break;
-                    }
-                }
-                String mid = mParts[mPos];
-                int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
-
-                if (db.checkMatchEntry(mId)) {
-                    System.out.println("Match " + mId + " exists");
-                    continue;
-                }
-
-                String url = baseUrl + matchLink;
-
-                Document matchPage;
-                try {
-                    matchPage = Jsoup.connect(url).followRedirects(true).get();
-                } catch (Exception ex) {
-                    Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    unloaded.put("" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                String matchUrl = matchPage.baseUri();
-                String[] splitUrl = matchUrl.split("/");
-
-                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
-
-                
-
-                Elements teamName = matchPage.getElementsByClass("team-name");
-                Element home = teamName.first();
-                Element away = teamName.last();
-                String homeTeamName = home.select("span").attr("title");
-                String awayTeamName = away.select("span").attr("title");
-                
-
-                String homeTeamUrl = home.select("a").attr("href");
-                String[] urlParts = homeTeamUrl.split("/");
-                int pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String homeTeamId = urlParts[pos];  //#todo
-
-                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
-
-                String awayTeamUrl = away.select("a").attr("href");
-                urlParts = awayTeamUrl.split("/");
-                pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String awayTeamId = urlParts[pos];  //#todo
-
-                //String homeScore = home.select("div.cscore_score").get(0).text();
-                //String awayScore = away.select("div.cscore_score").get(0).text();
-                Elements scores = matchPage.getElementsByClass("score-run");
-                String homeScore = scores.first().text();
-                String awayScore = scores.last().text();
-/*
-                Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
-                if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-*/
-                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                Element checkLive = topTabs.select("a").first();
-                //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text().contains("Live")){
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                
-                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                //String tossResult = detailsColumn.get(1).text();
-
-                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                String tossResult = detailsTable.select("tr").get(1).text();
-
-                String battingFirst;
-                if (tossResult.contains(homeTeamName)) {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = homeTeamName;
-                    } else {
-                        battingFirst = awayTeamName;
-                    }
-                } else {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = awayTeamName;
-                    } else {
-                        battingFirst = homeTeamName;
-                    }
-                }
-
-                int seriesPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("series")) {
-                        seriesPos = i + 1;
-                        break;
-                    }
-                }
-
-                int eventNoPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
-                        eventNoPos = i + 1;
-                        break;
-                    }
-                }
-
-                String seriesNo = splitUrl[seriesPos];
-                String eventNo = splitUrl[eventNoPos];
-
-                //Elements winner = matchPage.getElementsByClass("cscore_notes");
-                //String result = winner.select("span").first().text();
-                String result = matchPage.getElementsByClass("summary").text();
-/*
-                String BorC = "";                
-                if(result.contains("No result")){continue;}
-                
-                if (result.contains(" wicket")) {
-                    BorC = "C";
-                } else if (result.contains(" run")) {
-                    BorC = "B";
-                } else {
-                    BorC = "-";
-                }
-                */
-                Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
-                Elements homewinnerIcon = home.select("i");
-                Elements awaywinnerIcon = away.select("i");
-                
-                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
-                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
-                String BorC = "";
-                
-                if(homewinnerIcon.size() > 0){
-                    System.out.println("HOME WIN ICON EXISTS ");
-                    if(battingFirst == homeTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("homeTeam is :" + homeTeamName);                   
-                        BorC = "B";
-                    }
-                    else if(battingFirst == awayTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("awayTeamName is :" + awayTeamName); 
-                        BorC="C";
-                    }
-                   
-                }
-                else if(awaywinnerIcon.size() > 0){
-                    System.out.println("AWAY WIN ICON EXISTS");
-                    if(battingFirst == awayTeamName){
-                        BorC = "B";
-                    }
-                    else if(battingFirst == homeTeamName){
-                        BorC="C";
-                    }
-                    
-                }
-                else{
-                    BorC="D";
-                }
-                /* Get MATCHDATE using summary page               
-                LocalDateTime matchDate = LocalDateTime.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
-                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                String[] parts = matchDateElement.text().trim().split(",");
-                //String[] parts2 = parts[parts.length - 2].split("-");
-                //String[] parts3 = parts2[1].split(" ");
-                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                String matchDateString = parts[parts.length-2];
-                System.out.println("MATCHDATE IS :" + matchDateString);
-                
-                try {
-                    matchDate = LocalDateTime.parse(matchDateString.trim());
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
-                System.out.println("MATCH DATE IS :" + matchDate);
- */               
-                
-/* USE OLD API FOR MATCHDATE
-
-                
-                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                LocalDateTime matchDate = LocalDateTime.now();
-                String dJson = "";
-                try {
-                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
-                } catch (Exception ex) {
-                    ret = false;
-                    unloaded.put("Date acquire error", url);
-                    continue;
-                }
-
-                
-                JSONObject dj = new JSONObject(dJson);
-                try {
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
-                matchDate = LocalDateTime.parse(date);
-                } catch (DateTimeParseException ex) {
-                    ret = false;
-                    unloaded.put("Date parse error", url);
-                    continue;
-                }
-*/
-                LocalDateTime matchDate = LocalDateTime.now();
-                LocalDate matchDate1 = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
-
-                String matchDateString = null;
-                String timeString = null;
-                LocalTime time = null;
-                int table_len = detailsTable.select("tr").size();
-
-                
-                for(int i = 0; i<table_len; i++){
-                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
-                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
-                        System.out.println(matchDateElement);
-                        String[] parts = matchDateElement.split(" ");
-                        //String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
-                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
-                        
-                    }
-                   
-                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
-                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
-                   		System.out.println(timeElement);
-                   		String[] parts = timeElement.split(" ");
-                   		String[] parts2 = parts[5].split("\\.");
-                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
-                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
-
-
-                   }
-                    
-                }
-
-                //String matchDateTimeString = matchDateString + "T" + timeString
-                //System.out.println("MATCHDATE IS :" + matchDateString);
-                //System.out.println("Time IS :" + timeString);
-                try{
-                    if(timeString != null && timeString.length() == 8){
-                time = LocalTime.parse(timeString,tf);
-                }
-                else if(timeString !=null && timeString.length() == 7){
-                    timeString = "0" + timeString;
-                    time = LocalTime.parse(timeString,tf);
-                }
-                else{
-        		time = LocalTime.parse("00:00:00");
-        		}
-                
-                }
-                catch(Exception ex){
-                    System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                    
-                }
-                
-                try {
-                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
-                    matchDate = matchDate1.atTime(time);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                Inning one = null;
-                Inning two = null;
-                /* OLD API
-                for (int inning = 1; inning <= 2; inning++) {
-                    String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("commentary").getInt("pageCount");
-
-                    List<JSONObject> ballList = new ArrayList<>();
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFlag = -1;
-                    int lastFiveOverScore = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
-                                + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
-
-                        String body;
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
-                            JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
-                            if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                                continue;
-                            }
-
-                            ballList.add(jItem);
-
-                            if (jItem.getJSONObject("over").getInt("unique") == 0) {
-                                firstOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") < 6) {
-                                sixOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") >= 15) {
-                                lastFiveOverScore += jItem.getInt("scoreValue");
-                            }
-
-                            if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
-                                if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-
-                            if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-                                fourCount++;
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 4) {
-                                sixCount++;
-                            }
-
-                            totalRuns += jItem.getInt("scoreValue");
-                        }
-                    }
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }                   
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-                */
-                for (int inning = 1; inning <= 2; inning++) {
-                    String fourcheck = " FOUR";
-                    String sixcheck = " SIX";
-                    List<JSONObject> ballList = new ArrayList<>();     
-                    int wicketCount = 0;
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFiveOverScore = -1;
-                    int lastFlag = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
-
-                        String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                             //   continue;
-                            //}
-                            ballList.add(jItem);
-
-                            if (jItem.has("matchWicket")) {
-                                wicketCount++;
-                            }
-
-                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
-                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
-                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") >=15){
-                                lastFiveOverScore += jItem.getInt("runs");
-                            }
-
-                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
-                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-                           /*
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
-                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-*/
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
-                                fourCount++;
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("runs");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
-                        }
-                    }
-
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-                    
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }	
-                     
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    //System.out.println("Params are: " +params);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-
-                }
-
-                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-                    
-                    Boolean hasOver = false;
-                    
-                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
-                    String lastBody;
-                    try {
-                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + lastPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(lastBody);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            
-                            if(jItem.getInt("over") >= 19){
-                                hasOver = true;
-                                break;
-                            }
-                                
-                            }
-                        if(result.contains("D/L"))
-                            if(hasOver == false){
-                                result = result + " -1";
-                        }
-                String groundName = detailsTable.select("tr").get(0).text();
-                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
-
-                //Elements ground = matchPage.getElementsByClass("stadium-details");
-                //Elements sp = ground.select("span");
-                //String groundName = sp.text();
-                //String groundLink = ground.select("a").first().attr("href");
-
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
-                db.addMatch(m);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                ret = false;
-                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
-            }
-
-        }
-        return ret;
-    }
-
-    public boolean loadBPLData() {
-        boolean ret = true;
-
-        int matchType = 159;
-        String baseUrl = "http://stats.espncricinfo.com/";
-        List<String> matchLinks = new ArrayList<>();
-
-        int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
-        for (int y = year; y >= yr; y--) {
-            Document matches;
-            try {
-                matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=159;type=season").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=159;type=season");
-                continue;
-            }
-            if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                continue;
-            }
-            Elements rows = matches.getElementsByClass("data1");
-
-            for (int i = (rows.size() - 1); i >= 0; i--) {
-                Element m = rows.get(i);
-                Elements cols = m.getElementsByClass("data-link");
-
-                String matchLink = cols.last().attr("href");
-                matchLinks.add(matchLink);
-            }
-        }
-
-        MATCHLABEL:
-        for (String matchLink : matchLinks) {
-            try {
-                int mPos = 0;
-                String[] mParts = matchLink.split("/");
-                for (int i = 0; i < mParts.length; i++) {
-                    if (mParts[i].equals("match")) {
-                        mPos = i + 1;
-                        break;
-                    }
-                }
-                String mid = mParts[mPos];
-                int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
-
-                if (db.checkMatchEntry(mId)) {
-                    System.out.println("Match " + mId + " exists");
-                    continue;
-                }
-
-                String url = baseUrl + matchLink;
-
-                Document matchPage;
-                try {
-                    matchPage = Jsoup.connect(url).followRedirects(true).get();
-                } catch (Exception ex) {
-                    Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    unloaded.put("" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                String matchUrl = matchPage.baseUri();
-                String[] splitUrl = matchUrl.split("/");
-
-                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
-
-                
-
-                Elements teamName = matchPage.getElementsByClass("team-name");
-                Element home = teamName.first();
-                Element away = teamName.last();
-                String homeTeamName = home.select("span").attr("title");
-                String awayTeamName = away.select("span").attr("title");
-
-                String homeTeamUrl = home.select("a").attr("href");
-                String[] urlParts = homeTeamUrl.split("/");
-                int pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String homeTeamId = urlParts[pos];  //#todo
-
-                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
-
-                String awayTeamUrl = away.select("a").attr("href");
-                urlParts = awayTeamUrl.split("/");
-                pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String awayTeamId = urlParts[pos];  //#todo
-
-                //String homeScore = home.select("div.cscore_score").get(0).text();
-                //String awayScore = away.select("div.cscore_score").get(0).text();
-				Elements scores = matchPage.getElementsByClass("score-run");
-                String homeScore = scores.first().text();
-                String awayScore = scores.last().text();
-/*               
-                Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
-                if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-*/
-                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                Element checkLive = topTabs.select("a").first();
-                //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text().contains("Live")){
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                
-                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                //String tossResult = detailsColumn.get(1).text();
-                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                String tossResult = detailsTable.select("tr").get(1).text();
-
-                String battingFirst;
-                if (tossResult.contains(homeTeamName)) {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = homeTeamName;
-                    } else {
-                        battingFirst = awayTeamName;
-                    }
-                } else {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = awayTeamName;
-                    } else {
-                        battingFirst = homeTeamName;
-                    }
-                }
-
-                int seriesPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("series")) {
-                        seriesPos = i + 1;
-                        break;
-                    }
-                }
-
-                int eventNoPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
-                        eventNoPos = i + 1;
-                        break;
-                    }
-                }
-
-                String seriesNo = splitUrl[seriesPos];
-                String eventNo = splitUrl[eventNoPos];
-
-                String result = matchPage.getElementsByClass("summary").text();
-
-                //Elements winner = matchPage.getElementsByClass("cscore_notes");
-                //String result = winner.select("span").first().text();
-/*
-                String BorC = "";                
-                if(result.contains("No result")){continue;}
-                
-                if (result.contains(" wicket")) {
-                    BorC = "C";
-                } else if (result.contains(" run")) {
-                    BorC = "B";
-                } else {
-                    BorC = "-";
-                }
- */
-				Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
-                Elements homewinnerIcon = home.select("i");
-                Elements awaywinnerIcon = away.select("i");
-                
-                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
-                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
-                String BorC = "";
-                
-                if(homewinnerIcon.size() > 0){
-                    System.out.println("HOME WIN ICON EXISTS ");
-                    if(battingFirst == homeTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("homeTeam is :" + homeTeamName);                   
-                        BorC = "B";
-                    }
-                    else if(battingFirst == awayTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("awayTeamName is :" + awayTeamName); 
-                        BorC="C";
-                    }
-                   
-                }
-                else if(awaywinnerIcon.size() > 0){
-                    System.out.println("AWAY WIN ICON EXISTS");
-                    if(battingFirst == awayTeamName){
-                        BorC = "B";
-                    }
-                    else if(battingFirst == homeTeamName){
-                        BorC="C";
-                    }
-                    
-                }
-                else{
-                    BorC="D";
-                }               
-                /* Get MATCHDATE using summary page               
-                LocalDateTime matchDate = LocalDateTime.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
-                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                String[] parts = matchDateElement.text().trim().split(",");
-                //String[] parts2 = parts[parts.length - 2].split("-");
-                //String[] parts3 = parts2[1].split(" ");
-                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                String matchDateString = parts[parts.length-2];
-                System.out.println("MATCHDATE IS :" + matchDateString);
-                
-                try {
-                    matchDate = LocalDateTime.parse(matchDateString.trim());
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
-                System.out.println("MATCH DATE IS :" + matchDate);
- */               
-                
-/* USE OLD API FOR MATCHDATE
-
-                
-                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                LocalDateTime matchDate = LocalDateTime.now();
-                String dJson = "";
-                try {
-                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
-                } catch (Exception ex) {
-                    ret = false;
-                    unloaded.put("Date acquire error", url);
-                    continue;
-                }
-
-                
-                JSONObject dj = new JSONObject(dJson);
-                try {
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
-                matchDate = LocalDateTime.parse(date);
-                } catch (DateTimeParseException ex) {
-                    ret = false;
-                    unloaded.put("Date parse error", url);
-                    continue;
-                }
-*/
-                LocalDateTime matchDate = LocalDateTime.now();
-                LocalDate matchDate1 = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
-                
-                String matchDateString = null;
-                String timeString = null;
-                LocalTime time = null;
-                int table_len = detailsTable.select("tr").size();
-
-                for(int i = 0; i<table_len; i++){
-                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
-                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
-                        System.out.println(matchDateElement);
-                        String[] parts = matchDateElement.split(" ");
-                        //String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
-                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
-                        
-                    }
-                   
-                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
-                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
-                   		System.out.println(timeElement);
-                   		String[] parts = timeElement.split(" ");
-                   		String[] parts2 = parts[5].split("\\.");
-                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
-                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
-
-
-                   }
-                   
-                    
-                }
-
-                //String matchDateTimeString = matchDateString + "T" + timeString
-                //System.out.println("MATCHDATE IS :" + matchDateString);
-                //System.out.println("Time IS :" + timeString);
-                try{
-                if(timeString != null && timeString.length() == 8){
-                time = LocalTime.parse(timeString,tf);
-                }
-                else if(timeString !=null && timeString.length() == 7){
-                    timeString = "0" + timeString;
-                    time = LocalTime.parse(timeString,tf);
-                }
-                else{
-        		time = LocalTime.parse("00:00:00");
-        		}
-                }
-                catch(Exception ex){
-                    System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                    
-                }
-                
-                try {
-                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
-                    matchDate = matchDate1.atTime(time);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                Inning one = null;
-                Inning two = null;
-                /*
-                for (int inning = 1; inning <= 2; inning++) {
-                    String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("commentary").getInt("pageCount");
-
-                    List<JSONObject> ballList = new ArrayList<>();
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFlag = -1;
-                    int lastFiveOverScore = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
-                                + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
-
-                        String body;
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
-                            JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
-                            if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                                continue;
-                            }
-                            ballList.add(jItem);
-
-                            if (jItem.getJSONObject("over").getInt("unique") == 0) {
-                                firstOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") < 6) {
-                                sixOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") >= 15) {
-                                lastFiveOverScore += jItem.getInt("scoreValue");
-                            }
-
-                            if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
-                                if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-
-                            if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-                                fourCount++;
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 4) {
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("scoreValue");
-                        }
-                    }
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }                   
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-                */
-                for (int inning = 1; inning <= 2; inning++) {
-                    String fourcheck = " FOUR";
-                    String sixcheck = " SIX";
-                    List<JSONObject> ballList = new ArrayList<>();     
-                    int wicketCount = 0;
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFiveOverScore = -1;
-                    int lastFlag = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
-
-                        String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                             //   continue;
-                            //}
-                            ballList.add(jItem);
-
-                            if (jItem.has("matchWicket")) {
-                                wicketCount++;
-                            }
-
-                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
-                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
-                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") >=15){
-                                lastFiveOverScore += jItem.getInt("runs");
-                            }
-
-                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
-                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-                           /*
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
-                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-*/
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
-                                fourCount++;
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("runs");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
-                        }
-                    }
-
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-                    
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                     
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    //System.out.println("Params are: " +params);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-
-                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-                    
-                    Boolean hasOver = false;
-                    
-                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
-                    String lastBody;
-                    try {
-                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + lastPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(lastBody);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            
-                            if(jItem.getInt("over") >= 19){
-                                hasOver = true;
-                                break;
-                            }
-                                
-                            }
-                        if(result.contains("D/L"))
-                            if(hasOver == false){
-                                result = result + " -1";
-                        }
-
-                String groundName = detailsTable.select("tr").get(0).text();
-                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
-                //Elements ground = matchPage.getElementsByClass("stadium-details");
-                //Elements sp = ground.select("span");
-                //String groundName = sp.text();
-                //String groundLink = ground.select("a").first().attr("href");
-
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
-                db.addMatch(m);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                ret = false;
-                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
-                continue;
-            }
-
-        }
-        return ret;
-    }
-
-    public boolean loadCPLData() {
-        boolean ret = true;
-
-        int matchType = 748;
-        String baseUrl = "http://stats.espncricinfo.com/";
-        List<String> matchLinks = new ArrayList<>();
-
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        for (int y = year; y >= yr; y--) {
-            Document matches;
-            try {
-                matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=748;type=season").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=748;type=season");
-                continue;
-            }
-            if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                continue;
-            }
-            Elements rows = matches.getElementsByClass("data1");
-
-            for (int i = (rows.size() - 1); i >= 0; i--) {
-                Element m = rows.get(i);
-                Elements cols = m.getElementsByClass("data-link");
-
-                String matchLink = cols.last().attr("href");
-                matchLinks.add(matchLink);
-            }
-        }
-
-        MATCHLABEL:
-        for (String matchLink : matchLinks) {
-            try {
-
-                int mPos = 0;
-                String[] mParts = matchLink.split("/");
-                for (int i = 0; i < mParts.length; i++) {
-                    if (mParts[i].equals("match")) {
-                        mPos = i + 1;
-                        break;
-                    }
-                }
-                String mid = mParts[mPos];
-                int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
-
-                if (db.checkMatchEntry(mId)) {
-                    System.out.println("Match " + mId + " exists");
-                    continue;
-                }
-
-                String url = baseUrl + matchLink;
-
-                Document matchPage;
-                try {
-                    matchPage = Jsoup.connect(url).followRedirects(true).get();
-                } catch (Exception ex) {
-                    Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    unloaded.put("" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                String matchUrl = matchPage.baseUri();
-                String[] splitUrl = matchUrl.split("/");
-
-                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
-
-                
-
-                Elements teamName = matchPage.getElementsByClass("team-name");
-                Element home = teamName.first();
-                Element away = teamName.last();
-                String homeTeamName = home.select("span").attr("title");
-                String awayTeamName = away.select("span").attr("title");
-
-                String homeTeamUrl = home.select("a").attr("href");
-                String[] urlParts = homeTeamUrl.split("/");
-                int pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String homeTeamId = urlParts[pos];  //#todo
-
-                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
-
-                String awayTeamUrl = away.select("a").attr("href");
-                urlParts = awayTeamUrl.split("/");
-                pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String awayTeamId = urlParts[pos];  //#todo
-
-                //String homeScore = home.select("div.cscore_score").get(0).text();
-                //String awayScore = away.select("div.cscore_score").get(0).text();
-                Elements scores = matchPage.getElementsByClass("score-run");
-                String homeScore = scores.first().text();
-                String awayScore = scores.last().text();
-/*
-                Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
-                if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-*/
-                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                Element checkLive = topTabs.select("a").first();
-                //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text().contains("Live")){
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                
-                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                //String tossResult = detailsColumn.get(1).text();
-                Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                String tossResult = detailsTable.select("tr").get(1).text();
-                String battingFirst;
-
-                if (tossResult.contains(homeTeamName)) {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = homeTeamName;
-                    } else {
-                        battingFirst = awayTeamName;
-                    }
-                } else {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = awayTeamName;
-                    } else {
-                        battingFirst = homeTeamName;
-                    }
-                }
-
-                int seriesPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("series")) {
-                        seriesPos = i + 1;
-                        break;
-                    }
-                }
-
-                int eventNoPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
-                        eventNoPos = i + 1;
-                        break;
-                    }
-                }
-
-                String seriesNo = splitUrl[seriesPos];
-                String eventNo = splitUrl[eventNoPos];
-
-                //Elements winner = matchPage.getElementsByClass("cscore_notes");
-                //String result = winner.select("span").first().text();
-                String result = matchPage.getElementsByClass("summary").text();
-/*
-                String BorC = "";                
-                if(result.contains("No result")){continue;}
-                
-                if (result.contains(" wicket")) {
-                    BorC = "C";
-                } else if (result.contains(" run")) {
-                    BorC = "B";
-                } else {
-                    BorC = "-";
-                }
-                */
-                Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
-                Elements homewinnerIcon = home.select("i");
-                Elements awaywinnerIcon = away.select("i");
-                
-                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
-                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
-                String BorC = "";
-                
-                if(homewinnerIcon.size() > 0){
-                    System.out.println("HOME WIN ICON EXISTS ");
-                    if(battingFirst == homeTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("homeTeam is :" + homeTeamName);                   
-                        BorC = "B";
-                    }
-                    else if(battingFirst == awayTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("awayTeamName is :" + awayTeamName); 
-                        BorC="C";
-                    }
-                   
-                }
-                else if(awaywinnerIcon.size() > 0){
-                    System.out.println("AWAY WIN ICON EXISTS");
-                    if(battingFirst == awayTeamName){
-                        BorC = "B";
-                    }
-                    else if(battingFirst == homeTeamName){
-                        BorC="C";
-                    }
-                    
-                }
-                else{
-                    BorC="D";
-                }
-                /* Get MATCHDATE using summary page               
-                LocalDateTime matchDate = LocalDateTime.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
-                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                String[] parts = matchDateElement.text().trim().split(",");
-                //String[] parts2 = parts[parts.length - 2].split("-");
-                //String[] parts3 = parts2[1].split(" ");
-                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                String matchDateString = parts[parts.length-2];
-                System.out.println("MATCHDATE IS :" + matchDateString);
-                
-                try {
-                    matchDate = LocalDateTime.parse(matchDateString.trim());
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
-                System.out.println("MATCH DATE IS :" + matchDate);
- */               
-                
-/* USE OLD API FOR MATCHDATE
-
-                
-                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                LocalDateTime matchDate = LocalDateTime.now();
-                String dJson = "";
-                try {
-                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
-                } catch (Exception ex) {
-                    ret = false;
-                    unloaded.put("Date acquire error", url);
-                    continue;
-                }
-
-                
-                JSONObject dj = new JSONObject(dJson);
-                try {
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
-                matchDate = LocalDateTime.parse(date);
-                } catch (DateTimeParseException ex) {
-                    ret = false;
-                    unloaded.put("Date parse error", url);
-                    continue;
-                }
-                
-*/
-                LocalDateTime matchDate = LocalDateTime.now();
-                LocalDate matchDate1 = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
-                
-                String matchDateString = null;
-                String timeString = null;
-                LocalTime time = null;
-                int table_len = detailsTable.select("tr").size();
-                
-                for(int i = 0; i<table_len; i++){
-                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
-                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
-                        System.out.println(matchDateElement);
-                        String[] parts = matchDateElement.split(" ");
-                        //String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
-                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
-                        
-                    }
-                   
-                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
-                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
-                   		System.out.println(timeElement);
-                   		String[] parts = timeElement.split(" ");
-                   		String[] parts2 = parts[5].split("\\.");
-                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
-                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
-
-
-                   }
-                  
-                    
-                }
-
-                //String matchDateTimeString = matchDateString + "T" + timeString
-                //System.out.println("MATCHDATE IS :" + matchDateString);
-                //System.out.println("Time IS :" + timeString);
-                try{
-                if(timeString != null && timeString.length() == 8){
-                time = LocalTime.parse(timeString,tf);
-                }
-                else if(timeString !=null && timeString.length() == 7){
-                    timeString = "0" + timeString;
-                    time = LocalTime.parse(timeString,tf);
-                }
-                else{
-        		time = LocalTime.parse("00:00:00");
-        		}
-                }
-                catch(Exception ex){
-                    System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                    
-                }
-                
-                try {
-                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
-                    matchDate = matchDate1.atTime(time);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                Inning one = null;
-                Inning two = null;
-                /* OLD API
-                for (int inning = 1; inning <= 2; inning++) {
-                    String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("commentary").getInt("pageCount");
-
-                    List<JSONObject> ballList = new ArrayList<>();
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFiveOverScore = -1;
-                    int lastFlag = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
-                                + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
-
-                        String body;
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            System.out.println("Missing json for : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
-                            JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
-                            if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                                continue;
-                            }
-
-                            ballList.add(jItem);
-
-                            if (jItem.getJSONObject("over").getInt("unique") == 0) {
-                                firstOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") < 6) {
-                                sixOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") >= 15) {
-                                lastFiveOverScore += jItem.getInt("scoreValue");
-                            }
-
-                            if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
-                                if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-
-                            if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-                                fourCount++;
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 4) {
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("scoreValue");
-                        }
-                    }
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }                  
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-
-                }
-                */
-                for (int inning = 1; inning <= 2; inning++) {
-                    String fourcheck = " FOUR";
-                    String sixcheck = " SIX";
-                    List<JSONObject> ballList = new ArrayList<>();     
-                    int wicketCount = 0;
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFiveOverScore = -1;
-                    int lastFlag = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
-
-                        String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                             //   continue;
-                            //}
-                            ballList.add(jItem);
-
-                            if (jItem.has("matchWicket")) {
-                                wicketCount++;
-                            }
-
-                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
-                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
-                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") >=15){
-                                lastFiveOverScore += jItem.getInt("runs");
-                            }
-
-                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
-                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-                           /*
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
-                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-*/
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
-                                fourCount++;
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("runs");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
-                        }
-                    }
-
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                     
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    //System.out.println("Params are: " +params);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-                    
-                    Boolean hasOver = false;
-                    
-                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
-                    String lastBody;
-                    try {
-                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + lastPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(lastBody);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            
-                            if(jItem.getInt("over") >= 19){
-                                hasOver = true;
-                                break;
-                            }
-                                
-                            }
-                        if(result.contains("D/L"))
-                            if(hasOver == false){
-                                result = result + " -1";
-                        }
-                String groundName = detailsTable.select("tr").get(0).text();
-                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
-                //Elements ground = matchPage.getElementsByClass("stadium-details");
-                //Elements sp = ground.select("span");
-                //String groundName = sp.text();
-                //String groundLink = ground.select("a").first().attr("href");
-
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
-                db.addMatch(m);
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                ret = false;
-                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
-            }
-        }
-        return ret;
-    }
-
-    public boolean loadPSLData() {
-
-        boolean ret = true;
-
-        int matchType = 205;
-
-        String baseUrl = "http://stats.espncricinfo.com/";
-        List<String> matchLinks = new ArrayList<>();
-
-        int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
-        for (int y = year; y >= yr; y--) {
-            Document matches;
-            try {
-                matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=205;type=season").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=205;type=season");
-                continue;
-            }
-
-            if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                continue;
-            }
-            Elements rows = matches.getElementsByClass("data1");
-
-            for (int i = (rows.size() - 1); i >= 0; i--) {
-                Element m = rows.get(i);
-                Elements cols = m.getElementsByClass("data-link");
-
-                String matchLink = cols.last().attr("href");
-                matchLinks.add(matchLink);
-            }
-        }
-
-        MATCHLABEL:
-        for (String matchLink : matchLinks) {
-            try {
-                int mPos = 0;
-                String[] mParts = matchLink.split("/");
-                for (int i = 0; i < mParts.length; i++) {
-                    if (mParts[i].equals("match")) {
-                        mPos = i + 1;
-                        break;
-                    }
-                }
-                String mid = mParts[mPos];
-                int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
-
-                if (db.checkMatchEntry(mId)) {
-                    System.out.println("Match " + mId + " exists");
-                    continue;
-                }
-
-                String url = baseUrl + matchLink;
-
-                Document matchPage;
-                try {
-                    matchPage = Jsoup.connect(url).followRedirects(true).get();
-                } catch (Exception ex) {
-                    Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    unloaded.put("" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                String matchUrl = matchPage.baseUri();
-                String[] splitUrl = matchUrl.split("/");
-
-                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
-
-                Elements teamName = matchPage.getElementsByClass("team-name");
-                Element home = teamName.first();
-                Element away = teamName.last();
-                String homeTeamName = home.select("span").attr("title");
-                String awayTeamName = away.select("span").attr("title");
-
-                String homeTeamUrl = home.select("a").attr("href");
-                String[] urlParts = homeTeamUrl.split("/");
-                int pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String homeTeamId = urlParts[pos];  //#todo
-
-                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
-
-                String awayTeamUrl = away.select("a").attr("href");
-                urlParts = awayTeamUrl.split("/");
-                pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String awayTeamId = urlParts[pos];  //#todo
-
-                //String homeScore = home.select("div.cscore_score").get(0).text();
-                //String awayScore = away.select("div.cscore_score").get(0).text();
-                Elements scores = matchPage.getElementsByClass("score-run");
-                String homeScore = scores.first().text();
-                String awayScore = scores.last().text();
-                /*
-                Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
-                if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-*/
-                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                Element checkLive = topTabs.select("a").first();
-                //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text().contains("Live")){
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                
-                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                //String tossResult = detailsColumn.get(1).text();
-		Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                String tossResult = detailsTable.select("tr").get(1).text();
-                String result = matchPage.getElementsByClass("summary").text();
-                String battingFirst;
-                if (tossResult.contains(homeTeamName)) {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = homeTeamName;
-                    } else {
-                        battingFirst = awayTeamName;
-                    }
-                } else {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = awayTeamName;
-                    } else {
-                        battingFirst = homeTeamName;
-                    }
-                }
-
-                int seriesPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("series")) {
-                        seriesPos = i + 1;
-                        break;
-                    }
-                }
-
-                int eventNoPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
-                        eventNoPos = i + 1;
-                        break;
-                    }
-                }
-
-                String seriesNo = splitUrl[seriesPos];
-                String eventNo = splitUrl[eventNoPos];
-
-                //Elements winner = matchPage.getElementsByClass("cscore_notes");
-                //String result = winner.select("span").first().text();
-/*
-                String BorC = "";                
-                if(result.contains("No result")){continue;}
-                
-                if (result.contains(" wicket")) {
-                    BorC = "C";
-                } else if (result.contains(" run")) {
-                    BorC = "B";
-                } else {
-                    BorC = "-";
-                }
- */
- 				Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
-                Elements homewinnerIcon = home.select("i");
-                Elements awaywinnerIcon = away.select("i");
-                
-                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
-                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
-                String BorC = "";
-                
-                if(homewinnerIcon.size() > 0){
-                    System.out.println("HOME WIN ICON EXISTS ");
-                    if(battingFirst == homeTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("homeTeam is :" + homeTeamName);                   
-                        BorC = "B";
-                    }
-                    else if(battingFirst == awayTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("awayTeamName is :" + awayTeamName); 
-                        BorC="C";
-                    }
-                   
-                }
-                else if(awaywinnerIcon.size() > 0){
-                    System.out.println("AWAY WIN ICON EXISTS");
-                    if(battingFirst == awayTeamName){
-                        BorC = "B";
-                    }
-                    else if(battingFirst == homeTeamName){
-                        BorC="C";
-                    }
-                    
-                }
-                else{
-                    BorC="D";
-                }               
-                /* Get MATCHDATE using summary page               
-                LocalDateTime matchDate = LocalDateTime.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
-                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                String[] parts = matchDateElement.text().trim().split(",");
-                //String[] parts2 = parts[parts.length - 2].split("-");
-                //String[] parts3 = parts2[1].split(" ");
-                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                String matchDateString = parts[parts.length-2];
-                System.out.println("MATCHDATE IS :" + matchDateString);
-                
-                try {
-                    matchDate = LocalDateTime.parse(matchDateString.trim());
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
-                System.out.println("MATCH DATE IS :" + matchDate);
- */               
-                
-/* USE OLD API FOR MATCHDATE
-
-                
-                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                LocalDateTime matchDate = LocalDateTime.now();
-                String dJson = "";
-                try {
-                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
-                } catch (Exception ex) {
-                    ret = false;
-                    unloaded.put("Date acquire error", url);
-                    continue;
-                }
-
-                
-                JSONObject dj = new JSONObject(dJson);
-                try {
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
-                matchDate = LocalDateTime.parse(date);
-                } catch (DateTimeParseException ex) {
-                    ret = false;
-                    unloaded.put("Date parse error", url);
-                    continue;
-                }
-*/
-                LocalDateTime matchDate = LocalDateTime.now();
-                LocalDate matchDate1 = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
-
-                String matchDateString = null;
-                String timeString = null;
-                LocalTime time = null;
-                int table_len = detailsTable.select("tr").size();
-                
-                for(int i = 0; i<table_len; i++){
-                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
-                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
-                        System.out.println(matchDateElement);
-                        String[] parts = matchDateElement.split(" ");
-                        //String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
-                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
-                        
-                    }
-                   
-                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
-                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
-                   		System.out.println(timeElement);
-                   		String[] parts = timeElement.split(" ");
-                   		String[] parts2 = parts[5].split("\\.");
-                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
-                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
-
-
-                   }
-                   
-                    
-                }
-
-                //String matchDateTimeString = matchDateString + "T" + timeString
-                //System.out.println("MATCHDATE IS :" + matchDateString);
-                //System.out.println("Time IS :" + timeString);
-                try{
-                if(timeString != null && timeString.length() == 8){
-                time = LocalTime.parse(timeString,tf);
-                }
-                else if(timeString !=null && timeString.length() == 7){
-                    timeString = "0" + timeString;
-                    time = LocalTime.parse(timeString,tf);
-                }
-                else{
-        		time = LocalTime.parse("00:00:00");
-        		}
-                }
-                catch(Exception ex){
-                    System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                    
-                }
-                
-                try {
-                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
-                    matchDate = matchDate1.atTime(time);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                Inning one = null;
-                Inning two = null;
-                /*
-                for (int inning = 1; inning <= 2; inning++) {
-                    String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("commentary").getInt("pageCount");
-
-                    List<JSONObject> ballList = new ArrayList<>();
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFlag = -1;
-                    int lastFiveOverScore = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
-                                + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
-
-                        String body;
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
-                            JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
-                            if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                                continue;
-                            }
-                            ballList.add(jItem);
-
-                            if (jItem.getJSONObject("over").getInt("unique") == 0) {
-                                firstOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") < 6) {
-                                sixOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") >= 15) {
-                                lastFiveOverScore += jItem.getInt("scoreValue");
-                            }
-
-                            if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
-                                if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-
-                            if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-                                fourCount++;
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 4) {
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("scoreValue");
-                        }
-                    }
-                    if (lastFiveOverScore != -1) {
-
-                        lastFiveOverScore++;
-                    }
-
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }                   
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-                */
-                for (int inning = 1; inning <= 2; inning++) {
-                    String fourcheck = " FOUR";
-                    String sixcheck = " SIX";
-                    List<JSONObject> ballList = new ArrayList<>();     
-                    int wicketCount = 0;
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFiveOverScore = -1;
-                    int lastFlag = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
-
-                        String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                             //   continue;
-                            //}
-                            ballList.add(jItem);
-
-                            if (jItem.has("matchWicket")) {
-                                wicketCount++;
-                            }
-
-                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
-                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
-                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") >=15){
-                                lastFiveOverScore += jItem.getInt("runs");
-                            }
-
-                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
-                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-                           /*
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") afterFifthWicketScore == -1) {
-                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-*/
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
-                                fourCount++;
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("runs");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
-                        }
-                    }
-
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-                    
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                     
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    //System.out.println("Params are: " +params);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-                    
-                    Boolean hasOver = false;
-                    
-                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
-                    String lastBody;
-                    try {
-                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + lastPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(lastBody);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            
-                            if(jItem.getInt("over") >= 19){
-                                hasOver = true;
-                                break;
-                            }
-                                
-                            }
-                        if(result.contains("D/L"))
-                            if(hasOver == false){
-                                result = result + " -1";
-                        }
-                String groundName = detailsTable.select("tr").get(0).text();
-                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
-                //Elements ground = matchPage.getElementsByClass("stadium-details");
-                //Elements sp = ground.select("span");
-                //String groundName = sp.text();
-                //String groundLink = ground.select("a").first().attr("href");
-
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
-                db.addMatch(m);
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                ret = false;
-                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
-            }
-
-        }
-        return ret;
-    }
-
-    public boolean loadT20IData() {
-        boolean ret = true;
-
-        int matchType = 3;
-        String baseUrl = "http://stats.espncricinfo.com/";
-        List<String> matchLinks = new ArrayList<>();
-
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        for (int y = year; y >= yr; y--) {
-            Document matches;
-            try {
-                matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=3;id=" + y + ";type=year").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=3;id=" + y + ";type=year");
-                continue;
-            }
-            if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                continue;
-            }
-            Elements rows = matches.getElementsByClass("data1");
-
-            for (int i = (rows.size() - 1); i >= 0; i--) {
-                Element m = rows.get(i);
-                Elements cols = m.getElementsByClass("data-link");
-
-                String matchLink = cols.last().attr("href");
-                matchLinks.add(matchLink);
-            }
-        }
-
-        MATCHLABEL:
-        for (String matchLink : matchLinks) {
-            try {
-                int mPos = 0;
-                String[] mParts = matchLink.split("/");
-                for (int i = 0; i < mParts.length; i++) {
-                    if (mParts[i].equals("match")) {
-                        mPos = i + 1;
-                        break;
-                    }
-                }
-                String mid = mParts[mPos];
-                int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
-
-                if (db.checkMatchEntry(mId)) {
-                    System.out.println("Match " + mId + " exists");
-                    continue;
-                }
-
-                String url = baseUrl + matchLink;
-
-                Document matchPage;
-                try {
-                    matchPage = Jsoup.connect(url).followRedirects(true).get();
-                } catch (Exception ex) {
-                    Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    unloaded.put("" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                String matchUrl = matchPage.baseUri();
-                String[] splitUrl = matchUrl.split("/");
-
-                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
-
-                
-
-                Elements teamName = matchPage.getElementsByClass("team-name");
-                Element home = teamName.first();
-                Element away = teamName.last();
-                String homeTeamName = home.select("span").attr("title");
-                String awayTeamName = away.select("span").attr("title");
-
-                String homeTeamUrl = home.select("a").attr("href");
-                String[] urlParts = homeTeamUrl.split("/");
-                int pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String homeTeamId = urlParts[pos];  //#todo
-
-                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
-                List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
-                        
-                if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
-
-                String awayTeamUrl = away.select("a").attr("href");
-                urlParts = awayTeamUrl.split("/");
-                pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
-                }
-                String awayTeamId = urlParts[pos];  //#todo
-
-                //String homeScore = home.select("div.cscore_score").get(0).text();
-                //String awayScore = away.select("div.cscore_score").get(0).text();
-                Elements scores = matchPage.getElementsByClass("score-run");
-                String homeScore = scores.first().text();
-                String awayScore = scores.last().text();
-                /*
-                Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
-                if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-*/
-                    
-                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                Element checkLive = topTabs.select("a").first();
-                //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text().contains("Live")){
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                
-                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
-                //String tossResult = detailsColumn.get(1).text();
-
-		Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                String tossResult = detailsTable.select("tr").get(1).text();
-
-                String battingFirst;
-                if (tossResult.contains(homeTeamName)) {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = homeTeamName;
-                    } else {
-                        battingFirst = awayTeamName;
-                    }
-                } else {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = awayTeamName;
-                    } else {
-                        battingFirst = homeTeamName;
-                    }
-                }
-
-                int seriesPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("series")) {
-                        seriesPos = i + 1;
-                        break;
-                    }
-                }
-
-                int eventNoPos = 0;
-                for (int i = 0; i < splitUrl.length; i++) {
-                    if (splitUrl[i].equals("scorecard") || splitUrl[i].equals("game")) {
-                        eventNoPos = i + 1;
-                        break;
-                    }
-                }
-
-                String seriesNo = splitUrl[seriesPos];
-                String eventNo = splitUrl[eventNoPos];
-
-				String result = matchPage.getElementsByClass("summary").text();
-                //Elements winner = matchPage.getElementsByClass("cscore_notes");
-                //String result = winner.select("span").first().text();
-/*
-                String BorC = "";                
-                if(result.contains("No result")){continue;}
-                
-                if (result.contains(" wicket")) {
-                    BorC = "C";
-                } else if (result.contains(" run")) {
-                    BorC = "B";
-                } else {
-                    BorC = "-";
-                }
- */
- 				Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
-                Elements homewinnerIcon = home.select("i");
-                Elements awaywinnerIcon = away.select("i");
-                
-                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
-                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
-                String BorC = "";
-                
-                if(homewinnerIcon.size() > 0){
-                    System.out.println("HOME WIN ICON EXISTS ");
-                    if(battingFirst == homeTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("homeTeam is :" + homeTeamName);                   
-                        BorC = "B";
-                    }
-                    else if(battingFirst == awayTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("awayTeamName is :" + awayTeamName); 
-                        BorC="C";
-                    }
-                   
-                }
-                else if(awaywinnerIcon.size() > 0){
-                    System.out.println("AWAY WIN ICON EXISTS");
-                    if(battingFirst == awayTeamName){
-                        BorC = "B";
-                    }
-                    else if(battingFirst == homeTeamName){
-                        BorC="C";
-                    }
-                    
-                }
-                else{
-                    BorC="D";
-                }               
-                /* Get MATCHDATE using summary page               
-                LocalDateTime matchDate = LocalDateTime.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMM d yyyy");
-                
-                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                String[] parts = matchDateElement.text().trim().split(",");
-                //String[] parts2 = parts[parts.length - 2].split("-");
-                //String[] parts3 = parts2[1].split(" ");
-                //String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                String matchDateString = parts[parts.length-2];
-                System.out.println("MATCHDATE IS :" + matchDateString);
-                
-                try {
-                    matchDate = LocalDateTime.parse(matchDateString.trim());
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
-                System.out.println("MATCH DATE IS :" + matchDate);
- */               
-                
-/* USE OLD API FOR MATCHDATE
-
-                
-                String dateUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                LocalDateTime matchDate = LocalDateTime.now();
-                String dJson = "";
-                try {
-                    dJson = Jsoup.connect(dateUrl).ignoreContentType(true).execute().body();
-                } catch (Exception ex) {
-                    ret = false;
-                    unloaded.put("Date acquire error", url);
-                    continue;
-                }
-
-                
-                JSONObject dj = new JSONObject(dJson);
-                try {
-                String date = dj.getJSONObject("commentary").getJSONArray("items").getJSONObject(0).getString("date");
-                matchDate = LocalDateTime.parse(date);
-                } catch (DateTimeParseException ex) {
-                    ret = false;
-                    unloaded.put("Date parse error", url);
-                    continue;
-                }
-*/
-                LocalDateTime matchDate = LocalDateTime.now();
-                LocalDate matchDate1 = LocalDate.now();
-                DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
-                DateTimeFormatter tf = DateTimeFormatter.ISO_LOCAL_TIME;
-
-                String matchDateString = null;
-                String timeString = null;
-                LocalTime time = null;
-                int table_len = detailsTable.select("tr").size();
-                
-                for(int i = 0; i<table_len; i++){
-                    if(detailsTable.select("tr").get(i).text().contains("Match days")){
-                        String matchDateElement = detailsTable.select("tr").get(i).text().trim();
-                        System.out.println(matchDateElement);
-                        String[] parts = matchDateElement.split(" ");
-                        //String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts[2].trim() + " " + parts[4].trim();
-                        //matchDateString = parts[4].trim() + "-" + parts[3].trim() + "-" + parts[2].trim();                        
-                        
-                    }
-                   
-                   if(detailsTable.select("tr").get(i).text().contains("Hours of play")){
-                   		String timeElement = detailsTable.select("tr").get(i).text().trim();
-                   		System.out.println(timeElement);
-                   		String[] parts = timeElement.split(" ");
-                   		String[] parts2 = parts[5].split("\\.");
-                                //System.out.println("0:" + parts[0] + "1:" + parts[1] + "2:" + parts[2] + "3:" + parts[3] + "4:" +parts[4] + "5:" +parts[5]);
-                   		timeString = parts2[0].trim() + ":" + parts2[1].trim() + ":00";                   		
-
-
-                   }
-                   
-                   
-                    
-                }
-
-                //String matchDateTimeString = matchDateString + "T" + timeString
-                //System.out.println("MATCHDATE IS :" + matchDateString);
-                //System.out.println("Time IS :" + timeString);
-                try{
-                if(timeString != null && timeString.length() == 8){
-                time = LocalTime.parse(timeString,tf);
-                }
-                else if(timeString !=null && timeString.length() == 7){
-                    timeString = "0" + timeString;
-                    time = LocalTime.parse(timeString,tf);
-                }
-                else{
-        		time = LocalTime.parse("00:00:00");
-        		}
-                }
-                catch(Exception ex){
-                    System.out.println("TIME NOT FOUND");
-                       System.out.println(url);
-                       Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                       unloaded.put("" + mId, url);
-                       ret = false;
-                       continue MATCHLABEL;
-                    
-                }
-                
-                try {
-                    matchDate1 = LocalDate.parse(matchDateString.trim(), df);
-                    matchDate = matchDate1.atTime(time);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                Inning one = null;
-                Inning two = null;
-                /* OLD API
-                for (int inning = 1; inning <= 2; inning++) {
-                    String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=1&section=cricinfo";
-
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("commentary").getInt("pageCount");
-
-                    List<JSONObject> ballList = new ArrayList<>();
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFlag = -1;
-                    int lastFiveOverScore = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
-                                + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
-
-                        String body;
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
-                            JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
-                            if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                                continue;
-                            }
-                            ballList.add(jItem);
-
-                            if (jItem.getJSONObject("over").getInt("unique") == 0) {
-                                firstOverScore += jItem.getInt("scoreValue");
-
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") < 6) {
-                                sixOverScore += jItem.getInt("scoreValue");
-                            }
-                            if (jItem.getJSONObject("over").getInt("unique") >= 15) {
-                                lastFiveOverScore += jItem.getInt("scoreValue");
-                            }
-
-                            if (jItem.getJSONObject("over").getFloat("unique") == 15.01 && lastFlag == -1) {
-                                if (jItem.getJSONObject("innings").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-
-                            if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-                                fourCount++;
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 4) {
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("scoreValue");
-                        }
-                    }
-                    if (lastFiveOverScore != -1) {
-
-                        lastFiveOverScore++;
-                    }
-
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-                    
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }                
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-
-                }
-                */
-                for (int inning = 1; inning <= 2; inning++) {
-                    String fourcheck = " FOUR";
-                    String sixcheck = " SIX";
-                    List<JSONObject> ballList = new ArrayList<>();     
-                    int wicketCount = 0;
-                    int firstOverScore = 0;
-                    int sixOverScore = 0;
-                    int lastFiveOverScore = -1;
-                    int lastFlag = -1;
-                    int firstWicketScore = -1;
-                    int fourCount = 0;
-                    int sixCount = 0;
-                    int totalRuns = 0;
-
-                    String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
-
-                        String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                             //   continue;
-                            //}
-                            ballList.add(jItem);
-
-                            if (jItem.has("matchWicket")) {
-                                wicketCount++;
-                            }
-
-                            if(jItem.getInt("over") == 0 && jItem.getInt("ball") == 6){
-                                firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") == 5 && jItem.getInt("ball") == 6){
-                                sixOverScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-
-                            if(jItem.getInt("over") >=15){
-                                lastFiveOverScore += jItem.getInt("runs");
-                            }
-
-                           if (jItem.getInt("over") == 15 && jItem.getInt("ball") == 1 && lastFlag == -1) {
-                                if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
-                                    lastFlag = 1;
-                                }
-                            }
-                           /* if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") && afterFifthWicketScore == -1) {
-                                afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-*/
-                            if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
-                                fourCount++;
-                            }
-                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("runs");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
-                        }
-                    }
-
-                    if (lastFiveOverScore != -1) {
-                        lastFiveOverScore++;
-                    }
-                    if (lastFlag == 1) {
-                        lastFiveOverScore = -1;
-                    }
-
-                    if(inning == 1){
-                        StringTokenizer st = new StringTokenizer(homeScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                    else{
-                        StringTokenizer st = new StringTokenizer(awayScore, " /");
-                        totalRuns = Integer.parseInt(st.nextToken());
-                    }
-                     
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(firstOverScore));
-                    params.add(String.valueOf(sixOverScore));
-                    params.add(String.valueOf(lastFiveOverScore));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(totalRuns));
-                    params.add(BorC);
-
-                    //System.out.println("Params are: " +params);
-
-                    if (inning == 1) {
-                        one = new Inning(8, params);
-                    }
-                    if (inning == 2) {
-                        two = new Inning(8, params);
-                    }
-                }
-                String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=1&filter=full&liveTest=false";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("pagination").getInt("pageCount");
-                    
-                    Boolean hasOver = false;
-                    
-                    String lastPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=1&page=" + pageCount+ "&filter=full&liveTest=false";
-                    String lastBody;
-                    try {
-                            lastBody = Jsoup.connect(lastPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + lastPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(lastBody);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
-                            JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            
-                            if(jItem.getInt("over") >= 19){
-                                hasOver = true;
-                                break;
-                            }
-                                
-                            }
-                        if(result.contains("D/L"))
-                            if(hasOver == false){
-                                result = result + " -1";
-                        }
-                String groundName = detailsTable.select("tr").get(0).text();
-                String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
-                //Elements ground = matchPage.getElementsByClass("stadium-details");
-                //Elements sp = ground.select("span");
-                //String groundName = sp.text();
-                //String groundLink = ground.select("a").first().attr("href");
-
-                Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDate), tossResult, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
-                db.addMatch(m);
-                }
-                else{
-                    continue;
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                ret = false;
-                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
-            }
-        }
-
-        return ret;
-    }
-
-    public boolean loadTestData() {
+    public List<MatchReport> loadTestData() {
+        List<MatchReport> reports = new ArrayList<>();
+        int matchType = 1;
+        List<String> loadedMatchIDs = db.getLoadedMatchIDs(matchType);
 
     	Map<String,Integer> teamIndex = new LinkedHashMap<>();
     	Document indexes = null;
 
+        String teamIndexesLink = "https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index";
     	try {
-                indexes = Jsoup.connect("https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index").get();
-                //matches = Jsoup.connect("https://www.espncricinfo.com/series/19495/scorecard/1198241/england-vs-pakistan-1st-test-england-v-pakistan-2020").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index");
+            indexes = Jsoup.connect(teamIndexesLink).get();
+
+            Element elemTeams = indexes.getElementsByClass("teams-section").first();
+            Elements links = elemTeams.select("a");
+            String href;
+
+            for(int i = 0; i< links.size(); i++){
+                href = links.get(i).attr("href");
+                String[] parts = href.split("/");
+                String country = parts[5];
+                int id = Integer.parseInt(parts[4]);
+                teamIndex.put(country,id);
             }
-
-        Element elemTeams = indexes.getElementsByClass("teams-section").first();
-        Elements links = elemTeams.select("a");
-        String href;
-
-        for(int i = 0; i< links.size(); i++){
-  				href = links.get(i).attr("href");
-                                String[] parts = href.split("/");
-                                String country = parts[5];
-                                int id = Integer.parseInt(parts[4]);
-                                teamIndex.put(country,id);
-                                
-		}
-/*        
-        for (String key : teamIndex.keySet())
-                {
-                    System.out.println("Key: " + key);   
-                    System.out.println("VAL: " + teamIndex.get(key));
-                }
-
-*/
-        //System.out.println(teamIndex);
-       // System.out.println(teamIndex.get("afghanistan"));
-
-
-        boolean ret = true;
-
-        int matchType = 1;
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            reports.add(new MatchReport(teamIndexesLink, MatchStatus.N_A, ex));
+        }
+        
         String baseUrl = "http://stats.espncricinfo.com/";
         List<String> matchLinks = new ArrayList<>();
 
@@ -4793,27 +471,37 @@ public class DataFetch {
         
 
         for (int y = year; y >= 2016; y--) {
-            Document matches;
+            Document matches = null;
+            String matchListLink = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=1;id=" + y + ";type=year";
             try {
-                matches = Jsoup.connect("http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=1;id=" + y + ";type=year").get();
-                //matches = Jsoup.connect("https://www.espncricinfo.com/series/19495/scorecard/1198241/england-vs-pakistan-1st-test-england-v-pakistan-2020").get();
+                matches = Jsoup.connect(matchListLink).get();
+                if (matches == null && matches.getElementsByClass("data1").first() == null) {
+                    throw new NullPointerException();
+                }
+            
+                Elements rows = matches.getElementsByClass("data1");
+                for (int i = (rows.size() - 1); i >= 0; i--) {
+                    Element m = rows.get(i);
+                    Elements cols = m.getElementsByClass("data-link");
+
+                    String matchLink = cols.last().attr("href");
+                    Matcher idMatcher = matchIdFinder.matcher(matchLink);
+                    if(idMatcher.find()){
+                        String currId = idMatcher.group(1);
+                        if(loadedMatchIDs.contains(currId)){
+                           reports.add(new MatchReport(matchLink, MatchStatus.ALREADY_LOADED, null)) ;
+                        }
+                        else{
+                            matchLinks.add(matchLink);
+                        }
+                    }
+                    else{
+                        reports.add(new MatchReport(matchLink, MatchStatus.UNLOADED, new Exception("Unable to extract matchId")));
+                    }
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=1;id=" + y + ";type=year");
-                continue;
-            }
-            if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                continue;
-            }
-
-            Elements rows = matches.getElementsByClass("data1");
-
-            for (int i = (rows.size() - 1); i >= 0; i--) {
-                Element m = rows.get(i);
-                Elements cols = m.getElementsByClass("data-link");
-
-                String matchLink = cols.last().attr("href");
-                matchLinks.add(matchLink);
+                reports.add(new MatchReport(matchListLink, MatchStatus.N_A, ex));
             }
         }
 
@@ -4822,53 +510,29 @@ public class DataFetch {
             try {
                 int foflag = 0;
 
-                int mPos = 0;
-                String[] mParts = matchLink.split("/");
-                for (int i = 0; i < mParts.length; i++) {
-                    if (mParts[i].equals("match")) {
-                        mPos = i + 1;
-                        break;
-                    }
+                String currId;
+                Matcher idMatcher = matchIdFinder.matcher(matchLink);
+                if(idMatcher.find()){
+                    currId = idMatcher.group(1);
                 }
-                String mid = mParts[mPos];
-                int mId = Integer.parseInt(mid.substring(0, mid.length() - 5));
-
-                if (db.checktestMatchEntry(mId)) {
-                    System.out.println("Match " + mId + " exists");
-                    continue;
+                else{
+                    throw new Exception("Unable to extract match ID.");
                 }
+                int mId = Integer.parseInt(currId);
 
                 String url = baseUrl + matchLink;
 
                 Document matchPage;
-                System.out.println("try test0 :" + url);
-                try {
-                    matchPage = Jsoup.connect(url).followRedirects(true).get();
-                } catch (Exception ex) {
-                    Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                    unloaded.put("" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-                //           Element first = matchPage.getElementById("div.gp-inning-00");
-                //           System.out.println(first);
-
+                matchPage = Jsoup.connect(url).followRedirects(true).get();
+                
                 String matchUrl = matchPage.baseUri();
                 String[] splitUrl = matchUrl.split("/");
 
-                Elements teamsTopDivision = matchPage.getElementsByClass("match-header");
                 Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                
         
                 LocalDate matchDate = LocalDate.now();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("MMMM d yyyy");
- /*               
-                String matchDateElement = detailsTable.select("tr").get(9).text();
-                String[] parts = matchDateElement.trim().split("-");
-                System.out.println("MatchDate is :" + matchDateElement);
-
-*/
-
+ 
                 String matchDateString = null;
                 
                 for(int i = 0; i<10; i++){
@@ -4877,146 +541,59 @@ public class DataFetch {
                         System.out.println(matchDateElement);
                         String[] parts = matchDateElement.split(" ");
                         String[] parts2 = parts[2].split(",");
-                        matchDateString = parts[3].trim() + " " + parts2[0].trim() + " " + parts[4].trim();                        
-                        
+                        matchDateString = parts[3].trim() + " " + parts2[0].trim() + " " + parts[4].trim();
                     }
-                    
                 }
                 System.out.println("MATCHDATE IS :" + matchDateString);
                 
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                /*
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
-                */
-               
-            /*    
-                Elements matchDateElement = matchPage.getElementsByClass("desc text-truncate");
-                String[] parts = matchDateElement.text().trim().split(",");
-                String[] parts2 = parts[parts.length - 2].split("-");
-                String[] parts3 = parts2[1].split(" ");
-                String matchDateString = parts2[0].trim() + " " + parts3[parts3.length - 1];
-                System.out.println("This is:" + matchDateString);
-
-                try {
-                    matchDate = LocalDate.parse(matchDateString.trim(), df);
-                } catch (DateTimeParseException ex) {
-                    System.out.print("<h1> error parsing date:" + matchDateString);
-                    Logger.getLogger(LoadODI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (matchDate.equals(LocalDate.now().minusDays(7))) {
-                    System.out.println("Match " + mId + " this week.");
-                    continue;
-                }
+                matchDate = LocalDate.parse(matchDateString.trim(), df);
                 
-        */        
-                Elements teamName = matchPage.getElementsByClass("team-name");
-                Element home = teamName.first();
-                Element away = teamName.last();
+                Elements teamNames = matchPage.getElementsByClass("team-name");
+                Element home = teamNames.first();
+                Element away = teamNames.last();
                 String homeTeamName = home.select("span").attr("title");
                 String awayTeamName = away.select("span").attr("title");
-                
              
-                
+                int homeIndex = -1;
                 String homeTeamUrl = home.select("a").attr("href");
-                String[] urlParts = homeTeamUrl.split("/");
-                int pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
+                Matcher homeIndexMatcher = teamIndexFinder.matcher(homeTeamUrl);
+                if(homeIndexMatcher.find()){
+                    homeIndex = Integer.parseInt(homeIndexMatcher.group(1));
                 }
-                String homeTeamId = urlParts[pos];  //#todo
-
-                //Elements away = teamsTopDivision.select("li.cscore_item.cscore_item--away");
-                //String awayTeamName = away.select("span.cscore_name.cscore_name--long").text();
                 
-                List<String> teams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
-                        
-                if (teams.contains(homeTeamName) && teams.contains(awayTeamName)){
+                int awayIndex = -1;
                 String awayTeamUrl = away.select("a").attr("href");
-                urlParts = awayTeamUrl.split("/");
-                pos = 0;
-                for (int i = 0; i < urlParts.length; i++) {
-                    if (urlParts[i].equals("id")) {
-                        pos = i + 1;
-                        break;
-                    }
+                Matcher awayIndexMatcher = teamIndexFinder.matcher(awayTeamUrl);
+                if(awayIndexMatcher.find()){
+                    awayIndex = Integer.parseInt(awayIndexMatcher.group(1));
                 }
-                String awayTeamId = urlParts[pos];  //#todo
-
-                // String homeScore = home.select("div.cscore_score").get(0).text();
-                // String awayScore = away.select("div.cscore_score").get(0).text();
-                //String homeScore = home.select("score-run").text();
-                //String awayScore = away.select("score-run").text();
+                
+                if(homeIndex == -1 || awayIndex == -1){
+                    throw new Exception("Unable to extract team index");
+                }
+                
+                List<String> impTeams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
+                        
+                if (!impTeams.contains(homeTeamName) || !impTeams.contains(awayTeamName)){
+                    continue;
+                }
+                Element foCheck = matchPage.getElementsByClass("teams").first();
+                if(foCheck.text().contains("f/o")){
+                    foflag = 1;
+                }
                 
                 Elements scores = matchPage.getElementsByClass("score-run");
                 String homeScore = scores.first().text();
                 String awayScore = scores.last().text();
-                // System.out.println(awayScore);
-                if (awayScore.contains("f/o") || homeScore.contains("f/o")) {
-                    foflag = 1;
-                }
-/*
-                Element liveOrNot = teamsTopDivision.select("span.cscore_time").first();
-                if (liveOrNot.text().equals("Live") || homeScore.contains("*") || awayScore.contains("*")) {
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-*/              
-                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                Element checkLive = topTabs.select("a").first();
-                //System.out.println("THIS IS :" + checkLive.text());
-                if(checkLive.text().contains("Live")){ 
-                    System.out.println("MATCH IS LIVE");
-                    unloaded.put("LIVE:" + mId, url);
-                    ret = false;
-                    continue MATCHLABEL;
-                }
-            
-                //Elements gameInfoDivision = teamsTopDivision.select("article.sub-module.game-information.pre");
-                //Elements detailsColumn = gameInfoDivision.first().select("div.match-detail--right");
                 
+                Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
+                List<String> tabTexts = topTabs.select("a").eachText();
+                if(tabTexts.contains("Live")){
+                    throw new Exception("Live match");
+                }
                 
                 String tossResult = detailsTable.select("tr").get(1).text();
-                //System.out.println("THE result:"+ tossResult);
-                /*
-                if (tossResult.contains("bat") || tossResult.contains("field")){
-                    tossResult = tossResult;
-                }
-                else{
-                    System.out.println("TRIAL");
-                    //tossResult = detailsTable.get(0).text(); ie Toss result might be in next row
-                }
-*/
-                String battingFirst;
-                if (tossResult.contains(homeTeamName)) {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = homeTeamName;
-                    } else {
-                        battingFirst = awayTeamName;
-                    }
-                } else {
-                    if (tossResult.contains("bat")) {
-                        battingFirst = awayTeamName;
-                    } else {
-                        battingFirst = homeTeamName;
-                    }
-                }
                 
-                
-
                 int seriesPos = 0;
                 for (int i = 0; i < splitUrl.length; i++) {
                     if (splitUrl[i].equals("series")) {
@@ -5033,229 +610,68 @@ public class DataFetch {
                     }
                 }
                 
-                String result = matchPage.getElementsByClass("summary").text();
-                //System.out.println("winner:"+ winners);
+                String seriesNo = splitUrl[seriesPos];
+                String eventNo = splitUrl[eventNoPos];
+                
+                String summaryText = matchPage.getElementsByClass("summary").text();
 
-                //Elements winner = matchPage.getElementsByClass("cscore_notes");
-                //String result = winner.select("span").first().text();
-                Elements winnerIcon = matchPage.getElementsByClass("espn-icon icon-games-solid-after icon- text-success winner-icon");
                 Elements homewinnerIcon = home.select("i");
                 Elements awaywinnerIcon = away.select("i");
                 
-                //System.out.println("HOME WIN ICON : " + homewinnerIcon);
-                //System.out.println("AWAY WIN ICON : " +awaywinnerIcon);
-                String BorC = "";
-                
+                String BCW ;
                 if(homewinnerIcon.size() > 0){
-                    System.out.println("HOME WIN ICON EXISTS ");
-                    if(battingFirst == homeTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("homeTeam is :" + homeTeamName);                   
-                        BorC = "B";
-                    }
-                    else if(battingFirst == awayTeamName){
-                        //System.out.println("BATTING TEAM IS : " + battingFirst);
-                        //System.out.println("awayTeamName is :" + awayTeamName); 
-                        BorC="C";
-                    }
-                   
+                    BCW = "B";
                 }
                 else if(awaywinnerIcon.size() > 0){
-                    //System.out.println("AWAY WIN ICON EXISTS");
-                    if(battingFirst == awayTeamName){
-                        BorC = "B";
-                    }
-                    else if(battingFirst == homeTeamName){
-                        BorC="C";
-                    }
-                    
+                    BCW="C";
+                }
+                else if(summaryText.contains(" tied") || summaryText.contains(" drawn")){
+                    BCW="D";
                 }
                 else{
-                    BorC="D";
+                    BCW = "--";
                 }
- /*               
-                if(result.contains("No result")){continue;}
                 
-                if (result.contains(" wicket")) {
-                    BorC = "C";
-                } else if (result.contains(" run")) {
-                    BorC = "B";
-                } else {
-                    BorC = "D";
-                }
-*/
-                String seriesNo = splitUrl[seriesPos];
-                String eventNo = splitUrl[eventNoPos];
+                Inning one = null;
+                Inning two = null;
+                Inning three = null;
+                Inning four = null;
 
-                testInning one = null;
-                testInning two = null;
-                testInning three = null;
-                testInning four = null;
-/*
-                for (int inning = 1; inning <= 4; inning++) {
-                    List<JSONObject> ballList = new ArrayList<>();
-                    int totalRuns = 0;
-                    int firstWicketScore = -1;
-                    int sixCount = 0;
-                    int afterFifthWicketScore = -1;
-                    int fourCount = 0;
-
-                    int wicketCount = 0;
-                    String commentaryUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/" + seriesNo + "/playbyplay?contentorigin=espn&event=" + eventNo + "&page=1&period=" + inning + "&section=cricinfo";
-                    String json;
-                    try {
-                        json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
-                    }
-                    JSONObject j = new JSONObject(json);
-                    int pageCount = j.getJSONObject("commentary").getInt("pageCount");
-
-                    for (int i = 1; i <= pageCount; i++) {
-                        String currentPageUrl = "http://site.web.api.espn.com/apis/site/v2/sports/cricket/"
-                                + seriesNo + "/playbyplay?contentorigin=espn&event="
-                                + eventNo + "&page=" + i + "&period=" + inning + "&section=cricinfo";
-
-                        String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-                        JSONObject jObj = new JSONObject();
-                        try {
-                            jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
-
-                        for (int it = 0; it < jObj.getJSONObject("commentary").getJSONArray("items").length(); it++) {
-                            JSONObject jItem = jObj.getJSONObject("commentary").getJSONArray("items").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                                continue;
-                            }
-                            ballList.add(jItem);
-
-                            if (jItem.getJSONObject("playType").getInt("id") == 9) {
-                                wicketCount++;
-                            }
-
-                            if (wicketCount >= 5 && afterFifthWicketScore == -1) {
-                                afterFifthWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-
-                            if (jItem.getJSONObject("playType").getInt("id") == 9 && firstWicketScore == -1) {
-                                firstWicketScore = jItem.getJSONObject("innings").getInt("runs");
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 3) {
-                                fourCount++;
-                            }
-                            if (jItem.getJSONObject("playType").getInt("id") == 4) {
-                                sixCount++;
-                            }
-                            totalRuns += jItem.getInt("scoreValue");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
-                        }
-                    }
-                    
-                    if(afterFifthWicketScore == -1){afterFifthWicketScore++;}
-                    List<String> params = new ArrayList<>();
-                    params.add(String.valueOf(totalRuns));
-                    params.add(String.valueOf(sixCount));
-                    params.add(String.valueOf(fourCount));
-                    params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
-                    params.add(String.valueOf(totalRuns - afterFifthWicketScore));
-                    params.add(BorC);
-                    //System.out.println("Params are: " +params);
-
-                    if (inning == 1) {
-                        one = new testInning(6, params);
-
-                    } else if (inning == 2) {
-                        two = new testInning(6, params);
-
-                    } else if (inning == 3) {
-                        three = new testInning(6, params);
-                    } else if (inning == 4) {
-                        four = new testInning(6, params);
-                    }
-
-                }
-                */
                 for (int inning = 1; inning <= 4; inning++) {
                     String fourcheck = " FOUR";
                     String sixcheck = " SIX";
-                    List<JSONObject> ballList = new ArrayList<>();
+                    
                     int totalRuns = 0;
                     int firstWicketScore = -1;
                     int sixCount = 0;
                     int afterFifthWicketScore = -1;
                     int fourCount = 0;
 
-                    int wicketCount = 0;
-                    //String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=19495&eventId=1198241&period=" + inning +"&page=1&filter=full&liveTest=false";
                     String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=1&filter=full&liveTest=false";
                     String json;
                     try {
                         json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
-                    } catch (Exception ex) {
-                        Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                        unloaded.put("" + mId, url);
-                        ret = false;
-                        continue MATCHLABEL;
+                    } catch (IOException ex) {
+                        throw new Exception("Unable to access page", new Exception(commentaryUrl));
                     }
                     JSONObject j = new JSONObject(json);
                     int pageCount = j.getJSONObject("pagination").getInt("pageCount");
 
                     for (int i = 1; i <= pageCount; i++) {
-                        //String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=19495&eventId=1198241&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
                         String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" +seriesNo +"&eventId=" + eventNo +"&period=" + inning +"&page=" + i + "&filter=full&liveTest=false";
 
                         String body;
-                        System.out.println("trying test :" + currentPageUrl);
-                        try {
-                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
-                        } catch (Exception ex) {
-                            Logger.getLogger(DataFetch.class.getName()).log(Level.SEVERE, null, ex);
-                            System.out.println("misiing JSON : " + currentPageUrl);
-                            unloaded.put("" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
-                        }
                         JSONObject jObj = new JSONObject();
                         try {
+                            body = Jsoup.connect(currentPageUrl).ignoreContentType(true).execute().body();
                             jObj = new JSONObject(body);
-                        } catch (JSONException je) {
-                            unloaded.put("CORRUPT:" + mId, url);
-                            ret = false;
-                            continue MATCHLABEL;
+                        } catch (Exception ex) {
+                            throw new Exception("Unable to access page", new Exception(currentPageUrl));
                         }
 
                         for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
                             JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
-                            System.out.println("it:" + it + " url: " + currentPageUrl);
-                            //if (jItem.getJSONObject("playType").getInt("id") == 0) {
-                             //   continue;
-                            //}
-                            ballList.add(jItem);
-
-                            if (jItem.has("matchWicket")) {
-                                wicketCount++;
-                                //System.out.println("CHECK HERE:" + homeTeamName + " vs " + awayTeamName + "  " + wicketCount + "    " + jItem.getJSONObject("currentInning").getInt("runs"));
-                            }
-
+                            
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 5 && jItem.has("matchWicket") && afterFifthWicketScore == -1) {
                                 afterFifthWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
@@ -5263,19 +679,23 @@ public class DataFetch {
                             if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
                                 firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
                             }
-                            if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
-                                fourCount++;
+                            try{
+                                if(jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())){
+                                    fourCount++;
+                                }
+                                if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
+                                    sixCount++;
+                                }
                             }
-                            if(jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())){
-                                sixCount++;
+                            catch(JSONException e){
+                                System.out.println(e.getMessage());
                             }
                             totalRuns += jItem.getInt("runs");
-                            //afterFifthWicketScore = totalRuns - afterFifthWicketScore;
-
                         }
                     }
 
 /*
+                    //try to take score from scoreboard
                     if(inning == 1){
                         StringTokenizer st = new StringTokenizer(homeScore, " /");
                         totalRuns = Integer.parseInt(st.nextToken());
@@ -5293,94 +713,60 @@ public class DataFetch {
                         totalRuns = Integer.parseInt(st.nextToken());
                     }
 */
-                    if(afterFifthWicketScore == -1){
-                        afterFifthWicketScore++;
-                    }
-                    else{
+                    if(afterFifthWicketScore != -1){
                         afterFifthWicketScore = totalRuns - afterFifthWicketScore;
                     }
 
-                    if(afterFifthWicketScore == -1){afterFifthWicketScore++;}
                     List<String> params = new ArrayList<>();
                     params.add(String.valueOf(totalRuns));
-                    params.add(String.valueOf(sixCount));
                     params.add(String.valueOf(fourCount));
+                    params.add(String.valueOf(sixCount));
                     params.add(String.valueOf((firstWicketScore==-1)?totalRuns:firstWicketScore));
                     params.add(String.valueOf(afterFifthWicketScore));
-                    params.add(BorC);
-                    //System.out.println("Params are: " +params);
+                    params.add(BCW);
 
-                    if (inning == 1) {
-                        one = new testInning(6, params);
-
-                    } else if (inning == 2) {
-                        two = new testInning(6, params);
-
-                    } else if (inning == 3) {
-                        three = new testInning(6, params);
-                    } else if (inning == 4) {
-                        four = new testInning(6, params);
+                    switch (inning) {
+                        case 1:
+                            one = new Inning(params);
+                            break;
+                        case 2:
+                            two = new Inning(params);
+                            break;
+                        case 3:
+                            three = new Inning(params);
+                            break;
+                        case 4:
+                            four = new Inning(params);
+                            break;
+                        default:
+                            break;
                     }
 
                 }
                 String groundName = detailsTable.select("tr").get(0).text();
-                System.out.println("GROUNDNAME IS :"+ groundName);
-                //Elements ground = matchPage.getElementsByClass("stadium-details");
-                //Elements sp = ground.select("span");
-                //String groundName = sp.text();
                 String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
-                System.out.println("GROUNDLINK IS :" + groundLink);
-                
-                String homeName;
-                String awayName;
-                String[] parts = homeTeamName.split(" ");
-                if(parts.length > 1) {
-                    homeName = parts[0] + "-" + parts[1];
-                    
-                }
-                else{
-                    homeName = homeTeamName;
-                }
-                
-                String[] parts2 = awayTeamName.split(" ");
-                if(parts2.length > 1) {
-                    awayName = parts2[0] + "-" + parts2[1];
-                    
-                }
-                else{
-                    awayName = awayTeamName;
-                }
-                
-                System.out.println("home team is : " + homeName.toLowerCase());
-                int homeTeamIndex = teamIndex.get(homeName.toLowerCase());                
-                System.out.println(homeTeamIndex);
-                System.out.println("away team is : " + awayName.toLowerCase());
-                int awayTeamIndex = teamIndex.get(awayName.toLowerCase());
-                System.out.println(awayTeamIndex);
-                
                 
                 Document homeTeamGrounds = null;
+                String homeGrUrl = "https://www.espncricinfo.com/ci/content/ground/grounds.html?object_id=index&country=" + homeIndex;
                 try {
-                homeTeamGrounds = Jsoup.connect("https://www.espncricinfo.com/ci/content/ground/grounds.html?object_id=index&country=" + homeTeamIndex).get();
-                //matches = Jsoup.connect("https://www.espncricinfo.com/series/19495/scorecard/1198241/england-vs-pakistan-1st-test-england-v-pakistan-2020").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index");
-            }
-                Document awayTeamGrounds=null;
-                try {
-                awayTeamGrounds = Jsoup.connect("https://www.espncricinfo.com/ci/content/ground/grounds.html?object_id=index&country=" + awayTeamIndex).get();
-                //matches = Jsoup.connect("https://www.espncricinfo.com/series/19495/scorecard/1198241/england-vs-pakistan-1st-test-england-v-pakistan-2020").get();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                unloaded.put(ex.getMessage() + ":", "https://www.espncricinfo.com/story/_/id/18791072/all-cricket-teams-index");
-            }
+                    homeTeamGrounds = Jsoup.connect(homeGrUrl).get();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    throw new Exception("Unable to access page", new Exception(homeGrUrl));
+                }
+                
+//              not required rn:  
+//                Document awayTeamGrounds = null;
+//                String awayGrUrl = "https://www.espncricinfo.com/ci/content/ground/grounds.html?object_id=index&country=" + awayIndex;
+//                try {
+//                    awayTeamGrounds = Jsoup.connect(awayGrUrl).get();
+//                } catch (Exception ex) {
+//                    ex.printStackTrace();
+//                    throw new Exception(awayGrUrl);
+//                }
                 
                 String homeGroundNames = homeTeamGrounds.getElementsByClass("grdLinks").text();
-                System.out.println("HOME GROUND NAMES : " + homeGroundNames);
                 
-                String awayGroundNames = awayTeamGrounds.getElementsByClass("grdLinks").text();
-                System.out.println("HOME GROUND NAMES : " + awayGroundNames);
                 String teamathome;
                 String teamataway;
                 
@@ -5392,39 +778,21 @@ public class DataFetch {
                     teamathome = awayTeamName;
                     teamataway = homeTeamName;
                 }
-                //String teamathome = db.checkhomeoraway(homeTeamName, awayTeamName, groundName);
-                //String teamataway = db.getawayteam(homeTeamName, awayTeamName, groundName);
-                System.out.println("AWAYTEAM IS " + teamataway);
 
+                testMatch m = null;
                 if (foflag == 0) {
-                    testMatch m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, three, four, homeScore, awayScore, result, groundName, matchType, teamathome, teamataway);
-                    db.addtestMatch(m);
-                    System.out.println("new test match added");
+                    m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, BCW, one, two, three, four, homeScore, awayScore, summaryText, groundName, teamathome, teamataway);
                 } else if (foflag == 1) {
-                    testMatch m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, battingFirst, one, two, four, three, homeScore, awayScore, result, groundName, matchType, teamathome, teamataway);
-                    db.addtestMatch(m);
+                    m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, BCW, one, two, four, three, homeScore, awayScore, summaryText, groundName, teamathome, teamataway);
                 }
-                System.out.println("new test match added");
-
-                skipAndConti:
-                ;
-                }
-                else{
-                    continue;
-                }
+                db.addtestMatch(m);
+                reports.add(new MatchReport(matchLink, MatchStatus.LOADED, null));
             }
-
             catch (Exception ex) {
                 ex.printStackTrace();
-                ret = false;
-                unloaded.put(ex.getMessage() + ":", baseUrl+matchLink);
-
+                reports.add(new MatchReport(matchLink, MatchStatus.UNLOADED, ex));
             }
-
         }
-
-        return ret;
-
+        return reports;
     }
-
 }

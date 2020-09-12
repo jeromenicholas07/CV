@@ -59,7 +59,7 @@ public class getGroundData extends HttpServlet {
             dispatcher.forward(request, response);
             }
             else{
-            List<testMatch> matches = db.gettestGroundInfo(groundName, matchType);
+            List<testMatch> matches = db.getTestGroundInfo(groundName);
             
 
             request.setAttribute("ground", groundName);

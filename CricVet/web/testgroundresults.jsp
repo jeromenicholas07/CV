@@ -55,26 +55,30 @@
                                     <th>Toss
                     
                     
-                                    <th>Inning runs                
+                                    <th>Inning runs 
+                                    <th>Fours
                                     <th>Sixes
                                     <th>1st Wicket
                                     <th>Runs after 5th Wicket
                     
                     
                    
-                                    <th>Inning runs                
+                                    <th>Inning runs  
+                                    <th>Fours
                                     <th>Sixes
                                     <th>1st Wicket
                                     <th>Runs after 5th Wicket
                     
                   
-                                    <th>Inning runs                
+                                    <th>Inning runs              
+                                    <th>Fours
                                     <th>Sixes
                                     <th>1st Wicket
                                     <th>Runs after 5th Wicket
                     
                     
-                                    <th>Inning runs                
+                                    <th>Inning runs    
+                                    <th>Fours
                                     <th>Sixes
                                     <th>1st Wicket
                                     <th>Runs after 5th Wicket
@@ -95,25 +99,29 @@
                     <td>${match.getHomeTeam()}
                     <td>${match.getAwayTeam()}
                     <td>${match.getTossWinner()}
-                    <td>${match.getInningOne1().getTotalruns()}
-                    <td>${match.getInningOne1().getSixes()}
-                    <td>${match.getInningOne1().getFirstwicket()}
-                    <td>${match.getInningOne1().getRuns5wicket()}
+                    <td>${match.getInningOne1().getParams().get(0)}
+                    <td>${match.getInningOne1().getParams().get(1)}
+                    <td>${match.getInningOne1().getParams().get(2)}
+                    <td>${match.getInningOne1().getParams().get(3)}
+                    <td>${match.getInningOne1().getParams().get(4)}
                         
-                    <td>${match.getInningTwo1().getTotalruns()}
-                    <td>${match.getInningTwo1().getSixes()}
-                    <td>${match.getInningTwo1().getFirstwicket()}
-                    <td>${match.getInningTwo1().getRuns5wicket()}
+                    <td>${match.getInningTwo1().getParams().get(0)}
+                    <td>${match.getInningTwo1().getParams().get(1)}
+                    <td>${match.getInningTwo1().getParams().get(2)}
+                    <td>${match.getInningTwo1().getParams().get(3)}
+                    <td>${match.getInningTwo1().getParams().get(4)}
                         
-                    <td>${match.getInningOne2().getTotalruns()}
-                    <td>${match.getInningOne2().getSixes()}
-                    <td>${match.getInningOne2().getFirstwicket()}
-                    <td>${match.getInningOne2().getRuns5wicket()}
+                    <td>${match.getInningOne2().getParams().get(0)}
+                    <td>${match.getInningOne2().getParams().get(1)}
+                    <td>${match.getInningOne2().getParams().get(2)}
+                    <td>${match.getInningOne2().getParams().get(3)}
+                    <td>${match.getInningOne2().getParams().get(4)}
                         
-                    <td>${match.getInningTwo2().getTotalruns()}
-                    <td>${match.getInningTwo2().getSixes()}
-                    <td>${match.getInningTwo2().getFirstwicket()}
-                    <td>${match.getInningTwo2().getRuns5wicket()}
+                    <td>${match.getInningTwo2().getParams().get(0)}
+                    <td>${match.getInningTwo2().getParams().get(1)}
+                    <td>${match.getInningTwo2().getParams().get(2)}
+                    <td>${match.getInningTwo2().getParams().get(3)}
+                    <td>${match.getInningTwo2().getParams().get(4)}
                         
                     <td>${match.getHomeScore()}
                     <td>${match.getAwayScore()}

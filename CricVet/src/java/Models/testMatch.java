@@ -18,12 +18,12 @@ public class testMatch {
     private String awayTeam;
     private Date matchDate;
     private String tossWinner;
-    private String battingFirst;
+    private String BCW;
 
-    private testInning one1;
-    private testInning two1;
-    private testInning one2;
-    private testInning two2;
+    private Inning one1;
+    private Inning two1;
+    private Inning one2;
+    private Inning two2;
 
     private String homeScore;
     private String awayScore;
@@ -34,15 +34,14 @@ public class testMatch {
     
     private String result;
     private String groundName;
-    private int matchType;
 
-    public testMatch(int matchId, String homeTeam, String awayTeam, Date matchDate, String tossWinner, String battingFirst, testInning one1, testInning two1,testInning one2, testInning two2, String homeScore, String awayScore, String result, String groundName, int matchType,String teamathome,String teamataway) {
+    public testMatch(int matchId, String homeTeam, String awayTeam, Date matchDate, String tossWinner, String BCW, Inning one1, Inning two1,Inning one2, Inning two2, String homeScore, String awayScore, String result, String groundName, String teamathome, String teamataway) {
         this.matchId = matchId;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.matchDate = matchDate;
         this.tossWinner = tossWinner;
-        this.battingFirst = battingFirst;
+        this.BCW = BCW;
         this.one1 = one1;
         this.two1 = two1;
         this.one2 = one2;
@@ -52,7 +51,6 @@ public class testMatch {
         
         this.result = result;
         this.groundName = groundName;
-        this.matchType = matchType;
         this.teamathome = teamathome;
         this.teamataway = teamataway;
     }
@@ -105,34 +103,34 @@ public class testMatch {
     public void setTossWinner(String tossWinner) {
         this.tossWinner = tossWinner;
     }
-    public String getBattingFirst() {
-        return battingFirst;
+    public String getBCW() {
+        return BCW;
     }
-    public void setBattingFirst(String battingFirst) {
-        this.battingFirst = battingFirst;
+    public void setBCW(String BCW) {
+        this.BCW = BCW;
     }
-    public testInning getInningOne1() {
+    public Inning getInningOne1() {
         return one1;
     }
-    public void setInningOne1(testInning one1) {
+    public void setInningOne1(Inning one1) {
         this.one1 = one1;
     }
-    public testInning getInningTwo1() {
+    public Inning getInningTwo1() {
         return two1;
     }
-    public void setInningTwo1(testInning two1) {
+    public void setInningTwo1(Inning two1) {
         this.two1 = two1;
     }
-    public testInning getInningOne2() {
+    public Inning getInningOne2() {
         return one2;
     }
-    public void setInningOne2(testInning one2) {
+    public void setInningOne2(Inning one2) {
         this.one2 = one2;
     }
-    public testInning getInningTwo2() {
+    public Inning getInningTwo2() {
         return two2;
     }
-    public void setInningTwo2(testInning two2) {
+    public void setInningTwo2(Inning two2) {
         this.two2 = two2;
     }
     public String getHomeScore() {
@@ -153,16 +151,10 @@ public class testMatch {
     public void setResult(String result) {
         this.result = result;
     }
-    public int getMatchType() {
-        return matchType;
-    }
-    public void setMatchType(int matchType) {
-        this.matchType = matchType;
-    }
-
+    
     @Override
     public String toString() {
-        return "ID: " + matchId + " Date: "+ matchDate.toString() + " BatFirst: "+ battingFirst;
+        return "ID: " + matchId + " Date: "+ matchDate.toString();
     }
     
     

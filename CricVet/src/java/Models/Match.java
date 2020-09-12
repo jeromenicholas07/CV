@@ -18,7 +18,7 @@ public class Match {
     private String awayTeam;
     private Timestamp matchDate;
     private String tossWinner;
-    private String battingFirst;
+    private String BCW;
 
     private Inning inningOne;
     private Inning inningTwo;
@@ -31,13 +31,13 @@ public class Match {
     private String groundName;
     private int matchType;
 
-    public Match(int matchId, String homeTeam, String awayTeam, Timestamp matchDate, String tossWinner, String battingFirst, Inning one, Inning two, String homeScore, String awayScore, String result, String groundName, int matchType) {
+    public Match(int matchId, String homeTeam, String awayTeam, Timestamp matchDate, String tossWinner, String BCW, Inning one, Inning two, String homeScore, String awayScore, String result, String groundName, int matchType) {
         this.matchId = matchId;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.matchDate = matchDate;
         this.tossWinner = tossWinner;
-        this.battingFirst = battingFirst;
+        this.BCW = BCW;
         this.inningOne = one;
         this.inningTwo = two;
         this.homeScore = homeScore;
@@ -84,11 +84,11 @@ public class Match {
     public void setTossWinner(String tossWinner) {
         this.tossWinner = tossWinner;
     }
-    public String getBattingFirst() {
-        return battingFirst;
+    public String getBCW() {
+        return BCW;
     }
-    public void setBattingFirst(String battingFirst) {
-        this.battingFirst = battingFirst;
+    public void setBCW(String BCW) {
+        this.BCW = BCW;
     }
     public Inning getInningOne() {
         return inningOne;
@@ -129,7 +129,7 @@ public class Match {
 
     @Override
     public String toString() {
-        return "ID: " + matchId + " Date: "+ matchDate.toString() + " BatFirst: "+ battingFirst;
+        return "ID: " + matchId + " Date: "+ matchDate.toString() + " BCW: "+ BCW;
     }
     
     

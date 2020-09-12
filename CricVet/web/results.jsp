@@ -56,33 +56,25 @@
             <div class="row">
                 <div class="col-12">
                     <h3 class="card-title">Head to head</h3>
-
-
-
                     <table class="table table-bordered">
                         <tr class="thead-dark">
                             <th colspan="${fn:length(hth)}">${teamOne} v/s ${teamTwo}</th>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${hth}">
-                                <td name="-Left">
+                                <td>
                                     ${in.getParams().get(6)}
                                 </td>
                             </c:forEach>
-
-                            
                         </tr>
-                        
                         <tr>
                             <c:forEach var="in" items="${hth}">
-                                <td name="-Left">
+                                <td>
                                     ${in.getParams().get(7)}
                                 </td>
                             </c:forEach>
-                            
                         </tr>
-                        
-                        <tr colspan="${fn:length(hth)}">
+                        <tr>
                             <%
                                 if(true){
                                     List<Inning> hth = new ArrayList<Inning>((List<Inning>)request.getAttribute("hth"));
@@ -110,21 +102,17 @@
                 </div>
             </div>
 
-
-
-
             <div class="row" >
                 <div class ="col-12">
                     <h3 class="card-title">Form Guide</h3>
-
                     <table class="table table-bordered">
                         <tr class="thead-dark">
-                            <th colspan="${fn:length(oneBatFirstY)}">${teamOne}</th>
+                            <th colspan="${fn:length(FormGuide_A)}">${teamOne}</th>
                             <th>
-                            <th colspan="${fn:length(twoBowlFirstY)}">${teamTwo}</th>
+                            <th colspan="${fn:length(FormGuide_B)}">${teamTwo}</th>
                         </tr>
                         <tr>
-                            <c:forEach var="in" items="${oneBatFirstY}">
+                            <c:forEach var="in" items="${FormGuide_A}">
                                 <td name="-1Left">
                                     ${in.getParams().get(6)}
                                 </td>
@@ -132,7 +120,7 @@
 
                             <td></td>
 
-                            <c:forEach var="in" items="${twoBowlFirstY}">
+                            <c:forEach var="in" items="${FormGuide_B}">
                                 <td name="-1Left">
                                     ${in.getParams().get(6)}
                                 </td>
@@ -144,13 +132,13 @@
 
 
                         <tr>
-                            <c:forEach var="in" items="${oneBatFirstY}">
+                            <c:forEach var="in" items="${FormGuide_A}">
                                 <td name="-2Left">
                                     ${in.getParams().get(7)}
                                 </td>
                             </c:forEach>
                             <td></td>
-                            <c:forEach var="in" items="${twoBowlFirstY}">
+                            <c:forEach var="in" items="${FormGuide_B}">
                                 <td name="-2Left">
                                     ${in.getParams().get(7)}
                                 </td>
@@ -159,8 +147,8 @@
                         </tr>
                         <%
                                 if(true){
-                                    List<Inning> a = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirstY"));
-                                    List<Inning> b = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirstY"));
+                                    List<Inning> a = new ArrayList<Inning>((List<Inning>)request.getAttribute("FormGuide_A"));
+                                    List<Inning> b = new ArrayList<Inning>((List<Inning>)request.getAttribute("FormGuide_B"));
                                     
                                     int num = 0;
                                     int den = 0;
@@ -177,6 +165,7 @@
                                             denA++;
                                         }
                                     }
+                                    request.setAttribute("fg_a", numA+"/"+denA);
                                     
                                     
                                     int numB = 0;
@@ -195,18 +184,18 @@
                                     num = numA + denB;
                                     den = denA + numB;
                                     
-                                    request.setAttribute("fg_a", num+"/"+den);
-                                    request.setAttribute("fg_tot", (num+numB)+"/"+(den+denB));
+                                    
+                                    request.setAttribute("fg_tot", num+"/"+den);
                                     
                                 
                                 }%>
                          
                         <tr>
-                            <td colspan="${fn:length(oneBatFirstY)}">
+                            <td colspan="${fn:length(FormGuide_A)}">
                                 ${fg_a}
                             </td>
                             <td>
-                            <td colspan="${fn:length(twoBowlFirstY)}">
+                            <td colspan="${fn:length(FormGuide_B)}">
                                 ${fg_b}
                             </td>
                         </tr>
@@ -219,3001 +208,2729 @@
 
                 </div>
             </div>
-            
-                            
-                                    
-                            <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">Fours</h3>
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneFS)}">${teamOne}</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoFS)}">${teamTwo}</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirst)}">${groundName}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneFS}">
-                                            <td >
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${twoFS}">
-                                            <td>
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundFirst}">
-                                            <td >
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
+             
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">Fours</h3>
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(FST_A)}">${teamOne}</th>
+                            <th>
+                            <th colspan="${fn:length(FST_B)}">${teamTwo}</th>
+                            <th>
+                            <th colspan="${fn:length(Gr_First)}">${groundName}</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${FST_A}">
+                                <td >
+                                    ${in.getParams().get(4)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${FST_B}">
+                                <td>
+                                    ${in.getParams().get(4)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${Gr_First}">
+                                <td >
+                                    ${in.getParams().get(4)}
+                                </td>
+                            </c:forEach>
+                        </tr>
 
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="20">
+                        <tr class="thead-dark">
+                            <th colspan="12">Sorted:</th>
+                            <th colspan="20">
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="4Left" 
-                                                          id="4Left">Score calc.</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="4Left">
-                                            </div>
-                                            <!--<input type="number" id="4Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneFS"));
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(4)) 
-                                                        - Integer.parseInt(o2.getParams().get(4));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoFS"));
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(4)) 
-                                                        - Integer.parseInt(o2.getParams().get(4));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
-
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirst"));
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(4)) 
-                                                        - Integer.parseInt(o2.getParams().get(4));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(4)) 
-                                                        - Integer.parseInt(o2.getParams().get(4));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                        
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="4Left" class="A">
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="4Left" class="B">
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="4Left" class="G">
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(As)}" name="4LeftOdd" class="A">
-
-                                        </td>
-                                        <td>
-                                        <td colspan="${fn:length(Bs)}" name="4LeftOdd" class="B">
-
-                                        </td>
-                                            
-                                        <td>
-                                        <td colspan="${fn:length(Gs)}" name="4LeftOdd" class="G">
-                                                
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="4Left">
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="4LeftOdd" class="T"></td>
-                                    </tr>
-                                </table>
-                                    
-                                    
-                                
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(foursA_bt)}">${teamOne}</th>
-                                        <th>
-                                        <th colspan="${fn:length(foursB_bt)}">${teamTwo}</th>
-                                        <th>
-                                        <th colspan="${fn:length(foursG_bt)}">${groundName}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${foursA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${foursB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${foursG_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${foursA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${foursB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${foursG_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamOne}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${foursTA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${foursTA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${foursTA_bt}">
-                                            <td>
-                                                ${foursTA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamTwo}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${foursTB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${foursTB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${foursTB_bt}">
-                                            <td>
-                                                ${foursTB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="4Left" 
+                                              id="4Left">Score calc.</span>
                                     </div>
-                        </div>
-                            
-                            <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">Sixes</h3>
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneFS)}">${teamOne}</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoFS)}">${teamTwo}</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirst)}">${groundName}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneFS}">
-                                            <td >
-                                                ${in.getParams().get(5)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${twoFS}">
-                                            <td>
-                                                ${in.getParams().get(5)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundFirst}">
-                                            <td >
-                                                ${in.getParams().get(5)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
+                                    <input type="number" class="form-control" name="4Left">
+                                </div>
+                                <!--<input type="number" id="4Left" >-->
+                            </th>
+                        </tr>
+                        <tr>
+                        <%
 
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="20">
+                        if(true){
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="5Left" 
-                                                          id="5Left">Score calc.</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="5Left">
-                                            </div>
-                                            <!--<input type="number" id="5Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneFS"));
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(5)) 
-                                                        - Integer.parseInt(o2.getParams().get(5));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoFS"));
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(5)) 
-                                                        - Integer.parseInt(o2.getParams().get(5));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
+                            List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("FST_A"));
+                            Collections.sort(As, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(4)) 
+                                            - Integer.parseInt(o2.getParams().get(4));
+                                }
+                            });
+                            pageContext.setAttribute("As", As);
 
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirst"));
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(5)) 
-                                                        - Integer.parseInt(o2.getParams().get(5));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(5)) 
-                                                        - Integer.parseInt(o2.getParams().get(5));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                        
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="5Left" class="A">
-                                                ${in.getParams().get(5)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="5Left" class="B">
-                                                ${in.getParams().get(5)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="5Left" class="G">
-                                                ${in.getParams().get(5)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(As)}" name="5LeftOdd" class="A">
+                            List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FST_B"));
+                            Collections.sort(Bs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(4)) 
+                                            - Integer.parseInt(o2.getParams().get(4));
+                                }
+                            });
+                            pageContext.setAttribute("Bs", Bs);
 
-                                        </td>
-                                        <td>
-                                        <td colspan="${fn:length(Bs)}" name="5LeftOdd" class="B">
+                            List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("Gr_First"));
+                            Collections.sort(Gs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(4)) 
+                                            - Integer.parseInt(o2.getParams().get(4));
+                                }
+                            });
+                            pageContext.setAttribute("Gs", Gs);
 
-                                        </td>
-                                            
-                                        <td>
-                                        <td colspan="${fn:length(Gs)}" name="5LeftOdd" class="G">
-                                                
-                                        </td>
+                            List<Inning> ASs = new ArrayList<Inning>();
+                            ASs.addAll(As);
+                            ASs.addAll(Bs);
+                            Collections.sort(ASs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(4)) 
+                                            - Integer.parseInt(o2.getParams().get(4));
+                                }
+                            });
+                            pageContext.setAttribute("ASs", ASs);
 
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="5Left">
-                                                ${in.getParams().get(5)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="5LeftOdd" class="T"></td>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(sixesA_bt)}">${teamOne}</th>
-                                        <th>
-                                        <th colspan="${fn:length(sixesB_bt)}">${teamTwo}</th>
-                                        <th>
-                                        <th colspan="${fn:length(sixesG_bt)}">${groundName}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${sixesA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${sixesB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${sixesG_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${sixesA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${sixesB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${sixesG_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamOne}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${sixesTA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${sixesTA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${sixesTA_bt}">
-                                            <td>
-                                                ${sixesTA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamTwo}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${sixesTB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${sixesTB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${sixesTB_bt}">
-                                            <td>
-                                                ${sixesTB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
-                                    <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">Total Boundaries</h3>
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneboundaries)}">${teamOne}</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoboundaries)}">${teamTwo}</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundboundaries)}">${groundName}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneboundaries}">
-                                            <td >
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${twoboundaries}">
-                                            <td>
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundboundaries}">
-                                            <td >
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
+                        }
+                        %>
+                            <c:forEach var="in" items="${As}">
+                                <td name="4Left" class="A">
+                                    ${in.getParams().get(4)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Bs}">
+                                <td name="4Left" class="B">
+                                    ${in.getParams().get(4)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gs}">
+                                <td name="4Left" class="G">
+                                    ${in.getParams().get(4)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(As)}" name="4LeftOdd" class="A">
 
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="20">
+                            </td>
+                            <td>
+                            <td colspan="${fn:length(Bs)}" name="4LeftOdd" class="B">
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="bLeft" 
-                                                          id="bLeft">Score calc.</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="bLeft">
-                                            </div>
-                                            <!--<input type="number" id="bLeft" >-->
-                                        </th>
-                                    </tr>
-                                    
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneboundaries"));
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(4)) 
-                                                        - Integer.parseInt(o2.getParams().get(4));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoboundaries"));
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(4)) 
-                                                        - Integer.parseInt(o2.getParams().get(4));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
+                            </td>
 
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundboundaries"));
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(4)) 
-                                                        - Integer.parseInt(o2.getParams().get(4));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(4)) 
-                                                        - Integer.parseInt(o2.getParams().get(4));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                        
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="bLeft" class="A">
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="bLeft" class="B">
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="bLeft" class="G">
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(As)}" name="bLeftOdd" class="A">
+                            <td>
+                            <td colspan="${fn:length(Gs)}" name="4LeftOdd" class="G">
 
-                                        </td>
-                                        <td>
-                                        <td colspan="${fn:length(Bs)}" name="bLeftOdd" class="B">
+                            </td>
 
-                                        </td>
-                                            
-                                        <td>
-                                        <td colspan="${fn:length(Gs)}" name="bLeftOdd" class="G">
-                                                
-                                        </td>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${ASs}">
+                                <td name="4Left">
+                                    ${in.getParams().get(4)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(ASs)}" name="4LeftOdd" class="T"></td>
+                        </tr>
+                    </table>
 
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="bLeft">
-                                                ${in.getParams().get(4)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="bLeftOdd" class="T"></td>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(boundariesA_bt)}">${teamOne}</th>
-                                        <th>
-                                        <th colspan="${fn:length(boundariesB_bt)}">${teamTwo}</th>
-                                        <th>
-                                        <th colspan="${fn:length(boundariesG_bt)}">${groundName}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${boundariesA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${boundariesB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${boundariesG_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${boundariesA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${boundariesB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${boundariesG_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamOne}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${boundariesTA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${boundariesTA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${boundariesTA_bt}">
-                                            <td>
-                                                ${boundariesTA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamTwo}</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${boundariesTB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${boundariesTB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${boundariesTB_bt}">
-                                            <td>
-                                                ${boundariesTB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
-                                
-                            
-                            
-                                
+                    <table class="table table-bordered">
+                        <tr class="thead-light">
+                            <th colspan="30">Back testing:
+                                <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
                             </div>
-                        </div>
+                        </tr>
+                        <tr>
+                            <th colspan="${fn:length(foursA_bt)}">${teamOne}</th>
+                            <th>
+                            <th colspan="${fn:length(foursB_bt)}">${teamTwo}</th>
+                            <th>
+                            <th colspan="${fn:length(foursG_bt)}">${groundName}</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${foursA_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${foursB_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${foursG_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${foursA_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${foursB_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${foursG_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="30">${teamOne}</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${foursTA_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${foursTA_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${foursTA_bt}">
+                                <td>
+                                    ${foursTA_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+
+                        <tr>
+                            <td colspan="30"></td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="30">${teamTwo}</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${foursTB_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${foursTB_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${foursTB_bt}">
+                                <td>
+                                    ${foursTB_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                   </table>
+                </div>
+            </div>
+                            
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">Sixes</h3>
+                        <table class="table table-bordered">
+                            <tr class="thead-dark">
+                                <th colspan="${fn:length(FST_A)}">${teamOne}</th>
+                                <th>
+                                <th colspan="${fn:length(FST_B)}">${teamTwo}</th>
+                                <th>
+                                <th colspan="${fn:length(Gr_First)}">${groundName}</th>
+                            </tr>
+                            <tr>
+                                <c:forEach var="in" items="${FST_A}">
+                                    <td >
+                                        ${in.getParams().get(5)}
+                                    </td>
+                                </c:forEach>
+                                <td>
+                                    <c:forEach var="in" items="${FST_B}">
+                                    <td>
+                                        ${in.getParams().get(5)}
+                                    </td>
+                                </c:forEach>
+                                <td>
+                                    <c:forEach var="in" items="${Gr_First}">
+                                    <td >
+                                        ${in.getParams().get(5)}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+
+                            <tr class="thead-dark">
+                                <th colspan="12">Sorted:</th>
+                                <th colspan="20">
+
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" name="5Left" 
+                                                  id="5Left">Score calc.</span>
+                                        </div>
+                                        <input type="number" class="form-control" name="5Left">
+                                    </div>
+                                    <!--<input type="number" id="5Left" >-->
+                                </th>
+                            </tr>
+                            <tr>
+                            <%
+
+                            if(true){
+
+                                List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("FST_A"));
+                                Collections.sort(As, new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(5)) 
+                                                - Integer.parseInt(o2.getParams().get(5));
+                                    }
+                                });
+                                pageContext.setAttribute("As", As);
+
+                                List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FST_B"));
+                                Collections.sort(Bs, new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(5)) 
+                                                - Integer.parseInt(o2.getParams().get(5));
+                                    }
+                                });
+                                pageContext.setAttribute("Bs", Bs);
+
+                                List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("Gr_First"));
+                                Collections.sort(Gs, new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(5)) 
+                                                - Integer.parseInt(o2.getParams().get(5));
+                                    }
+                                });
+                                pageContext.setAttribute("Gs", Gs);
+
+                                List<Inning> ASs = new ArrayList<Inning>();
+                                ASs.addAll(As);
+                                ASs.addAll(Bs);
+                                Collections.sort(ASs, new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(5)) 
+                                                - Integer.parseInt(o2.getParams().get(5));
+                                    }
+                                });
+                                pageContext.setAttribute("ASs", ASs);
+
+                            }
+                            %>
+                                <c:forEach var="in" items="${As}">
+                                    <td name="5Left" class="A">
+                                        ${in.getParams().get(5)}
+                                    </td>
+                                </c:forEach>
+                                <td>
+                                <c:forEach var="in" items="${Bs}">
+                                    <td name="5Left" class="B">
+                                        ${in.getParams().get(5)}
+                                    </td>
+                                </c:forEach>
+                                <td>
+                                <c:forEach var="in" items="${Gs}">
+                                    <td name="5Left" class="G">
+                                        ${in.getParams().get(5)}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <td colspan="${fn:length(As)}" name="5LeftOdd" class="A">
+
+                                </td>
+                                <td>
+                                <td colspan="${fn:length(Bs)}" name="5LeftOdd" class="B">
+
+                                </td>
+
+                                <td>
+                                <td colspan="${fn:length(Gs)}" name="5LeftOdd" class="G">
+
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <c:forEach var="in" items="${ASs}">
+                                    <td name="5Left">
+                                        ${in.getParams().get(5)}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <td colspan="${fn:length(ASs)}" name="5LeftOdd" class="T"></td>
+                            </tr>
+                        </table>
+                                    
+                        <table class="table table-bordered">
+                            <tr class="thead-light">
+                                <th colspan="30">Back testing:
+                                    <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                    <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                    <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                    <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                                  </svg>
+                                </div>
+                            </tr>
+                            <tr>
+                                <th colspan="${fn:length(sixesA_bt)}">${teamOne}</th>
+                                <th>
+                                <th colspan="${fn:length(sixesB_bt)}">${teamTwo}</th>
+                                <th>
+                                <th colspan="${fn:length(sixesG_bt)}">${groundName}</th>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${sixesA_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+
+                                <td></td>
+
+                                <c:forEach var="entry" items="${sixesB_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+
+                                <td></td>
+
+                                <c:forEach var="entry" items="${sixesG_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${sixesA_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+
+                                <td></td>
+
+                                <c:forEach var="entry" items="${sixesB_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+
+                                <td></td>
+
+                                <c:forEach var="entry" items="${sixesG_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tr>
+                                <th colspan="30">${teamOne}</th>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${sixesTA_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${sixesTA_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${sixesTA_bt}">
+                                    <td>
+                                        ${sixesTA_bt.get("N") - entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+
+                            <tr>
+                                <td colspan="30"></td>
+                            </tr>
+
+                            <tr>
+                                <th colspan="30">${teamTwo}</th>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${sixesTB_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${sixesTB_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${sixesTB_bt}">
+                                    <td>
+                                        ${sixesTB_bt.get("N") - entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                       </table>
+                </div>
+            </div>
+                        
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">Total Boundaries</h3>
+                        <table class="table table-bordered">
+                            <tr class="thead-dark">
+                                <th colspan="${fn:length(FST_A)}">${teamOne}</th>
+                                <th>
+                                <th colspan="${fn:length(FST_B)}">${teamTwo}</th>
+                                <th>
+                                <th colspan="${fn:length(Gr_First)}">${groundName}</th>
+                            </tr>
+                            <tr>
+                                <c:forEach var="in" items="${FST_A}">
+                                    <td >
+                                        ${in.getParams().get(8)}
+                                    </td>
+                                </c:forEach>
+                                <td>
+                                    <c:forEach var="in" items="${FST_B}">
+                                    <td>
+                                        ${in.getParams().get(8)}
+                                    </td>
+                                </c:forEach>
+                                <td>
+                                    <c:forEach var="in" items="${Gr_First}">
+                                    <td >
+                                        ${in.getParams().get(8)}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+
+                            <tr class="thead-dark">
+                                <th colspan="12">Sorted:</th>
+                                <th colspan="20">
+
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" name="bLeft" 
+                                                  id="bLeft">Score calc.</span>
+                                        </div>
+                                        <input type="number" class="form-control" name="bLeft">
+                                    </div>
+                                    <!--<input type="number" id="bLeft" >-->
+                                </th>
+                            </tr>
+
+                            <tr>
+                            <%
+
+                            if(true){
+
+                                List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("FST_A"));
+                                Collections.sort(As, new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(8)) 
+                                                - Integer.parseInt(o2.getParams().get(8));
+                                    }
+                                });
+                                pageContext.setAttribute("As", As);
+
+                                List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FST_B"));
+                                Collections.sort(Bs, new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(8)) 
+                                                - Integer.parseInt(o2.getParams().get(8));
+                                    }
+                                });
+                                pageContext.setAttribute("Bs", Bs);
+
+                                List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("Gr_First"));
+                                Collections.sort(Gs, new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(8)) 
+                                                - Integer.parseInt(o2.getParams().get(8));
+                                    }
+                                });
+                                pageContext.setAttribute("Gs", Gs);
+
+                                List<Inning> ASs = new ArrayList<Inning>();
+                                ASs.addAll(As);
+                                ASs.addAll(Bs);
+                                Collections.sort(ASs, new Comparator<Inning>() {
+                                    @Override
+                                    public int compare(Inning o1, Inning o2) {
+                                        return Integer.parseInt(o1.getParams().get(8)) 
+                                                - Integer.parseInt(o2.getParams().get(8));
+                                    }
+                                });
+                                pageContext.setAttribute("ASs", ASs);
+
+                            }
+                            %>
+                                <c:forEach var="in" items="${As}">
+                                    <td name="bLeft" class="A">
+                                        ${in.getParams().get(8)}
+                                    </td>
+                                </c:forEach>
+                                <td>
+                                <c:forEach var="in" items="${Bs}">
+                                    <td name="bLeft" class="B">
+                                        ${in.getParams().get(8)}
+                                    </td>
+                                </c:forEach>
+                                <td>
+                                <c:forEach var="in" items="${Gs}">
+                                    <td name="bLeft" class="G">
+                                        ${in.getParams().get(8)}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <td colspan="${fn:length(As)}" name="bLeftOdd" class="A">
+
+                                </td>
+                                <td>
+                                <td colspan="${fn:length(Bs)}" name="bLeftOdd" class="B">
+
+                                </td>
+
+                                <td>
+                                <td colspan="${fn:length(Gs)}" name="bLeftOdd" class="G">
+
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <c:forEach var="in" items="${ASs}">
+                                    <td name="bLeft">
+                                        ${in.getParams().get(8)}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <td colspan="${fn:length(ASs)}" name="bLeftOdd" class="T"></td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tr class="thead-light">
+                                <th colspan="30">Back testing:
+                                    <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                    <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                    <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                    <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                                  </svg>
+                                </div>
+                            </tr>
+                            <tr>
+                                <th colspan="${fn:length(boundariesA_bt)}">${teamOne}</th>
+                                <th>
+                                <th colspan="${fn:length(boundariesB_bt)}">${teamTwo}</th>
+                                <th>
+                                <th colspan="${fn:length(boundariesG_bt)}">${groundName}</th>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${boundariesA_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+
+                                <td></td>
+
+                                <c:forEach var="entry" items="${boundariesB_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+
+                                <td></td>
+
+                                <c:forEach var="entry" items="${boundariesG_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${boundariesA_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+
+                                <td></td>
+
+                                <c:forEach var="entry" items="${boundariesB_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+
+                                <td></td>
+
+                                <c:forEach var="entry" items="${boundariesG_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered">
+                            <tr>
+                                <th colspan="30">${teamOne}</th>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${boundariesTA_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${boundariesTA_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${boundariesTA_bt}">
+                                    <td>
+                                        ${boundariesTA_bt.get("N") - entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+
+                            <tr>
+                                <td colspan="30"></td>
+                            </tr>
+
+                            <tr>
+                                <th colspan="30">${teamTwo}</th>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${boundariesTB_bt}">
+                                    <td>
+                                        ${entry.key}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${boundariesTB_bt}">
+                                    <td>
+                                        ${entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                            <tr>
+                                <c:forEach var="entry" items="${boundariesTB_bt}">
+                                    <td>
+                                        ${boundariesTB_bt.get("N") - entry.value}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                       </table>
+
+                </div>
+            </div>
                            
 
-                            
-                            
-            
-
-            <h2>First Inning</h2>
+        <h2>First Inning</h2>
             
             <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">B/C Winner</h3>
+                <div class ="col-12">
+                    <h3 class="card-title">B/C Winner</h3>
 
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneBatFirstZ1)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirstZ1)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirstZ)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneBatFirstZ1}">
-                                            <td >
-                                                ${in.getParams().get(7)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${twoBowlFirstZ1}">
-                                            <td >
-                                                ${in.getParams().get(7)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${groundFirstZ}">
-                                            <td >
-                                                ${in.getParams().get(7)}
-                                            </td>
-                                        </c:forEach>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneBatFirstZ1}">
-                                            <td >
-                                                ${in.getParams().get(6)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${twoBowlFirstZ1}">
-                                            <td >
-                                                ${in.getParams().get(7)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${groundFirstZ}">
-                                            <td >
-                                                ${in.getParams().get(7)}
-                                            </td>
-                                        </c:forEach>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <%
-                                     
-                                        if(true){
-                                            List<Inning> Ab = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("oneBatFirstZ1"));
-                                            List<Inning> Bb = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("twoBowlFirstZ1"));
-                                            List<Inning> Gb = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("groundFirstZ"));
-                                            
-                                            int num = 0;
-                                            int den = 0;
-                                            for(Inning ti : Ab){
-                                                
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Ab", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            for(Inning ti : Bb){
-                                                
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Bb", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            for(Inning ti : Gb){
-                                                
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Gb", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            List<Inning> Tb = new ArrayList<Inning>();
-                                            Tb.addAll(Ab);
-                                            Tb.addAll(Bb);
-                                            for(Inning ti : Tb){
-                                                
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Tb", num+"/"+den);
-                                        }
-                                     
-                                     
-                                     %>
-                                        <td colspan="${fn:length(oneBatFirstZ1)}">
-                                         ${Ab}
-                                     </td>
-                                     <td></td>
-                                     <td colspan="${fn:length(twoBowlFirstZ1)}">
-                                         ${Bb}
-                                     </td>
-                                     <td></td>
-                                     <td colspan="${fn:length(groundFirstZ)}">
-                                         ${Gb}
-                                     </td>
-                                 </tr>
-                                 <tr>
-                                     <td colspan="${fn:length(oneBatFirstZ1)+fn:length(twoBowlFirstZ1)+1}">
-                                         ${Tb}
-                                     </td>
-                                     
-                                 </tr>
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(BCW_A)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(BCW_B)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(BCW_G)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${BCW_A}">
+                                <td >
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${BCW_B}">
+                                <td >
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${BCW_G}">
+                                <td >
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
 
-                                </table>
-                            </div>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${BCW_A}">
+                                <td >
+                                    ${in.getParams().get(7)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${BCW_B}">
+                                <td >
+                                    ${in.getParams().get(7)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${BCW_G}">
+                                <td >
+                                    ${in.getParams().get(7)}
+                                </td>
+                            </c:forEach>
+
+                        </tr>
+                        <tr>
+                            <%
+
+                            if(true){
+                                List<Inning> Ab = new ArrayList<Inning>
+                                        ((List<Inning>)request.getAttribute("BCW_A"));
+                                List<Inning> Bb = new ArrayList<Inning>
+                                        ((List<Inning>)request.getAttribute("BCW_B"));
+                                List<Inning> Gb = new ArrayList<Inning>
+                                        ((List<Inning>)request.getAttribute("BCW_G"));
+
+                                int num = 0;
+                                int den = 0;
+                                for(Inning ti : Ab){
+
+                                    if(ti.getParams().get(7).trim().charAt(0) == 'B'){
+                                        num++;
+                                    }
+                                    else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
+                                        den++;
+                                    }
+                                }
+                                pageContext.setAttribute("Ab", num+"/"+den);
+
+                                num = 0;
+                                den = 0;
+                                for(Inning ti : Bb){
+
+                                    if(ti.getParams().get(7).trim().charAt(0) == 'B'){
+                                        num++;
+                                    }
+                                    else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
+                                        den++;
+                                    }
+                                }
+                                pageContext.setAttribute("Bb", num+"/"+den);
+
+                                num = 0;
+                                den = 0;
+                                for(Inning ti : Gb){
+
+                                    if(ti.getParams().get(7).trim().charAt(0) == 'B'){
+                                        num++;
+                                    }
+                                    else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
+                                        den++;
+                                    }
+                                }
+                                pageContext.setAttribute("Gb", num+"/"+den);
+
+                                num = 0;
+                                den = 0;
+                                List<Inning> Tb = new ArrayList<Inning>();
+                                Tb.addAll(Ab);
+                                Tb.addAll(Bb);
+                                for(Inning ti : Tb){
+
+                                    if(ti.getParams().get(7).trim().charAt(0) == 'B'){
+                                        num++;
+                                    }
+                                    else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
+                                        den++;
+                                    }
+                                }
+                                pageContext.setAttribute("Tb", num+"/"+den);
+                            }
+
+
+                         %>
+                            <td colspan="${fn:length(BCW_A)}">
+                             ${Ab}
+                         </td>
+                         <td></td>
+                         <td colspan="${fn:length(BCW_B)}">
+                             ${Bb}
+                         </td>
+                         <td></td>
+                         <td colspan="${fn:length(BCW_G)}">
+                             ${Gb}
+                         </td>
+                     </tr>
+                     <tr>
+                         <td colspan="${fn:length(BCW_A)+fn:length(BCW_B)+1}">
+                             ${Tb}
+                         </td>
+
+                     </tr>
+
+                    </table>
+                </div>
             </div>
-            <c:forEach var="h" begin="0" end="6" varStatus="loop">
-                <c:choose>
-                    <c:when test="${loop.index == 0}">
-                        <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">${headers.get(loop.index)}</h3>
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneBatFirstX)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirstX)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneBatFirstX}">
-                                            <td>
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${twoBowlFirstX}">
-                                            <td>
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundFirst}">
-                                            <td>
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
+                         
+            <!-- First Over -->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">${headers.get(0)}</h3>
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(FO_A)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(FO_B)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(Gr_First)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${FO_A}">
+                                <td>
+                                    ${in.getParams().get(0)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${FO_B}">
+                                <td>
+                                    ${in.getParams().get(0)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${Gr_First}">
+                                <td>
+                                    ${in.getParams().get(0)}
+                                </td>
+                            </c:forEach>
+
+                        </tr>
 
 
-                                    </tr>
-                                    
-                                    
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="20">
+                        <tr class="thead-dark">
+                            <th colspan="12">Sorted:</th>
+                            <th colspan="20">
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" 
-                                                          id="${loop.index}Left">Score calc.</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
-                                            </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirstX"));
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirstX"));
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="${0}Left" 
+                                              id="${0}Left">Score calc.</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="${0}Left">
+                                </div>
+                                <!--<input type="number" id="${0}Left" >-->
+                            </th>
+                        </tr>
+                        <tr>
+                        <%
 
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirst"));
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                        
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="${loop.index}Left" class="A">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="${loop.index}Left" class="B">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="${loop.index}Left" class="G">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(As)}" name="${loop.index}LeftOdd" class="A">
+                        if(true){
+                            final int ind = 0;
+                            List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("FO_A"));
+                            Collections.sort(As, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("As", As);
 
-                                        </td>
-                                        <td>
-                                        <td colspan="${fn:length(Bs)}" name="${loop.index}LeftOdd" class="B">
+                            List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FO_B"));
+                            Collections.sort(Bs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Bs", Bs);
 
-                                        </td>
-                                            
-                                        <td>
-                                        <td colspan="${fn:length(Gs)}" name="${loop.index}LeftOdd" class="G">
-                                                
-                                        </td>
+                            List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("Gr_First"));
+                            Collections.sort(Gs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Gs", Gs);
 
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="${loop.index}Left">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="${loop.index}LeftOdd" class="T"></td>
-                                    </tr>
-                                </table>
+                            List<Inning> ASs = new ArrayList<Inning>();
+                            ASs.addAll(As);
+                            ASs.addAll(Bs);
+                            Collections.sort(ASs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("ASs", ASs);
 
+                        }
+                        %>
+                            <c:forEach var="in" items="${As}">
+                                <td name="${0}Left" class="A">
+                                    ${in.getParams().get(0)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Bs}">
+                                <td name="${0}Left" class="B">
+                                    ${in.getParams().get(0)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gs}">
+                                <td name="${0}Left" class="G">
+                                    ${in.getParams().get(0)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(As)}" name="${0}LeftOdd" class="A">
+
+                            </td>
+                            <td>
+                            <td colspan="${fn:length(Bs)}" name="${0}LeftOdd" class="B">
+
+                            </td>
+
+                            <td>
+                            <td colspan="${fn:length(Gs)}" name="${0}LeftOdd" class="G">
+
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${ASs}">
+                                <td name="${0}Left">
+                                    ${in.getParams().get(0)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(ASs)}" name="${0}LeftOdd" class="T"></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+                         
+            <!-- Last 5/10 Over -->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">${headers.get(2)}</h3>
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(LO_A)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(LO_B)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(LO_G)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${LO_A}">
+                                <td>
+                                    ${in.getParams().get(2)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${LO_B}">
+                                <td >
+                                    ${in.getParams().get(2)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${LO_G}">
+                                <td >
+                                    ${in.getParams().get(2)}
+                                </td>
+                            </c:forEach>
+
+
+                        </tr>
+
+
+                        <tr class="thead-dark">
+                            <th colspan="12">Sorted:</th>
+                            <th colspan="30">
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="${2}Left" id="${2}Left">Score calc.</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="${2}Left">
+                                </div>
+                                <!--<input type="number" id="${2}Left" >-->
+                            </th>
+                        </tr>
+                        <tr>
+                        <%
+
+                        if(true){
+                            final int ind = 2;
+                            List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("LO_A"));
+                            Collections.sort(As, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("As", As);
+
+                            List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("LO_B"));
+                            Collections.sort(Bs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Bs", Bs);
+
+                            List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("LO_G"));
+                            Collections.sort(Gs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Gs", Gs);
+
+                            List<Inning> ASs = new ArrayList<Inning>();
+                            ASs.addAll(As);
+                            ASs.addAll(Bs);
+                            Collections.sort(ASs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("ASs", ASs);
+
+                        }
+                        %>
+                            <c:forEach var="in" items="${As}">
+                                <td  name="${2}Left" class="A">
+                                    ${in.getParams().get(2)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Bs}">
+                                <td name="${2}Left" class="B">
+                                    ${in.getParams().get(2)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gs}">
+                                <td name="${2}Left" class="G">
+                                    ${in.getParams().get(2)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(As)}" name="${2}LeftOdd" class="A"></td>
+                            <td>
+                            <td colspan="${fn:length(Bs)}" name="${2}LeftOdd" class="B"></td>
+                            <td>
+                            <td colspan="${fn:length(Gs)}" name="${2}LeftOdd" class="G"></td>
+
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${ASs}">
+                                <td name="${2}Left">
+                                    ${in.getParams().get(2)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(ASs)}" name="${2}LeftOdd" class="T"></td>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr class="thead-light">
+                            <th colspan="30">Back testing:
+                            <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
                             </div>
-                        </div>
-                    </c:when>
-                    <c:when test="${loop.index == 4 || loop.index == 5}">
+                        </tr>
+                        <tr>
+                            <th colspan="${fn:length(LO_A_bt)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(LO_B_bt)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(LO_G_bt)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${LO_A_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${LO_B_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${LO_G_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${LO_A_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${LO_B_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${LO_G_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                    </table>
+
+                   <table class="table table-bordered">
+                        <tr>
+                            <th colspan="30">${teamOne} Batting First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${LO_TA_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${LO_TA_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${LO_TA_bt}">
+                                <td>
+                                    ${LO_TA_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+
+                        <tr>
+                            <td colspan="30"></td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="30">${teamTwo} Bowling First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${LO_TB_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${LO_TB_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${LO_TB_bt}">
+                                <td>
+                                    ${LO_TB_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                   </table>
+
+                </div>
+            </div>
                         
-                    </c:when>
-                    
-                    
-                    
-                    
-                    
-                 
-                                    
-                    <c:when test="${loop.index == 2}">
-                        <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">${headers.get(loop.index)}</h3>
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneBatFirstX)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirstX)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirstX)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneBatFirstX}">
-                                            <td>
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${twoBowlFirstX}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundFirstX}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        
+            <!-- First Wicket -->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">${headers.get(3)}</h3>
 
-                                    </tr>
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(FW_A)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(FW_B)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(Gr_First)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${FW_A}">
+                                <td >
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${FW_B}">
+                                <td >
+                                    ${in.getParams().get(3)} 
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gr_First}">
+                                <td >
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
 
-                                    
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="30">
+                        </tr>
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">Score calc.</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
-                                            </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirstX"));
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirstX"));
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
 
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirstX"));
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                        
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td  name="${loop.index}Left" class="A">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="${loop.index}Left" class="B">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="${loop.index}Left" class="G">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(oneBatFirstX)}" name="${loop.index}LeftOdd" class="A"></td>
-                                        <td>
-                                        <td colspan="${fn:length(twoBowlFirstX)}" name="${loop.index}LeftOdd" class="B"></td>
-                                        <td>
-                                        <td colspan="${fn:length(groundFirstX)}" name="${loop.index}LeftOdd" class="G"></td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="${loop.index}Left">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="${loop.index}LeftOdd" class="T"></td>
-                                    </tr>
-                                </table>
-                                        
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                        <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(oneBatFirstX_bt)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirstX_bt)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirstX_bt)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneBatFirstX_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${twoBowlFirstX_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundFirstX_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneBatFirstX_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${twoBowlFirstX_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundFirstX_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                               <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamOne} Batting First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoA_bt}">
-                                            <td>
-                                                ${twoA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamTwo} Bowling First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoB_bt}">
-                                            <td>
-                                                ${twoB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
-                                
+
+                        <tr class="thead-dark">
+                            <th colspan="12">Sorted:</th>
+                            <th colspan="20">
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="${3}Left" id="${3}Left">Score calc.</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="${3}Left">
+                                </div>
+                                <!--<input type="number" id="${3}Left" >-->
+                            </th>
+                        </tr>
+                        <tr>
+                        <%
+
+                        if(true){
+                            final int ind = 3;
+                            List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("FW_A"));
+                            As.removeIf(new Predicate<Inning>() {
+                                @Override
+                                public boolean test(Inning t) {
+                                    return t.getParams().get(ind).contains("D/L");
+                                }
+                            });
+                            Collections.sort(As, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("As", As);
+
+                            List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FW_B"));
+                            Bs.removeIf(new Predicate<Inning>() {
+                                @Override
+                                public boolean test(Inning t) {
+                                    return t.getParams().get(ind).contains("D/L");
+                                }
+                            });
+                            Collections.sort(Bs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Bs", Bs);
+
+                            List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("Gr_First"));
+                            Gs.removeIf(new Predicate<Inning>() {
+                                @Override
+                                public boolean test(Inning t) {
+                                    return t.getParams().get(ind).contains("D/L");
+                                }
+                            });
+                            Collections.sort(Gs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Gs", Gs);
+
+                            List<Inning> ASs = new ArrayList<Inning>();
+                            ASs.addAll(As);
+                            ASs.addAll(Bs);
+                            Collections.sort(ASs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("ASs", ASs);
+                        }
+                        %>
+                            <c:forEach var="in" items="${As}">
+                                <td name="${3}Left" class="A">
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Bs}">
+                                <td name="${3}Left" class="B">
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gs}">
+                                <td name="${3}Left" class="G">
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                                <td colspan="${fn:length(As)}" name="${3}LeftOdd" class="A">
+
+                                </td>
+                            <td>
+                                <td colspan="${fn:length(Bs)}" name="${3}LeftOdd" class="B">
+
+                                </td>
+                            <td>
+                                <td colspan="${fn:length(Gs)}" name="${3}LeftOdd" class="G">
+
+                                </td>
+
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${ASs}">
+                                <td name="${3}Left">
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(ASs)}" name="${3}LeftOdd" class="T"></td>
+                        </tr>
+                    </table>
+                    <table class="table table-bordered">
+                        <tr class="thead-light">
+                            <th colspan="30">Back testing:
+                                <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
                             </div>
-                        </div>
+                        </tr>
+                        <tr>
+                            <th colspan="${fn:length(FW_A_bt)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(FW_B_bt)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(FW_G_bt)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FW_A_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
 
-                    </c:when>
-                    
-                    <c:when test="${loop.index==3}">
-                        <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">${headers.get(loop.index)}</h3>
+                            <td></td>
 
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneBatFirstFW)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirstFW)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneBatFirstFW}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${twoBowlFirstFW}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)} 
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${groundFirst}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        
-                                    </tr>
-                             
-                                      
-                           
-                                    <tr>
-                                     <%
-                                     
-                                        if(true){
-                                            List<Inning> Ab = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("oneBatFirstFW"));
-                                            List<Inning> Bb = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("twoBowlFirstFW"));
-                                            List<Inning> Gb = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("groundFirst"));
-                                            
-                                            int num = 0;
-                                            int den = 0;
-                                            for(Inning ti : Ab){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Ab", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            for(Inning ti : Bb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Bb", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            for(Inning ti : Gb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Gb", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            List<Inning> Tb = new ArrayList<Inning>();
-                                            Tb.addAll(Ab);
-                                            Tb.addAll(Bb);
-                                            for(Inning ti : Tb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Tb", num+"/"+den);
-                                        }
-                                     
-                                     
-                                     %>
-                                     
-                                     <td colspan="${fn:length(oneBatFirstFW)}">
-                                         ${Ab}
-                                     </td>
-                                     <td></td>
-                                     <td colspan="${fn:length(twoBowlFirstFW)}">
-                                         ${Bb}
-                                     </td>
-                                     <td></td>
-                                     <td colspan="${fn:length(groundFirst)}">
-                                         ${Gb}
-                                     </td>
-                                 </tr>
-                                 <tr>
-                                     <td colspan="${fn:length(oneBatFirstFW)+fn:length(twoBowlFirstFW)+1}">
-                                         ${Tb}
-                                     </td>
-                                     
-                                 </tr>
-                                    
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="20">
+                            <c:forEach var="entry" items="${FW_B_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">Score calc.</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
-                                            </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirstFW"));
-                                        As.removeIf(new Predicate<Inning>() {
-                                            @Override
-                                            public boolean test(Inning t) {
-                                                return t.getParams().get(ind).contains("D/L");
-                                            }
-                                        });
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirstFW"));
-                                        Bs.removeIf(new Predicate<Inning>() {
-                                            @Override
-                                            public boolean test(Inning t) {
-                                                return t.getParams().get(ind).contains("D/L");
-                                            }
-                                        });
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
+                            <td></td>
 
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirst"));
-                                        Gs.removeIf(new Predicate<Inning>() {
-                                            @Override
-                                            public boolean test(Inning t) {
-                                                return t.getParams().get(ind).contains("D/L");
-                                            }
-                                        });
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="${loop.index}Left" class="A">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="${loop.index}Left" class="B">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="${loop.index}Left" class="G">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                            <td colspan="${fn:length(As)}" name="${loop.index}LeftOdd" class="A">
+                            <c:forEach var="entry" items="${FW_G_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FW_A_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
 
-                                            </td>
-                                        <td>
-                                            <td colspan="${fn:length(Bs)}" name="${loop.index}LeftOdd" class="B">
+                            <td></td>
 
-                                            </td>
-                                        <td>
-                                            <td colspan="${fn:length(Gs)}" name="${loop.index}LeftOdd" class="G">
-                                                
-                                            </td>
+                            <c:forEach var="entry" items="${FW_B_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
 
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="${loop.index}Left">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="${loop.index}LeftOdd" class="T"></td>
-                                    </tr>
-                                </table>
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(oneBatFirst3_bt)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirst3_bt)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirst3_bt)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneBatFirst3_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${twoBowlFirst3_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundFirst3_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneBatFirst3_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${twoBowlFirst3_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundFirst3_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamOne} Batting First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeA_bt}">
-                                            <td>
-                                                ${threeA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamTwo} Bowling First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeB_bt}">
-                                            <td>
-                                                ${threeB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
-                            
-                                        
-                                
+                            <td></td>
 
+                            <c:forEach var="entry" items="${FW_G_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="30">${teamOne} Batting First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FW_TA_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FW_TA_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FW_TA_bt}">
+                                <td>
+                                    ${FW_TA_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+
+                        <tr>
+                            <td colspan="30"></td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="30">${teamTwo} Bowling First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FW_TB_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FW_TB_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FW_TB_bt}">
+                                <td>
+                                    ${FW_TB_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                   </table>
+
+
+
+
+                </div>
+            </div>
+
+            <!-- Total runs -->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">${headers.get(6)}</h3>
+
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(TR_A)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(TR_B)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(TR_G)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${TR_A}">
+                                <td >
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${TR_B}">
+                                <td >
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${TR_G}">
+                                <td >
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+
+                        </tr>
+
+                        <tr class="thead-dark">
+                            <th colspan="12">Sorted:</th>
+                            <th colspan="20">
+
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="${6}Left" id="${6}Left">Score calc.</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="${6}Left">
+                                </div>
+                                <!--<input type="number" id="${6}Left" >-->
+                            </th>
+                        </tr>
+                        <tr>
+                        <%
+
+                        if(true){
+                            final int ind = 6;
+                            List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("TR_A"));
+                            As.removeIf(new Predicate<Inning>() {
+                                @Override
+                                public boolean test(Inning t) {
+                                    return t.getParams().get(ind).contains("D/L");
+                                }
+                            });
+                            Collections.sort(As, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("As", As);
+
+                            List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("TR_B"));
+                            Bs.removeIf(new Predicate<Inning>() {
+                                @Override
+                                public boolean test(Inning t) {
+                                    return t.getParams().get(ind).contains("D/L");
+                                }
+                            });
+                            Collections.sort(Bs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Bs", Bs);
+
+                            List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("TR_G"));
+                            Gs.removeIf(new Predicate<Inning>() {
+                                @Override
+                                public boolean test(Inning t) {
+                                    return t.getParams().get(ind).contains("D/L");
+                                }
+                            });
+                            Collections.sort(Gs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Gs", Gs);
+
+                            List<Inning> ASs = new ArrayList<Inning>();
+                            ASs.addAll(As);
+                            ASs.addAll(Bs);
+                            Collections.sort(ASs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("ASs", ASs);
+                        }
+                        %>
+                            <c:forEach var="in" items="${As}">
+                                <td name="${6}Left" class="A">
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Bs}">
+                                <td name="${6}Left" class="B">
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gs}">
+                                <td name="${6}Left" class="G">
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                                <td colspan="${fn:length(As)}" name="${6}LeftOdd" class="A">
+
+                                </td>
+                            <td>
+                                <td colspan="${fn:length(Bs)}" name="${6}LeftOdd" class="B">
+
+                                </td>
+                            <td>
+                                <td colspan="${fn:length(Gs)}" name="${6}LeftOdd" class="G">
+
+                                </td>
+
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${ASs}">
+                                <td name="${6}Left">
+                                    ${in.getParams().get(6)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(ASs)}" name="${6}LeftOdd" class="T"></td>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr class="thead-light">
+                            <th colspan="30">Back testing:
+                                <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
                             </div>
-                        </div>
+                        </tr>
+                        <tr>
+                            <th colspan="${fn:length(TR_A_bt)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(TR_B_bt)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(TR_G_bt)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${TR_A_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
 
-                    </c:when>
-                    
-                    <c:when test="${loop.index==6}">
-                        <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">${headers.get(loop.index)}</h3>
+                            <td></td>
 
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneBatFirstZ)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirstZ)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirstZ)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneBatFirstZ}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${twoBowlFirstZ}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${groundFirstZ}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        
-                                    </tr>
-                             
-                                      
-                            <tr class="thead-dark">
-                                        <th colspan = 15> <center>Winner</center>  </th>
-                                        <th>
-                                        
-                                    </tr>
-                                    
+                            <c:forEach var="entry" items="${TR_B_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
 
-                                    <tr>
-                                        <c:forEach var="in" items="${oneBatFirstZ}">
-                                            <td name="${loop.index}Left">
-                                                ${in.getParams().get(loop.index +1)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${twoBowlFirstZ}">
-                                            <td name="${loop.index}Left">
-                                                ${in.getParams().get(loop.index +1)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundFirstZ}">
-                                            <td>
-                                                ${in.getParams().get(loop.index +1)}
-                                            </td>
-                                        </c:forEach>
+                            <td></td>
+
+                            <c:forEach var="entry" items="${TR_G_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${TR_A_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${TR_B_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${TR_G_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="30">${teamOne} Batting First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${TR_TA_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${TR_TA_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${TR_TA_bt}">
+                                <td>
+                                    ${TR_TA_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+
+                        <tr>
+                            <td colspan="30"></td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="30">${teamTwo} Bowling First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${TR_TB_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${TR_TB_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${TR_TB_bt}">
+                                <td>
+                                    ${TR_TB_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                   </table>
+
+                </div>
+            </div>
+
+            <!-- First 6/10 Overs -->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">${headers.get(1)}</h3>
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(FX_A)}">${teamOne} Batting First </th>
+                            <th>
+                            <th colspan="${fn:length(FX_B)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(Gr_First)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${FX_A}">
+                                <td >
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${FX_B}">
+                                <td >
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${Gr_First}">
+                                <td >
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
 
 
-                                    </tr>
-                                    <tr>
-                                     <%
-                                     
-                                        if(true){
-                                            List<Inning> Ab = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("oneBatFirstZ"));
-                                            List<Inning> Bb = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("twoBowlFirstZ"));
-                                            List<Inning> Gb = new ArrayList<Inning>
-                                                    ((List<Inning>)request.getAttribute("groundFirstZ"));
-                                            
-                                            int num = 0;
-                                            int den = 0;
-                                            for(Inning ti : Ab){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Ab", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            for(Inning ti : Bb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Bb", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            for(Inning ti : Gb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Gb", num+"/"+den);
-                                            
-                                            num = 0;
-                                            den = 0;
-                                            List<Inning> Tb = new ArrayList<Inning>();
-                                            Tb.addAll(Ab);
-                                            Tb.addAll(Bb);
-                                            for(Inning ti : Tb){
-                                                if(ti.getParams().get(6).contains("D/L")){
-                                                    continue;
-                                                }
-                                                if(ti.getParams().get(7).trim().charAt(0) == 'B'){
-                                                    num++;
-                                                }
-                                                else if(ti.getParams().get(7).trim().charAt(0) == 'C'){
-                                                    den++;
-                                                }
-                                            }
-                                            pageContext.setAttribute("Tb", num+"/"+den);
-                                        }
-                                     
-                                     
-                                     %>
-                                     
-                                     <td colspan="${fn:length(oneBatFirstZ)}">
-                                         ${Ab}
-                                     </td>
-                                     <td></td>
-                                     <td colspan="${fn:length(twoBowlFirstZ)}">
-                                         ${Bb}
-                                     </td>
-                                     <td></td>
-                                     <td colspan="${fn:length(groundFirstZ)}">
-                                         ${Gb}
-                                     </td>
-                                 </tr>
-                                 <tr>
-                                     <td colspan="${fn:length(oneBatFirstZ)+fn:length(twoBowlFirstZ)+1}">
-                                         ${Tb}
-                                     </td>
-                                     
-                                 </tr>
-                                    
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="20">
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" id="${loop.index}Left">Score calc.</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
-                                            </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirstZ"));
-                                        As.removeIf(new Predicate<Inning>() {
-                                            @Override
-                                            public boolean test(Inning t) {
-                                                return t.getParams().get(ind).contains("D/L");
-                                            }
-                                        });
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirstZ"));
-                                        Bs.removeIf(new Predicate<Inning>() {
-                                            @Override
-                                            public boolean test(Inning t) {
-                                                return t.getParams().get(ind).contains("D/L");
-                                            }
-                                        });
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
+                        </tr>
 
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirstZ"));
-                                        Gs.removeIf(new Predicate<Inning>() {
-                                            @Override
-                                            public boolean test(Inning t) {
-                                                return t.getParams().get(ind).contains("D/L");
-                                            }
-                                        });
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="${loop.index}Left" class="A">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="${loop.index}Left" class="B">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="${loop.index}Left" class="G">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                            <td colspan="${fn:length(As)}" name="${loop.index}LeftOdd" class="A">
 
-                                            </td>
-                                        <td>
-                                            <td colspan="${fn:length(Bs)}" name="${loop.index}LeftOdd" class="B">
+                        <tr class="thead-dark">
+                            <th colspan="12">Sorted:</th>
+                            <th colspan="20">
 
-                                            </td>
-                                        <td>
-                                            <td colspan="${fn:length(Gs)}" name="${loop.index}LeftOdd" class="G">
-                                                
-                                            </td>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="${1}Left" 
+                                              id="${1}Left">Score calc.</span>
+                                    </div>
+                                    <input type="number" class="form-control" name="${1}Left">
+                                </div>
+                                <!--<input type="number" id="${1}Left" >-->
+                            </th>
+                        </tr>
+                        <tr>
+                        <%
 
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="${loop.index}Left">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="${loop.index}LeftOdd" class="T"></td>
-                                    </tr>
-                                </table>
-                                        
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(oneBatFirstZ_bt)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirstZ_bt)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirstZ_bt)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneBatFirstZ_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${twoBowlFirstZ_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundFirstZ_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneBatFirstZ_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${twoBowlFirstZ_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundFirstZ_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamOne} Batting First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${totA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${totA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${totA_bt}">
-                                            <td>
-                                                ${totA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamTwo} Bowling First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${totB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${totB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${totB_bt}">
-                                            <td>
-                                                ${totB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
+                        if(true){
+                            final int ind = 1;
+                            List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("FX_A"));
+                            Collections.sort(As, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("As", As);
 
+                            List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FX_B"));
+                            Collections.sort(Bs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Bs", Bs);
+
+                            List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("Gr_First"));
+                            Collections.sort(Gs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Gs", Gs);
+
+                            List<Inning> ASs = new ArrayList<Inning>();
+                            ASs.addAll(As);
+                            ASs.addAll(Bs);
+                            Collections.sort(ASs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("ASs", ASs);
+
+                        }
+                        %>
+                            <c:forEach var="in" items="${As}">
+                                <td name="${1}Left" class="A">
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Bs}">
+                                <td name="${1}Left" class="B">
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gs}">
+                                <td name="${1}Left" class="G">
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(As)}" name="${1}LeftOdd" class="A">
+
+                            </td>
+                            <td>
+                            <td colspan="${fn:length(Bs)}" name="${1}LeftOdd" class="B">
+
+                            </td>
+
+                            <td>
+                            <td colspan="${fn:length(Gs)}" name="${1}LeftOdd" class="G">
+
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${ASs}">
+                                <td name="${1}Left">
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(ASs)}" name="${1}LeftOdd" class="T"></td>
+                        </tr>
+                    </table>
+                    <table class="table table-bordered">
+                        <tr class="thead-light">
+                            <th colspan="30">Back testing:
+                                <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
                             </div>
-                        </div>
+                        </tr>
+                        <tr>
+                            <th colspan="${fn:length(FX_A_bt)}">${teamOne} Batting First</th>
+                            <th>
+                            <th colspan="${fn:length(FX_B_bt)}">${teamTwo} Bowling First</th>
+                            <th>
+                            <th colspan="${fn:length(FX_G_bt)}">${groundName} First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FX_A_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
 
-                    </c:when>
-                    <c:otherwise>
-                        <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">${headers.get(loop.index)}</h3>
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(oneBatFirst)}">${teamOne} Batting First </th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirst)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirst)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${oneBatFirst}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${twoBowlFirst}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundFirst}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FX_B_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FX_G_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FX_A_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FX_B_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FX_G_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="30">${teamOne} Batting First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FX_TA_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FX_TA_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FX_TA_bt}">
+                                <td>
+                                    ${FX_TA_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+
+                        <tr>
+                            <td colspan="30"></td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="30">${teamTwo} Bowling First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FX_TB_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FX_TB_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FX_TB_bt}">
+                                <td>
+                                    ${FX_TB_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                   </table>
 
 
-                                    </tr>
-                                    
-                                    
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="20">
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left" 
-                                                          id="${loop.index}Left">Score calc.</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left">
-                                            </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBatFirst"));
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBowlFirst"));
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
-
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundFirst"));
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                        
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="${loop.index}Left" class="A">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="${loop.index}Left" class="B">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="${loop.index}Left" class="G">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(As)}" name="${loop.index}LeftOdd" class="A">
-
-                                        </td>
-                                        <td>
-                                        <td colspan="${fn:length(Bs)}" name="${loop.index}LeftOdd" class="B">
-
-                                        </td>
-                                            
-                                        <td>
-                                        <td colspan="${fn:length(Gs)}" name="${loop.index}LeftOdd" class="G">
-                                                
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="${loop.index}Left">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="${loop.index}LeftOdd" class="T"></td>
-                                    </tr>
-                                </table>
-                            <c:if test="${loop.index == 1}">
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(oneBatFirst1_bt)}">${teamOne} Batting First</th>
-                                        <th>
-                                        <th colspan="${fn:length(twoBowlFirst1_bt)}">${teamTwo} Bowling First</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundFirst1_bt)}">${groundName} First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneBatFirst1_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${twoBowlFirst1_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundFirst1_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneBatFirst1_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${twoBowlFirst1_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundFirst1_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamOne} Batting First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneA_bt}">
-                                            <td>
-                                                ${oneA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamTwo} Bowling First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneB_bt}">
-                                            <td>
-                                                ${oneB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
-                            </c:if>
-                                        
-                            
-
-                            </div>
-                        </div>
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-            
-            
+                </div>
+            </div>
+     
+                        
             <h2>Second Inning</h2>
 
-
-            <c:forEach var="h" begin="0" end="6" varStatus="loop">
-                <c:choose>
-                    <c:when test="${loop.index == 1}">
-                        <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">${headers.get(loop.index)}</h3>
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(twoBatSecond)}">${teamTwo} Batting Second</th>
-                                        <th>
-                                        <th colspan="${fn:length(oneBowlSecond)}">${teamOne} Bowling Second</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundSecond)}">${groundName} Second</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${twoBatSecond}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                            
-                                          
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${oneBowlSecond}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundSecond}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        
+            <!-- First 6/10 Overs -->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">${headers.get(1)}</h3>
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(FXS_A)}">${teamTwo} Batting Second</th>
+                            <th>
+                            <th colspan="${fn:length(FXS_B)}">${teamOne} Bowling Second</th>
+                            <th>
+                            <th colspan="${fn:length(FXS_G)}">${groundName} Second</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${FXS_A}">
+                                <td >
+                                    ${in.getParams().get(1)}
+                                </td>
 
 
-                                    </tr>
-                                    
-                                    
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="30">
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${FXS_B}">
+                                <td >
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${FXS_G}">
+                                <td >
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left2" id="${loop.index}Left2">@</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left2">
-                                            </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBatSecond"));
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBowlSecond"));
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
 
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundSecond"));
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                        
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="${loop.index}Left2" class="A">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="${loop.index}Left2" class="B">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="${loop.index}Left2"  class="G">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(As)}" name="${loop.index}Left2Odd"  class="A">
 
-                                        </td>
-                                        <td>
-                                        <td colspan="${fn:length(Bs)}" name="${loop.index}Left2Odd" class="B">
+                        </tr>
 
-                                        </td>
 
-                                        <td>
-                                        <td colspan="${fn:length(Gs)}" name="${loop.index}Left2Odd"  class="G">
-                                                
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="${loop.index}Left2">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="${loop.index}Left2Odd"  class="T">
-                                    </tr>
-                                </table>
+                        <tr class="thead-dark">
+                            <th colspan="12">Sorted:</th>
+                            <th colspan="30">
 
-                                        
-                                        
-                            <c:if test="${loop.index == 1}">
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(twoBatSecond1_bt)}">${teamTwo} Batting Second</th>
-                                        <th>
-                                        <th colspan="${fn:length(oneBowlSecond1_bt)}">${teamOne} Bowling Second</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundSecond1_bt)}">${groundName} Second</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoBatSecond1_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${oneBowlSecond1_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundSecond1_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoBatSecond1_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${oneBowlSecond1_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundSecond1_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamTwo} Batting Second</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneSecondA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneSecondA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneSecondA_bt}">
-                                            <td>
-                                                ${oneSecondA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamOne} Bowling Second</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneSecondB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneSecondB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${oneSecondB_bt}">
-                                            <td>
-                                                ${oneSecondB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
-                                    
-                            </c:if>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="${1}Left2" id="${1}Left2">@</span>
                                     </div>
+                                    <input type="number" class="form-control" name="${1}Left2">
+                                </div>
+                                <!--<input type="number" id="${1}Left" >-->
+                            </th>
+                        </tr>
+                        <tr>
+                        <%
+
+                        if(true){
+                            final int ind = 1;
+                            List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("FXS_A"));
+                            Collections.sort(As, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("As", As);
+
+                            List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FXS_B"));
+                            Collections.sort(Bs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Bs", Bs);
+
+                            List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FXS_G"));
+                            Collections.sort(Gs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Gs", Gs);
+
+                            List<Inning> ASs = new ArrayList<Inning>();
+                            ASs.addAll(As);
+                            ASs.addAll(Bs);
+                            Collections.sort(ASs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("ASs", ASs);
+
+                        }
+                        %>
+                            <c:forEach var="in" items="${As}">
+                                <td name="${1}Left2" class="A">
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Bs}">
+                                <td name="${1}Left2" class="B">
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gs}">
+                                <td name="${1}Left2"  class="G">
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(As)}" name="${1}Left2Odd"  class="A">
+
+                            </td>
+                            <td>
+                            <td colspan="${fn:length(Bs)}" name="${1}Left2Odd" class="B">
+
+                            </td>
+
+                            <td>
+                            <td colspan="${fn:length(Gs)}" name="${1}Left2Odd"  class="G">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${ASs}">
+                                <td name="${1}Left2">
+                                    ${in.getParams().get(1)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(ASs)}" name="${1}Left2Odd"  class="T">
+                        </tr>
+                    </table>
+
+
+
+                    <table class="table table-bordered">
+                        <tr class="thead-light">
+                            <th colspan="30">Back testing:
+                                <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </div>
+                        </tr>
+                        <tr>
+                            <th colspan="${fn:length(FXS_A_bt)}">${teamTwo} Batting Second</th>
+                            <th>
+                            <th colspan="${fn:length(FXS_B_bt)}">${teamOne} Bowling Second</th>
+                            <th>
+                            <th colspan="${fn:length(FXS_G_bt)}">${groundName} Second</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FXS_A_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FXS_B_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FXS_G_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FXS_A_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FXS_B_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FXS_G_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="30">${teamTwo} Batting Second</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FXS_TA_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FXS_TA_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FXS_TA_bt}">
+                                <td>
+                                    ${FXS_TA_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+
+                        <tr>
+                            <td colspan="30"></td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="30">${teamOne} Bowling Second</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FXS_TB_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FXS_TB_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FXS_TB_bt}">
+                                <td>
+                                    ${FXS_TB_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                   </table>
+
                         </div>
-                            </c:when>
-                                
-                            
-              
-                            <c:when test ="${loop.index == 3}">
-                            <div class="row" >
-                            <div class ="col-12">
-                                <h3 class="card-title">${headers.get(loop.index)}</h3>
-                                <table class="table table-bordered">
-                                    <tr class="thead-dark">
-                                        <th colspan="${fn:length(twoBatSecond1)}">${teamTwo} Batting Second</th>
-                                        <th>
-                                        <th colspan="${fn:length(oneBowlSecond1)}">${teamOne} Bowling Second</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundSecond)}">${groundName} Second</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${twoBatSecond1}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                            
-                                          
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${oneBowlSecond1}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                            <c:forEach var="in" items="${groundSecond}">
-                                            <td >
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        
+            </div>
+            
+            <!-- First Wicket -->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">${headers.get(3)}</h3>
+                    <table class="table table-bordered">
+                        <tr class="thead-dark">
+                            <th colspan="${fn:length(FWS_A)}">${teamTwo} Batting Second</th>
+                            <th>
+                            <th colspan="${fn:length(FWS_B)}">${teamOne} Bowling Second</th>
+                            <th>
+                            <th colspan="${fn:length(FWS_G)}">${groundName} Second</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${FWS_A}">
+                                <td >
+                                    ${in.getParams().get(3)}
+                                </td>
 
 
-                                    </tr>
-                                    
-                                    <tr class="thead-dark">
-                                        <th colspan="12">Sorted:</th>
-                                        <th colspan="30">
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${FWS_B}">
+                                <td >
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                                <c:forEach var="in" items="${FWS_G}">
+                                <td >
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
 
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" name="${loop.index}Left2" id="${loop.index}Left2">@</span>
-                                                </div>
-                                                <input type="number" class="form-control" name="${loop.index}Left2">
-                                            </div>
-                                            <!--<input type="number" id="${loop.index}Left" >-->
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                    <%
-                                        
-                                    if(true){
-                                        final int ind = ((LoopTagStatus)pageContext.getAttribute("loop")).getIndex();
-                                        List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("twoBatSecond1"));
-                                        Collections.sort(As, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("As", As);
-                                        
-                                        List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("oneBowlSecond1"));
-                                        Collections.sort(Bs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Bs", Bs);
 
-                                        List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("groundSecond"));
-                                        Collections.sort(Gs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("Gs", Gs);
-                                        
-                                        List<Inning> ASs = new ArrayList<Inning>();
-                                        ASs.addAll(As);
-                                        ASs.addAll(Bs);
-                                        Collections.sort(ASs, new Comparator<Inning>() {
-                                            @Override
-                                            public int compare(Inning o1, Inning o2) {
-                                                return Integer.parseInt(o1.getParams().get(ind)) 
-                                                        - Integer.parseInt(o2.getParams().get(ind));
-                                            }
-                                        });
-                                        pageContext.setAttribute("ASs", ASs);
-                                        
-                                    }
-                                    %>
-                                        <c:forEach var="in" items="${As}">
-                                            <td name="${loop.index}Left2" class="A">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Bs}">
-                                            <td name="${loop.index}Left2" class="B">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                        <td>
-                                        <c:forEach var="in" items="${Gs}">
-                                            <td name="${loop.index}Left2"  class="G">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(As)}" name="${loop.index}Left2Odd"  class="A">
 
-                                        </td>
-                                        <td>
-                                        <td colspan="${fn:length(Bs)}" name="${loop.index}Left2Odd" class="B">
+                        </tr>
 
-                                        </td>
+                        <tr class="thead-dark">
+                            <th colspan="12">Sorted:</th>
+                            <th colspan="30">
 
-                                        <td>
-                                        <td colspan="${fn:length(Gs)}" name="${loop.index}Left2Odd"  class="G">
-                                                
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="in" items="${ASs}">
-                                            <td name="${loop.index}Left2">
-                                                ${in.getParams().get(loop.index)}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="${fn:length(ASs)}" name="${loop.index}Left2Odd"  class="T">
-                                    </tr>
-                                </table>
-                                    <c:if test="${loop.index == 3}">
-                                <table class="table table-bordered">
-                                    <tr class="thead-light">
-                                        <th colspan="30">Back testing:
-                                            <div class="btn btn-light" onclick="collapseSwitch(this)">
-                                            <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
-                                            <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
-                                            <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
-                                          </svg>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="${fn:length(twoBatSecond3_bt)}">${teamTwo} Batting Second</th>
-                                        <th>
-                                        <th colspan="${fn:length(oneBowlSecond3_bt)}">${teamOne} Bowling Second</th>
-                                        <th>
-                                        <th colspan="${fn:length(groundSecond3_bt)}">${groundName} Second</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoBatSecond3_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${oneBowlSecond3_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundSecond3_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${twoBatSecond3_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${oneBowlSecond3_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                            
-                                        <td></td>
-                                        
-                                        <c:forEach var="entry" items="${groundSecond3_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                </table>
-                                    
-                                <table class="table table-bordered">
-                                    <tr>
-                                        <th colspan="30">${teamOne} Batting First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeSecondA_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeSecondA_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeSecondA_bt}">
-                                            <td>
-                                                ${threeSecondA_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <td colspan="30"></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th colspan="30">${teamTwo} Bowling First</th>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeSecondB_bt}">
-                                            <td>
-                                                ${entry.key}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeSecondB_bt}">
-                                            <td>
-                                                ${entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                                    <tr>
-                                        <c:forEach var="entry" items="${threeSecondB_bt}">
-                                            <td>
-                                                ${threeSecondB_bt.get("N") - entry.value}
-                                            </td>
-                                        </c:forEach>
-                                    </tr>
-                               </table>
-                            </c:if>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" name="${3}Left2" id="${3}Left2">@</span>
                                     </div>
+                                    <input type="number" class="form-control" name="${3}Left2">
+                                </div>
+                                <!--<input type="number" id="${3}Left" >-->
+                            </th>
+                        </tr>
+                        <tr>
+                        <%
+
+                        if(true){
+                            final int ind = 3;
+                            List<Inning> As = new ArrayList<Inning>((List<Inning>)request.getAttribute("FWS_A"));
+                            Collections.sort(As, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("As", As);
+
+                            List<Inning> Bs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FWS_B"));
+                            Collections.sort(Bs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Bs", Bs);
+
+                            List<Inning> Gs = new ArrayList<Inning>((List<Inning>)request.getAttribute("FWS_G"));
+                            Collections.sort(Gs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("Gs", Gs);
+
+                            List<Inning> ASs = new ArrayList<Inning>();
+                            ASs.addAll(As);
+                            ASs.addAll(Bs);
+                            Collections.sort(ASs, new Comparator<Inning>() {
+                                @Override
+                                public int compare(Inning o1, Inning o2) {
+                                    return Integer.parseInt(o1.getParams().get(ind)) 
+                                            - Integer.parseInt(o2.getParams().get(ind));
+                                }
+                            });
+                            pageContext.setAttribute("ASs", ASs);
+
+                        }
+                        %>
+                            <c:forEach var="in" items="${As}">
+                                <td name="${3}Left2" class="A">
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Bs}">
+                                <td name="${3}Left2" class="B">
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                            <td>
+                            <c:forEach var="in" items="${Gs}">
+                                <td name="${3}Left2"  class="G">
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(As)}" name="${3}Left2Odd"  class="A">
+
+                            </td>
+                            <td>
+                            <td colspan="${fn:length(Bs)}" name="${3}Left2Odd" class="B">
+
+                            </td>
+
+                            <td>
+                            <td colspan="${fn:length(Gs)}" name="${3}Left2Odd"  class="G">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <c:forEach var="in" items="${ASs}">
+                                <td name="${3}Left2">
+                                    ${in.getParams().get(3)}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <td colspan="${fn:length(ASs)}" name="${3}Left2Odd"  class="T">
+                        </tr>
+                    </table>
+                    <table class="table table-bordered">
+                        <tr class="thead-light">
+                            <th colspan="30">Back testing:
+                                <div class="btn btn-light" onclick="collapseSwitch(this)">
+                                <svg class="bi bi-arrow-down-up" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M11 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>
+                                <path fill-rule="evenodd" d="M10.646 2.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L11 3.707 8.354 6.354a.5.5 0 1 1-.708-.708l3-3zm-9 7a.5.5 0 0 1 .708 0L5 12.293l2.646-2.647a.5.5 0 1 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z"/>
+                                <path fill-rule="evenodd" d="M5 2.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V3a.5.5 0 0 1 .5-.5z"/>
+                              </svg>
+                            </div>
+                        </tr>
+                        <tr>
+                            <th colspan="${fn:length(FWS_A_bt)}">${teamTwo} Batting Second</th>
+                            <th>
+                            <th colspan="${fn:length(FWS_B_bt)}">${teamOne} Bowling Second</th>
+                            <th>
+                            <th colspan="${fn:length(FWS_G_bt)}">${groundName} Second</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FWS_A_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FWS_B_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FWS_G_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FWS_A_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FWS_B_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+
+                            <td></td>
+
+                            <c:forEach var="entry" items="${FWS_G_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <th colspan="30">${teamOne} Batting First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FWS_TA_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FWS_TA_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FWS_TA_bt}">
+                                <td>
+                                    ${FWS_TA_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+
+                        <tr>
+                            <td colspan="30"></td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="30">${teamTwo} Bowling First</th>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FWS_TB_bt}">
+                                <td>
+                                    ${entry.key}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FWS_TB_bt}">
+                                <td>
+                                    ${entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                        <tr>
+                            <c:forEach var="entry" items="${FWS_TB_bt}">
+                                <td>
+                                    ${FWS_TB_bt.get("N") - entry.value}
+                                </td>
+                            </c:forEach>
+                        </tr>
+                   </table>
                         </div>
-                    
-                                </c:when>
-                                        
-                            
-                            
-                    <c:otherwise>
+            </div>
 
-                    </c:otherwise>
-                </c:choose>
-            </c:forEach>
-
+           
         </div>
 
 
@@ -3221,53 +2938,6 @@
 
 
         <script type="text/javascript">
-//            $(document).ready(function () {
-//
-//                var classes = ["-Left","-1Left", "0Left", "1Left", "2Left", "3Left", "4Left", "5Left", "6Left", 
-//                    "1Left2", "3Left2", "0Gr", "1Gr", "2Gr", "3Gr", "4Gr", "5Gr", "6Gr", "1Gr2", "3Gr2"];
-//
-//                var i;
-//                for (i = 0; i < classes.length; i++) {
-//                    var nam = classes[i];
-//
-//                    var ind = 0;
-//
-//                    $('td[name="' + nam + 'Odd"]').each(function (i, obj) {
-//                        
-//                        if($('td[name="' + nam + '"]').eq(i).text().includes("D/L")){
-//                            return;
-//                        }
-//                        
-//                        var val = parseInt($('td[name="' + nam + '"]').eq(i).text());
-//
-//
-//
-//
-//                        var num = 0;
-//                        var den = 1;
-//
-//                        $('td[name="' + nam + '"]').each(function () {
-//                            if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
-//
-//                            } else if (parseInt($(this).text()) >= parseInt(val)) {
-//                                num++;
-//                            } else if (parseInt($(this).text()) < parseInt(val)) {
-////                                alert($(this).text() +" :: "+ val);
-//                                den++;
-//                            }
-//
-//                        });
-//
-//                        $(this).text(den.toString() + "/" + num.toString());
-//
-//
-//
-//
-//
-//                    });
-//
-//                }
-//            });
 
             $(document).ready(function () {
                 $("td, th").not('.A').not('.B').not('.G').not('.T').each(function(){
@@ -3406,6 +3076,7 @@
                 t1_rows.fadeToggle(1000);
                 t2.fadeToggle(1000);
             }
+            
 //            $("input").keyup(function () {
 //
 //                var inp = $(this).val();

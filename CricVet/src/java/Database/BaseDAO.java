@@ -31,18 +31,18 @@ public class BaseDAO {
             Statement stmt;
             ResultSet rs;
             
-            ctx = new InitialContext();
+//            ctx = new InitialContext();
+//
+//            ds = (DataSource) ctx.lookup("jdbc/jres");
+//            conn = ds.getConnection();
 
-            ds = (DataSource) ctx.lookup("jdbc/jres");
-            conn = ds.getConnection();
-
-//           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
+           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
             
-            System.out.println("Conn Created");
+            System.out.println("Conn Created" );
         } catch (Exception ex) {
             Logger.getLogger(BaseDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-            return conn;
+        return conn;
     }
 
 }

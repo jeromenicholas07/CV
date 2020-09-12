@@ -51,40 +51,17 @@ public class getDB extends HttpServlet {
             
             if(matchType == 1){
                 
-                if(homeoraway.equals("Home")){
-                    List<testMatch> matches = new ArrayList<>();
+                TestType side = homeoraway.equals("Home") ? TestType.HOME : TestType.AWAY;
+                    List<testMatch> matches = db.getTestMatches(teamOne, 0, side);
 
-                    matches = db.gettesthome(teamOne,matchType,0);
-           
-
-                    request.setAttribute("team", teamOne);
-            
+                    request.setAttribute("team", teamOne);            
                     request.setAttribute("matches", matches);
             
                     RequestDispatcher dispatcher = request.getRequestDispatcher("/showtest.jsp");
                     dispatcher.forward(request, response);
             }
-                else{
-
-                    List<testMatch> matches = new ArrayList<>();
-
-                    matches = db.gettestaway(teamOne,matchType,0);
-           
-
-                    request.setAttribute("team", teamOne);
-            
-                    request.setAttribute("matches", matches);
-            
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/showtest.jsp");
-                    dispatcher.forward(request, response);
-            }
-            }
-            
-            else{
-
-            List<Match> matches = new ArrayList<>();
-
-            matches = db.getDB(matchType, teamOne);
+            else {
+            List<Match> matches = db.getDB(matchType, teamOne);
 
             List<dbMatch> dbMatches = new ArrayList<>();
 

@@ -5,42 +5,6 @@
         <servlet-class>TestFetch</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>getTest</servlet-name>
-        <servlet-class>Servlets.getTest</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoadODI</servlet-name>
-        <servlet-class>views.LoadODI</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoadIPL</servlet-name>
-        <servlet-class>views.LoadIPL</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoadT20I</servlet-name>
-        <servlet-class>views.LoadT20I</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoadBBL</servlet-name>
-        <servlet-class>views.LoadBBL</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoadBPL</servlet-name>
-        <servlet-class>views.LoadBPL</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoadPSL</servlet-name>
-        <servlet-class>views.LoadPSL</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoadCPL</servlet-name>
-        <servlet-class>views.LoadCPL</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoadTest</servlet-name>
-        <servlet-class>views.LoadTest</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>LoadAll</servlet-name>
         <servlet-class>views.LoadAll</servlet-class>
     </servlet>
@@ -77,38 +41,6 @@
         <servlet-class>Servlets.getLdate</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>LoadODI</servlet-name>
-        <url-pattern>/LoadODI</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoadIPL</servlet-name>
-        <url-pattern>/LoadIPL</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoadT20I</servlet-name>
-        <url-pattern>/LoadT20I</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoadBBL</servlet-name>
-        <url-pattern>/LoadBBL</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoadBPL</servlet-name>
-        <url-pattern>/LoadBPL</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoadPSL</servlet-name>
-        <url-pattern>/LoadPSL</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoadCPL</servlet-name>
-        <url-pattern>/LoadCPL</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LoadTest</servlet-name>
-        <url-pattern>/LoadTest</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>LoadAll</servlet-name>
         <url-pattern>/LoadAll</url-pattern>
     </servlet-mapping>
@@ -135,10 +67,6 @@
     <servlet-mapping>
         <servlet-name>TestFetch</servlet-name>
         <url-pattern>/TestFetch</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>getTest</servlet-name>
-        <url-pattern>/getTest</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>getLdate</servlet-name>

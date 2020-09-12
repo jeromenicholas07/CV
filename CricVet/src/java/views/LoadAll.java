@@ -9,11 +9,17 @@ import Database.CricDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import DataFetch.DataFetch;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import models.MatchReport;
+import models.MatchStatus;
 
 /**
  *
@@ -33,92 +39,33 @@ public class LoadAll extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
 
             DataFetch df = new DataFetch();
             CricDB db = new CricDB();
 
             db.initDB();
-            df.clearUnloaded();
-            
-            out.print("<h1>Loading Test data");
-            if (!df.loadTestData()) {
-                out.print("<h3>Error Loading Test matches..Try again");
-            } else {
-                
-                out.print("<h3>TEST Loaded successfully");
-            }
-            
+            List<MatchReport> reports = new ArrayList<>();
+//            reports.add(new MatchReport("blaa", MatchStatus.UNLOADED, new Exception("blalalala")));
+//            reports.add(new MatchReport("blaa", MatchStatus.UNLOADED, new Exception("blalalala")));
+//            reports.add(new MatchReport("blaa", MatchStatus.UNLOADED, new Exception("blalalala")));
+//            reports.add(new MatchReport("blaa", MatchStatus.UNLOADED, new Exception("blalalala")));
+//            reports.add(new MatchReport("https://stats.espncricinfo.com/ci/engine/match/1158062.html", MatchStatus.UNLOADED, new Exception("bawhdoajw")));
+//            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
+//            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
+//            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
+            reports.addAll(df.loadTestData());
+            reports.addAll(df.loadData());
 
-            out.print("<h1>Loading IPL data");
-            if (!df.loadIPLData()) {
-                out.print("<h3>Error Loading IPL..Try again");
-            } else {
-                
-                out.print("<h3>IPL Loaded successfully");
-            }
+            request.setAttribute("total-checked", reports.size());
+            request.setAttribute("loaded", reports.stream().filter(mr -> mr.getStatus()
+                                        .equals(MatchStatus.LOADED)).collect(Collectors.toList()));
+            request.setAttribute("notLoaded", reports.stream().filter(mr -> mr.getStatus()
+                                        .equals(MatchStatus.UNLOADED)).collect(Collectors.toList()));
+            request.setAttribute("misc", reports.stream().filter(mr -> mr.getStatus()
+                                        .equals(MatchStatus.N_A)).collect(Collectors.toList()));
 
-            out.print("<h1>Loading ODI data");
-            if (!df.loadODIData()) {
-                out.print("<h3>Error Loading ODI..Try again");
-            } else {
-                
-                out.print("<h3>ODI Loaded successfully");
-            }
-
-            out.print("<h1>Loading T20I data..");
-            if (!df.loadT20IData()) {
-                out.print("<h3>Error Loading T20I..Try again");
-            } else {
-                
-                out.print("<h3>T20I Loaded successfully");
-            }
-
-            out.print("<h1>Loading BBL data..");
-            if (!df.loadBBLData()) {
-                out.print("<h3>Error Loading BBL..Try again");
-            } else {
-                
-                out.print("<h3>BBL Loaded successfully");
-            }
-
-            out.print("<h1>Loading BPL data..");
-            if (!df.loadBPLData()) {
-                out.print("<h3>Error Loading BPL..Try again");
-            } else {
-                
-                out.print("<h3>BPL Loaded successfully");
-            }
-
-            out.print("<h1>Loading CPL data..");
-            if (!df.loadCPLData()) {
-                out.print("<h3>Error Loading CPL..Try again");
-            } else {
-                
-                out.print("<h3>CPL Loaded successfully");
-            }
-
-            out.print("<h1>Loading PSL data..");
-            if (!df.loadPSLData()) {
-                out.print("<h3>Error Loading PSL..Try again");
-            } else {
-                
-                out.print("<h3>PSL Loaded successfully");
-            }
-            
-            if(df.getUnloaded().size() > 0){
-                alertInternet(out);
-            }
-            
-            out.print("<h1> No. of matches that loaded unsuccessfully: "+ df.getUnloaded().size());
-            out.print("<table>");
-            out.print("<tr> <th>MatchID</th>  <th>Link</th>  </tr>");
-            for(Map.Entry<String,String> e : df.getUnloaded().entrySet()){
-                out.print("<tr> <td>"+e.getKey()+"</td>  <td><a href=\""+e.getValue()+"\">Link </a></td> </tr>");
-            }
-            out.print("</table>");
-            
-        }
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/reportPage.jsp");
+            dispatcher.forward(request, response);
 
     }
 
