@@ -53,10 +53,10 @@ public class LoadAll extends HttpServlet {
 //            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
 //            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
 //            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
-            reports.addAll(df.loadTestData());
             reports.addAll(df.loadData());
+            reports.addAll(df.loadTestData());
 
-            request.setAttribute("total-checked", reports.size());
+            request.setAttribute("reportSize", reports.size());
             request.setAttribute("loaded", reports.stream().filter(mr -> mr.getStatus()
                                         .equals(MatchStatus.LOADED)).collect(Collectors.toList()));
             request.setAttribute("notLoaded", reports.stream().filter(mr -> mr.getStatus()

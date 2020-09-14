@@ -31,12 +31,12 @@ public class BaseDAO {
             Statement stmt;
             ResultSet rs;
             
-//            ctx = new InitialContext();
-//
-//            ds = (DataSource) ctx.lookup("jdbc/jres");
-//            conn = ds.getConnection();
+            ctx = new InitialContext();
 
-           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
+            ds = (DataSource) ctx.lookup("jdbc/jres");
+            conn = ds.getConnection();
+
+//           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
             
             System.out.println("Conn Created" );
         } catch (Exception ex) {

@@ -42,7 +42,7 @@ public class MatchReport {
     public String getErrorMessage() {
         if(error == null)
             return "NULL";
-        return error.getMessage();
+        return error.getMessage()== null ? error.toString() : error.getMessage();
     }
     
     public boolean hasErrorLink() {

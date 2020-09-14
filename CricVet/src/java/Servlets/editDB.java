@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import models.Inning;
 import models.Match;
-import models.testInning;
 import models.testMatch;
 
 /**
@@ -129,23 +128,23 @@ public class editDB extends HttpServlet {
             
             List<String> params22 = new ArrayList<>();
             params22.add(String.valueOf(totalRuns22));
-            params22.add(String.valueOf(sixes22));
             params22.add(String.valueOf(fours22));
+            params22.add(String.valueOf(sixes22));
             params22.add(String.valueOf(firstWicket22));
             params22.add(String.valueOf(runs522));
             params22.add(winner22);
             
-            testInning one1 = new testInning(6,params11);
-            testInning two1 = new testInning(6,params21);
-            testInning one2 = new testInning(6,params12);
-            testInning two2 = new testInning(6,params22);
+            Inning one1 = new Inning(params11);
+            Inning two1 = new Inning(params21);
+            Inning one2 = new Inning(params12);
+            Inning two2 = new Inning(params22);
             
             System.out.println(one1.getParams());
             System.out.println(two1.getParams());
             System.out.println(one2.getParams());
             System.out.println(two2.getParams());
             
-            testMatch m = new testMatch(matchId, homeTeam, awayTeam, Date.valueOf(matchDate), tossWinner, battingFirst, one1, two1, one2, two2, homeScore, awayScore, result, groundName, matchType, teamathome, teamataway);
+            testMatch m = new testMatch(matchId, homeTeam, awayTeam, Date.valueOf(matchDate), tossWinner, battingFirst, one1, two1, one2, two2, homeScore, awayScore, result, groundName, teamathome, teamataway);
 
             db.updatetestMatch(matchId,m,one1,two1,one2,two2);
             
@@ -212,8 +211,8 @@ public class editDB extends HttpServlet {
             params2.add(String.valueOf(totalRuns2));
             params2.add(winner2);        
 
-            Inning one = new Inning(8,params);
-            Inning two = new Inning(8,params2);
+            Inning one = new Inning(params);
+            Inning two = new Inning(params2);
             
             Match m = new Match(matchId, homeTeam, awayTeam, Timestamp.valueOf(matchDate), tossWinner, battingFirst, one, two, homeScore, awayScore, result, groundName, matchType);
             

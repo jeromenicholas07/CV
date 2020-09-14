@@ -37,7 +37,7 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Total checked
-                            <span class="badge badge-primary badge-pill">${total-checked}</span>
+                            <span class="badge badge-primary badge-pill">${reportSize}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Loaded
@@ -86,7 +86,54 @@
                         </tbody>
                     </table>
                 </div>
+                
+                <div class="col-5">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="10">Loaded</th>
+                            </tr>
+                            <tr>
+                                <th scope="col" style="width: 15%">Match Id</th>
+                                <th scope="col">Link</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="m" items="${loaded}">
+                                <tr>
+                                    <td>${m.getMatchId()}
+                                    <td><a href="${m.getMatchLink()}">Link</a>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            <c:if test="${fn:length(misc) > 0}">
+            <div class="row">
+                <div class="col-5">
+               `    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="10">Misc.</th>
+                            </tr>
+                            <tr>
+                                <th scope="col" style="width: 15%">Link</th>
+                                <th scope="col">Error</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="m" items="${misc}">
+                                <tr>
+                                    <td><a href="${m.getMatchLink()}">Link</a>
+                                    <td data-toggle="popover" data-container="body" data-placement="right" title="${m.getErrorMessage()}" data-content="${m.getErrorStackTrace()}">${m.getErrorMessage()}</td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table> 
+                </div>
+            </div>
+            </c:if>
         </div>
         <script>
             $(document).ready(function () {

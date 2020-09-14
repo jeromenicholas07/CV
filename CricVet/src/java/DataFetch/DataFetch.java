@@ -100,28 +100,46 @@ public class DataFetch {
     CricDB db = new CricDB();
 
     public List<MatchReport> loadData() {
+        System.out.println("------- Starting loadData() -------");
         String baseUrl = "http://stats.espncricinfo.com/";
         
         List<Integer> matchTypes = Arrays.asList(117, 2, 158, 159, 748, 205, 3);
         for(int matchType : matchTypes){
+            System.out.println("------- matchType: "+matchType+" -------");
             List<String> loadedMatchIDs = db.getLoadedMatchIDs(matchType);
             List<String> matchLinks = new ArrayList<>();
             int year = Calendar.getInstance().get(Calendar.YEAR);
             for (int y = year; y >= yr; y--) {
-
                 Document matches;
-                String matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy="+matchType+";type=season";
+                String matchListPage = null;
+                switch(matchType){
+                    case 117:
+                    case 748:
+                        matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy="+matchType+";type=season";
+                    break;
+                    case 2:
+                        matchListPage = "https://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class="+ matchType +";id="+y+";type=year";
+                    break;
+                    case 158:
+                    case 159:
+                    case 205:
+                        matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy="+ matchType +";type=season";
+                    break;
+                    case 3:
+                        matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class="+ matchType +";id=" + y + ";type=year";
+                    break;
+                }
+                
                 try {
                     matches = Jsoup.connect(matchListPage).get();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                } catch (Exception ex) {
                     reports.add(new MatchReport(matchListPage, MatchStatus.N_A, ex));
                     continue;
                 }
-                if (matches == null && matches.getElementsByClass("data1").first() == null) {
-                    reports.add(new MatchReport(matchListPage, MatchStatus.N_A, new Exception("Data null.")));
+                if (matches == null || matches.getElementsByClass("data1").first() == null) {
+                    reports.add(new MatchReport(matchListPage, MatchStatus.N_A, new Exception("Data null.(Maybe wrong matchList page)")));
                     continue;
-                }
+                } 
 
                 Elements rows = matches.getElementsByClass("data1");
                 for (int i = (rows.size() - 1); i >= 0; i--) {
@@ -428,7 +446,6 @@ public class DataFetch {
                     reports.add(new MatchReport(url, MatchStatus.LOADED, null));
 
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     reports.add(new MatchReport(url, MatchStatus.UNLOADED, ex));
                 }
             }
@@ -460,7 +477,6 @@ public class DataFetch {
                 teamIndex.put(country,id);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
             reports.add(new MatchReport(teamIndexesLink, MatchStatus.N_A, ex));
         }
         
@@ -485,28 +501,30 @@ public class DataFetch {
                     Elements cols = m.getElementsByClass("data-link");
 
                     String matchLink = cols.last().attr("href");
+                    String url = baseUrl + matchLink;
                     Matcher idMatcher = matchIdFinder.matcher(matchLink);
                     if(idMatcher.find()){
                         String currId = idMatcher.group(1);
                         if(loadedMatchIDs.contains(currId)){
-                           reports.add(new MatchReport(matchLink, MatchStatus.ALREADY_LOADED, null)) ;
+                           reports.add(new MatchReport(url, MatchStatus.ALREADY_LOADED, null)) ;
                         }
                         else{
                             matchLinks.add(matchLink);
                         }
                     }
                     else{
-                        reports.add(new MatchReport(matchLink, MatchStatus.UNLOADED, new Exception("Unable to extract matchId")));
+                        reports.add(new MatchReport(url, MatchStatus.UNLOADED, new Exception("Unable to extract matchId")));
                     }
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
                 reports.add(new MatchReport(matchListLink, MatchStatus.N_A, ex));
             }
         }
 
         MATCHLABEL:
         for (String matchLink : matchLinks) {
+            String url = baseUrl + matchLink;
+            
             try {
                 int foflag = 0;
 
@@ -520,7 +538,7 @@ public class DataFetch {
                 }
                 int mId = Integer.parseInt(currId);
 
-                String url = baseUrl + matchLink;
+                
 
                 Document matchPage;
                 matchPage = Jsoup.connect(url).followRedirects(true).get();
@@ -751,7 +769,6 @@ public class DataFetch {
                 try {
                     homeTeamGrounds = Jsoup.connect(homeGrUrl).get();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     throw new Exception("Unable to access page", new Exception(homeGrUrl));
                 }
                 
@@ -761,7 +778,6 @@ public class DataFetch {
 //                try {
 //                    awayTeamGrounds = Jsoup.connect(awayGrUrl).get();
 //                } catch (Exception ex) {
-//                    ex.printStackTrace();
 //                    throw new Exception(awayGrUrl);
 //                }
                 
@@ -786,11 +802,10 @@ public class DataFetch {
                     m = new testMatch(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Date.valueOf(matchDate), tossResult, BCW, one, two, four, three, homeScore, awayScore, summaryText, groundName, teamathome, teamataway);
                 }
                 db.addtestMatch(m);
-                reports.add(new MatchReport(matchLink, MatchStatus.LOADED, null));
+                reports.add(new MatchReport(url, MatchStatus.LOADED, null));
             }
             catch (Exception ex) {
-                ex.printStackTrace();
-                reports.add(new MatchReport(matchLink, MatchStatus.UNLOADED, ex));
+                reports.add(new MatchReport(url, MatchStatus.UNLOADED, ex));
             }
         }
         return reports;
