@@ -52,6 +52,14 @@
         <servlet-name>testmatchidDB</servlet-name>
         <servlet-class>Servlets.testmatchidDB</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>editNameTable</servlet-name>
+        <servlet-class>Servlets.editNameTable</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editNameDB</servlet-name>
+        <servlet-class>Servlets.editNameDB</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadAll</servlet-name>
         <url-pattern>/LoadAll</url-pattern>
@@ -95,6 +103,14 @@
     <servlet-mapping>
         <servlet-name>testmatchidDB</servlet-name>
         <url-pattern>/testmatchidDB</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editNameTable</servlet-name>
+        <url-pattern>/editNameTable</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editNameDB</servlet-name>
+        <url-pattern>/editNameDB</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

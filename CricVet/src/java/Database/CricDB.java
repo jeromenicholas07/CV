@@ -39,6 +39,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -617,6 +618,39 @@ public class CricDB extends BaseDAO {
             try { con.close(); } catch (Exception e) {  }
         }
     }
+    
+    public Map<String,String> getteamNames() {
+        Map<String, String> names = new LinkedHashMap<>();
+
+        Connection con = null;
+        Statement stmt=null;
+        ResultSet rs=null;
+
+        try {
+            con = getConnection();
+
+            String sql = "select * from APP.TEAMNAMES";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String oldName = rs.getString("OLDNAME");
+                String newName = rs.getString("NEWNAME");      
+                names.put(oldName,newName);
+            }
+
+            con.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { stmt.close(); } catch (Exception e) { /* ignored */ }
+            try { con.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return names;
+    }
 
     public void initDB() {
 
@@ -629,6 +663,79 @@ public class CricDB extends BaseDAO {
 //        deleteDB();
 //        
 //        
+        try {
+            String sql = "create table \"APP\".TEAMNAMES\n"
+                    + "(\n"
+                    + "	ID INTEGER default -1 not null primary key,\n"
+                    + "	OLDNAME VARCHAR(120) not null,\n"
+                    + "	NEWNAME VARCHAR(120) not null\n"
+                    + ")";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
+        }
+        try {
+            String sql = "INSERT INTO APP.TEAMNAMES (ID, OLDNAME, NEWNAME) VALUES "
+                    + "(1,'Chennai Super Kings','Chennai Super Kings')\n"
+                    + ",(2,'Delhi Capitals','Delhi Capitals')\n"
+                    + ",(3,'Kings XI Punjab','Kings XI Punjab')\n"
+                    + ",(4,'Kolkata Knight Riders','Kolkata Knight Riders')\n"
+                    + ",(5,'Mumbai Indians','Mumbai Indians')\n"
+                    + ",(6,'Rajasthan Royals','Rajasthan Royals')\n"
+                    + ",(7,'Royal Challengers Bangalore','Royal Challengers Bangalore')\n"
+                    + ",(8,'Sunrisers Hyderabad','Sunrisers Hyderabad')\n"
+                    + ",(9,'Adelaide Strikers','Adelaide Strikers')\n"
+                    + ",(10,'Brisbane Heat','Brisbane Heat')\n"
+                    + ",(11,'Hobart Hurricanes','Hobart Hurricanes')\n"
+                    + ",(12,'Melbourne Renegades','Melbourne Renegades')\n"
+                    + ",(13,'Melbourne Stars','Melbourne Stars')\n"
+                    + ",(14,'Perth Scorchers','Perth Scorchers')\n"
+                    + ",(15,'Sydney Sixers','Sydney Sixers')\n"
+                    + ",(16,'Sydney Thunder','Sydney Thunder')\n"
+                    + ",(17,'Barbados Tridents','Barbados Tridents')\n"
+                    + ",(18,'Guyana Amazon Warriors','Guyana Amazon Warriors')\n"
+                    + ",(19,'Jamaica Tallawahs','Jamaica Tallawahs')\n"
+                    + ",(20,'St Kitts & Nevis Patriots','St Kitts & Nevis Patriots')\n"
+                    + ",(21,'St Lucia Zouks','St Lucia Zouks')\n"
+                    + ",(22,'Trinbago Knight Riders','Trinbago Knight Riders')\n"
+                    + ",(23,'Antigua Hawksbills','Antigua Hawksbills')\n"
+                    + ",(24,'Islamabad United','Islamabad United')\n"
+                    + ",(25,'Karachi Kings','Karachi Kings')\n"
+                    + ",(26,'Lahore Qalandars','Lahore Qalandars')\n"
+                    + ",(27,'Multan Sultans','Multan Sultans')\n"
+                    + ",(28,'Peshawar Zalmi','Peshawar Zalmi')\n"
+                    + ",(29,'Quetta Gladiators','Quetta Gladiators')\n"
+                    + ",(30,'Chattogram Challengers','Chattogram Challengers')\n"
+                    + ",(31,'Cumilla Warriors','Cumilla Warriors')\n"
+                    + ",(32,'Dhaka Platoon','Dhaka Platoon')\n"
+                    + ",(33,'Khulna Tigers','Khulna Tigers')\n"
+                    + ",(34,'Rajshahi Royals','Rajshahi Royals')\n"
+                    + ",(35,'Rangpur Rangers','Rangpur Rangers')\n"
+                    + ",(36,'Sylhet Thunder','Sylhet Thunder')\n"
+                    + ",(37,'Barisal Bulls','Barisal Bulls')";
+
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) {  }
+            try { con.close(); } catch (Exception e) {  }
+        }
+
+
         
         try {
             String sql = "create table \"APP\".TESTMATCH\n"
@@ -1818,6 +1925,71 @@ public class CricDB extends BaseDAO {
             try { con.close(); } catch (Exception e) { /* ignored */ }
         }
         return matches;
+    }
+
+    public void updateNameTable(String oldName, String newName) {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        String sql;
+        
+        try {
+            con = getConnection();
+            stmt = con.createStatement();
+            sql = "UPDATE APP.TEAMNAMES SET NEWNAME ='"+newName+"' WHERE OLDNAME = '" +oldName+"'";
+            stmt.executeUpdate(sql);
+            /*PreparedStatement ps = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, newName);
+            ps.setString(2,oldName);
+            int affectedRows =ps.executeUpdate();
+            System.out.println("AFFECTED" + affectedRows);
+            
+*/
+            con.close();
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
+    }
+
+    public void updateNameDB(String oldName, String newName) {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        String sql;
+        String sql2;
+        String sql3;
+        
+        try {
+            con = getConnection();
+            stmt = con.createStatement();
+            sql = "UPDATE APP.MATCHES SET HOMETEAM ='"+newName+"' WHERE HOMETEAM = '" +oldName+"'";
+            sql2 = "UPDATE APP.MATCHES SET AWAYTEAM ='"+newName+"' WHERE AWAYTEAM = '" +oldName+"'";
+            sql3 = "UPDATE APP.TEAMNAMES SET NEWNAME ='"+newName+"' WHERE OLDNAME = '" +oldName+"'";
+
+            stmt.executeUpdate(sql);
+            stmt.executeUpdate(sql2);
+            stmt.executeUpdate(sql3);
+            /*PreparedStatement ps = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, newName);
+            ps.setString(2,oldName);
+            int affectedRows =ps.executeUpdate();
+            System.out.println("AFFECTED" + affectedRows);
+            
+*/
+            con.close();
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+        }finally {
+            try { rs.close(); } catch (Exception e) {  }
+            try { stmt.close(); } catch (Exception e) { }
+            try { con.close(); } catch (Exception e) {  }
+        }
     }
 
 }
