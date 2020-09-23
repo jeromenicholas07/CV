@@ -37,12 +37,12 @@ public class editNameTable extends HttpServlet {
             String newName = request.getParameter("newName");
             
             CricDB db = new CricDB();
-
-            
-            db.updateNameTable(oldName,newName);
-            
-            response.sendRedirect(request.getContextPath() + "/index.html");
-
+            if(db.updateNameTable(oldName,newName)){
+                response.sendRedirect(request.getContextPath() + "/editname.jsp");            
+            }
+            else{
+                out.print("Edit TeamName Table failed!!\nTry again");
+            }
             
         }
     }

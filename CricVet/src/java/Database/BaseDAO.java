@@ -37,10 +37,14 @@ public class BaseDAO {
 //            conn = ds.getConnection();
 
            conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
+
+//            Class.forName("com.mysql.cj.jdbc.Driver");
+//            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "");
             
             System.out.println("Conn Created" );
         } catch (Exception ex) {
-            Logger.getLogger(BaseDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("null eh");
+            ex.printStackTrace();
         }
         return conn;
     }

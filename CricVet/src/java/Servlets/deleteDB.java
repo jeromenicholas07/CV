@@ -34,14 +34,9 @@ public class deleteDB extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
             
+            out.println("<h2>Delete status:</h2>");
             CricDB db = new CricDB();
-            if(db.deleteDB()){
-                out.println("<h2>Database Deleted Successfully!</h2>");
-            }
-            else{
-                out.println("<h2>Database Deletion <strong>Failed</strong></h2>");
-                out.println("<h4>Try again!</h2>");
-            }
+            out.println("<h3>"+db.deleteDB()+"</h3>");
         }
     }
 

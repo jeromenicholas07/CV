@@ -113,7 +113,8 @@
                         </div>
                     </form>
 
-
+                    
+                    
                     <script>
                         
                         $(document).ready(function(){
@@ -177,6 +178,22 @@
 
                 </div>
             </div>
+            
+            <form>
+                <div style="position: fixed;right: 0;bottom: 0;">
+                    <button type="submit" class="btn btn-lg btn-danger" onclick="confirmDelete()">DELETE ALL DATABASES</button>
+                </div>
+            </form>
+            
         </div>
+        
+        <script>
+            function confirmDelete(){
+                if(confirm("Are you sure you want to DELETE all databases?")){
+                    location.href = '/CricVet/deleteDB';
+                }
+            }
+        </script>
+        
     </body>
 </html>

@@ -8,6 +8,7 @@ package Servlets;
 import Database.CricDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,15 +34,24 @@ public class editNameDB extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String oldName = request.getParameter("oldName");
-            String newName = request.getParameter("newName");
             
             CricDB db = new CricDB();
 
+            Map<String,String> eMap = db.getEditTeamNameDB();
             
-            db.updateNameDB(oldName,newName);
+            out.print("<h1>Apply to Database Status:</h1>");
+            for(String oldName : eMap.keySet()){
+                String newName = eMap.get(oldName);
+                if(db.updateNameDB(oldName,newName)){
+                    out.print("<h3>"+oldName+"->"+newName+" Successful</h3>");
+                }
+                else{
+                    out.print("<h3>"+oldName+"->"+newName+" Failed</h3>");
+                }
+            }
             
-            response.sendRedirect(request.getContextPath() + "/index.html");
+            
+            
         }
     }
 

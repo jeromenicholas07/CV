@@ -71,45 +71,41 @@
             <div class="middle">
                 <div class="inner">
                     
-                   
+                <table class='table table-bordered text-center'>
+                    <thead class='thead-dark'>
+                        <tr>
+                            <form method="POST" id="db">
+                                <button colspan="2" class="col-12 btn btn-lg btn-warning" type="submit" value = "editNameDB" onclick="form.action='editNameDB';">
+                                    Apply on Database
+                                </button>
+                            </form>
+                        </tr>
+                        <tr>
+                            <th rowspan='2'>Old Name</th>
+                            <th rowspan='2'>New Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            
                     <%
-                        Map<String, String> names = new LinkedHashMap();
                         CricDB db = new CricDB();
                         db.initDB();
-                        names = db.getteamNames();
-                        out.println("<table class='table table-bordered text-center'>");
-                        out.println("<thead class='thead-dark'>");
-                        out.println("<tr>");
-                        out.println("<th rowspan='2'>Old Name</th>");
-                        out.println("<th rowspan='2'>New Name</th>");
-                        out.println("</tr>");
-                        out.println("<tr>");
+                        Map<String, String> names = db.getEditTeamNameDB();
                         
                         for(String key : names.keySet()){
                             String value = names.get(key);
-                            //System.out.println(key+value);
                             out.println("<tr>");    
                             out.println("<td>"+key);
-                            out.println("<td>"+names.get(key) + "<br>");
+                            out.println("<td>"+value+"<br>");
                             out.println("</tr>");
                         }
                     %>
-                                             
-                    <%--
-                    <c:forEach var="names" items="${names}" varStatus="m">
-                        <tr>
-                            <td>${names.key}
-                            <td>${names.value}
-                        </tr>
-                    </c:forEach>
-                    </table>
-               --%>
-                    </table>
-                   
+                    
+                    </tbody>
+                </table>
                     <form method="POST" id="form">
                         <div class="container form-query">
                             <div class="form-group">
-                                <!--<label for="teamSelect">Select Tournament</label>-->
                                 <div class="col-12">
                                     <select class="form-control form-control-lg required" id="tourSelect" name="tournament">
                                         <option value="-1" name="-1">Select Tournament</option>
@@ -125,22 +121,23 @@
                             <div class="form-group row">
                                 <div class="col-6 teams">
                                     <select class="form-control form-control required" id="teamSelect" name="oldName">
-                                        <option value="-1">Old Name</option>
+                                        <option value="-1" disabled="true" selected>Old Team</option>
                                     </select>
                                 </div>
                                 <div class="col-6 teams">
-                                    New Name : <input type ="text" id="newName" name ="newName">
+                                    <select class="form-control form-control required" id="teamSelectNew" name="newName">
+                                        <option value="-1" disabled="true" selected>New Team</option>
+                                    </select>
                                 </div>
                             </div>
-                            
-                            
                             
 
                             <div class="form-group row">
                                 <div class="col-12 teams">
-                                    <button type="submit" value ="editNameTable" class="btn btn-outline-success" onclick="form.action='editNameTable';">Edit Name in Names Table</button>
-                                    <button type="submit" value = "editNameDB" class="btn btn-outline-success" onclick="form.action='editNameDB';">Edit Name in All Databases</button>
-
+                                    <button type="submit" value ="editNameTable" class="btn btn-success" onclick="form.action='editNameTable';">Add entry</button>
+                                </div>
+                                <div class="col-12 teams">
+                                    
                                 </div>
                             </div>
                         </div>
@@ -172,12 +169,12 @@
                                 dataType: "json"//type of data returned
                             }).done(function (data) {
                                 $('.teams').show();
-                                //                    alert(data);
                                 var team1 = $("#teamSelect");
+                                var team2 = $("#teamSelectNew");
 
                                 $.each(data, function (index, value) {
                                     team1.append($("<option />").val(value).text(value));
-                                    //                        alert(index +" : " + value);
+                                    team2.append($("<option />").val(value).text(value));
                                 });
                             });
 
