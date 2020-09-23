@@ -19,14 +19,6 @@
     <servlet>
         <servlet-name>getData</servlet-name>
         <servlet-class>Servlets.getData</servlet-class>
-        <init-param>
-            <param-name>compilerSourceVM</param-name>
-            <param-value>1.8</param-value>
-        </init-param>
-        <init-param>
-            <param-name>compilerTargetVM</param-name>
-            <param-value>1.8</param-value>
-        </init-param>
     </servlet>
     <servlet>
         <servlet-name>getDB</servlet-name>
@@ -51,6 +43,10 @@
     <servlet>
         <servlet-name>testmatchidDB</servlet-name>
         <servlet-class>Servlets.testmatchidDB</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deleteDB</servlet-name>
+        <servlet-class>Servlets.deleteDB</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoadAll</servlet-name>
@@ -95,6 +91,10 @@
     <servlet-mapping>
         <servlet-name>testmatchidDB</servlet-name>
         <url-pattern>/testmatchidDB</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deleteDB</servlet-name>
+        <url-pattern>/deleteDB</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

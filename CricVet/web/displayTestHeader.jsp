@@ -25,6 +25,28 @@
         <c:set var="pIndex" value="${Integer.parseInt(param.pIndex)}" scope="page"></c:set>
         <c:set var="className" value="${param.className}" scope="page"></c:set>
         
+        <%
+            filtering_shit:{
+                final int pIndex = Integer.parseInt(request.getParameter("pIndex"));
+                List<Inning> X_A = new ArrayList<Inning>((List<Inning>) pageContext.getAttribute("X_A"));
+                List<Inning> X_B = new ArrayList<Inning>((List<Inning>) pageContext.getAttribute("X_B"));
+                List<Inning> X_G = new ArrayList<Inning>((List<Inning>) pageContext.getAttribute("X_G"));
+
+                X_A.removeIf(i -> i.getParams().get(pIndex).contains("-1"));
+                X_B.removeIf(i -> i.getParams().get(pIndex).contains("-1"));
+                X_G.removeIf(i -> i.getParams().get(pIndex).contains("-1"));
+
+                X_A = X_A.subList(0, Math.min(5, X_A.size()));
+                X_B = X_B.subList(0, Math.min(5, X_B.size()));
+                X_G = X_G.subList(0, Math.min(5, X_G.size()));
+
+                pageContext.setAttribute("X_A", X_A);
+                pageContext.setAttribute("X_B", X_B);
+                pageContext.setAttribute("X_G", X_G);
+            }
+
+        %>
+        
         <table class="table table-bordered">
             <tr class="thead-dark">
                 <th colspan="${fn:length(X_A)}">${teamOne}</th>
@@ -73,7 +95,7 @@
         </tr>
         <tr>
             <%
-                if (true) {
+                sorting:{
                     final int pIndex = Integer.parseInt(request.getParameter("pIndex"));
                     Comparator comp = new Comparator<Inning>() {
                         @Override

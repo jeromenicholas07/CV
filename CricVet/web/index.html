@@ -37,21 +37,30 @@ and open the template in the editor.
                 padding: 0;
                 height: 100vh
             }
-            .left {
+            .leftTop {
                 background-image: linear-gradient(to top, #dfe9f3 0%, white 100%);
 
                 float: left ;
-                height: 100%;
+                height: 70%;
                 width: 50%;
                 margin: 0;
             }
             
-            .leftBottom{
+            .leftBottomA{
+                  background: linear-gradient(to left, #cdcde0, #fbc7d4); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
+                float: left ;
+                height: 30%;
+                width: 20%;
+                margin: 0;
+            }
+            .leftBottomB{
                 background-image: linear-gradient(to top, #dfe9f3 0%, white 100%);
 
                 float: left ;
-                height: 40%;
-                width: 50%;
+                height: 30%;
+                width: 30%;
                 margin: 0;
             }
 
@@ -84,23 +93,27 @@ and open the template in the editor.
     </head>
     <body>
         <div class="container-fluid bg1">
-            <div class="left" onclick="location.href = '/CricVet/LoadAll';">
+            <div class="leftTop" onclick="location.href = '/CricVet/LoadAll';">
                 <p id="load-text"></p>
                 <h2 class="al">Load</h2>
                 
             </div>
             <div class="rightTop" onclick="location.href = '/CricVet/queryPage.jsp';">
-                <h2 class="al">Matches</h2>
+                <h2 class="al">Match Report</h2>
             </div>
             <div class="rightBottomHalf" onclick="location.href = '/CricVet/checkGrounds.jsp';">
-                <h2 class="al">Ground DB</h2>
+                <h2 class="al">Ground Data</h2>
             </div>
             <div class="rightBottom" onclick="location.href = '/CricVet/checkDB.jsp';">
                 <h2 class="al">Database</h2>
             </div>
-<!--            <div class="leftBottom" onclick="location.href = '/CricVet/getTest';">
-                <h2 class="al">Show Test</h2>
-            </div>-->
+            
+            <div class="leftBottomA" onclick="confirmDelete()">
+                <h2 class="al">Delete Databases</h2>
+            </div>
+            <div class="leftBottomB" onclick="">
+                <h2 class="al">Edit Database</h2>
+            </div>
         </div>
 
         <script>
@@ -112,6 +125,12 @@ and open the template in the editor.
                 $('div').css({opacity: '1'})
             }
             );
+    
+            function confirmDelete(){
+                if(confirm("Are you sure you want to DELETE all databases?")){
+                    location.href = '/CricVet/deleteDB';
+                }
+            }
 
 
         $(document).ready(function () {
@@ -127,24 +146,5 @@ and open the template in the editor.
             });
         });
         </script>
-
-
-
-
-
-
-
-
-        <!--            <div class="container-fluid col-12">
-                        <a href="/CricVet/LoadAll">Load All</a>
-                    </div>
-                    <div class="container-fluid ">
-                        <div class="col-6">
-                            <a href="/CricVet/queryPage.jsp">Query</a>
-                        </div>
-                        <div class="col-6">
-                            <a href="/CricVet/tempServ">See matches</a>
-                        </div>
-                    </div>-->
     </body>
 </html>

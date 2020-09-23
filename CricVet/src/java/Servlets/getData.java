@@ -30,14 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import models.*;
 
-/**
- *
- * @author DELL n
- */
+
 public class getData extends HttpServlet {
-    public interface ExtraTestProcessing{
-        List<testMatch> process(List<testMatch> matches);
-    }
     public interface MatchProcessor{
         List<Match> getMatches(String teamName);
         List<Match> getGMatches(String groundName);
@@ -129,7 +123,7 @@ public class getData extends HttpServlet {
 //                return o1.getMatchDate().compareTo(o2.getMatchDate());
 //            }
 //        });
-        Map<String, List<Match>> cache = new LinkedHashMap<>();
+        
 
         for (int i = 0; i < oneMatch.size() - 6; i++) {
             Match currMatch = oneMatch.get(i);
@@ -138,11 +132,10 @@ public class getData extends HttpServlet {
             String oppTeam = currMatch.getHomeTeam().equals(teamName) ? currMatch.getAwayTeam() : currMatch.getHomeTeam();
             String groundName = currMatch.getGroundName();
             
-            if(!cache.keySet().contains(oppTeam)){
-                cache.put(oppTeam, matchProcessor.getMatches(oppTeam));
-            }
-            List<Match> twoMatch = new ArrayList<>(cache.get(oppTeam));
+            List<Match> twoMatch = matchProcessor.getMatches(oppTeam);
+                twoMatch.removeIf(m -> m.getInningOne().getParams().get(pIndex).contains("-1"));
             List<Match> grMatch = matchProcessor.getGMatches(groundName);
+                grMatch.removeIf(m -> m.getInningOne().getParams().get(pIndex).contains("-1"));
 
             List<Inning> sub = new ArrayList<>();
             List<Inning> subA = new ArrayList<>();
@@ -156,7 +149,7 @@ public class getData extends HttpServlet {
 
             twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
             if (twoMatch.size() < 5) {
-                break;
+                continue;
             }
             for (int j = 0; j < 5; j++) {
                 sub.add(twoMatch.get(j).getInningOne());
@@ -370,7 +363,9 @@ public class getData extends HttpServlet {
             String groundName = currMatch.getGroundName();
             
             List<Match> twoMatch = matchProcessor.getMatches(oppTeam);
+            twoMatch.removeIf(m -> m.getInningTwo().getParams().get(pIndex).contains("-1"));
             List<Match> grMatch = matchProcessor.getGMatches(groundName);
+            grMatch.removeIf(m -> m.getInningTwo().getParams().get(pIndex).contains("-1"));
 
             List<Inning> sub = new ArrayList<>();
             List<Inning> subA = new ArrayList<>();
@@ -384,7 +379,7 @@ public class getData extends HttpServlet {
 
             twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
             if (twoMatch.size() < 5) {
-                break;
+                continue;
             }
             for (int j = 0; j < 5; j++) {
                 sub.add(twoMatch.get(j).getInningTwo());
@@ -598,7 +593,9 @@ public class getData extends HttpServlet {
             String groundName = currMatch.getGroundName();
             
             List<testMatch> twoMatch = testProcessor.getMatches(oppTeam, oppType);
+            twoMatch.removeIf(m -> inningCaller.call(m).getParams().get(pIndex).contains("-1"));
             List<testMatch> grMatch = testProcessor.getGMatches(groundName);
+            grMatch.removeIf(m -> inningCaller.call(m).getParams().get(pIndex).contains("-1"));
 
             List<Inning> sub = new ArrayList<>();
             List<Inning> subA = new ArrayList<>();
@@ -612,7 +609,7 @@ public class getData extends HttpServlet {
 
             twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
             if (twoMatch.size() < 5) {
-                break;
+                continue;
             }
             for (int j = 0; j < 5; j++) {
                 sub.add(inningCaller.call(twoMatch.get(j)));
@@ -815,8 +812,8 @@ public class getData extends HttpServlet {
 
             String hometeam = db.checkhomeoraway(teamOne, teamTwo, groundName);
             
-            TestType oneType = hometeam.equalsIgnoreCase(teamOne) ? TestType.HOME : TestType.AWAY;
-            TestType twoType = hometeam.equalsIgnoreCase(teamTwo) ? TestType.HOME : TestType.AWAY;
+            TestType oneSide = hometeam.equalsIgnoreCase(teamOne) ? TestType.HOME : TestType.AWAY;
+            TestType twoSide = hometeam.equalsIgnoreCase(teamTwo) ? TestType.HOME : TestType.AWAY;
             
             TestProcessor type0 = new TestProcessor() {
                 @Override
@@ -929,8 +926,11 @@ public class getData extends HttpServlet {
                         } else {
                             worl = "L";
                         }
-                    } else {
-                        worl = BCW;
+                    } else if(BCW.equals("T")) {
+                        worl = "T";
+                    }
+                    else {
+                        continue;
                     }
                     String bcwl = BorC + "/" + worl;
 
@@ -947,7 +947,7 @@ public class getData extends HttpServlet {
             Form_guide :{
                 // <editor-fold defaultstate="collapsed">
                 A:{
-                    List<testMatch> matches = db.getTestMatches(teamOne, 0, oneType);
+                    List<testMatch> matches = db.getTestMatches(teamOne, 0, oneSide);
                     List<Inning> selects = new ArrayList<>();
                     matches.removeIf(m -> (m.getMatchDate().after(backDate)));
                     for (int i = 0; i < Math.min(5, matches.size()); i++) {
@@ -968,8 +968,11 @@ public class getData extends HttpServlet {
                             } else {
                                 worl = "L";
                             }
-                        } else {
-                            worl = BCW;
+                        } else if(BCW.equals("T")) {
+                            worl = "T";
+                        }
+                        else {
+                            continue;
                         }
                         String bcwl = BorC + "/" + worl;
 
@@ -979,10 +982,10 @@ public class getData extends HttpServlet {
                         m.setParams(params);
                         selects.add(m);
                     }
-                    request.setAttribute("FG_A", selects);
+                    request.setAttribute("FG_A", selects.subList(0, Math.min(5, selects.size())));
                 }
                 B:{
-                    List<testMatch> matches = db.getTestMatches(teamTwo, 0, twoType);
+                    List<testMatch> matches = db.getTestMatches(teamTwo, 0, twoSide);
                     List<Inning> selects = new ArrayList<>();
                     matches.removeIf(m -> (m.getMatchDate().after(backDate)));
                     for (int i = 0; i < Math.min(5, matches.size()); i++) {
@@ -1003,8 +1006,11 @@ public class getData extends HttpServlet {
                             } else {
                                 worl = "L";
                             }
-                        } else {
-                            worl = BCW;
+                        } else if(BCW.equals("T")) {
+                            worl = "T";
+                        }
+                        else {
+                            continue;
                         }
                         String bcwl = BorC + "/" + worl;
 
@@ -1014,7 +1020,7 @@ public class getData extends HttpServlet {
                         m.setParams(params);
                         selects.add(m);
                     }
-                    request.setAttribute("FG_B", selects);
+                    request.setAttribute("FG_B", selects.subList(0, Math.min(5, selects.size())));
                 }
                 // </editor-fold>
             }
@@ -1022,44 +1028,44 @@ public class getData extends HttpServlet {
             Fours_Sixes_Total_boundaries :{
                 // <editor-fold defaultstate="collapsed">
                 A :{
-                    List<testMatch> matches = type0.getMatches(teamOne, oneType);
+                    List<testMatch> matches = type0.getMatches(teamOne, oneSide);
                     List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FST_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FST_A", selects);
                     
                     request.setAttribute("F_A_bt", backTest5(selects, foursIndex));
-                    request.setAttribute("F_TA_bt", backTest10_Test(teamOne, matches, foursIndex, type0, One1Inning, twoType));
+                    request.setAttribute("F_TA_bt", backTest10_Test(teamOne, matches, foursIndex, type0, One1Inning, twoSide));
                     
                     request.setAttribute("S_A_bt", backTest5(selects, sixesIndex));
-                    request.setAttribute("S_TA_bt", backTest10_Test(teamOne, matches, sixesIndex, type0, One1Inning, twoType));
+                    request.setAttribute("S_TA_bt", backTest10_Test(teamOne, matches, sixesIndex, type0, One1Inning, twoSide));
                     
                     request.setAttribute("T_A_bt", backTest5(selects, totBoundariesIndex));
-                    request.setAttribute("T_TA_bt", backTest10_Test(teamOne, matches, totBoundariesIndex, type0, One1Inning, twoType));
+                    request.setAttribute("T_TA_bt", backTest10_Test(teamOne, matches, totBoundariesIndex, type0, One1Inning, twoSide));
                     
                 }
                 B :{
-                    List<testMatch> matches = type0.getMatches(teamTwo, twoType);
+                    List<testMatch> matches = type0.getMatches(teamTwo, twoSide);
                     List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FST_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FST_B", selects);
                     
                     request.setAttribute("F_B_bt", backTest5(selects, foursIndex));
-                    request.setAttribute("F_TB_bt", backTest10_Test(teamTwo, matches, foursIndex, type0, One1Inning, oneType));
+                    request.setAttribute("F_TB_bt", backTest10_Test(teamTwo, matches, foursIndex, type0, One1Inning, oneSide));
                     
                     request.setAttribute("S_B_bt", backTest5(selects, sixesIndex));
-                    request.setAttribute("S_TB_bt", backTest10_Test(teamTwo, matches, sixesIndex, type0, One1Inning, oneType));
+                    request.setAttribute("S_TB_bt", backTest10_Test(teamTwo, matches, sixesIndex, type0, One1Inning, oneSide));
                     
                     request.setAttribute("T_B_bt", backTest5(selects, totBoundariesIndex));
-                    request.setAttribute("T_TB_bt", backTest10_Test(teamTwo, matches, totBoundariesIndex, type0, One1Inning, oneType));
+                    request.setAttribute("T_TB_bt", backTest10_Test(teamTwo, matches, totBoundariesIndex, type0, One1Inning, oneSide));
                 }
                 G :{
                     List<testMatch> matches = type0.getGMatches(groundName);
                     List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FST_G", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FST_G", selects);
                     
                     request.setAttribute("F_G_bt", backTest5(selects, foursIndex));
                     
@@ -1074,37 +1080,37 @@ public class getData extends HttpServlet {
                 // <editor-fold defaultstate="collapsed">
                 Total_and_first_wicket:{
                     A:{
-                        List<testMatch> matches = type1.getMatches(teamOne, oneType);
+                        List<testMatch> matches = type1.getMatches(teamOne, oneSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("FX_A", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("FX_A", selects);
                         
                         request.setAttribute("FTR_A_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("FTR_TA_bt", backTest10_Test(teamOne, matches, totalRunsIndex, type2, One1Inning, twoType));
+                        request.setAttribute("FTR_TA_bt", backTest10_Test(teamOne, matches, totalRunsIndex, type2, One1Inning, twoSide));
                         
                         request.setAttribute("FFW_A_bt", backTest5(selects, firstWktIndex));
-                        request.setAttribute("FFW_TA_bt", backTest10_Test(teamOne, matches, firstWktIndex, type2, One1Inning, twoType));
+                        request.setAttribute("FFW_TA_bt", backTest10_Test(teamOne, matches, firstWktIndex, type2, One1Inning, twoSide));
                     }
                     B:{
-                        List<testMatch> matches = type2.getMatches(teamTwo, twoType);
+                        List<testMatch> matches = type2.getMatches(teamTwo, twoSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("FX_B", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("FX_B", selects);
                         
                         request.setAttribute("FTR_B_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("FTR_TB_bt", backTest10_Test(teamTwo, matches, totalRunsIndex, type1, One1Inning, oneType));
+                        request.setAttribute("FTR_TB_bt", backTest10_Test(teamTwo, matches, totalRunsIndex, type1, One1Inning, oneSide));
                         
                         request.setAttribute("FFW_B_bt", backTest5(selects, firstWktIndex));
-                        request.setAttribute("FFW_TB_bt", backTest10_Test(teamTwo, matches, firstWktIndex, type1, One1Inning, oneType));
+                        request.setAttribute("FFW_TB_bt", backTest10_Test(teamTwo, matches, firstWktIndex, type1, One1Inning, oneSide));
                     }
                     G:{
                         List<testMatch> matches = type1.getGMatches(groundName);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("FX_G", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("FX_G", selects);
                         
                         request.setAttribute("FTR_G_bt", backTest5(selects, totalRunsIndex));
                         request.setAttribute("FFW_G_bt", backTest5(selects, firstWktIndex));
@@ -1146,31 +1152,31 @@ public class getData extends HttpServlet {
                         }
                     };
                     A:{
-                        List<testMatch> matches = type1_N15.getMatches(teamOne, oneType);
+                        List<testMatch> matches = type1.getMatches(teamOne, oneSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("F5_A", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("F5_A", selects);
                         
                         request.setAttribute("F5_A_bt", backTest5(selects, fiveWktIndex));
-                        request.setAttribute("F5_TA_bt", backTest10_Test(teamOne, matches, fiveWktIndex, type2_N15, One1Inning, twoType));
+                        request.setAttribute("F5_TA_bt", backTest10_Test(teamOne, matches, fiveWktIndex, type2, One1Inning, twoSide));
                     }
                     B:{
-                        List<testMatch> matches = type2_N15.getMatches(teamTwo, twoType);
+                        List<testMatch> matches = type2.getMatches(teamTwo, twoSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("F5_B", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("F5_B", selects);
                         
                         request.setAttribute("F5_B_bt", backTest5(selects, fiveWktIndex));
-                        request.setAttribute("F5_TB_bt", backTest10_Test(teamTwo, matches, fiveWktIndex, type1_N15, One1Inning, oneType));
+                        request.setAttribute("F5_TB_bt", backTest10_Test(teamTwo, matches, fiveWktIndex, type1, One1Inning, oneSide));
                     }
                     G:{
-                        List<testMatch> matches = type1_N15.getGMatches(groundName);
+                        List<testMatch> matches = type1.getGMatches(groundName);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("F5_G", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("F5_G", selects);
                         
                         request.setAttribute("F5_G_bt", backTest5(selects, fiveWktIndex));
                     }
@@ -1183,37 +1189,37 @@ public class getData extends HttpServlet {
                 // <editor-fold defaultstate="collapsed">
                 Total_and_first_wicket:{
                     A:{
-                        List<testMatch> matches = type2.getMatches(teamTwo, twoType);
+                        List<testMatch> matches = type2.getMatches(teamTwo, twoSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("SX_A", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("SX_A", selects);
                         
                         request.setAttribute("STR_A_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("STR_TA_bt", backTest10_Test(teamTwo, matches, totalRunsIndex, type1, Two1Inning, oneType));
+                        request.setAttribute("STR_TA_bt", backTest10_Test(teamTwo, matches, totalRunsIndex, type1, Two1Inning, oneSide));
                         
                         request.setAttribute("SFW_A_bt", backTest5(selects, firstWktIndex));
-                        request.setAttribute("SFW_TA_bt", backTest10_Test(teamTwo, matches, firstWktIndex, type1, Two1Inning, oneType));
+                        request.setAttribute("SFW_TA_bt", backTest10_Test(teamTwo, matches, firstWktIndex, type1, Two1Inning, oneSide));
                     }
                     B:{
-                        List<testMatch> matches = type1.getMatches(teamOne, oneType);
+                        List<testMatch> matches = type1.getMatches(teamOne, oneSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("SX_B", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("SX_B", selects);
                         
                         request.setAttribute("STR_B_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("STR_TB_bt", backTest10_Test(teamOne, matches, totalRunsIndex, type2, Two1Inning, twoType));
+                        request.setAttribute("STR_TB_bt", backTest10_Test(teamOne, matches, totalRunsIndex, type2, Two1Inning, twoSide));
                         
                         request.setAttribute("SFW_B_bt", backTest5(selects, firstWktIndex));
-                        request.setAttribute("SFW_TB_bt", backTest10_Test(teamOne, matches, firstWktIndex, type2, Two1Inning, twoType));
+                        request.setAttribute("SFW_TB_bt", backTest10_Test(teamOne, matches, firstWktIndex, type2, Two1Inning, twoSide));
                     }
                     G:{
                         List<testMatch> matches = type1.getGMatches(groundName);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("SX_G", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("SX_G", selects);
                         
                         request.setAttribute("STR_G_bt", backTest5(selects, totalRunsIndex));
                         request.setAttribute("SFW_G_bt", backTest5(selects, firstWktIndex));
@@ -1255,31 +1261,31 @@ public class getData extends HttpServlet {
                         }
                     };
                     A:{
-                        List<testMatch> matches = type2_N25.getMatches(teamTwo, twoType);
+                        List<testMatch> matches = type2_N25.getMatches(teamTwo, twoSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("S5_A", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("S5_A", selects);
                         
                         request.setAttribute("S5_A_bt", backTest5(selects, fiveWktIndex));
-                        request.setAttribute("S5_TA_bt", backTest10_Test(teamTwo, matches, fiveWktIndex, type1_N25, Two1Inning, oneType));
+                        request.setAttribute("S5_TA_bt", backTest10_Test(teamTwo, matches, fiveWktIndex, type1_N25, Two1Inning, oneSide));
                     }
                     B:{
-                        List<testMatch> matches = type1_N25.getMatches(teamOne, oneType);
+                        List<testMatch> matches = type1_N25.getMatches(teamOne, oneSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("S5_B", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("S5_B", selects);
                         
                         request.setAttribute("S5_B_bt", backTest5(selects, fiveWktIndex));
-                        request.setAttribute("S5_TB_bt", backTest10_Test(teamOne, matches, fiveWktIndex, type2_N25, Two1Inning, twoType));
+                        request.setAttribute("S5_TB_bt", backTest10_Test(teamOne, matches, fiveWktIndex, type2_N25, Two1Inning, twoSide));
                     }
                     G:{
                         List<testMatch> matches = type1_N25.getGMatches(groundName);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo1()).collect(Collectors.toList());
 
 
-                        request.setAttribute("S5_G", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("S5_G", selects);
                         
                         request.setAttribute("S5_G_bt", backTest5(selects, fiveWktIndex));
                     }
@@ -1292,37 +1298,37 @@ public class getData extends HttpServlet {
                 // <editor-fold defaultstate="collapsed">
                 Total_and_first_wicket:{
                     A:{
-                        List<testMatch> matches = type1.getMatches(teamOne, oneType);
+                        List<testMatch> matches = type1.getMatches(teamOne, oneSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("TX_A", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("TX_A", selects);
                         
                         request.setAttribute("TTR_A_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("TTR_TA_bt", backTest10_Test(teamOne, matches, totalRunsIndex, type2, One2Inning, twoType));
+                        request.setAttribute("TTR_TA_bt", backTest10_Test(teamOne, matches, totalRunsIndex, type2, One2Inning, twoSide));
                         
                         request.setAttribute("TFW_A_bt", backTest5(selects, firstWktIndex));
-                        request.setAttribute("TFW_TA_bt", backTest10_Test(teamOne, matches, firstWktIndex, type2, One2Inning, twoType));
+                        request.setAttribute("TFW_TA_bt", backTest10_Test(teamOne, matches, firstWktIndex, type2, One2Inning, twoSide));
                     }
                     B:{
-                        List<testMatch> matches = type2.getMatches(teamTwo, twoType);
+                        List<testMatch> matches = type2.getMatches(teamTwo, twoSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("TX_B", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("TX_B", selects);
                         
                         request.setAttribute("TTR_B_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("TTR_TB_bt", backTest10_Test(teamTwo, matches, totalRunsIndex, type1, One2Inning, oneType));
+                        request.setAttribute("TTR_TB_bt", backTest10_Test(teamTwo, matches, totalRunsIndex, type1, One2Inning, oneSide));
                         
                         request.setAttribute("TFW_B_bt", backTest5(selects, firstWktIndex));
-                        request.setAttribute("TFW_TB_bt", backTest10_Test(teamTwo, matches, firstWktIndex, type1, One2Inning, oneType));
+                        request.setAttribute("TFW_TB_bt", backTest10_Test(teamTwo, matches, firstWktIndex, type1, One2Inning, oneSide));
                     }
                     G:{
                         List<testMatch> matches = type1.getGMatches(groundName);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("TX_G", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("TX_G", selects);
                         
                         request.setAttribute("TTR_G_bt", backTest5(selects, totalRunsIndex));
                         request.setAttribute("TFW_G_bt", backTest5(selects, firstWktIndex));
@@ -1364,31 +1370,31 @@ public class getData extends HttpServlet {
                         }
                     };
                     A:{
-                        List<testMatch> matches = type1_N35.getMatches(teamOne, oneType);
+                        List<testMatch> matches = type1_N35.getMatches(teamOne, oneSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("T5_A", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("T5_A", selects);
                         
                         request.setAttribute("T5_A_bt", backTest5(selects, fiveWktIndex));
-                        request.setAttribute("T5_TA_bt", backTest10_Test(teamOne, matches, fiveWktIndex, type2_N35, One2Inning, twoType));
+                        request.setAttribute("T5_TA_bt", backTest10_Test(teamOne, matches, fiveWktIndex, type2_N35, One2Inning, twoSide));
                     }
                     B:{
-                        List<testMatch> matches = type2_N35.getMatches(teamTwo, twoType);
+                        List<testMatch> matches = type2_N35.getMatches(teamTwo, twoSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("T5_B", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("T5_B", selects);
                         
                         request.setAttribute("T5_B_bt", backTest5(selects, fiveWktIndex));
-                        request.setAttribute("T5_TB_bt", backTest10_Test(teamTwo, matches, fiveWktIndex, type1_N35, One2Inning, oneType));
+                        request.setAttribute("T5_TB_bt", backTest10_Test(teamTwo, matches, fiveWktIndex, type1_N35, One2Inning, oneSide));
                     }
                     G:{
                         List<testMatch> matches = type1_N35.getGMatches(groundName);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningOne2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("T5_G", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("T5_G", selects);
                         
                         request.setAttribute("T5_G_bt", backTest5(selects, fiveWktIndex));
                     }
@@ -1401,37 +1407,37 @@ public class getData extends HttpServlet {
                 // <editor-fold defaultstate="collapsed">
                 Total_and_first_wicket:{
                     A:{
-                        List<testMatch> matches = type2.getMatches(teamTwo, twoType);
+                        List<testMatch> matches = type2.getMatches(teamTwo, twoSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("QX_A", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("QX_A", selects);
                         
                         request.setAttribute("QTR_A_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("QTR_TA_bt", backTest10_Test(teamTwo, matches, totalRunsIndex, type1, Two2Inning, oneType));
+                        request.setAttribute("QTR_TA_bt", backTest10_Test(teamTwo, matches, totalRunsIndex, type1, Two2Inning, oneSide));
                         
                         request.setAttribute("QFW_A_bt", backTest5(selects, firstWktIndex));
-                        request.setAttribute("QFW_TA_bt", backTest10_Test(teamTwo, matches, firstWktIndex, type1, Two2Inning, oneType));
+                        request.setAttribute("QFW_TA_bt", backTest10_Test(teamTwo, matches, firstWktIndex, type1, Two2Inning, oneSide));
                     }
                     B:{
-                        List<testMatch> matches = type1.getMatches(teamOne, oneType);
+                        List<testMatch> matches = type1.getMatches(teamOne, oneSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("QX_B", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("QX_B", selects);
                         
                         request.setAttribute("QTR_B_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("QTR_TB_bt", backTest10_Test(teamOne, matches, totalRunsIndex, type2, Two2Inning, twoType));
+                        request.setAttribute("QTR_TB_bt", backTest10_Test(teamOne, matches, totalRunsIndex, type2, Two2Inning, twoSide));
                         
                         request.setAttribute("QFW_B_bt", backTest5(selects, firstWktIndex));
-                        request.setAttribute("QFW_TB_bt", backTest10_Test(teamOne, matches, firstWktIndex, type2, Two2Inning, twoType));
+                        request.setAttribute("QFW_TB_bt", backTest10_Test(teamOne, matches, firstWktIndex, type2, Two2Inning, twoSide));
                     }
                     G:{
                         List<testMatch> matches = type1.getGMatches(groundName);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("QX_G", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("QX_G", selects);
                         
                         request.setAttribute("QTR_G_bt", backTest5(selects, totalRunsIndex));
                         request.setAttribute("QFW_G_bt", backTest5(selects, firstWktIndex));
@@ -1473,31 +1479,31 @@ public class getData extends HttpServlet {
                         }
                     };
                     A:{
-                        List<testMatch> matches = type2_N25.getMatches(teamTwo, twoType);
+                        List<testMatch> matches = type2_N25.getMatches(teamTwo, twoSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("Q5_A", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("Q5_A", selects);
                         
                         request.setAttribute("Q5_A_bt", backTest5(selects, fiveWktIndex));
-                        request.setAttribute("Q5_TA_bt", backTest10_Test(teamTwo, matches, fiveWktIndex, type1_N25, Two2Inning, oneType));
+                        request.setAttribute("Q5_TA_bt", backTest10_Test(teamTwo, matches, fiveWktIndex, type1_N25, Two2Inning, oneSide));
                     }
                     B:{
-                        List<testMatch> matches = type1_N25.getMatches(teamOne, oneType);
+                        List<testMatch> matches = type1_N25.getMatches(teamOne, oneSide);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("Q5_B", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("Q5_B", selects);
                         
                         request.setAttribute("Q5_B_bt", backTest5(selects, fiveWktIndex));
-                        request.setAttribute("Q5_TB_bt", backTest10_Test(teamOne, matches, fiveWktIndex, type2_N25, Two2Inning, twoType));
+                        request.setAttribute("Q5_TB_bt", backTest10_Test(teamOne, matches, fiveWktIndex, type2_N25, Two2Inning, twoSide));
                     }
                     G:{
                         List<testMatch> matches = type1_N25.getGMatches(groundName);
                         List<Inning> selects =  matches.stream().map(m -> m.getInningTwo2()).collect(Collectors.toList());
 
 
-                        request.setAttribute("Q5_G", selects.subList(0, Math.min(5, selects.size())));
+                        request.setAttribute("Q5_G", selects);
                         
                         request.setAttribute("Q5_G_bt", backTest5(selects, fiveWktIndex));
                     }
@@ -1508,6 +1514,7 @@ public class getData extends HttpServlet {
                         
             List<String> headers = new ArrayList();
             headers = db.getHeaders(matchType);
+            request.setAttribute("matchType", matchType);
             request.setAttribute("headers", headers);
             request.setAttribute("teamOne", teamOne);
             request.setAttribute("teamTwo", teamTwo);
@@ -1549,19 +1556,6 @@ public class getData extends HttpServlet {
                         ps.add(8, String.valueOf(totalB));
                         temp.setParams(ps);
                         matches.get(i).setInningOne(temp);
-                        
-                        Inning temp2 = matches.get(i).getInningTwo();
-                        fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
-                                + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
-                        sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
-                                + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
-                        totalB = fours + sixes;
-                        List<String> ps2 = temp2.getParams();
-                        ps2.set(4, String.valueOf(fours));
-                        ps2.set(5, String.valueOf(sixes));
-                        ps.add(8, String.valueOf(totalB));
-                        temp2.setParams(ps2);
-                        matches.get(i).setInningTwo(temp2);
                     }
                     return matches;
                 }
@@ -1607,30 +1601,6 @@ public class getData extends HttpServlet {
                 // </editor-fold>
             };
             
-            MatchProcessor type1_NoDLS = new MatchProcessor(){
-                // <editor-fold defaultstate="collapsed">
-                @Override
-                public List<Match> getMatches(String teamName) {
-                    List<Match> matches = db.getMatches(teamName, matchType, 1);
-                    
-                    return process(matches);
-                }
-
-                @Override
-                public List<Match> getGMatches(String groundName) {
-                    List<Match> matches = db.getGroundInfo(groundName, matchType);
-                    return process(matches);
-                }
-
-                @Override
-                public List<Match> process(List<Match> matches){
-                    matches.removeIf(m -> (m.getMatchDate().after(backDate)));
-                    matches.removeIf(m -> (m.getResult().contains("D/L")));
-                    return matches;
-                }
-                // </editor-fold>
-            };
-            
             MatchProcessor type1_NoMajQuit = new MatchProcessor(){
                 // <editor-fold defaultstate="collapsed">
                 @Override
@@ -1667,26 +1637,6 @@ public class getData extends HttpServlet {
                 @Override
                 public List<Match> process(List<Match> matches){
                     return type1.process(matches);
-                }
-                // </editor-fold>
-            };
-            
-            MatchProcessor type2_NoDLS = new MatchProcessor(){
-                // <editor-fold defaultstate="collapsed">
-                @Override
-                public List<Match> getMatches(String teamName) {
-                    List<Match> matches = db.getMatches(teamName, matchType, 2);
-                    return process(matches);
-                }
-
-                @Override
-                public List<Match> getGMatches(String groundName) {
-                    return type1_NoDLS.getGMatches(groundName);
-                }
-
-                @Override
-                public List<Match> process(List<Match> matches){
-                    return type1_NoDLS.process(matches);
                 }
                 // </editor-fold>
             };
@@ -1738,8 +1688,11 @@ public class getData extends HttpServlet {
                         } else {
                             worl = "L";
                         }
-                    } else {
-                        worl = BCW;
+                    } else if(BCW.equals("T")) {
+                        worl = "T";
+                    }
+                    else {
+                        continue;
                     }
 
                     if (res.contains("D/L")) {
@@ -1782,8 +1735,11 @@ public class getData extends HttpServlet {
                             } else {
                                 worl = "L";
                             }
-                        } else {
-                            worl = BCW;
+                        } else if(BCW.equals("T")) {
+                            worl = "T";
+                        }
+                        else {
+                            continue;
                         }
 
                         if (res.contains("D/L")) {
@@ -1794,8 +1750,8 @@ public class getData extends HttpServlet {
                         m.setParams(params);
                         selects.add(m);
                     }
-                    selects = selects.subList(0, Math.min(5, selects.size()));
-                    request.setAttribute("FormGuide_A", selects);
+                    selects = selects;
+                    request.setAttribute("FormGuide_A", selects.subList(0, Math.min(5, selects.size())));
                 }
 
                 B:{
@@ -1827,8 +1783,11 @@ public class getData extends HttpServlet {
                             } else {
                                 worl = "L";
                             }
-                        } else {
-                            worl = BCW;
+                        } else if(BCW.equals("T")) {
+                            worl = "T";
+                        }
+                        else {
+                            continue;
                         }
 
                         if (res.contains("D/L")) {
@@ -1839,8 +1798,8 @@ public class getData extends HttpServlet {
                         m.setParams(params);
                         selects.add(m);
                     }
-                    selects = selects.subList(0, Math.min(5, selects.size()));
-                    request.setAttribute("FormGuide_B", selects);
+                    selects = selects;
+                    request.setAttribute("FormGuide_B", selects.subList(0, Math.min(5, selects.size())));
                 }
                 // </editor-fold>
             }
@@ -1852,7 +1811,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FST_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FST_A", selects);
                     request.setAttribute("foursA_bt", backTest5(selects, 4));
                     request.setAttribute("sixesA_bt", backTest5(selects, 5));
                     request.setAttribute("boundariesA_bt", backTest5(selects, 8));
@@ -1865,7 +1824,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                             
                     
-                    request.setAttribute("FST_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FST_B", selects);
                     request.setAttribute("foursB_bt", backTest5(selects, 4));
                     request.setAttribute("sixesB_bt", backTest5(selects, 5));
                     request.setAttribute("boundariesB_bt", backTest5(selects, 8));
@@ -1890,6 +1849,7 @@ public class getData extends HttpServlet {
                 // <editor-fold defaultstate="collapsed">
                 A:{
                     List<Match> matches = type1.getMatches(teamOne);
+                    matches.removeIf(m -> m.getBCW().contains("--"));
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
 
@@ -1897,6 +1857,7 @@ public class getData extends HttpServlet {
                 }
                 B:{
                     List<Match> matches = type2.getMatches(teamTwo);
+                    matches.removeIf(m -> m.getBCW().contains("--"));
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
 
@@ -1904,6 +1865,7 @@ public class getData extends HttpServlet {
                 }
                 G:{
                     List<Match> matches = type1.getGMatches(groundName);
+                    matches.removeIf(m -> m.getBCW().contains("--"));
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
 
@@ -1919,14 +1881,14 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FO_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FO_A", selects);
                 }
                 B:{
                     List<Match> matches = type2.getMatches(teamTwo);
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FO_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FO_B", selects);
                 }
                 // </editor-fold>
             }
@@ -1968,29 +1930,29 @@ public class getData extends HttpServlet {
                 };
                 
                 A:{
-                    List<Match> matches = LO1.getMatches(teamOne);
+                    List<Match> matches = type1_NoMajQuit.getMatches(teamOne);
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("LO_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("LO_A", selects);
                     request.setAttribute("LO_A_bt", backTest5(selects, pIndex));
-                    request.setAttribute("LO_TA_bt", backTest10(teamOne, matches, pIndex, LO2));
+                    request.setAttribute("LO_TA_bt", backTest10(teamOne, matches, pIndex, type2_NoMajQuit));
                 }
                 B:{
-                    List<Match> matches = LO2.getMatches(teamTwo);
+                    List<Match> matches = type2_NoMajQuit.getMatches(teamTwo);
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("LO_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("LO_B", selects);
                     request.setAttribute("LO_B_bt", backTest5(selects, pIndex));
-                    request.setAttribute("LO_TB_bt", backTest10(teamTwo, matches, pIndex, LO1));
+                    request.setAttribute("LO_TB_bt", backTest10(teamTwo, matches, pIndex, type1_NoMajQuit));
                 }
                 G:{
-                    List<Match> matches = LO1.getGMatches(groundName);
+                    List<Match> matches = type1_NoMajQuit.getGMatches(groundName);
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("LO_G", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("LO_G", selects);
                     request.setAttribute("LO_G_bt", backTest5(selects, pIndex));
                 }
                 // </editor-fold>
@@ -2004,7 +1966,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FW_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FW_A", selects);
                     request.setAttribute("FW_A_bt", backTest5(selects, pIndex));
                     request.setAttribute("FW_TA_bt", backTest10(teamOne, matches, pIndex, type2));
                 }
@@ -2013,7 +1975,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FW_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FW_B", selects);
                     request.setAttribute("FW_B_bt", backTest5(selects, pIndex));
                     request.setAttribute("FW_TB_bt", backTest10(teamTwo, matches, pIndex, type1));
                 }
@@ -2035,7 +1997,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("TR_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("TR_A", selects);
                     request.setAttribute("TR_A_bt", backTest5(selects, pIndex));
                     request.setAttribute("TR_TA_bt", backTest10(teamOne, matches, pIndex, type2_NoMajQuit));
                 }
@@ -2044,7 +2006,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("TR_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("TR_B", selects);
                     request.setAttribute("TR_B_bt", backTest5(selects, pIndex));
                     request.setAttribute("TR_TB_bt", backTest10(teamTwo, matches, pIndex, type1_NoMajQuit));
                 }
@@ -2053,7 +2015,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("TR_G", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("TR_G", selects);
                     request.setAttribute("TR_G_bt", backTest5(selects, pIndex));
                 }
                 // </editor-fold>
@@ -2067,7 +2029,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FX_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FX_A", selects);
                     request.setAttribute("FX_A_bt", backTest5(selects, pIndex));
                     request.setAttribute("FX_TA_bt", backTest10(teamOne, matches, pIndex, type2_NoMajQuit));
                 }
@@ -2076,7 +2038,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FX_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FX_B", selects);
                     request.setAttribute("FX_B_bt", backTest5(selects, pIndex));
                     request.setAttribute("FX_TB_bt", backTest10(teamTwo, matches, pIndex, type1_NoMajQuit));
                 }
@@ -2098,7 +2060,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningTwo()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FXS_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FXS_A", selects);
                     request.setAttribute("FXS_A_bt", backTest5(selects, pIndex));
                     request.setAttribute("FXS_TA_bt", backTest10_Second(teamTwo, matches, pIndex, type1_NoMajQuit));
                 }
@@ -2107,7 +2069,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningTwo()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FXS_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FXS_B", selects);
                     request.setAttribute("FXS_B_bt", backTest5(selects, pIndex));
                     request.setAttribute("FXS_TB_bt", backTest10_Second(teamOne, matches, pIndex, type2_NoMajQuit));
                 }
@@ -2116,7 +2078,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningTwo()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FXS_G", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FXS_G", selects);
                     request.setAttribute("FXS_G_bt", backTest5(selects, pIndex));
                 }
                 // </editor-fold>
@@ -2130,7 +2092,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningTwo()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FWS_A", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FWS_A", selects);
                     request.setAttribute("FWS_A_bt", backTest5(selects, pIndex));
                     request.setAttribute("FWS_TA_bt", backTest10_Second(teamTwo, matches, pIndex, type1));
                 }
@@ -2139,7 +2101,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningTwo()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FWS_B", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FWS_B", selects);
                     request.setAttribute("FWS_B_bt", backTest5(selects, pIndex));
                     request.setAttribute("FWS_TB_bt", backTest10_Second(teamOne, matches, pIndex, type2));
                 }
@@ -2148,7 +2110,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningTwo()).collect(Collectors.toList());
                     
                     
-                    request.setAttribute("FWS_G", selects.subList(0, Math.min(5, selects.size())));
+                    request.setAttribute("FWS_G", selects);
                     request.setAttribute("FWS_G_bt", backTest5(selects, pIndex));
                 }
                 // </editor-fold>

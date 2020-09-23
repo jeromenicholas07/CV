@@ -521,7 +521,7 @@ public class CricDB extends BaseDAO {
         return matches;
     }
     
-    public void deleteDB(){
+    public boolean deleteDB(){
         
         Connection con = null;
         Statement stmt = null;
@@ -537,6 +537,7 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }finally {
             try { rs.close(); } catch (Exception e) {  }
             try { stmt.close(); } catch (Exception e) { }
@@ -553,6 +554,7 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }finally {
             try { rs.close(); } catch (Exception e) {  }
             try { stmt.close(); } catch (Exception e) { }
@@ -567,6 +569,7 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }finally {
             try { rs.close(); } catch (Exception e) {  }
             try { stmt.close(); } catch (Exception e) { }
@@ -578,10 +581,11 @@ public class CricDB extends BaseDAO {
             con = getConnection();
             stmt = con.createStatement();
             stmt.execute(sql);
-            System.out.println("Dropping test matches");
+            System.out.println("Dropping headers");
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }finally {
             try { rs.close(); } catch (Exception e) {  }
             try { stmt.close(); } catch (Exception e) { }
@@ -592,10 +596,11 @@ public class CricDB extends BaseDAO {
             con = getConnection();
             stmt = con.createStatement();
             stmt.execute(sql);
-            System.out.println("Dropping test matches");
+            System.out.println("Dropping matches");
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }finally {
             try { rs.close(); } catch (Exception e) {  }
             try { stmt.close(); } catch (Exception e) { }
@@ -607,15 +612,18 @@ public class CricDB extends BaseDAO {
             con = getConnection();
             stmt = con.createStatement();
             stmt.execute(sql);
-            System.out.println("Dropping test matches");
+            System.out.println("Dropping test innings");
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(CricDB.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }finally {
             try { rs.close(); } catch (Exception e) {  }
             try { stmt.close(); } catch (Exception e) { }
             try { con.close(); } catch (Exception e) {  }
         }
+                
+        return true;
     }
 
     public void initDB() {

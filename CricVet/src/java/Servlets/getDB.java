@@ -68,9 +68,6 @@ public class getDB extends HttpServlet {
             dbMatch temp;
 
             for (int i = 0; i < matches.size(); i++) {
-            	if(matches.get(i).getResult().contains("-1")){
-            		continue;
-            	}
                 int matchId;
                 String matchDate;
                 String oppTeam;

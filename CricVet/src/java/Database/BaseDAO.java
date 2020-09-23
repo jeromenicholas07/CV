@@ -26,17 +26,17 @@ public class BaseDAO {
             Connection conn=null;
         try {
             System.out.println("trying conn");
-            InitialContext ctx;
-            DataSource ds;
-            Statement stmt;
-            ResultSet rs;
-            
-            ctx = new InitialContext();
+//            InitialContext ctx;
+//            DataSource ds;
+//            Statement stmt;
+//            ResultSet rs;
+//            
+//            ctx = new InitialContext();
+//
+//            ds = (DataSource) ctx.lookup("jdbc/jres");
+//            conn = ds.getConnection();
 
-            ds = (DataSource) ctx.lookup("jdbc/jres");
-            conn = ds.getConnection();
-
-//           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
+           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
             
             System.out.println("Conn Created" );
         } catch (Exception ex) {

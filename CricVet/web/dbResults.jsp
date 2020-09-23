@@ -73,9 +73,10 @@
 --%>
                 <td>
                     <form action="matchidDB" method ="POST">
-                    <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
-                    <input type="submit" value = ${match.getMatchId()} >
-                </form> </td>
+                        <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
+                        <input type="submit" value = ${match.getMatchId()} >
+                    </form> 
+                </td>
                     
                     <td>${match.getMatchDate()}
                     <td>${match.getOppTeam()}
