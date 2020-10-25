@@ -197,9 +197,11 @@ public class DataFetch {
                         }
                     }
 
-                    Elements topTabs = matchPage.getElementsByClass("widget-tabs match-home-tabs");
-                    List<String> tabTexts = topTabs.select("a").eachText();
-                    if(tabTexts.contains("Live")){
+                    Elements topTabs = matchPage.getElementsByClass("widget-tab-link");
+                    List<String> tabTexts = topTabs.eachText();
+                    
+                    Elements liveStatusLabel = matchPage.getElementsByClass("status-label-live");
+                    if(tabTexts.contains("Live") || liveStatusLabel.size() > 0){
                         throw new Exception("Live match");
                     }
 

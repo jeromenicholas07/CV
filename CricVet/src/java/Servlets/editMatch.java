@@ -6,8 +6,10 @@
 package Servlets;
 
 import Database.CricDB;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +22,7 @@ import models.testMatch;
  *
  * @author ferdi
  */
-public class testmatchidDB extends HttpServlet {
+public class editMatch extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,17 +38,37 @@ public class testmatchidDB extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+
             int matchID = Integer.parseInt(request.getParameter("matchID"));
+            boolean isTest = Boolean.parseBoolean(request.getParameter("isTest"));
             //System.out.println(matchID);
             CricDB db = new CricDB();
-            testMatch match;
-            
-            match = db.gettestMatchfromID(matchID);
-            //System.out.println(match.getGroundName());
-            
-            request.setAttribute("match",match);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/edittest.jsp");
-            dispatcher.forward(request, response);
+            if (isTest) {
+                testMatch match;
+
+                match = db.gettestMatchfromID(matchID);
+                if (match == null) {
+                    match = new testMatch(matchID);
+                }
+                //System.out.println(match.getGroundName());
+
+                request.setAttribute("match", match);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/edittest.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                Match match;
+
+                match = db.getMatchfromID(matchID);
+
+                if (match == null) {
+                    match = new Match(matchID);
+                }
+                //System.out.println(match.getGroundName());
+
+                request.setAttribute("match", match);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/edit.jsp");
+                dispatcher.forward(request, response);
+            }
         }
     }
 
@@ -63,6 +85,7 @@ public class testmatchidDB extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+
     }
 
     /**
@@ -77,6 +100,7 @@ public class testmatchidDB extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+
     }
 
     /**

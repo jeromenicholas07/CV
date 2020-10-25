@@ -576,7 +576,24 @@
                         $(this).addClass("grey-div");
                     }
                 });
-                $('div.btn').click()
+                $('div.btn').click();
+                
+                // highlight backtests
+                $('td.bt-td').each(function(){
+                   let num = parseInt($(this).children('.bt-num').first().text());
+                   let den = parseInt($(this).children('.bt-den').first().text());
+                   
+                   let ratio = num/den;
+                   if(ratio < 2){
+                       $(this).addClass('red');
+                   }
+                   else if(ratio >= 3){
+                       $(this).addClass('green');
+                   }
+                   else{
+                       $(this).addClass('yellow');
+                   }
+                });
             }); 
             $("input").on('input', function () {
 

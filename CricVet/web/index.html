@@ -112,8 +112,8 @@ and open the template in the editor.
             <div class="leftBottomA" onclick="location.href = '/CricVet/editname.jsp';">
                 <h2 class="al">Edit Team-Name</h2>
             </div>
-            <div class="leftBottomB" onclick="">
-                <h2 class="al">Edit Database</h2>
+            <div class="leftBottomB" onclick="confirmEdit()">
+                <h2 class="al">Add Match</h2>
             </div>
         </div>
 
@@ -130,6 +130,15 @@ and open the template in the editor.
             function confirmDelete(){
                 if(confirm("Are you sure you want to DELETE all databases?")){
                     location.href = '/CricVet/deleteDB';
+                }
+            }
+            
+            function confirmEdit(){
+                if(confirm("[OK: Add Test match , Cancel: Other tournaments match]")){
+                    location.href = '/CricVet/edittest.jsp';
+                }
+                else{
+                    location.href = '/CricVet/edit.jsp';
                 }
             }
 

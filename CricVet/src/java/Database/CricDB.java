@@ -49,11 +49,10 @@ import javax.naming.InitialContext;
 import models.Inning;
 import models.testMatch;
 
-
 public class CricDB extends BaseDAO {
-    
-    public String checkhomeoraway(String teamOne, String teamTwo,String groundName){
-       Connection con = null;
+
+    public String checkhomeoraway(String teamOne, String teamTwo, String groundName) {
+        Connection con = null;
         Statement s = null;
         ResultSet r = null;
         String hometeam = null;
@@ -106,7 +105,7 @@ public class CricDB extends BaseDAO {
 
     }
 
-    public void addtestMatch(testMatch match) throws Exception{
+    public void addtestMatch(testMatch match) throws Exception {
 
         Connection con = null;
         Statement s = null;
@@ -140,47 +139,56 @@ public class CricDB extends BaseDAO {
             ps.setInt(8, inn21);
             ps.setInt(9, inn12);
             ps.setInt(10, inn22);
-            
+
             ps.setString(11, match.getHomeScore());
             ps.setString(12, match.getAwayScore());
 
             ps.setString(13, match.getResult());
             ps.setString(14, match.getGroundName());
-            ps.setString(15,String.valueOf(match.getteamathome()));
-            ps.setString(16,String.valueOf(match.getteamataway()));
+            ps.setString(15, String.valueOf(match.getteamathome()));
+            ps.setString(16, String.valueOf(match.getteamataway()));
             ps.execute();
 
             con.close();
         } catch (SQLException ex) {
             throw ex;
             //todo: show that ur unable to connect to db
-        }finally {
-            try { r.close(); } catch (Exception e) { /* ignored */ }
-            try { s.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                r.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                s.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
     }
-    
-    public int addtestInning(Inning i) throws Exception{
+
+    public int addtestInning(Inning i) throws Exception {
         int id = -1;
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-                
+
         try {
             con = getConnection();
             ps = null;
             rs = null;
-            if(i.getParams().size() != 6){
+            if (i.getParams().size() != 6) {
                 throw new Exception("Inning param count doesnt match");
             }
             String sql = "insert into APP.TESTINNING (PARAM1, PARAM2, PARAM3, PARAM4, PARAM5,PARAM6) values(?,?,?,?,?,?)";
             String generatedColumns[] = {"ID"};
             ps = con.prepareStatement(sql, generatedColumns);
             for (int it = 1; it <= 6; it++) {
-                ps.setString(it, i.getParams().get(it-1));
+                ps.setString(it, i.getParams().get(it - 1));
             }
-                  
+
             ps.execute();
 
             rs = ps.getGeneratedKeys();
@@ -192,21 +200,30 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             //todo: show that ur unable to connect to db
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { ps.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                ps.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return id;
     }
 
-    public List<Match> getHth(int matchType, String A, String B){
+    public List<Match> getHth(int matchType, String A, String B) {
         List<Match> matches = new ArrayList<>();
 
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
-       
+
         try {
             con = getConnection();
 
@@ -241,22 +258,32 @@ public class CricDB extends BaseDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return matches;
     }
 // get team A vs team B HTH
-    public List<testMatch> getTestHth(String A, String B){
-        
+
+    public List<testMatch> getTestHth(String A, String B) {
+
         List<testMatch> matches = new ArrayList<>();
 
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
-       
+
         try {
             con = getConnection();
 
@@ -288,7 +315,7 @@ public class CricDB extends BaseDAO {
                 Inning inningOne2 = gettestInning(one2);
                 Inning inningTwo2 = gettestInning(two2);
 
-                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, teamathome,teamataway);
+                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1, inningOne2, inningTwo2, homeScore, awayscore, result, groundName, teamathome, teamataway);
                 matches.add(m);
             }
 
@@ -296,10 +323,19 @@ public class CricDB extends BaseDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return matches;
     }
@@ -308,8 +344,8 @@ public class CricDB extends BaseDAO {
         List<Match> matches = new ArrayList<>();
 
         Connection con = null;
-        Statement stmt=null;
-        ResultSet rs=null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
         try {
             con = getConnection();
@@ -345,20 +381,29 @@ public class CricDB extends BaseDAO {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return matches;
     }
-    
+
     public Match getMatchfromID(int matchID) {
 
         Match m = null;
         Connection con = null;
-        Statement stmt=null;
-        ResultSet rs=null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
         try {
             con = getConnection();
@@ -374,7 +419,7 @@ public class CricDB extends BaseDAO {
                 String awayTeam = rs.getString("awayteam");
                 Timestamp matchDate = rs.getTimestamp("matchdate");
                 String tossWinner = rs.getString("tosswinner");
-                String battingFirst = rs.getString("battingfirst");
+                String BCW = rs.getString("bcw");
                 int inning1_id = rs.getInt("inning1_id");
                 int inning2_id = rs.getInt("inning2_id");
                 String homeScore = rs.getString("homescore");
@@ -386,19 +431,27 @@ public class CricDB extends BaseDAO {
                 Inning inningOne = getInning(inning1_id, con);
                 Inning inningTwo = getInning(inning2_id, con);
 
-                m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
+                m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
 
             }
 
             con.close();
 
-
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return m;
     }
@@ -407,8 +460,8 @@ public class CricDB extends BaseDAO {
 
         testMatch m = null;
         Connection con = null;
-        Statement stmt=null;
-        ResultSet rs=null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
         try {
             con = getConnection();
@@ -425,7 +478,7 @@ public class CricDB extends BaseDAO {
                 String awayTeam = rs.getString("awayteam");
                 Date matchDate = rs.getDate("matchdate");
                 String tossWinner = rs.getString("tosswinner");
-                String battingFirst = rs.getString("battingfirst");
+                String BCW = rs.getString("BCW");
                 int one1 = rs.getInt("one1id");
                 int two1 = rs.getInt("two1id");
                 int one2 = rs.getInt("one2id");
@@ -434,7 +487,6 @@ public class CricDB extends BaseDAO {
                 String awayscore = rs.getString("awayscore");
                 String result = rs.getString("result");
                 String groundName = rs.getString("groundname");
-                int matchType = rs.getInt("matchtype");
                 String teamathome = rs.getString("teamathome");
                 String teamataway = rs.getString("teamataway");
                 Inning inningOne1 = gettestInning(one1);
@@ -447,32 +499,37 @@ public class CricDB extends BaseDAO {
                 Inning inningThree = gettestInning(one2);
                 Inning inningFour = gettestInning(two2);
 
-                m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, battingFirst, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, teamathome,teamataway);
+                m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1, inningOne2, inningTwo2, homeScore, awayscore, result, groundName, teamathome, teamataway);
 
             }
 
             con.close();
 
-
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return m;
     }
-
-
-
 
     public List<testMatch> gettestDB(String TeamName) {
         List<testMatch> matches = new ArrayList<>();
 
         Connection con = null;
-        Statement stmt=null;
-        ResultSet rs=null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
         try {
             con = getConnection();
@@ -505,31 +562,40 @@ public class CricDB extends BaseDAO {
                 Inning inningOne2 = gettestInning(one2);
                 Inning inningTwo2 = gettestInning(two2);
 
-                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, teamathome,teamataway);
+                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1, inningOne2, inningTwo2, homeScore, awayscore, result, groundName, teamathome, teamataway);
                 matches.add(m);
-                
+
             }
 
             con.close();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return matches;
     }
-    
-    public String deleteDB(){
-        
+
+    public String deleteDB() {
+
         String status = "";
-        
+
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
-        
+
         try {
             String sql = "drop table \"APP\".TEAMNAMES";
             con = getConnection();
@@ -540,12 +606,21 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             status.concat("\n - TeamNames FAILED");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
-        
+
         try {
             String sql = "drop table \"APP\".HOMEGROUND";
             con = getConnection();
@@ -556,13 +631,21 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             status.concat("\n - HomeGround FAILED");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
-        
-        
+
         try {
             String sql = "drop table \"APP\".TESTINNING";
             con = getConnection();
@@ -573,10 +656,19 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             status.concat("\n - TestInning FAILED");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
         try {
             String sql = "drop table \"APP\".TESTMATCH";
@@ -588,12 +680,21 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             status.concat("\n - TestMatches FAILED");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
-        
+
         try {
             String sql = "drop table \"APP\".HEADERS";
             con = getConnection();
@@ -604,10 +705,19 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             status.concat("\n - Headers FAILED");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
         try {
             String sql = "drop table \"APP\".MATCHES";
@@ -619,12 +729,21 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             status.concat("\n - Matches FAILED");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
-        
+
         try {
             String sql = "drop table \"APP\".INNINGS";
             con = getConnection();
@@ -635,21 +754,30 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             status.concat("\n - Innings FAILED");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
-                
+
         return status;
     }
-    
-    public Map<String,String> getEditTeamNameDB() {
+
+    public Map<String, String> getEditTeamNameDB() {
         Map<String, String> names = new LinkedHashMap<>();
 
         Connection con = null;
-        Statement stmt=null;
-        ResultSet rs=null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
         try {
             con = getConnection();
@@ -661,18 +789,27 @@ public class CricDB extends BaseDAO {
 
             while (rs.next()) {
                 String oldName = rs.getString("OLDNAME");
-                String newName = rs.getString("NEWNAME");      
-                names.put(oldName,newName);
+                String newName = rs.getString("NEWNAME");
+                names.put(oldName, newName);
             }
 
             con.close();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return names;
     }
@@ -684,7 +821,7 @@ public class CricDB extends BaseDAO {
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
-        
+
 //        deleteDB();
 //        
 //        
@@ -701,13 +838,21 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             System.out.println("Unable to create TEAMNAMES");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) {  }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
 
-        
         try {
             String sql = "create table \"APP\".TESTMATCH\n"
                     + "(\n"
@@ -735,12 +880,21 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             System.out.println("Unable to create TESTMATCH");
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
-        
+
         try {
             String sql = "create table \"APP\".TESTINNING\n"
                     + "(\n"
@@ -752,19 +906,27 @@ public class CricDB extends BaseDAO {
                     + "	PARAM5 VARCHAR(20),\n"
                     + "	PARAM6 VARCHAR(20) )";
 
-
             con = getConnection();
             stmt = con.createStatement();
             stmt.execute(sql);
             con.close();
         } catch (SQLException ex) {
             System.out.println("Unable to create TESTINNING");
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
-      
+
         try {
             String sql = "create table \"APP\".HEADERS\n"
                     + "(\n"
@@ -786,10 +948,19 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             System.out.println("Unable to create HEADERS");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) {  }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
 
         try {
@@ -816,10 +987,19 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             System.out.println("Unable to create MATCHES");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) {  }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
 
         try {
@@ -842,10 +1022,19 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             System.out.println("Unable to create INNING");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) {  }
-            try { con.close(); } catch (Exception e) { }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
 
         try {
@@ -864,10 +1053,19 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             System.out.println("Unable to fill HEADERS");
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) {  }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
 //
 //        try {
@@ -954,10 +1152,19 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return inning;
     }
@@ -993,21 +1200,30 @@ public class CricDB extends BaseDAO {
                 headers.add(four);
                 headers.add(five);
                 headers.add(six);
-                
+
             }
             con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return headers;
     }
 
-    public void addMatch(Match match) throws Exception{
-        
+    public void addMatch(Match match) throws Exception {
+
         Connection con = null;
         Statement s = null;
         ResultSet r = null;
@@ -1048,14 +1264,23 @@ public class CricDB extends BaseDAO {
             ex.printStackTrace();
             throw ex;
             //todo: show that ur unable to connect to db
-        }finally {
-            try { r.close(); } catch (Exception e) { /* ignored */ }
-            try { s.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                r.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                s.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
     }
 
-    public void updateMatch(int matchID, Match m, Inning one, Inning two) {
+    public boolean updateMatch(int matchID, Match m) {
 
         Connection con = null;
         Statement s = null;
@@ -1063,27 +1288,26 @@ public class CricDB extends BaseDAO {
         Statement s2 = null;
         Statement s3 = null;
 
-
         try {
             con = getConnection();
             String sq0 = "update APP.MATCHES SET HOMETEAM=?, AWAYTEAM=?, MATCHDATE=?, TOSSWINNER=?, BCW=?, HOMESCORE=?, AWAYSCORE=?, RESULT=?, GROUNDNAME=?, MATCHTYPE=? WHERE MATCHID=" + matchID;
             PreparedStatement ps0 = con.prepareStatement(sq0);
-            ps0.setString(1,m.getHomeTeam());
-            ps0.setString(2,m.getAwayTeam());
-            ps0.setTimestamp(3,m.getMatchDate());
-            ps0.setString(4,m.getTossWinner());
-            ps0.setString(5,m.getBCW());
-            ps0.setString(6,m.getHomeScore());
-            ps0.setString(7,m.getAwayScore());
-            ps0.setString(8,m.getResult());
-            ps0.setString(9,m.getGroundName());
-            ps0.setInt(10,m.getMatchType());
+            ps0.setString(1, m.getHomeTeam());
+            ps0.setString(2, m.getAwayTeam());
+            ps0.setTimestamp(3, m.getMatchDate());
+            ps0.setString(4, m.getTossWinner());
+            ps0.setString(5, m.getBCW());
+            ps0.setString(6, m.getHomeScore());
+            ps0.setString(7, m.getAwayScore());
+            ps0.setString(8, m.getResult());
+            ps0.setString(9, m.getGroundName());
+            ps0.setInt(10, m.getMatchType());
 
             ps0.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
+            return false;
         }
-
 
         try {
             con = getConnection();
@@ -1091,70 +1315,78 @@ public class CricDB extends BaseDAO {
             s = con.createStatement();
             rs = s.executeQuery(sq);
             if (rs.next()) {
-                        int inning1_id = rs.getInt("inning1_id");
-                        int inning2_id = rs.getInt("inning2_id");
+                int inning1_id = rs.getInt("inning1_id");
+                int inning2_id = rs.getInt("inning2_id");
+                
+                Inning one = m.getInningOne();
+                Inning two = m.getInningTwo();
 
 //                int matchType = rs.getInt("matchtype");
+                String sq1 = "update APP.INNINGS SET PARAM1 =?,PARAM2=?,PARAM3=?,PARAM4=?,PARAM5=?,PARAM6=?,PARAM7=?,PARAM8=? WHERE ID = " + inning1_id;
 
-                        String sq1 = "update APP.INNINGS SET PARAM1 =?,PARAM2=?,PARAM3=?,PARAM4=?,PARAM5=?,PARAM6=?,PARAM7=? WHERE ID = " + inning1_id;
+                String sq2 = "update APP.INNINGS SET PARAM1 =?,PARAM2=?,PARAM3=?,PARAM4=?,PARAM5=?,PARAM6=?,PARAM7=?,PARAM8=? WHERE ID = " + inning2_id;
 
-                        String sq2 = "update APP.INNINGS SET PARAM1 =?,PARAM2=?,PARAM3=?,PARAM4=?,PARAM5=?,PARAM6=?,PARAM7=? WHERE ID = " + inning2_id;
-
-                        PreparedStatement ps = con.prepareStatement(sq1);
-                        for (int it = 1; it <=7; it++) {
-                                 ps.setString(it, one.getParams().get(it - 1));
-                            }
-                        PreparedStatement ps2 = con.prepareStatement(sq2);
-                        for (int it = 1; it <=7; it++) {
-                                 ps2.setString(it, two.getParams().get(it - 1));
-                            }
-                        ps.executeUpdate();
-                        ps2.executeUpdate();
-
-
-
+                PreparedStatement ps = con.prepareStatement(sq1);
+                for (int it = 1; it <= 8; it++) {
+                    ps.setString(it, one.getParams().get(it - 1));
+                }
+                PreparedStatement ps2 = con.prepareStatement(sq2);
+                for (int it = 1; it <= 8; it++) {
+                    ps2.setString(it, two.getParams().get(it - 1));
+                }
+                ps.executeUpdate();
+                ps2.executeUpdate();
 
             }
 
             con.close();
         } catch (SQLException ex) {
-
             ex.printStackTrace();
-            //todo: show that ur unable to connect to db
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { s.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            return false;
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                s.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
+        
+        return true;
     }
 
-    public void updatetestMatch(int matchID,testMatch m, Inning one1, Inning two1,Inning one2,Inning two2) {
+    public boolean updatetestMatch(int matchID, testMatch m) {
 
         Connection con = null;
         Statement s = null;
         ResultSet rs = null;
-        Statement s2 = null;
-        Statement s3 = null;
 
         try {
             con = getConnection();
             String sq0 = "update APP.TESTMATCH SET HOMETEAM=?, AWAYTEAM=?, MATCHDATE=?, TOSSWINNER=?, BCW=?, HOMESCORE=?, AWAYSCORE=?, RESULT=?, GROUNDNAME=?, TEAMATHOME=?,TEAMATAWAY=? WHERE MATCHID=" + matchID;
             PreparedStatement ps0 = con.prepareStatement(sq0);
-            ps0.setString(1,m.getHomeTeam());
-            ps0.setString(2,m.getAwayTeam());
-            ps0.setDate(3,m.getMatchDate());
-            ps0.setString(4,m.getTossWinner());
-            ps0.setString(5,m.getBCW());
-            ps0.setString(6,m.getHomeScore());
-            ps0.setString(7,m.getAwayScore());
-            ps0.setString(8,m.getResult());
-            ps0.setString(9,m.getGroundName());
-            ps0.setString(10,m.getteamathome());
-            ps0.setString(11,m.getteamataway());
+            ps0.setString(1, m.getHomeTeam());
+            ps0.setString(2, m.getAwayTeam());
+            ps0.setDate(3, m.getMatchDate());
+            ps0.setString(4, m.getTossWinner());
+            ps0.setString(5, m.getBCW());
+            ps0.setString(6, m.getHomeScore());
+            ps0.setString(7, m.getAwayScore());
+            ps0.setString(8, m.getResult());
+            ps0.setString(9, m.getGroundName());
+            ps0.setString(10, m.getteamathome());
+            ps0.setString(11, m.getteamataway());
 
             ps0.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
+            return false;
         }
 
         try {
@@ -1163,74 +1395,83 @@ public class CricDB extends BaseDAO {
             s = con.createStatement();
             rs = s.executeQuery(sq);
             if (rs.next()) {
-                        int one1id = rs.getInt("one1id");
-                        int two1id = rs.getInt("two1id");
-                        int one2id = rs.getInt("one2id");
-                        int two2id = rs.getInt("two2id");
+                int one1id = rs.getInt("one1id");
+                int two1id = rs.getInt("two1id");
+                int one2id = rs.getInt("one2id");
+                int two2id = rs.getInt("two2id");
+                
+                Inning one1 = m.getInningOne1();
+                Inning one2 = m.getInningOne2();
+                Inning two1 = m.getInningTwo1();
+                Inning two2 = m.getInningTwo2();
 
-//                int matchType = rs.getInt("matchtype");
+                String sq1 = "update APP.TESTINNING SET PARAM1 =?, PARAM2=?, PARAM3=?,PARAM4=?, PARAM5=?, PARAM6=? WHERE ID = " + one1id;
 
-                        String sq1 = "update APP.TESTINNING SET TOTALRUNS =?,SIXES=?,FOURS=?,FIRSTWICKET=?,RUNS5WICKET=? WHERE ID = " + one1id;
+                String sq2 = "update APP.TESTINNING SET PARAM1 =?, PARAM2=?, PARAM3=?,PARAM4=?, PARAM5=?, PARAM6=? WHERE ID = " + two1id;
 
-                        String sq2 = "update APP.TESTINNING SET TOTALRUNS =?,SIXES=?,FOURS=?,FIRSTWICKET=?,RUNS5WICKET=? WHERE ID = " + two1id;
+                String sq3 = "update APP.TESTINNING SET PARAM1 =?, PARAM2=?, PARAM3=?,PARAM4=?, PARAM5=?, PARAM6=? WHERE ID = " + one2id;
 
-                        String sq3 = "update APP.TESTINNING SET TOTALRUNS =?,SIXES=?,FOURS=?,FIRSTWICKET=?,RUNS5WICKET=? WHERE ID = " + one2id;
+                String sq4 = "update APP.TESTINNING SET PARAM1 =?, PARAM2=?, PARAM3=?,PARAM4=?, PARAM5=?, PARAM6=? WHERE ID = " + two2id;
 
-                        String sq4 = "update APP.TESTINNING SET TOTALRUNS =?,SIXES=?,FOURS=?,FIRSTWICKET=?,RUNS5WICKET=? WHERE ID = " + two2id;
+                PreparedStatement ps = con.prepareStatement(sq1);
+                for (int it = 1; it <= 6; it++) {
+                    ps.setString(it, one1.getParams().get(it - 1));
+                }
 
-                        PreparedStatement ps = con.prepareStatement(sq1);
-                        for (int it = 1; it <=5; it++) {
-                                 ps.setString(it, one1.getParams().get(it - 1));
-                            }
+                PreparedStatement ps2 = con.prepareStatement(sq2);
+                for (int it = 1; it <= 6; it++) {
+                    ps2.setString(it, two1.getParams().get(it - 1));
+                }
 
-                        PreparedStatement ps2 = con.prepareStatement(sq2);
-                        for (int it = 1; it <=5; it++) {
-                                 ps2.setString(it, two1.getParams().get(it - 1));
-                            }
+                PreparedStatement ps3 = con.prepareStatement(sq3);
+                for (int it = 1; it <= 6; it++) {
+                    ps3.setString(it, one2.getParams().get(it - 1));
+                }
 
-                        PreparedStatement ps3 = con.prepareStatement(sq3);
-                        for (int it = 1; it <=5; it++) {
-                                 ps3.setString(it, one2.getParams().get(it - 1));
-                            }
+                PreparedStatement ps4 = con.prepareStatement(sq4);
+                for (int it = 1; it <= 6; it++) {
+                    ps4.setString(it, two2.getParams().get(it - 1));
+                }
 
-                        PreparedStatement ps4 = con.prepareStatement(sq4);
-                        for (int it = 1; it <=5; it++) {
-                                 ps4.setString(it, two2.getParams().get(it - 1));
-                            }
-
-                        ps.executeUpdate();
-                        ps2.executeUpdate();
-                        ps3.executeUpdate();
-                        ps4.executeUpdate();
-
-
-
+                ps.executeUpdate();
+                ps2.executeUpdate();
+                ps3.executeUpdate();
+                ps4.executeUpdate();
 
             }
 
             con.close();
         } catch (SQLException ex) {
-
             ex.printStackTrace();
-            //todo: show that ur unable to connect to db
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { s.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+            return false;
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                s.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
+        return true;
     }
 
-    public int addInning(Inning i) throws Exception{
+    public int addInning(Inning i) throws Exception {
         int id = -1;
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-                
+
         try {
             con = getConnection();
             ps = null;
             rs = null;
-            if(i.getParams().size() != 8){
+            if (i.getParams().size() != 8) {
                 throw new Exception("Inning params of not size 8");
             }
             String sql = "insert into APP.INNINGS (param1, param2, param3, param4, param5, param6, param7, param8) values(?,?,?,?,?,?,?,?)";
@@ -1250,26 +1491,34 @@ public class CricDB extends BaseDAO {
         } catch (SQLException ex) {
             ex.printStackTrace();
             //todo: show that ur unable to connect to db
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { ps.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                ps.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return id;
     }
 
     // case 0:any side ; 1: batting; 2: bowling
-    public List<testMatch> getTestMatches(String teamName, int caseNo, TestType type){
-        
+    public List<testMatch> getTestMatches(String teamName, int caseNo, TestType type) {
+
         List<testMatch> testmatches = new ArrayList<>();
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         String addCondn = "";
-        if(type.equals(TestType.HOME)){
+        if (type.equals(TestType.HOME)) {
             addCondn = "AND teamathome = '" + teamName + "' ";
-        }
-        else if(type.equals(TestType.AWAY)){
+        } else if (type.equals(TestType.AWAY)) {
             addCondn = "AND teamataway = '" + teamName + "' ";
         }
 
@@ -1277,7 +1526,7 @@ public class CricDB extends BaseDAO {
             case 0:
                 try {
                     con = getConnection();
-                    String sql = "select * from APP.TESTMATCH where (hometeam = '" + teamName + "' OR awayteam = '" + teamName + "' ) "+ addCondn +"  ORDER BY MATCHDATE DESC";
+                    String sql = "select * from APP.TESTMATCH where (hometeam = '" + teamName + "' OR awayteam = '" + teamName + "' ) " + addCondn + "  ORDER BY MATCHDATE DESC";
 
                     stmt = con.prepareStatement(sql);
                     rs = stmt.executeQuery();
@@ -1305,17 +1554,26 @@ public class CricDB extends BaseDAO {
                         Inning inningOne2 = gettestInning(one2);
                         Inning inningTwo2 = gettestInning(two2);
 
-                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, teamathome,teamataway);
+                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1, inningOne2, inningTwo2, homeScore, awayscore, result, groundName, teamathome, teamataway);
                         testmatches.add(m);
                     }
 
                     con.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                }finally {
-                    try { rs.close(); } catch (Exception e) { /* ignored */ }
-                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
-                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        stmt.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        con.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
                 }
                 break;
 // all home matches batting first               
@@ -1323,7 +1581,7 @@ public class CricDB extends BaseDAO {
 
                 try {
                     con = getConnection();
-                    String sql = "select * from APP.TESTMATCH where HOMETEAM = '"+ teamName +"' "+ addCondn +" ORDER BY MATCHDATE DESC";
+                    String sql = "select * from APP.TESTMATCH where HOMETEAM = '" + teamName + "' " + addCondn + " ORDER BY MATCHDATE DESC";
                     stmt = con.prepareStatement(sql);
                     rs = stmt.executeQuery();
 
@@ -1350,17 +1608,26 @@ public class CricDB extends BaseDAO {
                         Inning inningOne2 = gettestInning(one2);
                         Inning inningTwo2 = gettestInning(two2);
 
-                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName,teamathome,teamataway);
+                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1, inningOne2, inningTwo2, homeScore, awayscore, result, groundName, teamathome, teamataway);
                         testmatches.add(m);
                     }
 
                     con.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                }finally {
-                    try { rs.close(); } catch (Exception e) { /* ignored */ }
-                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
-                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        stmt.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        con.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
                 }
                 break;
 //bowling first               
@@ -1368,7 +1635,7 @@ public class CricDB extends BaseDAO {
 
                 try {
                     con = getConnection();
-                    String sql = "select * from APP.TESTMATCH where AWAYTEAM = '"+ teamName +"' "+ addCondn +" order by MATCHDATE DESC";
+                    String sql = "select * from APP.TESTMATCH where AWAYTEAM = '" + teamName + "' " + addCondn + " order by MATCHDATE DESC";
                     stmt = con.prepareStatement(sql);
                     rs = stmt.executeQuery();
 
@@ -1396,24 +1663,33 @@ public class CricDB extends BaseDAO {
                         Inning inningOne2 = gettestInning(one2);
                         Inning inningTwo2 = gettestInning(two2);
 
-                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName, teamathome, teamataway);
+                        testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1, inningOne2, inningTwo2, homeScore, awayscore, result, groundName, teamathome, teamataway);
                         testmatches.add(m);
                     }
 
                     con.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                }finally {
-                    try { rs.close(); } catch (Exception e) { /* ignored */ }
-                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
-                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        stmt.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        con.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
                 }
                 break;
             default:
                 break;
-            }
-            return testmatches;
         }
+        return testmatches;
+    }
 
     public List<Match> getMatches(String teamName, int matchType, int type) {
 
@@ -1421,7 +1697,7 @@ public class CricDB extends BaseDAO {
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        
+
         switch (type) {
             case 0:
 
@@ -1457,10 +1733,19 @@ public class CricDB extends BaseDAO {
                     con.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                }finally {
-                    try { rs.close(); } catch (Exception e) { /* ignored */ }
-                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
-                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        stmt.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        con.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
                 }
                 break;
             case 1:
@@ -1497,10 +1782,19 @@ public class CricDB extends BaseDAO {
                     con.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                }finally {
-                    try { rs.close(); } catch (Exception e) { /* ignored */ }
-                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
-                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        stmt.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        con.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
                 }
                 break;
             case 2:
@@ -1538,19 +1832,25 @@ public class CricDB extends BaseDAO {
                     con.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
-                }finally {
-                    try { rs.close(); } catch (Exception e) { /* ignored */ }
-                    try { stmt.close(); } catch (Exception e) { /* ignored */ }
-                    try { con.close(); } catch (Exception e) { /* ignored */ }
+                } finally {
+                    try {
+                        rs.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        stmt.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
+                    try {
+                        con.close();
+                    } catch (Exception e) {
+                        /* ignored */ }
                 }
                 break;
             default:
                 break;
-            }
+        }
         return matches;
-        
-        
-        
 
     }
 
@@ -1583,8 +1883,6 @@ public class CricDB extends BaseDAO {
         }
         return inning;
     }
-    
-   
 
     public List<Match> getGroundInfo(String groundName, int matchType) {
         List<Match> matches = new ArrayList<>();
@@ -1626,15 +1924,24 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
 
         return matches;
     }
-    
+
     public List<testMatch> getTestGroundInfo(String groundName) {
         List<testMatch> testmatches = new ArrayList<>();
 
@@ -1672,22 +1979,30 @@ public class CricDB extends BaseDAO {
                 Inning inningOne2 = gettestInning(one2);
                 Inning inningTwo2 = gettestInning(two2);
 
-                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1,inningOne2,inningTwo2, homeScore, awayscore, result, groundName,teamathome,teamataway);
+                testMatch m = new testMatch(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne1, inningTwo1, inningOne2, inningTwo2, homeScore, awayscore, result, groundName, teamathome, teamataway);
                 testmatches.add(m);
             }
 
             con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
 
         return testmatches;
     }
-
 
     public List<String> getGroundList(int matchType) {
         List<String> grounds = new ArrayList<String>();
@@ -1699,10 +2014,9 @@ public class CricDB extends BaseDAO {
 
         try {
             con = getConnection();
-            if(matchType == 1){
-             sql = "select distinct groundname from APP.TESTMATCH order by groundname ASC";
-            }
-            else{
+            if (matchType == 1) {
+                sql = "select distinct groundname from APP.TESTMATCH order by groundname ASC";
+            } else {
                 sql = "select distinct groundname from APP.MATCHES where MATCHTYPE = " + matchType + " order by groundname ASC";
             }
             stmt = con.createStatement();
@@ -1717,10 +2031,19 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return grounds;
     }
@@ -1756,14 +2079,23 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return teams;
     }
-    
+
     public List<String> getTestTeamsList() {
         int matchType = 1;
         List<String> teams = new ArrayList<>();
@@ -1796,15 +2128,24 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return teams;
     }
 
-    public String getLastMatchDate(){
+    public String getLastMatchDate() {
         Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -1822,7 +2163,7 @@ public class CricDB extends BaseDAO {
                 String homeTeam = rs.getString("hometeam");
                 String awayTeam = rs.getString("awayteam");
                 Timestamp matchDate = rs.getTimestamp("matchdate");
-                
+
                 lastDate = matchDate;
                 op = matchDate.toLocalDateTime().format(DateTimeFormatter.ofPattern("d MMM uuuu"));
             }
@@ -1830,12 +2171,21 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             System.out.println("Matches table doesnt exist yet");
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
-        
+
         try {
             con = getConnection();
             String sql = "select * from APP.TESTMATCH order by MATCHDATE DESC FETCH FIRST 1 ROW ONLY";
@@ -1844,20 +2194,29 @@ public class CricDB extends BaseDAO {
 
             if (rs.next()) {
                 Date matchDate = rs.getDate("matchdate");
-                
-                if(matchDate.after(lastDate)){
+
+                if (matchDate.after(lastDate)) {
                     op = matchDate.toLocalDate().format(DateTimeFormatter.ofPattern("d MMM uuuu"));
                 }
-                
+
             }
 
             con.close();
         } catch (SQLException ex) {
             System.out.println("testMatch teable doesnt exist yet");
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
 
         return op;
@@ -1874,10 +2233,9 @@ public class CricDB extends BaseDAO {
 
         try {
             con = getConnection();
-            if(matchType == 1){
-             sql = "select MATCHID from APP.TESTMATCH";
-            }
-            else{
+            if (matchType == 1) {
+                sql = "select MATCHID from APP.TESTMATCH";
+            } else {
                 sql = "select MATCHID from APP.MATCHES where MATCHTYPE = " + matchType + " ";
             }
             stmt = con.createStatement();
@@ -1890,10 +2248,19 @@ public class CricDB extends BaseDAO {
             con.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            try { rs.close(); } catch (Exception e) { /* ignored */ }
-            try { stmt.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
         }
         return matches;
     }
@@ -1903,37 +2270,44 @@ public class CricDB extends BaseDAO {
         Statement stmt = null;
         ResultSet rs = null;
         String sql;
-        
-        if(oldName == null || oldName.trim().isEmpty() || newName == null || newName.trim().isEmpty()){
+
+        if (oldName == null || oldName.trim().isEmpty() || newName == null || newName.trim().isEmpty()) {
             return false;
         }
-        
+
         try {
             con = getConnection();
 
-            sql = "SELECT * FROM APP.TEAMNAMES where OLDNAME='"+oldName+"'";            
+            sql = "SELECT * FROM APP.TEAMNAMES where OLDNAME='" + oldName + "'";
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
-            
-            if(rs.next()){
-                sql = "UPDATE APP.TEAMNAMES SET NEWNAME = '"+newName+"' WHERE OLDNAME='"+oldName+"' ";
+
+            if (rs.next()) {
+                sql = "UPDATE APP.TEAMNAMES SET NEWNAME = '" + newName + "' WHERE OLDNAME='" + oldName + "' ";
+            } else {
+                sql = "INSERT INTO APP.TEAMNAMES (OLDNAME, NEWNAME) \n"
+                        + " VALUES ('" + oldName + "', '" + newName + "')";
             }
-            else{
-                sql = "INSERT INTO APP.TEAMNAMES (OLDNAME, NEWNAME) \n" +
-                    " VALUES ('"+oldName+"', '"+newName+"')" ;
-            }
-            
+
             stmt.executeUpdate(sql);
-            
+
             con.close();
-        } 
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
         return true;
     }
@@ -1943,44 +2317,59 @@ public class CricDB extends BaseDAO {
         Statement stmt = null;
         ResultSet rs = null;
         String sql;
-        
+
         try {
             con = getConnection();
             stmt = con.createStatement();
-            sql = "UPDATE APP.MATCHES SET HOMETEAM ='"+newName+"' WHERE HOMETEAM = '" +oldName+"'";
+            sql = "UPDATE APP.MATCHES SET HOMETEAM ='" + newName + "' WHERE HOMETEAM = '" + oldName + "'";
 
             stmt.executeUpdate(sql);
-            
+
             con.close();
-        } 
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
-        
-        
+
         try {
             con = getConnection();
             stmt = con.createStatement();
-            sql = "UPDATE APP.MATCHES SET AWAYTEAM ='"+newName+"' WHERE AWAYTEAM = '" +oldName+"'";
+            sql = "UPDATE APP.MATCHES SET AWAYTEAM ='" + newName + "' WHERE AWAYTEAM = '" + oldName + "'";
 
             stmt.executeUpdate(sql);
-            
+
             con.close();
-        } 
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
-        }finally {
-            try { rs.close(); } catch (Exception e) {  }
-            try { stmt.close(); } catch (Exception e) { }
-            try { con.close(); } catch (Exception e) {  }
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
         }
-        
+
         return true;
     }
 

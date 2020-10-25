@@ -6,22 +6,21 @@
 package Servlets;
 
 import Database.CricDB;
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import models.Match;
+import models.testMatch;
 
 /**
  *
  * @author ferdi
  */
-public class matchidDB extends HttpServlet {
+public class editTestMatch extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,22 +36,17 @@ public class matchidDB extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            
             int matchID = Integer.parseInt(request.getParameter("matchID"));
             //System.out.println(matchID);
             CricDB db = new CricDB();
-            Match match;
+            testMatch match;
             
-            match = db.getMatchfromID(matchID);
+            match = db.gettestMatchfromID(matchID);
             //System.out.println(match.getGroundName());
             
             request.setAttribute("match",match);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/edit.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/edittest.jsp");
             dispatcher.forward(request, response);
-            
-            
-            
-            
         }
     }
 
@@ -69,7 +63,6 @@ public class matchidDB extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        
     }
 
     /**
@@ -84,7 +77,6 @@ public class matchidDB extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        
     }
 
     /**

@@ -26,11 +26,11 @@ public class BaseDAO {
             Connection conn=null;
         try {
             System.out.println("trying conn");
-//            InitialContext ctx;
-//            DataSource ds;
-//            Statement stmt;
-//            ResultSet rs;
-//            
+            InitialContext ctx;
+            DataSource ds;
+            Statement stmt;
+            ResultSet rs;
+            
 //            ctx = new InitialContext();
 //
 //            ds = (DataSource) ctx.lookup("jdbc/jres");

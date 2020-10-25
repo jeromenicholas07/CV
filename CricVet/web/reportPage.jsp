@@ -71,22 +71,35 @@
                         <tbody>
                             <c:forEach var="m" items="${notLoaded}">
                                 <tr>
-                                    <td>${m.getMatchId()}
+                                    <td>
+                                        <c:choose>
+                                            <c:when test='${m.getMatchId().contains("N/A")}'>
+                                                ${m.getMatchId()}
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form method ="POST" id="add-match-form">
+                                                    <input type="hidden" name ="matchID" value = ${m.getMatchId()}>
+                                                    <button type="submit" onclick="confirmEdit(this.form)">${m.getMatchId()}</button>
+                                                </form>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
                                     <td><a href="${m.getMatchLink()}">Link</a>
                                         <c:choose>
                                             <c:when test="${m.hasErrorLink()}">
                                             <td><a href="${m.getErrorLink()}">${m.getErrorMessage()}</a></td>
-                                        </c:when>
-                                        <c:otherwise>
+                                            </c:when>
+                                            <c:otherwise>
                                             <td data-toggle="popover" data-container="body" data-placement="right" title="${m.getErrorMessage()}" data-content="${m.getErrorStackTrace()}">${m.getErrorMessage()}</td>
                                         </c:otherwise>
                                     </c:choose>
+
                                 </tr>
                             </c:forEach>
                         </tbody>
                     </table>
                 </div>
-                
+
                 <div class="col-5">
                     <table class="table">
                         <thead class="thead-dark">
@@ -110,35 +123,51 @@
                 </div>
             </div>
             <c:if test="${fn:length(misc) > 0}">
-            <div class="row">
-                <div class="col-5">
-               `    <table class="table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th colspan="10">Misc.</th>
-                            </tr>
-                            <tr>
-                                <th scope="col" style="width: 15%">Link</th>
-                                <th scope="col">Error</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="m" items="${misc}">
+                <div class="row">
+                    <div class="col-5">
+                        `    <table class="table">
+                            <thead class="thead-dark">
                                 <tr>
-                                    <td><a href="${m.getMatchLink()}">Link</a>
-                                    <td data-toggle="popover" data-container="body" data-placement="right" title="${m.getErrorMessage()}" data-content="${m.getErrorStackTrace()}">${m.getErrorMessage()}</td>
+                                    <th colspan="10">Misc.</th>
                                 </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table> 
+                                <tr>
+                                    <th scope="col" style="width: 15%">Link</th>
+                                    <th scope="col">Error</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="m" items="${misc}">
+                                    <tr>
+                                        <td><a href="${m.getMatchLink()}">Link</a>
+                                        <td data-toggle="popover" data-container="body" data-placement="right" title="${m.getErrorMessage()}" data-content="${m.getErrorStackTrace()}">${m.getErrorMessage()}</td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table> 
+                    </div>
                 </div>
-            </div>
             </c:if>
         </div>
         <script>
             $(document).ready(function () {
                 $('[data-toggle="popover"]').popover();
             });
+
+            function confirmEdit(form) {
+                if (confirm("[OK: Add Test match , Cancel: Other tournaments match]")) {
+                    $("<input />").attr("type", "hidden")
+                            .attr("name", "isTest")
+                            .attr("value", "true")
+                            .appendTo("#add-match-form");
+                    form.action = 'editMatch';
+                } else {
+                    $("<input />").attr("type", "hidden")
+                            .attr("name", "isTest")
+                            .attr("value", "false")
+                            .appendTo("#add-match-form");
+                    form.action = 'editMatch';
+                }
+            }
         </script>
     </body>
 </html>

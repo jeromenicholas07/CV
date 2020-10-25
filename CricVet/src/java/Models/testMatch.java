@@ -34,6 +34,10 @@ public class testMatch {
     
     private String result;
     private String groundName;
+    
+    public testMatch(int matchId){
+        this.matchId = matchId;
+    }
 
     public testMatch(int matchId, String homeTeam, String awayTeam, Date matchDate, String tossWinner, String BCW, Inning one1, Inning two1,Inning one2, Inning two2, String homeScore, String awayScore, String result, String groundName, String teamathome, String teamataway) {
         this.matchId = matchId;
@@ -154,7 +158,7 @@ public class testMatch {
     
     @Override
     public String toString() {
-        return "ID: " + matchId + " Date: "+ matchDate.toString();
+        return "testMatch ID: " + matchId ;
     }
     
     

@@ -30,6 +30,10 @@ public class Match {
     private String result;
     private String groundName;
     private int matchType;
+    
+    public Match(int matchId){
+        this.matchId = matchId;
+    }
 
     public Match(int matchId, String homeTeam, String awayTeam, Timestamp matchDate, String tossWinner, String BCW, Inning one, Inning two, String homeScore, String awayScore, String result, String groundName, int matchType) {
         this.matchId = matchId;
@@ -129,7 +133,7 @@ public class Match {
 
     @Override
     public String toString() {
-        return "ID: " + matchId + " Date: "+ matchDate.toString() + " BCW: "+ BCW;
+        return "ID: " + matchId;
     }
     
     

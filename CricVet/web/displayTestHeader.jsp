@@ -124,20 +124,20 @@
                     pageContext.setAttribute("ASs", ASs);
                 }
             %>
-        <c:forEach var="in" items="${As}">
-            <td name="${className}" class="A">
+        <c:forEach var="in" items="${As}" varStatus="loop">
+            <td name="${className}" class="A" data-count="${loop.count}">
                 ${in.getParams().get(pIndex) }
             </td>
         </c:forEach>
         <td>
-        <c:forEach var="in" items="${Bs}">
-            <td name="${className}" class="B">
+        <c:forEach var="in" items="${Bs}"varStatus="loop">
+            <td name="${className}" class="B" data-count="${loop.count}">
                 ${in.getParams().get(pIndex) }
             </td>
         </c:forEach>
         <td>
-        <c:forEach var="in" items="${Gs}">
-            <td name="${className}" class="G">
+        <c:forEach var="in" items="${Gs}" varStatus="loop">
+            <td name="${className}" class="G" data-count="${loop.count}">
                 ${in.getParams().get(pIndex) }
             </td>
         </c:forEach>
@@ -157,8 +157,8 @@
         </td>
     </tr>
     <tr>
-    <c:forEach var="in" items="${ASs}">
-        <td name="${className}">
+    <c:forEach var="in" items="${ASs}" varStatus="loop">
+        <td name="${className}" class="T" data-count="${loop.count}">
             ${in.getParams().get(pIndex) }
         </td>
     </c:forEach>

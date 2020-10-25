@@ -38,17 +38,51 @@
                 margin-top: 15px;
                 margin-bottom: 15px;
             }
-            .greater{
-                background-color: #99ff99
+            
+            .green{
+                background:linear-gradient(to top left,#99ff99 49.5%,#aaa 49.5%,#aaa 50.5%,#99ff99 50.5%) !important;
             }
-            .lower{
-                background-color: #ff9999
+            .red{
+                background:linear-gradient(to top left,#ffbaba 49.5%,#f0f0f0 49.5%,#f0f0f0 50.5%,#ffbaba 50.5%) !important;
             }
+            .yellow{
+                background:linear-gradient(to top left,#fffb8f 49.5%,#aaa 49.5%,#aaa 50.5%,#fffb8f 50.5%) !important;
+            }
+            
+            .green-bag{
+                background: #99ff99 !important;
+            }
+            .red-bag{
+                background: #ff9999 !important;
+            }
+            .yellow-bag{
+                background: #fffb8f !important;
+            }
+            
             .table th{
                 vertical-align: middle
             }
             .grey-div{
                 background-color: lightgray
+            }
+            .highlight{
+                outline-color: mediumslateblue;
+                outline-width: thick;
+                outline-style: solid;
+            }
+            
+            .bt-td{
+                background:linear-gradient(to top left,transparent 49.5%,#aaa 49.5%,#aaa 50.5%,transparent 50.5%);
+                line-height: inherit;
+                padding: 0.2rem !important;
+            }
+            .bt-num{
+                margin-right: 1em;
+                text-align:left;
+            }
+            .bt-den{
+                margin-left:1em;
+                text-align:right;
             }
         </style>
         <div class="container-fluid text-center">
@@ -207,80 +241,6 @@
                 </div>
             </div>
              
-            <!--Fours-->
-            <div class="row" >
-                <div class ="col-12">
-                    <h3 class="card-title">Total Fours</h3>
-                    
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FST_A" />
-                        <jsp:param name="B" value="FST_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="4" />
-                        <jsp:param name="className" value="Fours" />
-                    </jsp:include>
-                    
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="foursA_bt" />
-                        <jsp:param name="TA_bt" value="foursTA_bt" />
-                        <jsp:param name="B_bt" value="foursB_bt" />
-                        <jsp:param name="TB_bt" value="foursTB_bt" />
-                        <jsp:param name="G_bt" value="foursG_bt" />
-                    </jsp:include>
-
-                </div>
-            </div>
-            
-            <!--Sixes-->      
-            <div class="row" >
-                <div class ="col-12">
-                    <h3 class="card-title">Total Sixes</h3>
-                    
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FST_A" />
-                        <jsp:param name="B" value="FST_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="5" />
-                        <jsp:param name="className" value="Sixes" />
-                    </jsp:include>
-                    
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="sixesA_bt" />
-                        <jsp:param name="TA_bt" value="sixesTA_bt" />
-                        <jsp:param name="B_bt" value="sixesB_bt" />
-                        <jsp:param name="TB_bt" value="sixesTB_bt" />
-                        <jsp:param name="G_bt" value="sixesG_bt" />
-                    </jsp:include>
-                                    
-                </div>
-            </div>
-               
-            <!--Boundaries-->
-            <div class="row" >
-                <div class ="col-12">
-                    <h3 class="card-title">Total Boundaries</h3>
-                    
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FST_A" />
-                        <jsp:param name="B" value="FST_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="8" />
-                        <jsp:param name="className" value="TotalBoundaries" />
-                    </jsp:include>
-                    
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="boundariesA_bt" />
-                        <jsp:param name="TA_bt" value="boundariesTA_bt" />
-                        <jsp:param name="B_bt" value="boundariesB_bt" />
-                        <jsp:param name="TB_bt" value="boundariesTB_bt" />
-                        <jsp:param name="G_bt" value="boundariesG_bt" />
-                    </jsp:include>
-                    
-                </div>
-            </div>
-                           
-
-        <h2>First Inning</h2>
             <!--B/C Winner-->
             <div class="row" >
                 <div class ="col-12">
@@ -425,7 +385,81 @@
                     </table>
                 </div>
             </div>
-                         
+                       
+            <!--Fours-->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">Total Fours</h3>
+                    
+                    <jsp:include page="/displayTestHeader.jsp">
+                        <jsp:param name="A" value="FST_A" />
+                        <jsp:param name="B" value="FST_B" />
+                        <jsp:param name="G" value="Gr_First" />
+                        <jsp:param name="pIndex" value="4" />
+                        <jsp:param name="className" value="Fours" />
+                    </jsp:include>
+                    
+                    <jsp:include page="/displayBacktests.jsp">
+                        <jsp:param name="A_bt" value="foursA_bt" />
+                        <jsp:param name="TA_bt" value="foursTA_bt" />
+                        <jsp:param name="B_bt" value="foursB_bt" />
+                        <jsp:param name="TB_bt" value="foursTB_bt" />
+                        <jsp:param name="G_bt" value="foursG_bt" />
+                    </jsp:include>
+
+                </div>
+            </div>
+            
+            <!--Sixes-->      
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">Total Sixes</h3>
+                    
+                    <jsp:include page="/displayTestHeader.jsp">
+                        <jsp:param name="A" value="FST_A" />
+                        <jsp:param name="B" value="FST_B" />
+                        <jsp:param name="G" value="Gr_First" />
+                        <jsp:param name="pIndex" value="5" />
+                        <jsp:param name="className" value="Sixes" />
+                    </jsp:include>
+                    
+                    <jsp:include page="/displayBacktests.jsp">
+                        <jsp:param name="A_bt" value="sixesA_bt" />
+                        <jsp:param name="TA_bt" value="sixesTA_bt" />
+                        <jsp:param name="B_bt" value="sixesB_bt" />
+                        <jsp:param name="TB_bt" value="sixesTB_bt" />
+                        <jsp:param name="G_bt" value="sixesG_bt" />
+                    </jsp:include>
+                                    
+                </div>
+            </div>
+               
+            <!--Boundaries-->
+            <div class="row" >
+                <div class ="col-12">
+                    <h3 class="card-title">Total Boundaries</h3>
+                    
+                    <jsp:include page="/displayTestHeader.jsp">
+                        <jsp:param name="A" value="FST_A" />
+                        <jsp:param name="B" value="FST_B" />
+                        <jsp:param name="G" value="Gr_First" />
+                        <jsp:param name="pIndex" value="8" />
+                        <jsp:param name="className" value="TotalBoundaries" />
+                    </jsp:include>
+                    
+                    <jsp:include page="/displayBacktests.jsp">
+                        <jsp:param name="A_bt" value="boundariesA_bt" />
+                        <jsp:param name="TA_bt" value="boundariesTA_bt" />
+                        <jsp:param name="B_bt" value="boundariesB_bt" />
+                        <jsp:param name="TB_bt" value="boundariesTB_bt" />
+                        <jsp:param name="G_bt" value="boundariesG_bt" />
+                    </jsp:include>
+                    
+                </div>
+            </div>
+                           
+
+        <h2>First Inning</h2>  
             <!-- First Over -->
             <div class="row" >
                 <div class ="col-12">
@@ -610,8 +644,10 @@
 
 
         <script type="text/javascript">
-
+            
             $(document).ready(function () {
+                
+                //grey cells
                 $("td, th").not('.A').not('.B').not('.G').not('.T').each(function(){
                     var inp = $(this).text().trim();
                     if(inp === ""){
@@ -619,70 +655,127 @@
                     }
                 });
                 
+                //minimize all backtests
                 $('div.btn').click();
+                
+                // highlight backtests
+                $('td.bt-td').each(function(){
+                   let num = parseInt($(this).children('.bt-num').first().text());
+                   let den = parseInt($(this).children('.bt-den').first().text());
+                   
+                   let ratio = num/den;
+                   if(ratio < 2){
+                       $(this).addClass('red');
+                   }
+                   else if(ratio >= 3){
+                       $(this).addClass('green');
+                   }
+                   else{
+                       $(this).addClass('yellow');
+                   }
+                });
+                
+                // highlight sorted w backtest5
+                $('.A, .B, .G').filter('[data-count]').each(function(){
+                    let bt5HeaderRow = $(this).parents('div.row').find('table.BT5').find('tr:last').prev();
+                    let c = parseInt($(this).attr('data-count'));
+                    
+                    bt5Headers = bt5HeaderRow.find('td:contains('+c+'/'+(5-c)+')');
+                    let header;
+                    if(bt5Headers.length === 3){
+                        if(this.classList.contains('A')){
+                            header = bt5Headers[0];
+                        }
+                        else if(this.classList.contains('B')){
+                            header = bt5Headers[1];
+                        }
+                        else if(this.classList.contains('G')){
+                            header = bt5Headers[2];
+                        }
+                        
+                        let valueTD = $(header).parent().next().find('td').eq($(header).index());
+                        if(valueTD.hasClass('red')){
+                            $(this).addClass('red-bag');
+                        }
+                        else if(valueTD.hasClass('yellow')){
+                            $(this).addClass('yellow-bag');
+                        }
+                        else if(valueTD.hasClass('green')){
+                            $(this).addClass('green-bag');
+                        }
+                    }
+                });
+                
+                //highlight sorted w backtest10
+                $('td.T').filter('[data-count]').each(function(){
+                    let c = parseInt($(this).attr('data-count'));
+                    if(c <= 5){
+                        c = c-1;
+                    }
+                    
+                    let bt10HeaderRowA = $(this).parents('div.row').find('table.BT10').find('tr:nth(1)');
+                    let bt10HeaderRowB = $(this).parents('div.row').find('table.BT10').find('tr:nth(17)');
+                    
+                    let headerA = bt10HeaderRowA.find('td:contains('+c+'/'+(10-c)+')');
+                    let headerB = bt10HeaderRowB.find('td:contains('+c+'/'+(10-c)+')');
+                    
+                    if(headerA && headerB){
+                        let tdA = $(headerA).parent().next().find('td').eq($(headerA).index());
+                        let tdB = $(headerB).parent().next().find('td').eq($(headerB).index());
+                        
+                        if(tdA.hasClass('red') || tdB.hasClass('red')){
+                            $(this).addClass('red-bag');
+                        }
+                        else if(tdA.hasClass('yellow') || tdB.hasClass('yellow')){
+                            $(this).addClass('yellow-bag');
+                        }
+                        else if(tdA.hasClass('green') && tdB.hasClass('green')){
+                            $(this).addClass('green-bag');
+                        }
+                    }
+                });
             }); 
 
 
+            
             $("input").on('input', function () {
 
                 var inp = $(this).val();
                 
                 var name = $(this).attr("name");
-
-                $('td[name="' + name + '"]').each(function () {
-                    $(this).removeClass("greater");
-                    $(this).removeClass("lower");
+                
+                $('.highlight').each(function(){
+                   $(this).removeClass('highlight');
                 });
 
 
                 if (inp.length === 0) {
-                    $('td[name="' + name + '"]').each(function () {
-                        $(this).removeClass("greater");
-                        $(this).removeClass("lower");
-                    });
                     $('td[name="' + name + 'Odd"][class="A"]').text("");
                     $('td[name="' + name + 'Odd"][class="B"]').text("");
                     $('td[name="' + name + 'Odd"][class="G"]').text("");
                     $('td[name="' + name + 'Odd"][class="T"]').text("");
 
                 } else {
+                    let T_N;
                     
-                    $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
-
-                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
-                            $(this).addClass("greater");
-//                            num++;
-                        } else if (parseInt($(this).text()) < parseInt(inp)) {
-//                            alert($(this).text() +" :: "+ inp);
-                            $(this).addClass("lower");
-//                            den++;
-                        }
-
-                    });
-
                     var num = 0;
                     var den = 0;
-
                     $('td[name="' + name + '"].A,td[name="' + name + '"].B').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
-//                            $(this).addClass("greater");
                             num++;
                         } else if (parseInt($(this).text()) < parseInt(inp)) {
-//                            alert($(this).text() +" :: "+ inp);
-//                            $(this).addClass("lower");
                             den++;
                         }
 
                     });
-
-                    $('td[name="' + name + 'Odd"][class="T"]').text(den.toString() + "/" + num.toString());
+                    T_N = den;
+                    let TOdd = den.toString() + "/" + num.toString();
+                    $('td[name="' + name + 'Odd"].T').text(TOdd);
                     
                     num = 0;
                     den = 0;
-
                     $('td[name="' + name + '"].A').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
@@ -693,14 +786,12 @@
                         }
 
                     });
-
                     $('td[name="' + name + 'Odd"][class="A"]').text(den.toString() + "/" + num.toString());
                     
                     
                     
                     num = 0;
                     den = 0;
-
                     $('td[name="' + name + '"].B').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
@@ -711,7 +802,6 @@
                         }
 
                     });
-
                     $('td[name="' + name + 'Odd"][class="B"]').text(den.toString() + "/" + num.toString());
                     
                     
@@ -719,7 +809,6 @@
                     
                     num = 0;
                     den = 0;
-
                     $('td[name="' + name + '"].G').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
@@ -730,9 +819,52 @@
                         }
 
                     });
-
                     $('td[name="' + name + 'Odd"][class="G"]').text(den.toString() + "/" + num.toString());
-
+                    
+                    let rowDiv = $(this).parents('div.row').first();
+                    
+                    //outline .T ratio
+                    $(rowDiv).find('td.T').each(function(){
+                        if($(this).text().trim().includes(TOdd)){
+                            $(this).addClass('highlight');
+                        }
+                    });
+                    
+                    //outline .T cells
+                    let hIndex;
+                    if(T_N < 5){
+                        $(rowDiv).find('.T').eq(T_N).addClass('highlight');
+                    }
+                    else if(T_N > 5){
+                        $(rowDiv).find('.T').eq(T_N-1).addClass('highlight');
+                    }
+                    
+                    
+                    //outline backtest10
+                    let rowIndices = [1, 17];
+                    if(rowDiv.find('[name$="Odd"].G').text().includes("1/4")){
+                         rowIndices.push(4);
+                         rowIndices.push(21);
+                    }
+                    else if(rowDiv.find('[name$="Odd"].G').text().includes("2/3")){
+                         rowIndices.push(7);
+                         rowIndices.push(24);
+                    }
+                    else if(rowDiv.find('[name$="Odd"].G').text().includes("3/2")){
+                         rowIndices.push(10);
+                         rowIndices.push(27);
+                    }
+                    else if(rowDiv.find('[name$="Odd"].G').text().includes("4/1")){
+                         rowIndices.push(13);
+                         rowIndices.push(30);
+                    }
+                    $(rowDiv).find('table.BT10').find('tr').filter(function(i) {
+                            return $.inArray(i, rowIndices) > -1;
+                        }).each(function(){
+                            let headerTD = $(this).find('td:contains('+TOdd+')');
+                            headerTD.addClass('highlight');
+                            $(headerTD).parent().next().find('td').eq($(headerTD).index()).addClass('highlight');
+                        });
                 }
             });
 
@@ -749,53 +881,6 @@
                 t2.fadeToggle(1000);
             }
             
-//            $("input").keyup(function () {
-//
-//                var inp = $(this).val();
-//                
-//                var name = $(this).attr("name");
-//
-//                $('td[name="' + name + '"]').each(function () {
-//                    $(this).removeClass("greater");
-//                    $(this).removeClass("lower");
-//                    $('#' + name).text("@");
-//                });
-//
-//
-//                if (inp.length === 0) {
-//                    $('td[name="' + name + '"]').each(function () {
-//                        $(this).removeClass("greater");
-//                        $(this).removeClass("lower");
-//                        $('#' + name).text("@");
-//                    });
-//
-//                } else {
-////                    var tds = $('td[name="' + name + '"]');
-////
-////                    var noOfTds = $('td[name="' + name + '"]');
-//
-//                    var num = 0;
-//                    var den = 1;
-//
-//                    $('td[name="' + name + '"]').each(function () {
-//                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
-//
-//                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
-//
-//                            $(this).addClass("greater");
-//                            num++;
-//                        } else if (parseInt($(this).text()) < parseInt(inp)) {
-////                            alert($(this).text() +" :: "+ inp);
-//                            $(this).addClass("lower");
-//                            den++;
-//                        }
-//
-//                    });
-//
-//                    $('#' + name).text(den.toString() + "/" + num.toString());
-//
-//                }
-//            });
         </script>
 
     </body>

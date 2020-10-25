@@ -101,7 +101,7 @@
                 <c:forEach var="match" items="${matches}" varStatus="m">
                 <tr>
                     <td>
-                    <form action="testmatchidDB" method ="POST">
+                    <form action="editTestMatch" method ="POST">
                     <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
                     <input type="submit" value = ${match.getMatchId()} >
                 </form> </td>
@@ -145,5 +145,16 @@
                 </tr>
                 </c:forEach>
         </table>
+        
+        
+        <script>
+            function confirmEdit(form) {
+                $("<input />").attr("type", "hidden")
+                        .attr("name", "isTest")
+                        .attr("value", "true")
+                        .appendTo(form);
+                form.action = 'editTestMatch';
+            }
+        </script>
     </body>
 </html>

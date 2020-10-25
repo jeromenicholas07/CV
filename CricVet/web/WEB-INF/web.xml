@@ -33,16 +33,16 @@
         <servlet-class>Servlets.getLdate</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>matchidDB</servlet-name>
-        <servlet-class>Servlets.matchidDB</servlet-class>
+        <servlet-name>editMatch</servlet-name>
+        <servlet-class>Servlets.editMatch</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>editDB</servlet-name>
         <servlet-class>Servlets.editDB</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>testmatchidDB</servlet-name>
-        <servlet-class>Servlets.testmatchidDB</servlet-class>
+        <servlet-name>editTestMatch</servlet-name>
+        <servlet-class>Servlets.editTestMatch</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>deleteDB</servlet-name>
@@ -89,16 +89,16 @@
         <url-pattern>/getLdate</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>matchidDB</servlet-name>
-        <url-pattern>/matchidDB</url-pattern>
+        <servlet-name>editMatch</servlet-name>
+        <url-pattern>/editMatch</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>editDB</servlet-name>
         <url-pattern>/editDB</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>testmatchidDB</servlet-name>
-        <url-pattern>/testmatchidDB</url-pattern>
+        <servlet-name>editTestMatch</servlet-name>
+        <url-pattern>/editTestMatch</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>deleteDB</servlet-name>
