@@ -6,20 +6,19 @@
 package Servlets;
 
 import Database.CricDB;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.JSONObject;
-import com.google.gson.Gson;
 
 /**
  *
- * @author DELL
+ * @author Jerome Nicholas
  */
-public class getTeams extends HttpServlet {
+public class resetHomeGround extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,30 +32,12 @@ public class getTeams extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            
-            int matchType = Integer.parseInt(request.getParameter("matchType"));          
-            System.out.println("mt : " + matchType);
-            CricDB db = new CricDB();
-            String json;
-            
-            if(matchType ==1){
-                 json = new Gson().toJson(db.getTestTeamsList());
-                 
-            }
-            
-            else{
-                 json = new Gson().toJson(db.getTeamsList(matchType));
-            }
-//            System.out.println(json);
-            
-            response.setContentType("application/json");
-            response.getWriter().write(json);
-
-
-//            response.setContentType("text/plain");
-//            response.getWriter().write("hohoho");
-        }
+        
+        CricDB db = new CricDB();
+        db.initHomeGrounds();
+        
+        response.setContentType("application/json");
+        response.getWriter().write(new Gson().toJson("done"));
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -164,8 +164,27 @@ public class getDB extends HttpServlet {
                 }
 
                 int totalSixes = Integer.parseInt(one.getParams().get(5)) + Integer.parseInt(two.getParams().get(5));
+                
+                List<String> details = db.getFavourites(matchId);
+                String favTeam = "";
+                String open1 = "";
+                String high1 = "";
+                String low1 = "";
+                String open2 = "";
+                String high2 = "";
+                String low2 = "";
+                
+                if(details.size() == 7){
+                    favTeam = details.get(0);
+                    open1 = details.get(1);
+                    high1 = details.get(2);
+                    low1 = details.get(3);
+                    open2 = details.get(4);
+                    high2 = details.get(5);
+                    low2 = details.get(6);
+                }
 
-                temp = new dbMatch(matchId,matchDate, oppTeam, tossWinner, BorC, result, totalSixes, one, two);
+                temp = new dbMatch(matchId,matchDate, oppTeam, tossWinner, BorC, result, totalSixes, one, two, favTeam, open1, high1, low1, open2, high2, low2);
                 dbMatches.add(temp);
 
             }

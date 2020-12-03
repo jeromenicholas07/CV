@@ -20,8 +20,16 @@ public class dbMatch {
     private Inning one;
     private Inning two;
     private int matchId;
+    
+    private String favTeam;
+    private String open1;
+    private String high1;
+    private String low1;
+    private String open2;
+    private String high2;
+    private String low2;
 
-    public dbMatch(int matchId, String matchDate, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two) {
+    public dbMatch(int matchId, String matchDate, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two, String favTeam, String open1, String high1, String low1, String open2, String high2, String low2) {
         this.matchId = matchId;
         this.matchDate = matchDate;
         this.oppTeam = oppTeam;
@@ -31,6 +39,14 @@ public class dbMatch {
         this.totalSixes = totalSixes;
         this.one = one;
         this.two = two;
+        
+        this.favTeam = favTeam;
+        this.open1 = open1;
+        this.high1 = high1;
+        this.low1 = low1;
+        this.open2 = open2;
+        this.high2 = high2;
+        this.low2 = low2;
     }
     public int getMatchId() {
         return matchId;
@@ -103,6 +119,40 @@ public class dbMatch {
         this.two = two;
     }
 
+    public String getFavTeam() {
+        return favTeam;
+    }
+
+    public void setFavTeam(String favTeam) {
+        this.favTeam = favTeam;
+    }
+
+    public String getOpen1() {
+        return open1;
+    }
+
+    public String getHigh1() {
+        return high1;
+    }
+
+    public String getLow1() {
+        return low1;
+    }
+
+    public String getOpen2() {
+        return open2;
+    }
+
+    public String getHigh2() {
+        return high2;
+    }
+
+    public String getLow2() {
+        return low2;
+    }
+
+    
+    
     
     
     }

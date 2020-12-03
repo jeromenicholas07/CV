@@ -47,11 +47,29 @@ import java.util.regex.Pattern;
 
 public class DataFetch {
     List<MatchReport> reports = new ArrayList<>();
-    List<String> impTeams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh","Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
+    List<String> impTeams = Arrays.asList("England","India","New Zealand","Australia","South Africa","Pakistan","Bangladesh",
+            "Sri Lanka","West Indies","Afghanistan","Ireland","Zimbabwe","Netherlands","Scotland");
 
     public List<MatchReport> getReports() {
         return reports;
     }
+    
+    public static Map<String, String> impTeamIndices = new HashMap<String, String>() {{
+        put("England", "1");
+        put("India", "6");
+        put("New Zealand", "5");
+        put("Australia", "2");
+        put("South Africa", "3");
+        put("Pakistan", "7");
+        put("Bangladesh", "25");
+        put("Sri Lanka", "8");
+        put("West Indies", "4");
+        put("Afghanistan", "40");
+        put("Ireland", "29");
+        put("Zimbabwe", "9");
+        put("Netherlands", "15");
+        put("Scotland", "30");
+    }};
     
 
     static {
@@ -93,12 +111,12 @@ public class DataFetch {
         System.out.println("------- Starting loadData() -------");
         String baseUrl = "http://stats.espncricinfo.com/";
         
-        List<Integer> matchTypes = Arrays.asList(117, 2, 158, 159, 748, 205, 3);
+        List<Integer> matchTypes = Arrays.asList(205, 117, 2, 158, 159, 748, 3);
         for(int matchType : matchTypes){
             System.out.println("------- matchType: "+matchType+" -------");
             List<String> loadedMatchIDs = db.getLoadedMatchIDs(matchType);
             List<String> matchLinks = new ArrayList<>();
-            int year = Calendar.getInstance().get(Calendar.YEAR);
+            int year = Calendar.getInstance().get(Calendar.YEAR) + 1;
             for (int y = year; y >= yr; y--) {
                 Document matches;
                 String matchListPage = null;

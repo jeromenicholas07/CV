@@ -70,6 +70,19 @@
                 outline-width: thick;
                 outline-style: solid;
             }
+            .highlight-left{
+                border-left: thick solid mediumslateblue !important;
+                border-top: thick solid mediumslateblue !important;
+                border-bottom: thick solid mediumslateblue !important;
+            }
+            .highlight-right{
+                border-right: thick solid mediumslateblue !important;
+                border-top: thick solid mediumslateblue !important;
+                border-bottom: thick solid mediumslateblue !important;
+            }
+            .highlight-sm{
+                border: 3px mediumslateblue solid;
+            }
             
             .bt-td{
                 background:linear-gradient(to top left,transparent 49.5%,#aaa 49.5%,#aaa 50.5%,transparent 50.5%);
@@ -503,10 +516,10 @@
             <!-- First 6/10 Overs -->
             <div class="row" >
                 <div class ="col-12">
-                    <c:if test='${matchType.equals("2")}'>
+                    <c:if test='${matchType == 2 }'>
                         <h3 class="card-title">First 10 Overs</h3>
                     </c:if>
-                    <c:if test='${!matchType.equals("2")}'>
+                    <c:if test='${matchType != 2 }'>
                         <h3 class="card-title">First 6 Overs</h3>
                     </c:if>
                          
@@ -532,10 +545,10 @@
             <!-- Last 5/10 Over -->
             <div class="row" >
                 <div class ="col-12">
-                    <c:if test='${matchType.equals("2")}'>
+                    <c:if test='${matchType == 2 }'>
                         <h3 class="card-title">Last 10 Overs</h3>
                     </c:if>
-                    <c:if test='${!matchType.equals("2")}'>
+                    <c:if test='${matchType != 2 }'>
                         <h3 class="card-title">Last 5 Overs</h3>
                     </c:if>
                          
@@ -611,10 +624,10 @@
             <!-- First 6/10 Overs -->
             <div class="row" >
                 <div class ="col-12">
-                    <c:if test='${matchType.equals("2")}'>
+                    <c:if test='${matchType == 2 }'>
                         <h3 class="card-title">First 10 Overs</h3>
                     </c:if>
-                    <c:if test='${!matchType.equals("2")}'>
+                    <c:if test='${matchType != 2 }'>
                         <h3 class="card-title">First 6 Overs</h3>
                     </c:if>
                          
@@ -663,6 +676,9 @@
                    let num = parseInt($(this).children('.bt-num').first().text());
                    let den = parseInt($(this).children('.bt-den').first().text());
                    
+                   if(den === 0){
+                       den++;
+                   }
                    let ratio = num/den;
                    if(ratio < 2){
                        $(this).addClass('red');
@@ -676,13 +692,15 @@
                 });
                 
                 // highlight sorted w backtest5
-                $('.A, .B, .G').filter('[data-count]').each(function(){
+                /*$('.A, .B').filter('[data-count]').each(function(){
                     let bt5HeaderRow = $(this).parents('div.row').find('table.BT5').find('tr:last').prev();
                     let c = parseInt($(this).attr('data-count'));
                     
-                    bt5Headers = bt5HeaderRow.find('td:contains('+c+'/'+(5-c)+')');
-                    let header;
+                    let bt5Headers = bt5HeaderRow.find('td:contains('+c+'/'+(5-c)+')');
+                    
                     if(bt5Headers.length === 3){
+                        let header;
+                        
                         if(this.classList.contains('A')){
                             header = bt5Headers[0];
                         }
@@ -704,7 +722,101 @@
                             $(this).addClass('green-bag');
                         }
                     }
+                    else if(bt5Headers.length === 1){
+                        let header;
+                        
+                        if(this.classList.contains('G')){
+                            header = bt5Headers[0];
+                        
+                            let valueTD = $(header).parent().next().find('td').eq($(header).index());
+                            if(valueTD.hasClass('red')){
+                                $(this).addClass('red-bag');
+                            }
+                            else if(valueTD.hasClass('yellow')){
+                                $(this).addClass('yellow-bag');
+                            }
+                            else if(valueTD.hasClass('green')){
+                                $(this).addClass('green-bag');
+                            }
+                        }
+                    }
                 });
+                */
+                $('.G').filter('[data-count]').each(function(){
+                    let bt5HeaderRow = $(this).parents('div.row').find('table.BT5').find('tr:last').prev();
+                    let c = parseInt($(this).attr('data-count'));
+                    
+                    let rat;
+                    if(c == 3){
+                        let rat1 = 2+'/'+3;
+                        let rat2 = 3+'/'+2;
+                        
+                        let bt5Headers1 = bt5HeaderRow.find('td:contains('+rat1+')');
+                        let header1 = bt5Headers1[2];
+                        
+                        let bt5Headers2 = bt5HeaderRow.find('td:contains('+rat2+')');
+                        let header2 = bt5Headers2[2];
+                        
+                        let valueTD1 = $(header1).parent().next().find('td').eq($(header1).index());
+                        let valueTD2 = $(header2).parent().next().find('td').eq($(header2).index());
+                        
+                        let class1;
+                        if(valueTD1.hasClass('red')){
+                            class1 = "#ff9999";
+                        }
+                        else if(valueTD1.hasClass('yellow')){
+                            class1 = "#fffb8f";
+                        }
+                        else{
+                            class1 = "#99ff99";
+                        }
+                        
+                        let class2;
+                        if(valueTD2.hasClass('red')){
+                            class2 = "#ff9999";
+                        }
+                        else if(valueTD2.hasClass('yellow')){
+                            class2 = "#fffb8f";
+                        }
+                        else{
+                            class2 = "#99ff99";
+                        }
+                        
+                        $(this).css({
+                            background: "linear-gradient(to right,"+class1+" 50%, "+class2+" 50%)" 
+                        });
+                    }
+                    else{
+                        if(c < 3){
+                            rat = (c-1)+'/'+(5-(c-1));
+                        }
+                        else{
+                            rat = c+'/'+(5-c);
+                        }
+                        
+                        let bt5Headers = bt5HeaderRow.find('td:contains('+rat+')');
+
+                        let header;
+                        if(bt5Headers.length === 3){
+                            header = bt5Headers[2];
+                        }
+                        else if(bt5Headers.length === 1){
+                            header = bt5Headers[0];
+                        }
+                        let valueTD = $(header).parent().next().find('td').eq($(header).index());
+                        if(valueTD.hasClass('red')){
+                            $(this).addClass('red-bag');
+                        }
+                        else if(valueTD.hasClass('yellow')){
+                            $(this).addClass('yellow-bag');
+                        }
+                        else if(valueTD.hasClass('green')){
+                            $(this).addClass('green-bag');
+                        }
+                    }
+                    
+                });
+                    
                 
                 //highlight sorted w backtest10
                 $('td.T').filter('[data-count]').each(function(){
@@ -714,7 +826,7 @@
                     }
                     
                     let bt10HeaderRowA = $(this).parents('div.row').find('table.BT10').find('tr:nth(1)');
-                    let bt10HeaderRowB = $(this).parents('div.row').find('table.BT10').find('tr:nth(17)');
+                    let bt10HeaderRowB = $(this).parents('div.row').find('table.BT10').find('tr:nth(11)');
                     
                     let headerA = bt10HeaderRowA.find('td:contains('+c+'/'+(10-c)+')');
                     let headerB = bt10HeaderRowB.find('td:contains('+c+'/'+(10-c)+')');
@@ -746,6 +858,15 @@
                 
                 $('.highlight').each(function(){
                    $(this).removeClass('highlight');
+                });
+                $('.highlight-sm').each(function(){
+                   $(this).removeClass('highlight-sm');
+                });
+                $('.highlight-left').each(function(){
+                   $(this).removeClass('highlight-left');
+                });
+                $('.highlight-right').each(function(){
+                   $(this).removeClass('highlight-right');
                 });
 
 
@@ -831,7 +952,6 @@
                     });
                     
                     //outline .T cells
-                    let hIndex;
                     if(T_N < 5){
                         $(rowDiv).find('.T').eq(T_N).addClass('highlight');
                     }
@@ -839,32 +959,43 @@
                         $(rowDiv).find('.T').eq(T_N-1).addClass('highlight');
                     }
                     
+                    //outline .G cells
+                    let groundRatio = rowDiv.find('[name$="Odd"].G').text().trim();
+                    let grCount = parseInt(groundRatio.split('/')[0]);
+                    if(grCount == 2){
+                        $(rowDiv).find('.G[data-count=3]').addClass('highlight-left');
+                    }
+                    else if(grCount == 3){
+                        $(rowDiv).find('.G[data-count=3]').addClass('highlight-right');
+                    }
+                    else if(grCount < 2){                    
+                        $(rowDiv).find('.G[data-count='+(grCount+1)+']').addClass('highlight');
+                    }
+                    else{
+                        $(rowDiv).find('.G[data-count='+grCount+']').addClass('highlight');
+                    }
                     
                     //outline backtest10
-                    let rowIndices = [1, 17];
-                    if(rowDiv.find('[name$="Odd"].G').text().includes("1/4")){
-                         rowIndices.push(4);
-                         rowIndices.push(21);
-                    }
-                    else if(rowDiv.find('[name$="Odd"].G').text().includes("2/3")){
-                         rowIndices.push(7);
-                         rowIndices.push(24);
-                    }
-                    else if(rowDiv.find('[name$="Odd"].G').text().includes("3/2")){
-                         rowIndices.push(10);
-                         rowIndices.push(27);
-                    }
-                    else if(rowDiv.find('[name$="Odd"].G').text().includes("4/1")){
-                         rowIndices.push(13);
-                         rowIndices.push(30);
-                    }
-                    $(rowDiv).find('table.BT10').find('tr').filter(function(i) {
-                            return $.inArray(i, rowIndices) > -1;
-                        }).each(function(){
-                            let headerTD = $(this).find('td:contains('+TOdd+')');
-                            headerTD.addClass('highlight');
-                            $(headerTD).parent().next().find('td').eq($(headerTD).index()).addClass('highlight');
+                    if(!TOdd.includes('5/5') && !TOdd.includes('0/10') && !TOdd.includes('10/0')){
+                        let colIndex = $(rowDiv).find('table.BT10').find('tr:nth(1)').find('td:contains('+TOdd+')').index();
+                        $(rowDiv).find('colgroup col').eq(colIndex).addClass('highlight-sm');
+
+                        
+                        $(rowDiv).find('td:contains(Ground):contains('+groundRatio+')').each(function(){
+                            $(this).parent().addClass('highlight-sm');
+                            $(this).parent().find('td').eq(colIndex).addClass('highlight');
                         });
+
+                        let bt10Main = [1, 11];
+                        $(rowDiv).find('table.BT10').find('tr').filter(function(i) {
+                                return $.inArray(i, bt10Main) > -1;
+                            }).each(function(){
+
+                                let headerTD = $(this).find('td:contains('+TOdd+')');
+                                $(headerTD).parent().next().find('td').eq(colIndex).addClass('highlight');
+
+                            });
+                    }
                 }
             });
 

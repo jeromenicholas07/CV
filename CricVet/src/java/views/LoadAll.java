@@ -53,6 +53,8 @@ public class LoadAll extends HttpServlet {
 //            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
 //            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
 //            reports.add(new MatchReport("blaa", MatchStatus.LOADED, new Exception("blalalala")));
+
+
             reports.addAll(df.loadData());
             reports.addAll(df.loadTestData());
 

@@ -68,7 +68,7 @@
         <div class="outer">
             <div class="middle">
                 <div class="inner">
-                    <form method="POST" action="getDB" id="form">
+                    <form method="GET" action="getDB" id="form">
                         <div class="container form-query">
                             <div class="form-group">
                                 <!--<label for="teamSelect">Select Tournament</label>-->
@@ -126,6 +126,7 @@
                             
                             var id = $(this).children(":selected").attr("value");
                             if(id !== "1"){
+                                $('#homeorawaySelect').prop("disabled", true);
                                 $('.test-side').hide();
                             }
                                 
@@ -139,6 +140,7 @@
                                 $('.teams').show();
                                 if(id === "1"){
                                     $('.test-side').show();
+                                    $('#homeorawaySelect').prop("disabled", false);
                                 }
                                 var team1 = $("#teamSelect1");
                                 

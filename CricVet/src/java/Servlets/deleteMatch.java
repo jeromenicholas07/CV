@@ -12,14 +12,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.JSONObject;
-import com.google.gson.Gson;
 
 /**
  *
- * @author DELL
+ * @author Jerome Nicholas
  */
-public class getTeams extends HttpServlet {
+public class deleteMatch extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,28 +32,24 @@ public class getTeams extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            
-            int matchType = Integer.parseInt(request.getParameter("matchType"));          
-            System.out.println("mt : " + matchType);
+
+            int matchID = Integer.parseInt(request.getParameter("matchID"));
+            boolean isTest = Boolean.parseBoolean(request.getParameter("isTest"));
+            if (matchID <= 0) {
+                out.println("Invalid matchID");
+                return;
+            }
+            String redirUrl = request.getParameter("redirUrl");
+            request.setAttribute("redirUrl", redirUrl);
             CricDB db = new CricDB();
-            String json;
-            
-            if(matchType ==1){
-                 json = new Gson().toJson(db.getTestTeamsList());
-                 
-            }
-            
-            else{
-                 json = new Gson().toJson(db.getTeamsList(matchType));
-            }
-//            System.out.println(json);
-            
-            response.setContentType("application/json");
-            response.getWriter().write(json);
 
-
-//            response.setContentType("text/plain");
-//            response.getWriter().write("hohoho");
+            if (db.deleteMatch(matchID, isTest)) {
+                out.println("<h2>Delete successful<br>");
+                out.println("<a href=" + redirUrl + ">< Back to DB page</a>");
+            } else {
+                out.println("<h2>Delete UNSUCCESSFUL// Please try again.<br>");
+                out.println("<a href=" + redirUrl + ">< Back to DB page</a>");
+            }
         }
     }
 

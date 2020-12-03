@@ -36,9 +36,7 @@ public class editMatch extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-
+        
             int matchID = Integer.parseInt(request.getParameter("matchID"));
             boolean isTest = Boolean.parseBoolean(request.getParameter("isTest"));
             //System.out.println(matchID);
@@ -69,7 +67,7 @@ public class editMatch extends HttpServlet {
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/edit.jsp");
                 dispatcher.forward(request, response);
             }
-        }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

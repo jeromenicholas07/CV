@@ -56,6 +56,34 @@
         <servlet-name>editNameDB</servlet-name>
         <servlet-class>Servlets.editNameDB</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>editFavourites</servlet-name>
+        <servlet-class>Servlets.editFavourites</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deleteMatch</servlet-name>
+        <servlet-class>Servlets.deleteMatch</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getHomeGrounds</servlet-name>
+        <servlet-class>Servlets.getHomeGrounds</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>deleteHomeGround</servlet-name>
+        <servlet-class>Servlets.deleteHomeGround</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>addHomeGround</servlet-name>
+        <servlet-class>Servlets.addHomeGround</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>resetHomeGround</servlet-name>
+        <servlet-class>Servlets.resetHomeGround</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getFavReport</servlet-name>
+        <servlet-class>Servlets.getFavReport</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadAll</servlet-name>
         <url-pattern>/LoadAll</url-pattern>
@@ -111,6 +139,34 @@
     <servlet-mapping>
         <servlet-name>editNameDB</servlet-name>
         <url-pattern>/editNameDB</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editFavourites</servlet-name>
+        <url-pattern>/editFavourites</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deleteMatch</servlet-name>
+        <url-pattern>/deleteMatch</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getHomeGrounds</servlet-name>
+        <url-pattern>/getHomeGrounds</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deleteHomeGround</servlet-name>
+        <url-pattern>/deleteHomeGround</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addHomeGround</servlet-name>
+        <url-pattern>/addHomeGround</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>resetHomeGround</servlet-name>
+        <url-pattern>/resetHomeGround</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getFavReport</servlet-name>
+        <url-pattern>/getFavReport</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

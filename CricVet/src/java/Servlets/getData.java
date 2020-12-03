@@ -8,6 +8,7 @@ package Servlets;
 import Database.CricDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.Integer.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -69,43 +70,43 @@ public class getData extends HttpServlet {
 
         if (inns.size() > 5) {
             for (int i = 0; i < inns.size() - 6; i++) {
-                int curr = Integer.parseInt(inns.get(i).getParams().get(pIndex));
+                int curr = parseInt(inns.get(i).getParams().get(pIndex));
 
                 List<Inning> sub = new ArrayList<>(inns.subList(i + 1, i + 6));
                 Collections.sort(sub, new Comparator<Inning>() {
                     @Override
                     public int compare(Inning o1, Inning o2) {
-                        return Integer.parseInt(o1.getParams().get(pIndex))
-                                - Integer.parseInt(o2.getParams().get(pIndex));
+                        return parseInt(o1.getParams().get(pIndex))
+                                - parseInt(o2.getParams().get(pIndex));
                     }
                 });
 
                 btMap.put("N", btMap.get("N") + 1);
 
-                if (curr < Integer.parseInt(sub.get(0).getParams().get(pIndex))) {
+                if (curr < parseInt(sub.get(0).getParams().get(pIndex))) {
                     btMap.put("<1", btMap.get("<1") + 1);
                 }
-                if (curr >= Integer.parseInt(sub.get(0).getParams().get(pIndex))
-                        && curr < Integer.parseInt(sub.get(1).getParams().get(pIndex))) {
+                if (curr >= parseInt(sub.get(0).getParams().get(pIndex))
+                        && curr < parseInt(sub.get(1).getParams().get(pIndex))) {
                     btMap.put("1<2", btMap.get("1<2") + 1);
                 }
-                if (curr >= Integer.parseInt(sub.get(1).getParams().get(pIndex))) {
+                if (curr >= parseInt(sub.get(1).getParams().get(pIndex))) {
                     btMap.put("1/4", btMap.get("1/4") + 1);
                 }
-                if (curr >= Integer.parseInt(sub.get(2).getParams().get(pIndex))) {
+                if (curr >= parseInt(sub.get(2).getParams().get(pIndex))) {
                     btMap.put("2/3", btMap.get("2/3") + 1);
                 }
-                if (curr <= Integer.parseInt(sub.get(2).getParams().get(pIndex))) {
+                if (curr <= parseInt(sub.get(2).getParams().get(pIndex))) {
                     btMap.put("3/2", btMap.get("3/2") + 1);
                 }
-                if (curr <= Integer.parseInt(sub.get(3).getParams().get(pIndex))) {
+                if (curr <= parseInt(sub.get(3).getParams().get(pIndex))) {
                     btMap.put("4/1", btMap.get("4/1") + 1);
                 }
-                if (curr > Integer.parseInt(sub.get(3).getParams().get(pIndex))
-                        && curr < Integer.parseInt(sub.get(4).getParams().get(pIndex))) {
+                if (curr > parseInt(sub.get(3).getParams().get(pIndex))
+                        && curr < parseInt(sub.get(4).getParams().get(pIndex))) {
                     btMap.put("4<5", btMap.get("4<5") + 1);
                 }
-                if (curr >= Integer.parseInt(sub.get(4).getParams().get(pIndex))) {
+                if (curr >= parseInt(sub.get(4).getParams().get(pIndex))) {
                     btMap.put("5<", btMap.get("5<") + 1);
                 }
             }
@@ -125,35 +126,35 @@ public class getData extends HttpServlet {
 
         if (inns.size() > 5) {
             for (int i = 0; i < inns.size() - 6; i++) {
-                int curr = Integer.parseInt(inns.get(i).getParams().get(pIndex));
+                int curr = parseInt(inns.get(i).getParams().get(pIndex));
 
                 List<Inning> sub = new ArrayList<>(inns.subList(i + 1, i + 6));
                 Collections.sort(sub, new Comparator<Inning>() {
                     @Override
                     public int compare(Inning o1, Inning o2) {
-                        return Integer.parseInt(o1.getParams().get(pIndex))
-                                - Integer.parseInt(o2.getParams().get(pIndex));
+                        return parseInt(o1.getParams().get(pIndex))
+                                - parseInt(o2.getParams().get(pIndex));
                     }
                 });
 
                 btMap.put("N", btMap.get("N") + 1);
 
-                if (curr >= Integer.parseInt(sub.get(0).getParams().get(pIndex))) {
+                if (curr >= parseInt(sub.get(0).getParams().get(pIndex))) {
                     btMap.put("0/5", btMap.get("0/5") + 1);
                 }
-                if (curr >= Integer.parseInt(sub.get(1).getParams().get(pIndex))) {
+                if (curr >= parseInt(sub.get(1).getParams().get(pIndex))) {
                     btMap.put("1/4", btMap.get("1/4") + 1);
                 }
-                if (curr >= Integer.parseInt(sub.get(2).getParams().get(pIndex))) {
+                if (curr >= parseInt(sub.get(2).getParams().get(pIndex))) {
                     btMap.put("2/3", btMap.get("2/3") + 1);
                 }
-                if (curr <= Integer.parseInt(sub.get(2).getParams().get(pIndex))) {
+                if (curr <= parseInt(sub.get(2).getParams().get(pIndex))) {
                     btMap.put("3/2", btMap.get("3/2") + 1);
                 }
-                if (curr <= Integer.parseInt(sub.get(3).getParams().get(pIndex))) {
+                if (curr <= parseInt(sub.get(3).getParams().get(pIndex))) {
                     btMap.put("4/1", btMap.get("4/1") + 1);
                 }
-                if (curr <= Integer.parseInt(sub.get(4).getParams().get(pIndex))) {
+                if (curr <= parseInt(sub.get(4).getParams().get(pIndex))) {
                     btMap.put("5/0", btMap.get("5/0") + 1);
                 }
             }
@@ -161,31 +162,35 @@ public class getData extends HttpServlet {
         return btMap;
     }
     
-    private final String GR_1ABOVE = "Gr 0/5 | ";
-    private final String GR_2ABOVE = "Gr 1/4 | ";
-    private final String GR_3ABOVE = "Gr 2/3 | ";
-    private final String GR_3BELOW = "Gr 3/2 | ";
-    private final String GR_4BELOW = "Gr 4/1 | ";
-    private final String GR_5BELOW = "Gr 5/0 | ";
+    private final String GR_0 = "Gr 0/5 | ";
+    private final String GR_1 = "Gr 1/4 | ";
+    private final String GR_2 = "Gr 2/3 | ";
+    private final String GR_3 = "Gr 3/2 | ";
+    private final String GR_4 = "Gr 4/1 | ";
+    private final String GR_5 = "Gr 5/0 | ";
     
     private Map<String, Integer> generateBtMap() {
         Map<String, Integer> btMap = new LinkedHashMap<>();
         btMap.put("N", 0);
         generateWithPrefix("", btMap);
         btMap.put("NG", 0);
-        generateWithPrefix(GR_1ABOVE, btMap);
-        generateWithPrefix(GR_2ABOVE, btMap);
-        generateWithPrefix(GR_3ABOVE, btMap);
-        generateWithPrefix(GR_3BELOW, btMap);
-        generateWithPrefix(GR_4BELOW, btMap);
-        generateWithPrefix(GR_5BELOW, btMap);
+        generateWithPrefix(GR_0, btMap);
+        generateWithPrefix(GR_1, btMap);
+        generateWithPrefix(GR_2, btMap);
+        generateWithPrefix(GR_3, btMap);
+        generateWithPrefix(GR_4, btMap);
+        generateWithPrefix(GR_5, btMap);
 
         return btMap;
     }
     
     private void generateWithPrefix(String prefix, Map<String, Integer> btMap){
-        btMap.put(prefix+"<1", 0);
-        btMap.put(prefix+"1<2", 0);
+        int NO_GR_INIT = 0;
+        if(!prefix.equals("")){
+            NO_GR_INIT = NO_GR_BT;
+        }
+        btMap.put(prefix+"<1", NO_GR_INIT);
+        btMap.put(prefix+"1<2", NO_GR_INIT);
         btMap.put(prefix+"1/9", 0);
         btMap.put(prefix+"2/8", 0);
         btMap.put(prefix+"3/7", 0);
@@ -194,99 +199,156 @@ public class getData extends HttpServlet {
         btMap.put(prefix+"7/3", 0);
         btMap.put(prefix+"8/2", 0);
         btMap.put(prefix+"9/1", 0);
-        btMap.put(prefix+"9<10", 0);
-        btMap.put(prefix+"10<", 0);
-        btMap.put(prefix+"3-3 above(6<)", 0);
-        btMap.put(prefix+"4-4 above(8<)", 0);
-        btMap.put(prefix+"3-3 below(<6)", 0);
-        btMap.put(prefix+"4-4 below(<8)", 0);
-    } 
+        btMap.put(prefix+"9<10", NO_GR_INIT);
+        btMap.put(prefix+"10<", NO_GR_INIT);
+        btMap.put(prefix+"3-3 above(6<)", NO_GR_INIT);
+        btMap.put(prefix+"4-4 above(8<)", NO_GR_INIT);
+        btMap.put(prefix+"3-3 below(<6)", NO_GR_INIT);
+        btMap.put(prefix+"4-4 below(<8)", NO_GR_INIT);
+    }
 
+    private final int NO_GR_BT = -42;
     private void fillMapBt10(Map<String, Integer> btMap, int curr, int pIndex, List<Inning> sub, List<Inning> subA, List<Inning> subB, List<Inning> subG) {
+        
         btMap.put("N", btMap.get("N") + 1);
-
+        
         if (subG.size() == 5) {
             btMap.put("NG", btMap.get("NG") + 1);
-            
-            if(curr >= Integer.parseInt(subG.get(1).getParams().get(pIndex))){
-                fillWithPrefixBt10(GR_2ABOVE, btMap, curr, pIndex, sub, subA, subB);
-            }
-            
-            if(curr >= Integer.parseInt(subG.get(2).getParams().get(pIndex))){
-                fillWithPrefixBt10(GR_3ABOVE, btMap, curr, pIndex, sub, subA, subB);
-            }
-            
-            if(curr <= Integer.parseInt(subG.get(2).getParams().get(pIndex))){
-                fillWithPrefixBt10(GR_3BELOW, btMap, curr, pIndex, sub, subA, subB);
-            }
-            
-            if(curr <= Integer.parseInt(subG.get(3).getParams().get(pIndex))){
-                fillWithPrefixBt10(GR_4BELOW, btMap, curr, pIndex, sub, subA, subB);
-            }
         }
 
-        fillWithPrefixBt10("", btMap, curr, pIndex, sub, subA, subB);
+        if (curr < parseInt(sub.get(0).getParams().get(pIndex))) {
+            incrementBt(btMap, "<1");
+        }
+        if (curr >= parseInt(sub.get(0).getParams().get(pIndex))
+                && curr < parseInt(sub.get(1).getParams().get(pIndex))) {
+            incrementBt(btMap, "1<2");
+        }
+        if (curr >= parseInt(sub.get(1).getParams().get(pIndex))) {
+            incrementBt(btMap, "1/9");
+        }
+        if (curr >= parseInt(sub.get(2).getParams().get(pIndex))) {
+            incrementBt(btMap, "2/8");
+        }
+        if (curr >= parseInt(sub.get(3).getParams().get(pIndex))) {
+            incrementBt(btMap, "3/7");
+        }
+        if (curr >= parseInt(sub.get(4).getParams().get(pIndex))) {
+            incrementBt(btMap, "4/6");
+        }
+        if (curr <= parseInt(sub.get(5).getParams().get(pIndex))) {
+            incrementBt(btMap, "6/4");
+        }
+        if (curr <= parseInt(sub.get(6).getParams().get(pIndex))) {
+            incrementBt(btMap, "7/3");
+        }
+        if (curr <= parseInt(sub.get(7).getParams().get(pIndex))) {
+            incrementBt(btMap, "8/2");
+        }
+        if (curr <= parseInt(sub.get(8).getParams().get(pIndex))) {
+            incrementBt(btMap, "9/1");
+        }
+        if (curr > parseInt(sub.get(8).getParams().get(pIndex))
+                && curr < parseInt(sub.get(9).getParams().get(pIndex))) {
+            incrementBt(btMap, "9<10");
+        }
+        if (curr >= parseInt(sub.get(9).getParams().get(pIndex))) {
+            incrementBt(btMap, "10<");
+        }
+        if (curr >= parseInt(subA.get(2).getParams().get(pIndex))
+                && curr >= parseInt(subB.get(2).getParams().get(pIndex))
+                && curr >= parseInt(sub.get(5).getParams().get(pIndex))) {
+            incrementBt(btMap, "3-3 above(6<)");
+        }
+        if (curr >= parseInt(subA.get(3).getParams().get(pIndex))
+                && curr >= parseInt(subB.get(3).getParams().get(pIndex))
+                && curr >= parseInt(sub.get(7).getParams().get(pIndex))) {
+            incrementBt(btMap, "4-4 above(8<)");
+        }
+        if (curr <= parseInt(subA.get(2).getParams().get(pIndex))
+                && curr <= parseInt(subB.get(2).getParams().get(pIndex))
+                && curr <= parseInt(sub.get(5).getParams().get(pIndex))) {
+            incrementBt(btMap, "3-3 below(<6)");
+        }
+        if (curr <= parseInt(subA.get(3).getParams().get(pIndex))
+                && curr <= parseInt(subB.get(3).getParams().get(pIndex))
+                && curr <= parseInt(sub.get(7).getParams().get(pIndex))) {
+            incrementBt(btMap, "4-4 below(<8)");
+        }
+
+        fillGroundBT10(curr, btMap, pIndex, sub, subG);
     }
     
-    private void fillWithPrefixBt10(String prefix, Map<String, Integer> btMap, int curr, int pIndex, List<Inning> sub, List<Inning> subA, List<Inning> subB){
-        if (curr < Integer.parseInt(sub.get(0).getParams().get(pIndex))) {
-            btMap.put(prefix+"<1", btMap.get(prefix+"<1") + 1);
+    private void fillGroundBT10(int curr, Map<String, Integer> btMap, int pIndex, List<Inning> sub, List<Inning> subG){
+    
+        if(subG.size() == 5){
+            
+            for(int i = 1; i < 9; i++){
+                int val = parseInt(sub.get(i).getParams().get(pIndex));
+                String header;
+                boolean isNumerator;
+                if(i<5){
+                    header = i + "/" + (10-i);
+                    isNumerator = curr >= val;
+                }
+                else{
+                    header = (i+1) + "/" + (10-(i+1));
+                    isNumerator = curr <= val;
+                }
+                
+                if(val <= parseInt(subG.get(0).getParams().get(pIndex))){
+                    incrementBt(btMap, GR_0 + header, isNumerator);
+                }
+                if(val > parseInt(subG.get(0).getParams().get(pIndex))
+                        && val <= parseInt(subG.get(1).getParams().get(pIndex))){
+                    incrementBt(btMap, GR_1 + header, isNumerator);
+                }
+                if(val > parseInt(subG.get(1).getParams().get(pIndex))
+                        && val <= parseInt(subG.get(2).getParams().get(pIndex))){
+                    incrementBt(btMap, GR_2 + header, isNumerator);
+                }
+                if(val > parseInt(subG.get(2).getParams().get(pIndex))
+                        && val <= parseInt(subG.get(3).getParams().get(pIndex))){
+                    incrementBt(btMap, GR_3 + header, isNumerator);
+                }
+                if(val > parseInt(subG.get(3).getParams().get(pIndex))
+                        && val <= parseInt(subG.get(4).getParams().get(pIndex))){
+                    incrementBt(btMap, GR_4 + header, isNumerator);
+                }
+                if(val > parseInt(subG.get(4).getParams().get(pIndex))){
+                    incrementBt(btMap, GR_5 + header, isNumerator);
+                }
+            }
+            
         }
-        if (curr >= Integer.parseInt(sub.get(0).getParams().get(pIndex))
-                && curr < Integer.parseInt(sub.get(1).getParams().get(pIndex))) {
-            btMap.put(prefix+"1<2", btMap.get(prefix+"1<2") + 1);
+        
+//        0 <=1 
+//        1 1 - <= 2
+//        2 2 - <= 3
+//        3 3 - <= 4
+//        4 4 - <= 5
+//        5 >5
+    }
+    
+    private void incrementBt(Map<String, Integer> btMap, String header){
+        btMap.put(header, btMap.get(header) + 1);
+    }
+    
+    private void incrementBt(Map<String, Integer> btMap, String header, boolean isNumerator){
+        int val = btMap.get(header);
+        
+        int num = val & 0xFFFF;
+        int den = (val >> 16) & 0xFFFF;
+        
+        if(isNumerator){
+            num++;
         }
-        if (curr >= Integer.parseInt(sub.get(1).getParams().get(pIndex))) {
-            btMap.put(prefix+"1/9", btMap.get(prefix+"1/9") + 1);
+        else{
+            den++;
         }
-        if (curr >= Integer.parseInt(sub.get(2).getParams().get(pIndex))) {
-            btMap.put(prefix+"2/8", btMap.get(prefix+"2/8") + 1);
-        }
-        if (curr >= Integer.parseInt(sub.get(3).getParams().get(pIndex))) {
-            btMap.put(prefix+"3/7", btMap.get(prefix+"3/7") + 1);
-        }
-        if (curr >= Integer.parseInt(sub.get(4).getParams().get(pIndex))) {
-            btMap.put(prefix+"4/6", btMap.get(prefix+"4/6") + 1);
-        }
-        if (curr <= Integer.parseInt(sub.get(5).getParams().get(pIndex))) {
-            btMap.put(prefix+"6/4", btMap.get(prefix+"6/4") + 1);
-        }
-        if (curr <= Integer.parseInt(sub.get(6).getParams().get(pIndex))) {
-            btMap.put(prefix+"7/3", btMap.get(prefix+"7/3") + 1);
-        }
-        if (curr <= Integer.parseInt(sub.get(7).getParams().get(pIndex))) {
-            btMap.put(prefix+"8/2", btMap.get(prefix+"8/2") + 1);
-        }
-        if (curr <= Integer.parseInt(sub.get(8).getParams().get(pIndex))) {
-            btMap.put(prefix+"9/1", btMap.get(prefix+"9/1") + 1);
-        }
-        if (curr > Integer.parseInt(sub.get(8).getParams().get(pIndex))
-                && curr < Integer.parseInt(sub.get(9).getParams().get(pIndex))) {
-            btMap.put(prefix+"9<10", btMap.get(prefix+"9<10") + 1);
-        }
-        if (curr >= Integer.parseInt(sub.get(9).getParams().get(pIndex))) {
-            btMap.put(prefix+"10<", btMap.get(prefix+"10<") + 1);
-        }
-        if (curr >= Integer.parseInt(subA.get(2).getParams().get(pIndex))
-                && curr >= Integer.parseInt(subB.get(2).getParams().get(pIndex))
-                && curr >= Integer.parseInt(sub.get(5).getParams().get(pIndex))) {
-            btMap.put(prefix+"3-3 above(6<)", btMap.get(prefix+"3-3 above(6<)") + 1);
-        }
-        if (curr >= Integer.parseInt(subA.get(3).getParams().get(pIndex))
-                && curr >= Integer.parseInt(subB.get(3).getParams().get(pIndex))
-                && curr >= Integer.parseInt(sub.get(7).getParams().get(pIndex))) {
-            btMap.put(prefix+"4-4 above(8<)", btMap.get(prefix+"4-4 above(8<)") + 1);
-        }
-        if (curr <= Integer.parseInt(subA.get(2).getParams().get(pIndex))
-                && curr <= Integer.parseInt(subB.get(2).getParams().get(pIndex))
-                && curr <= Integer.parseInt(sub.get(5).getParams().get(pIndex))) {
-            btMap.put(prefix+"3-3 below(<6)", btMap.get(prefix+"3-3 below(<6)") + 1);
-        }
-        if (curr <= Integer.parseInt(subA.get(3).getParams().get(pIndex))
-                && curr <= Integer.parseInt(subB.get(3).getParams().get(pIndex))
-                && curr <= Integer.parseInt(sub.get(7).getParams().get(pIndex))) {
-            btMap.put(prefix+"4-4 below(<8)", btMap.get(prefix+"4-4 below(<8)") + 1);
-        }
+        
+        int newVal = num | (den << 16);
+        
+        btMap.put(header, newVal);
     }
 
     private Map<String, Integer> backTest10(String teamName, List<Match> oneMatch, int pIndex, MatchProcessor matchProcessor) {
@@ -298,16 +360,26 @@ public class getData extends HttpServlet {
 //                return o1.getMatchDate().compareTo(o2.getMatchDate());
 //            }
 //        });
+
+        Map<String, List<Match>> cache = new LinkedHashMap<>();
+        Map<String, List<Match>> grCache = new LinkedHashMap<>();
+        
         for (int i = 0; i < oneMatch.size() - 6; i++) {
             Match currMatch = oneMatch.get(i);
-            int curr = Integer.parseInt(currMatch.getInningOne().getParams().get(pIndex));
+            int curr = parseInt(currMatch.getInningOne().getParams().get(pIndex));
             Timestamp currDate = currMatch.getMatchDate();
             String oppTeam = currMatch.getHomeTeam().equals(teamName) ? currMatch.getAwayTeam() : currMatch.getHomeTeam();
             String groundName = currMatch.getGroundName();
 
-            List<Match> twoMatch = matchProcessor.getMatches(oppTeam);
+            if(!cache.keySet().contains(oppTeam)){
+                cache.put(oppTeam, matchProcessor.getMatches(oppTeam));
+            }
+            if(!grCache.keySet().contains(groundName)){
+                grCache.put(groundName, matchProcessor.getGMatches(groundName));
+            }
+            List<Match> twoMatch = new ArrayList<>(cache.get(oppTeam));
             twoMatch.removeIf(m -> m.getInningOne().getParams().get(pIndex).contains("-1"));
-            List<Match> grMatch = matchProcessor.getGMatches(groundName);
+            List<Match> grMatch = new ArrayList<>(grCache.get(groundName));
             grMatch.removeIf(m -> m.getInningOne().getParams().get(pIndex).contains("-1"));
 
             List<Inning> sub = new ArrayList<>();
@@ -339,8 +411,8 @@ public class getData extends HttpServlet {
             Comparator innComp = new Comparator<Inning>() {
                 @Override
                 public int compare(Inning o1, Inning o2) {
-                    return Integer.parseInt(o1.getParams().get(pIndex))
-                            - Integer.parseInt(o2.getParams().get(pIndex));
+                    return parseInt(o1.getParams().get(pIndex))
+                            - parseInt(o2.getParams().get(pIndex));
                 }
             };
 
@@ -367,7 +439,7 @@ public class getData extends HttpServlet {
 //        });
         for (int i = 0; i < oneMatch.size() - 6; i++) {
             Match currMatch = oneMatch.get(i);
-            int curr = Integer.parseInt(currMatch.getInningTwo().getParams().get(pIndex));
+            int curr = parseInt(currMatch.getInningTwo().getParams().get(pIndex));
             Timestamp currDate = currMatch.getMatchDate();
             String oppTeam = currMatch.getHomeTeam().equals(teamName) ? currMatch.getAwayTeam() : currMatch.getHomeTeam();
             String groundName = currMatch.getGroundName();
@@ -406,8 +478,8 @@ public class getData extends HttpServlet {
             Comparator innComp = new Comparator<Inning>() {
                 @Override
                 public int compare(Inning o1, Inning o2) {
-                    return Integer.parseInt(o1.getParams().get(pIndex))
-                            - Integer.parseInt(o2.getParams().get(pIndex));
+                    return parseInt(o1.getParams().get(pIndex))
+                            - parseInt(o2.getParams().get(pIndex));
                 }
             };
 
@@ -434,7 +506,7 @@ public class getData extends HttpServlet {
 //        });
         for (int i = 0; i < oneMatch.size() - 6; i++) {
             testMatch currMatch = oneMatch.get(i);
-            int curr = Integer.parseInt(inningCaller.call(currMatch).getParams().get(pIndex));
+            int curr = parseInt(inningCaller.call(currMatch).getParams().get(pIndex));
             Date currDate = currMatch.getMatchDate();
             String oppTeam = currMatch.getHomeTeam().equals(teamName) ? currMatch.getAwayTeam() : currMatch.getHomeTeam();
             String groundName = currMatch.getGroundName();
@@ -473,8 +545,8 @@ public class getData extends HttpServlet {
             Comparator innComp = new Comparator<Inning>() {
                 @Override
                 public int compare(Inning o1, Inning o2) {
-                    return Integer.parseInt(o1.getParams().get(pIndex))
-                            - Integer.parseInt(o2.getParams().get(pIndex));
+                    return parseInt(o1.getParams().get(pIndex))
+                            - parseInt(o2.getParams().get(pIndex));
                 }
             };
 
@@ -497,7 +569,7 @@ public class getData extends HttpServlet {
         final Date backDate;
         java.util.Date tempDate = new java.util.Date();
 
-        int matchType = Integer.parseInt(request.getParameter("tournament"));
+        int matchType = parseInt(request.getParameter("tournament"));
         String teamOne = request.getParameter("teamName1");
         String teamTwo = request.getParameter("teamName2");
         String groundName = request.getParameter("groundName");
@@ -538,15 +610,15 @@ public class getData extends HttpServlet {
 
                     for (testMatch q : matches) {
 
-                        int fours = Integer.parseInt(q.getInningOne1().getParams().get(1))
-                                + Integer.parseInt(q.getInningOne2().getParams().get(1))
-                                + Integer.parseInt(q.getInningTwo1().getParams().get(1))
-                                + Integer.parseInt(q.getInningTwo2().getParams().get(1));
+                        int fours = parseInt(q.getInningOne1().getParams().get(1))
+                                + parseInt(q.getInningOne2().getParams().get(1))
+                                + parseInt(q.getInningTwo1().getParams().get(1))
+                                + parseInt(q.getInningTwo2().getParams().get(1));
 
-                        int sixes = Integer.parseInt(q.getInningOne1().getParams().get(2))
-                                + Integer.parseInt(q.getInningOne2().getParams().get(2))
-                                + Integer.parseInt(q.getInningTwo1().getParams().get(2))
-                                + Integer.parseInt(q.getInningTwo2().getParams().get(2));
+                        int sixes = parseInt(q.getInningOne1().getParams().get(2))
+                                + parseInt(q.getInningOne2().getParams().get(2))
+                                + parseInt(q.getInningTwo1().getParams().get(2))
+                                + parseInt(q.getInningTwo2().getParams().get(2));
 
                         int total = fours + sixes;
 
@@ -775,11 +847,11 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FST_G", selects);
 
-                    request.setAttribute("F_G_bt", backTest5(selects, foursIndex));
+                    request.setAttribute("F_G_bt", backTest5_Gr(selects, foursIndex));
 
-                    request.setAttribute("S_G_bt", backTest5(selects, sixesIndex));
+                    request.setAttribute("S_G_bt", backTest5_Gr(selects, sixesIndex));
 
-                    request.setAttribute("T_G_bt", backTest5(selects, totBoundariesIndex));
+                    request.setAttribute("T_G_bt", backTest5_Gr(selects, totBoundariesIndex));
                 }
                 // </editor-fold>
             }
@@ -822,8 +894,8 @@ public class getData extends HttpServlet {
 
                         request.setAttribute("FX_G", selects);
 
-                        request.setAttribute("FTR_G_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("FFW_G_bt", backTest5(selects, firstWktIndex));
+                        request.setAttribute("FTR_G_bt", backTest5_Gr(selects, totalRunsIndex));
+                        request.setAttribute("FFW_G_bt", backTest5_Gr(selects, firstWktIndex));
                     }
                 }
                 After_five_wickets:
@@ -889,7 +961,7 @@ public class getData extends HttpServlet {
 
                         request.setAttribute("F5_G", selects);
 
-                        request.setAttribute("F5_G_bt", backTest5(selects, fiveWktIndex));
+                        request.setAttribute("F5_G_bt", backTest5_Gr(selects, fiveWktIndex));
                     }
                 }
 
@@ -934,8 +1006,8 @@ public class getData extends HttpServlet {
 
                         request.setAttribute("SX_G", selects);
 
-                        request.setAttribute("STR_G_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("SFW_G_bt", backTest5(selects, firstWktIndex));
+                        request.setAttribute("STR_G_bt", backTest5_Gr(selects, totalRunsIndex));
+                        request.setAttribute("SFW_G_bt", backTest5_Gr(selects, firstWktIndex));
                     }
                 }
                 After_five_wickets:
@@ -1001,7 +1073,7 @@ public class getData extends HttpServlet {
 
                         request.setAttribute("S5_G", selects);
 
-                        request.setAttribute("S5_G_bt", backTest5(selects, fiveWktIndex));
+                        request.setAttribute("S5_G_bt", backTest5_Gr(selects, fiveWktIndex));
                     }
                 }
 
@@ -1046,8 +1118,8 @@ public class getData extends HttpServlet {
 
                         request.setAttribute("TX_G", selects);
 
-                        request.setAttribute("TTR_G_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("TFW_G_bt", backTest5(selects, firstWktIndex));
+                        request.setAttribute("TTR_G_bt", backTest5_Gr(selects, totalRunsIndex));
+                        request.setAttribute("TFW_G_bt", backTest5_Gr(selects, firstWktIndex));
                     }
                 }
                 After_five_wickets:
@@ -1113,7 +1185,7 @@ public class getData extends HttpServlet {
 
                         request.setAttribute("T5_G", selects);
 
-                        request.setAttribute("T5_G_bt", backTest5(selects, fiveWktIndex));
+                        request.setAttribute("T5_G_bt", backTest5_Gr(selects, fiveWktIndex));
                     }
                 }
 
@@ -1158,8 +1230,8 @@ public class getData extends HttpServlet {
 
                         request.setAttribute("QX_G", selects);
 
-                        request.setAttribute("QTR_G_bt", backTest5(selects, totalRunsIndex));
-                        request.setAttribute("QFW_G_bt", backTest5(selects, firstWktIndex));
+                        request.setAttribute("QTR_G_bt", backTest5_Gr(selects, totalRunsIndex));
+                        request.setAttribute("QFW_G_bt", backTest5_Gr(selects, firstWktIndex));
                     }
                 }
                 After_five_wickets:
@@ -1225,7 +1297,7 @@ public class getData extends HttpServlet {
 
                         request.setAttribute("Q5_G", selects);
 
-                        request.setAttribute("Q5_G_bt", backTest5(selects, fiveWktIndex));
+                        request.setAttribute("Q5_G_bt", backTest5_Gr(selects, fiveWktIndex));
                     }
                 }
 
@@ -1265,10 +1337,10 @@ public class getData extends HttpServlet {
                     matches.removeIf(m -> (m.getResult().contains("D/L")));
                     for (int i = 0; i < matches.size(); i++) {
                         Inning temp = matches.get(i).getInningOne();
-                        int fours = Integer.parseInt(matches.get(i).getInningOne().getParams().get(4))
-                                + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(4));
-                        int sixes = Integer.parseInt(matches.get(i).getInningOne().getParams().get(5))
-                                + Integer.parseInt(matches.get(i).getInningTwo().getParams().get(5));
+                        int fours = parseInt(matches.get(i).getInningOne().getParams().get(4))
+                                + parseInt(matches.get(i).getInningTwo().getParams().get(4));
+                        int sixes = parseInt(matches.get(i).getInningOne().getParams().get(5))
+                                + parseInt(matches.get(i).getInningTwo().getParams().get(5));
                         int totalB = fours + sixes;
                         List<String> ps = temp.getParams();
                         ps.set(4, String.valueOf(fours));
@@ -1560,9 +1632,9 @@ public class getData extends HttpServlet {
                     List<Inning> selects1 = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
                     request.setAttribute("Gr_First", selects1.subList(0, Math.min(5, selects1.size())));
-                    request.setAttribute("foursG_bt", backTest5(selects1, 4));
-                    request.setAttribute("sixesG_bt", backTest5(selects1, 5));
-                    request.setAttribute("boundariesG_bt", backTest5(selects1, 6));
+                    request.setAttribute("foursG_bt", backTest5_Gr(selects1, 4));
+                    request.setAttribute("sixesG_bt", backTest5_Gr(selects1, 5));
+                    request.setAttribute("boundariesG_bt", backTest5_Gr(selects1, 6));
                 }
                 // </editor-fold>
             }
@@ -1680,7 +1752,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
                     request.setAttribute("LO_G", selects);
-                    request.setAttribute("LO_G_bt", backTest5(selects, pIndex));
+                    request.setAttribute("LO_G_bt", backTest5_Gr(selects, pIndex));
                 }
                 // </editor-fold>
             }
@@ -1712,7 +1784,7 @@ public class getData extends HttpServlet {
                     List<Match> matches = type1.getGMatches(groundName);
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
-                    request.setAttribute("FW_G_bt", backTest5(selects, pIndex));
+                    request.setAttribute("FW_G_bt", backTest5_Gr(selects, pIndex));
                 }
                 // </editor-fold>
             }
@@ -1745,7 +1817,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
                     request.setAttribute("TR_G", selects);
-                    request.setAttribute("TR_G_bt", backTest5(selects, pIndex));
+                    request.setAttribute("TR_G_bt", backTest5_Gr(selects, pIndex));
                 }
                 // </editor-fold>
             }
@@ -1777,7 +1849,7 @@ public class getData extends HttpServlet {
                     List<Match> matches = type1_NoMajQuit.getGMatches(groundName);
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
-                    request.setAttribute("FX_G_bt", backTest5(selects, pIndex));
+                    request.setAttribute("FX_G_bt", backTest5_Gr(selects, pIndex));
                 }
                 // </editor-fold>
             }
@@ -1810,7 +1882,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningTwo()).collect(Collectors.toList());
 
                     request.setAttribute("FXS_G", selects);
-                    request.setAttribute("FXS_G_bt", backTest5(selects, pIndex));
+                    request.setAttribute("FXS_G_bt", backTest5_Gr(selects, pIndex));
                 }
                 // </editor-fold>
             }
@@ -1843,11 +1915,12 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningTwo()).collect(Collectors.toList());
 
                     request.setAttribute("FWS_G", selects);
-                    request.setAttribute("FWS_G_bt", backTest5(selects, pIndex));
+                    request.setAttribute("FWS_G_bt", backTest5_Gr(selects, pIndex));
                 }
                 // </editor-fold>
             }
 
+            request.setAttribute("matchType", matchType);
             request.setAttribute("headers", db.getHeaders(matchType));
             request.setAttribute("teamOne", teamOne);
             request.setAttribute("teamTwo", teamTwo);

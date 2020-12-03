@@ -42,12 +42,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.DataSource;
 import javax.naming.InitialContext;
 import models.Inning;
 import models.testMatch;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class CricDB extends BaseDAO {
 
@@ -622,31 +625,6 @@ public class CricDB extends BaseDAO {
         }
 
         try {
-            String sql = "drop table \"APP\".HOMEGROUND";
-            con = getConnection();
-            stmt = con.createStatement();
-            status.concat("\n - HomeGround SUCCESSFUL");
-            stmt.execute(sql);
-            con.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            status.concat("\n - HomeGround FAILED");
-        } finally {
-            try {
-                rs.close();
-            } catch (Exception e) {
-            }
-            try {
-                stmt.close();
-            } catch (Exception e) {
-            }
-            try {
-                con.close();
-            } catch (Exception e) {
-            }
-        }
-
-        try {
             String sql = "drop table \"APP\".TESTINNING";
             con = getConnection();
             stmt = con.createStatement();
@@ -822,9 +800,6 @@ public class CricDB extends BaseDAO {
         Statement stmt = null;
         ResultSet rs = null;
 
-//        deleteDB();
-//        
-//        
         try {
             String sql = "create table \"APP\".TEAMNAMES\n"
                     + "(\n"
@@ -1067,6 +1042,69 @@ public class CricDB extends BaseDAO {
             } catch (Exception e) {
             }
         }
+
+        try {
+            String sql = "create table \"APP\".FAVOURITES\n"
+                    + "(\n"
+                    + "	MATCHID INTEGER not null primary key,\n"
+                    + "	FAVTEAM VARCHAR(120) not null,\n"
+                    + "	OPENING1 VARCHAR(120),\n"
+                    + "	HIGH1 VARCHAR(120),\n"
+                    + "	LOW1 VARCHAR(120),"
+                    + "	OPENING2 VARCHAR(120),\n"
+                    + "	HIGH2 VARCHAR(120),\n"
+                    + "	LOW2 VARCHAR(120) )";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            System.out.println("Unable to create FAVOURITES");
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+
+        try {
+            String sql = "create table \"APP\".HOMEGROUNDS\n"
+                    + "(\n"
+                    + "	MATCHTYPE INTEGER not null ,\n"
+                    + "	GROUNDNAME VARCHAR(120) not null,\n"
+                    + "	TEAMNAME VARCHAR(120)\n"
+                    + ")";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            System.out.println("Unable to create HOMEGROUNDS");
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+
 //
 //        try {
 //            String sql = "UPDATE APP.MATCHES SET HOMETEAM = 'Delhi Capitals' WHERE HOMETEAM = 'Delhi Daredevils' ";
@@ -1121,7 +1159,29 @@ public class CricDB extends BaseDAO {
 //            try { stmt.close(); } catch (Exception e) {  }
 //            try { con.close(); } catch (Exception e) {  }
 //        }
+    }
 
+    public void initHomeGrounds() {
+        Map<String, String> impTeamMap = DataFetch.DataFetch.impTeamIndices;
+
+        for (String teamName : impTeamMap.keySet()) {
+            Document homeTeamGrounds = null;
+            String homeGrUrl = "https://www.espncricinfo.com/ci/content/ground/grounds.html?object_id=index&country=" + impTeamMap.get(teamName);
+            try {
+                homeTeamGrounds = Jsoup.connect(homeGrUrl).get();
+            } catch (Exception ex) {
+                System.out.println("searchphrase xxx : unable to access home ground page");
+                ex.printStackTrace();
+            }
+
+            List<String> homeGroundNames = homeTeamGrounds.getElementsByClass("grdLinks").eachText();
+            
+            for(String grName : homeGroundNames){
+                updateHomeGround(1, grName, teamName);
+                updateHomeGround(2, grName, teamName);
+                updateHomeGround(3, grName, teamName);
+            }
+        }
     }
 
     public Inning gettestInning(int id) {
@@ -1317,7 +1377,7 @@ public class CricDB extends BaseDAO {
             if (rs.next()) {
                 int inning1_id = rs.getInt("inning1_id");
                 int inning2_id = rs.getInt("inning2_id");
-                
+
                 Inning one = m.getInningOne();
                 Inning two = m.getInningTwo();
 
@@ -1357,7 +1417,7 @@ public class CricDB extends BaseDAO {
             } catch (Exception e) {
                 /* ignored */ }
         }
-        
+
         return true;
     }
 
@@ -1399,7 +1459,7 @@ public class CricDB extends BaseDAO {
                 int two1id = rs.getInt("two1id");
                 int one2id = rs.getInt("one2id");
                 int two2id = rs.getInt("two2id");
-                
+
                 Inning one1 = m.getInningOne1();
                 Inning one2 = m.getInningOne2();
                 Inning two1 = m.getInningTwo1();
@@ -2373,4 +2433,278 @@ public class CricDB extends BaseDAO {
         return true;
     }
 
+    public List<String> getFavourites(int matchID) {
+        List<String> details = new ArrayList<String>();
+
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        String sql;
+
+        try {
+            con = getConnection();
+            sql = "select FAVTEAM, OPENING1, HIGH1, LOW1, OPENING2, HIGH2, LOW2 from APP.FAVOURITES where MATCHID = " + matchID + " ";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                details.add(rs.getString("favteam"));
+                details.add(rs.getString("opening1"));
+                details.add(rs.getString("high1"));
+                details.add(rs.getString("low1"));
+                details.add(rs.getString("opening2"));
+                details.add(rs.getString("high2"));
+                details.add(rs.getString("low2"));
+            }
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return details;
+    }
+
+    public boolean updateFavourites(int matchID, String favTeam, String open1, String high1, String low1, String open2, String high2, String low2) {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        int nr = 0;
+        String sql;
+
+        try {
+            con = getConnection();
+
+            sql = "SELECT * FROM APP.FAVOURITES where MATCHID=" + matchID + " ";
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                sql = "UPDATE APP.FAVOURITES SET FAVTEAM = '" + favTeam + "', OPENING1 = '" + open1 + "', HIGH1 = '" + high1 + "', low1 = '" + low1 + "',   "
+                        + "OPENING2 = '" + open2 + "', HIGH2 = '" + high2 + "', low2 = '" + low2 + "'  "
+                        + "WHERE MATCHID=" + matchID + " ";
+            } else {
+                sql = "INSERT INTO APP.FAVOURITES (MATCHID, FAVTEAM, OPENING1, HIGH1, LOW1, OPENING2, HIGH2, LOW2) \n"
+                        + " VALUES (" + matchID + ", '" + favTeam + "', '" + open1 + "', '" + high1 + "', '" + low1 + "', '" + open2 + "', '" + high2 + "', '" + low2 + "')";
+            }
+
+            nr = stmt.executeUpdate(sql);
+
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return nr > 0;
+    }
+
+    public boolean deleteMatch(int matchID, boolean isTest) {
+        Connection con = null;
+        Statement stmt = null;
+        int nr = 0;
+        String sql;
+
+        try {
+            con = getConnection();
+            if (isTest) {
+                sql = "Delete from APP.TESTMATCH where MATCHID = " + matchID;
+            } else {
+                sql = "Delete from APP.MATCHES where MATCHID = " + matchID;
+            }
+            stmt = con.createStatement();
+            nr = stmt.executeUpdate(sql);
+
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return nr > 0;
+    }
+
+    public Map<String, String> getHomeGroundMap(int matchType) {
+        Map<String, String> homeGrounds = new TreeMap<>();
+
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            String sql = "SELECT * FROM APP.HOMEGROUNDS WHERE MATCHTYPE=" + matchType;
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                String groundName = rs.getString("GROUNDNAME");
+                String teamName = rs.getString("TEAMNAME");
+                homeGrounds.put(groundName, teamName);
+            }
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return homeGrounds;
+    }
+
+    public boolean updateHomeGround(int matchType, String groundName, String teamName) {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        int nr = 0;
+        String sql;
+
+        try {
+            con = getConnection();
+
+            sql = "SELECT * FROM APP.HOMEGROUNDS where MATCHTYPE=" + matchType + " "
+                    + "AND GROUNDNAME = '" + groundName + "' ";
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                sql = "UPDATE APP.HOMEGROUNDS SET TEAMNAME = '" + teamName + "'  "
+                        + "WHERE MATCHTYPE=" + matchType + " and GROUNDNAME = '" + groundName + "' ";
+            } else {
+                System.out.println("-----------------------------------------------------------");
+                System.out.println(sql);
+                sql = "INSERT INTO APP.HOMEGROUNDS (MATCHTYPE, GROUNDNAME, TEAMNAME) \n"
+                        + " VALUES (" + matchType + ", '" + groundName + "', '" + teamName + "')";
+            }
+
+            nr = stmt.executeUpdate(sql);
+
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return nr > 0;
+    }
+
+    public String getHomeGroundFor(String teamName, int matchType) {
+        String groundName = null;
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            String sql = "SELECT GROUNDNAME FROM APP.HOMEGROUNDS WHERE MATCHTYPE = " + matchType + " "
+                    + "AND TEAMNAME = '" + teamName + "' ";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                groundName = rs.getString("GROUNDNAME");
+            }
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return groundName;
+    }
+
+    public void deleteHomeGround(String groundName, int matchType) {
+        Connection con = null;
+        Statement stmt = null;
+        int nr = 0;
+
+        try {
+            con = getConnection();
+            String sql = "DELETE FROM APP.HOMEGROUNDS WHERE MATCHTYPE=" + matchType + ""
+                    + "AND GROUNDNAME = '" + groundName + "' ";
+
+            stmt = con.createStatement();
+            nr = stmt.executeUpdate(sql);
+
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+    }
 }

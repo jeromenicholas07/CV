@@ -40,7 +40,7 @@
 
         <table class="table table-bordered text-center">
             <thead class="thead-dark">
-                <tr><th colspan="20"><h2>${team}</h2></tr>
+                <tr><th colspan="200"><h2>${team}</h2></tr>
                 <tr>
 
                     <th rowspan="2">Match ID </th>
@@ -52,6 +52,12 @@
                     <th colspan="7">Batting</th>
                     <th colspan="7">Bowling</th>
                     <th rowspan="2">Tot. Sixes</th>
+                    <th rowspan="2">Delete Match</th>
+                    <th rowspan="2"></th>
+                    <th rowspan="2">Edit Fav.</th>
+                    <th rowspan="2">Favourite </th>
+                    <th colspan="3">Batting</th>
+                    <th colspan="3">Bowling</th>
                 </tr>
                 <tr>
                     <c:forEach begin='0' end='6'varStatus="loop">
@@ -60,6 +66,13 @@
                         <c:forEach begin='0' end='6'varStatus="loop">
                         <th>${inningHeaders.get(loop.index)}
                         </c:forEach>
+                            
+                    <th>Open </th>
+                    <th>High </th>
+                    <th>Low </th>
+                    <th>Open </th>
+                    <th>High </th>
+                    <th>Low </th>
                 </tr>
             </thead>
             <c:forEach var="match" items="${matches}" varStatus="m">
@@ -91,17 +104,65 @@
                         <td>${match.getTwo().getParams().get(loop.index)}
                         </c:forEach>
                     <td>${match.getTotalSixes()}
+                    <td>
+                        <form action="deleteMatch" method ="POST">
+                            <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
+                            <input type="hidden" name ="isTest" value="false">
+                            <input type="hidden" name ="redirUrl" value="hmm">
+                            <button type="submit" class="btn btn-light" onclick="confirmDelete(this)">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                    <th></th>
+                    <!--  fav part  -->
+
+                    <td>
+                        <form action="editFavourites" method ="POST">
+                            <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
+                            <input type="hidden" name ="team1" value ="${team}">
+                            <input type="hidden" name ="team2" value ="${match.getOppTeam()}">
+                            <input type="hidden" name ="redirUrl" value="hmm">
+
+                            <button type="submit" class="btn btn-light">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                    <td>${match.getFavTeam()}
+                    <td>${match.getOpen1()}
+                    <td>${match.getHigh1()}
+                    <td>${match.getLow1()}
+                    <td>${match.getOpen2()}
+                    <td>${match.getHigh2()}
+                    <td>${match.getLow2()}
                 </tr>
             </c:forEach>
         </table>
 
         <script>
+            $(document).ready(function () {
+                $('input[name="redirUrl"]').val(location.href);
+            });
+
+
             function confirmEdit(form) {
                 $("<input />").attr("type", "hidden")
                         .attr("name", "isTest")
                         .attr("value", "false")
                         .appendTo(form);
                 form.action = 'editMatch';
+            }
+            
+            function confirmDelete(){
+                if(confirm("Are you sure you want to DELETE this match?")){
+                    form.action = 'deleteMatch';
+                }
             }
         </script>
     </body>
