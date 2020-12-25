@@ -32,7 +32,6 @@ public class BaseDAO {
             ResultSet rs;
             
 //            ctx = new InitialContext();
-////
 //            ds = (DataSource) ctx.lookup("jdbc/jres");
 //            conn = ds.getConnection();
 

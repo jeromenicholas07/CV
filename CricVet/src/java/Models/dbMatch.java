@@ -11,6 +11,8 @@ package models;
  */
 public class dbMatch {
     private String matchDate;
+    
+    private String team;
     private String oppTeam;
     private String toss;
     private String BorC;
@@ -29,9 +31,10 @@ public class dbMatch {
     private String high2;
     private String low2;
 
-    public dbMatch(int matchId, String matchDate, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two, String favTeam, String open1, String high1, String low1, String open2, String high2, String low2) {
+    public dbMatch(int matchId, String matchDate,String team, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two, String favTeam, String open1, String high1, String low1, String open2, String high2, String low2) {
         this.matchId = matchId;
         this.matchDate = matchDate;
+        this.team = team;
         this.oppTeam = oppTeam;
         this.toss = toss;
         this.BorC = BorC;
@@ -57,6 +60,15 @@ public class dbMatch {
     public String getMatchDate() {
         return matchDate;
     }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
+    
 
     public void setMatchDate(String matchDate) {
         this.matchDate = matchDate;

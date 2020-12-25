@@ -48,153 +48,125 @@ public class getDB extends HttpServlet {
             int matchType = Integer.parseInt(request.getParameter("tournament"));
             String teamOne = request.getParameter("teamName1");
             String homeoraway = request.getParameter("homeoraway");
-            
-            if(matchType == 1){
-                
+
+            if (matchType == 1) {
+
                 TestType side = homeoraway.equals("Home") ? TestType.HOME : TestType.AWAY;
-                    List<testMatch> matches = db.getTestMatches(teamOne, 0, side);
+                List<testMatch> matches = db.getTestMatches(teamOne, 0, side);
 
-                    request.setAttribute("team", teamOne);            
-                    request.setAttribute("matches", matches);
-            
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/showtest.jsp");
-                    dispatcher.forward(request, response);
-            }
-            else {
-            List<Match> matches = db.getDB(matchType, teamOne);
+                request.setAttribute("team", teamOne);
+                request.setAttribute("matches", matches);
 
-            List<dbMatch> dbMatches = new ArrayList<>();
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/showtest.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                List<Match> matches = db.getDB(matchType, teamOne);
 
-            dbMatch temp;
+                List<dbMatch> dbMatches = new ArrayList<>();
 
-            for (int i = 0; i < matches.size(); i++) {
-                int matchId;
-                String matchDate;
-                String oppTeam;
-                String tossWinner;
-                String BorC;
-                String result;
-                
-                matchId = matches.get(i).getMatchId();
-                DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
-                System.out.println(matches.get(i).getMatchId());
-                Timestamp ts = matches.get(i).getMatchDate();
-                matchDate = dateFormat.format(ts);
+                dbMatch temp;
 
-                if (matches.get(i).getHomeTeam().equals(teamOne)) {
-                    oppTeam = matches.get(i).getAwayTeam();
-                } else {
-                    oppTeam = matches.get(i).getHomeTeam();
-                }
+                for (int i = 0; i < matches.size(); i++) {
+                    int matchId;
+                    String matchDate;
+                    String team;
+                    String oppTeam;
+                    String tossWinner;
+                    String BorC;
+                    String result;
 
-                if (matches.get(i).getTossWinner().contains(teamOne)) {
-                    if (matches.get(i).getTossWinner().contains("field")) {
-                        tossWinner = "W/C";
-                        BorC = "C";
-                    } else {
-                        tossWinner = "W/B";
-                        BorC = "B";
-                    }
-                } else {
-                    if (matches.get(i).getTossWinner().contains("field")) {
-                        tossWinner = "L/B";
-                        BorC = "B";
-                    } else {
-                        tossWinner = "L/C";
-                        BorC = "C";
-                    }
-                }
+                    matchId = matches.get(i).getMatchId();
+                    DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
+                    System.out.println(matches.get(i).getMatchId());
+                    Timestamp ts = matches.get(i).getMatchDate();
+                    matchDate = dateFormat.format(ts);
+                    
 
-                if (matches.get(i).getResult().contains("run")) {
                     if (matches.get(i).getHomeTeam().equals(teamOne)) {
-                    	if(matches.get(i).getResult().contains("D/L")){
-									result = "W " + "D/L";
-                    	}
-                    	else{
-                    		result = "W";
-                    	}
-                        				
+                        team = matches.get(i).getHomeTeam();
+                        oppTeam = matches.get(i).getAwayTeam();
                     } else {
-              			if(matches.get(i).getResult().contains("D/L")){
-              				result = "L " + "D/L";
-              			}
-              			else{
-              				result = "L";
-              			}
-                        
+                        team = matches.get(i).getAwayTeam();
+                        oppTeam = matches.get(i).getHomeTeam();
                     }
-                } else if (matches.get(i).getResult().contains("wicket")) {
-                    if (matches.get(i).getHomeTeam().equals(teamOne)) {
-                    	if (matches.get(i).getResult().contains("D/L")) {
-                    		result = "L " + "D/L";
-                    	}
-                    	else{
-                    		result = "L";
-                    	}
-                       
+
+                    if (matches.get(i).getTossWinner().contains(teamOne)) {
+                        if (matches.get(i).getTossWinner().contains("field")) {
+                            tossWinner = "W/C";
+                            BorC = "C";
+                        } else {
+                            tossWinner = "W/B";
+                            BorC = "B";
+                        }
                     } else {
-                    	if(matches.get(i).getResult().contains("D/L")){
-                    		result = "W " + "D/L";
-                    	}
-                    	else{
-                    		result = "W";
-                    	}
-                        
+                        if (matches.get(i).getTossWinner().contains("field")) {
+                            tossWinner = "L/B";
+                            BorC = "B";
+                        } else {
+                            tossWinner = "L/C";
+                            BorC = "C";
+                        }
                     }
-                } else {
-                	if(matches.get(i).getResult().contains("D/L")){
-                    result = "- " + "D/L";
+
+                    if (matches.get(i).getBCW().equals("B")) {
+                        if (matches.get(i).getHomeTeam().equals(teamOne)) {
+                            result = "W";
+                        } else {
+                            result = "L";
+                        }
+                    } else if (matches.get(i).getBCW().equals("C")) {
+                        if (matches.get(i).getAwayTeam().equals(teamOne)) {
+                            result = "W";
+                        } else {
+                            result = "L";
+                        }
+                    } else {
+                        result = matches.get(i).getBCW();
+                    }
+
+                    Inning one;
+                    Inning two;
+
+                    if (BorC.equals("B")) {
+                        one = matches.get(i).getInningOne();
+                        two = matches.get(i).getInningTwo();
+                    } else {
+                        one = matches.get(i).getInningTwo();
+                        two = matches.get(i).getInningOne();
+                    }
+
+                    int totalSixes = Integer.parseInt(one.getParams().get(5)) + Integer.parseInt(two.getParams().get(5));
+
+                    List<String> details = db.getFavourites(matchId);
+                    String favTeam = "";
+                    String open1 = "";
+                    String high1 = "";
+                    String low1 = "";
+                    String open2 = "";
+                    String high2 = "";
+                    String low2 = "";
+
+                    if (details.size() == 7) {
+                        favTeam = details.get(0);
+                        open1 = details.get(1);
+                        high1 = details.get(2);
+                        low1 = details.get(3);
+                        open2 = details.get(4);
+                        high2 = details.get(5);
+                        low2 = details.get(6);
+                    }
+
+                    temp = new dbMatch(matchId, matchDate, team, oppTeam, tossWinner, BorC, result, totalSixes, one, two, favTeam, open1, high1, low1, open2, high2, low2);
+                    dbMatches.add(temp);
+
                 }
-                else{
-                	result = "-";
-                }
-                }
 
+                request.setAttribute("team", teamOne);
+                request.setAttribute("matches", dbMatches);
+                request.setAttribute("inningHeaders", db.getHeaders(matchType));
 
-                Inning one;
-                Inning two;
-
-                if (BorC.equals("B")) {
-                    one = matches.get(i).getInningOne();
-                    two = matches.get(i).getInningTwo();
-                }
-                else{
-                    one = matches.get(i).getInningTwo();
-                    two = matches.get(i).getInningOne();
-                }
-
-                int totalSixes = Integer.parseInt(one.getParams().get(5)) + Integer.parseInt(two.getParams().get(5));
-                
-                List<String> details = db.getFavourites(matchId);
-                String favTeam = "";
-                String open1 = "";
-                String high1 = "";
-                String low1 = "";
-                String open2 = "";
-                String high2 = "";
-                String low2 = "";
-                
-                if(details.size() == 7){
-                    favTeam = details.get(0);
-                    open1 = details.get(1);
-                    high1 = details.get(2);
-                    low1 = details.get(3);
-                    open2 = details.get(4);
-                    high2 = details.get(5);
-                    low2 = details.get(6);
-                }
-
-                temp = new dbMatch(matchId,matchDate, oppTeam, tossWinner, BorC, result, totalSixes, one, two, favTeam, open1, high1, low1, open2, high2, low2);
-                dbMatches.add(temp);
-
-            }
-
-            request.setAttribute("team", teamOne);
-            request.setAttribute("matches", dbMatches);
-            request.setAttribute("inningHeaders", db.getHeaders(matchType));
-
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/dbResults.jsp");
-            dispatcher.forward(request, response);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/dbResults.jsp");
+                dispatcher.forward(request, response);
             }
         }
     }

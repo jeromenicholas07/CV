@@ -136,6 +136,9 @@ public class Match {
         return "ID: " + matchId;
     }
     
+    public boolean isHomeTeamTossWinner(){
+        return getTossWinner().toLowerCase().contains("bat ");
+    }
     
 
 }

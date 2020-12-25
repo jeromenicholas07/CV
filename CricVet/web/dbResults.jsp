@@ -45,6 +45,7 @@
 
                     <th rowspan="2">Match ID </th>
                     <th rowspan="2">Date</th>
+                    <th rowspan="2">Team</th>
                     <th rowspan="2">Opp.</th>
                     <th rowspan="2">Toss</th>
                     <th rowspan="2">B/C</th>
@@ -56,8 +57,8 @@
                     <th rowspan="2"></th>
                     <th rowspan="2">Edit Fav.</th>
                     <th rowspan="2">Favourite </th>
-                    <th colspan="3">Batting</th>
-                    <th colspan="3">Bowling</th>
+                    <th colspan="3">Inning 1</th>
+                    <th colspan="3">Inning 2</th>
                 </tr>
                 <tr>
                     <c:forEach begin='0' end='6'varStatus="loop">
@@ -93,6 +94,7 @@
                     </td>
 
                     <td>${match.getMatchDate()}
+                    <td>${match.getTeam()}
                     <td>${match.getOppTeam()}
                     <td>${match.getToss()}
                     <td>${match.getBorC()}
@@ -122,7 +124,7 @@
                     <td>
                         <form action="editFavourites" method ="POST">
                             <input type="hidden" name ="matchID" value = ${match.getMatchId()}>
-                            <input type="hidden" name ="team1" value ="${team}">
+                            <input type="hidden" name ="team1" value ="${match.getTeam()}">
                             <input type="hidden" name ="team2" value ="${match.getOppTeam()}">
                             <input type="hidden" name ="redirUrl" value="hmm">
 

@@ -1459,7 +1459,7 @@ public class getData extends HttpServlet {
 
                 List<Match> matches = db.getHth(matchType, teamOne, teamTwo);
                 matches.removeIf(m -> (m.getMatchDate().after(backDate)));
-                for (int i = 0; i < Math.min(5, matches.size()); i++) {
+                for (int i = 0; i < matches.size(); i++) {
                     Match q = matches.get(i);
                     Inning m = q.getInningOne();
                     List<String> params = m.getParams();
@@ -1484,6 +1484,7 @@ public class getData extends HttpServlet {
                     } else if (BCW.equals("T")) {
                         worl = "T";
                     } else {
+                        System.out.println("-------------------skipping h2h point for bcw=" + BCW);
                         continue;
                     }
 
@@ -1495,7 +1496,7 @@ public class getData extends HttpServlet {
                     m.setParams(params);
                     hth.add(m);
                 }
-                request.setAttribute("hth", hth);
+                request.setAttribute("hth", hth.subList(0, Math.min(5, hth.size())));
                 // </editor-fold>
             }
 

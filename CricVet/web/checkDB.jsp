@@ -73,7 +73,7 @@
                             <div class="form-group">
                                 <!--<label for="teamSelect">Select Tournament</label>-->
                                 <div class="col-12">
-                                    <select class="form-control form-control-lg required" id="tourSelect" name="tournament">
+                                    <select class="form-control form-control-lg required" id="tourSelect" name="tournament" required>
                                         <option value="-1" name="-1">Select Tournament</option>
                                         <option value="2" name="2">One Day International</option>
                                         <option value="3" name="3">T20 Internationals</option>

@@ -35,14 +35,64 @@
                 margin-top: 15px;
                 margin-bottom: 15px;
             }
-            .greater{
-                background-color: #99ff99
+
+            .green{
+                background:linear-gradient(to top left,#99ff99 49.5%,#aaa 49.5%,#aaa 50.5%,#99ff99 50.5%) !important;
             }
-            .lower{
-                background-color: #ff9999
+            .red{
+                background:linear-gradient(to top left,#ffbaba 49.5%,#f0f0f0 49.5%,#f0f0f0 50.5%,#ffbaba 50.5%) !important;
+            }
+            .yellow{
+                background:linear-gradient(to top left,#fffb8f 49.5%,#aaa 49.5%,#aaa 50.5%,#fffb8f 50.5%) !important;
+            }
+
+            .green-bag{
+                background: #99ff99 !important;
+            }
+            .red-bag{
+                background: #ff9999 !important;
+            }
+            .yellow-bag{
+                background: #fffb8f !important;
+            }
+
+            .table th{
+                vertical-align: middle
             }
             .grey-div{
                 background-color: lightgray
+            }
+            .highlight{
+                outline-color: mediumslateblue;
+                outline-width: thick;
+                outline-style: solid;
+            }
+            .highlight-left{
+                border-left: thick solid mediumslateblue !important;
+                border-top: thick solid mediumslateblue !important;
+                border-bottom: thick solid mediumslateblue !important;
+            }
+            .highlight-right{
+                border-right: thick solid mediumslateblue !important;
+                border-top: thick solid mediumslateblue !important;
+                border-bottom: thick solid mediumslateblue !important;
+            }
+            .highlight-sm{
+                border: 3px mediumslateblue solid;
+            }
+
+            .bt-td{
+                background:linear-gradient(to top left,transparent 49.5%,#aaa 49.5%,#aaa 50.5%,transparent 50.5%);
+                line-height: inherit;
+                padding: 0.2rem !important;
+            }
+            .bt-num{
+                margin-right: 1em;
+                text-align:left;
+            }
+            .bt-den{
+                margin-left:1em;
+                text-align:right;
             }
         </style>
         <div class="container-fluid text-center">
@@ -570,91 +620,234 @@
         <script type="text/javascript">
 
             $(document).ready(function () {
-                $("td,th").not('.A').not('.B').not('.G').not('.T').each(function(){
+
+                //grey cells
+                $("td, th").not('.A').not('.B').not('.G').not('.T').each(function () {
                     var inp = $(this).text().trim();
-                    if(inp === ""){
+                    if (inp === "") {
                         $(this).addClass("grey-div");
                     }
                 });
+
+                //minimize all backtests
                 $('div.btn').click();
-                
+
                 // highlight backtests
-                $('td.bt-td').each(function(){
-                   let num = parseInt($(this).children('.bt-num').first().text());
-                   let den = parseInt($(this).children('.bt-den').first().text());
-                   
-                   let ratio = num/den;
-                   if(ratio < 2){
-                       $(this).addClass('red');
-                   }
-                   else if(ratio >= 3){
-                       $(this).addClass('green');
-                   }
-                   else{
-                       $(this).addClass('yellow');
-                   }
+                $('td.bt-td').each(function () {
+                    let num = parseInt($(this).children('.bt-num').first().text());
+                    let den = parseInt($(this).children('.bt-den').first().text());
+
+                    if (den === 0) {
+                        den++;
+                    }
+                    let ratio = num / den;
+                    if (ratio < 2) {
+                        $(this).addClass('red');
+                    } else if (ratio >= 3) {
+                        $(this).addClass('green');
+                    } else {
+                        $(this).addClass('yellow');
+                    }
                 });
-            }); 
+
+                // highlight sorted w backtest5
+                /*$('.A, .B').filter('[data-count]').each(function(){
+                 let bt5HeaderRow = $(this).parents('div.row').find('table.BT5').find('tr:last').prev();
+                 let c = parseInt($(this).attr('data-count'));
+                 
+                 let bt5Headers = bt5HeaderRow.find('td:contains('+c+'/'+(5-c)+')');
+                 
+                 if(bt5Headers.length === 3){
+                 let header;
+                 
+                 if(this.classList.contains('A')){
+                 header = bt5Headers[0];
+                 }
+                 else if(this.classList.contains('B')){
+                 header = bt5Headers[1];
+                 }
+                 else if(this.classList.contains('G')){
+                 header = bt5Headers[2];
+                 }
+                 
+                 let valueTD = $(header).parent().next().find('td').eq($(header).index());
+                 if(valueTD.hasClass('red')){
+                 $(this).addClass('red-bag');
+                 }
+                 else if(valueTD.hasClass('yellow')){
+                 $(this).addClass('yellow-bag');
+                 }
+                 else if(valueTD.hasClass('green')){
+                 $(this).addClass('green-bag');
+                 }
+                 }
+                 else if(bt5Headers.length === 1){
+                 let header;
+                 
+                 if(this.classList.contains('G')){
+                 header = bt5Headers[0];
+                 
+                 let valueTD = $(header).parent().next().find('td').eq($(header).index());
+                 if(valueTD.hasClass('red')){
+                 $(this).addClass('red-bag');
+                 }
+                 else if(valueTD.hasClass('yellow')){
+                 $(this).addClass('yellow-bag');
+                 }
+                 else if(valueTD.hasClass('green')){
+                 $(this).addClass('green-bag');
+                 }
+                 }
+                 }
+                 });
+                 */
+                $('.G').filter('[data-count]').each(function () {
+                    let bt5HeaderRow = $(this).parents('div.row').find('table.BT5').find('tr:last').prev();
+                    let c = parseInt($(this).attr('data-count'));
+
+                    let rat;
+                    if (bt5HeaderRow) {
+                        if (c == 3) {
+                            let rat1 = 2 + '/' + 3;
+                            let rat2 = 3 + '/' + 2;
+
+                            let bt5Headers1 = bt5HeaderRow.find('td:contains(' + rat1 + ')');
+                            let header1 = bt5Headers1[2];
+
+                            let bt5Headers2 = bt5HeaderRow.find('td:contains(' + rat2 + ')');
+                            let header2 = bt5Headers2[2];
+
+                            let valueTD1 = $(header1).parent().next().find('td').eq($(header1).index());
+                            let valueTD2 = $(header2).parent().next().find('td').eq($(header2).index());
+
+                            let class1;
+                            if (valueTD1.hasClass('red')) {
+                                class1 = "#ff9999";
+                            } else if (valueTD1.hasClass('yellow')) {
+                                class1 = "#fffb8f";
+                            } else if (valueTD1.hasClass('green')) {
+                                class1 = "#99ff99";
+                            }
+
+                            let class2;
+                            if (valueTD2.hasClass('red')) {
+                                class2 = "#ff9999";
+                            } else if (valueTD2.hasClass('yellow')) {
+                                class2 = "#fffb8f";
+                            } else if (valueTD1.hasClass('green')) {
+                                class2 = "#99ff99";
+                            }
+
+                            if (class1 && class2) {
+                                $(this).css({
+                                    background: "linear-gradient(to right," + class1 + " 50%, " + class2 + " 50%)"
+                                });
+                            }
+                        } else {
+                            if (c < 3) {
+                                rat = (c - 1) + '/' + (5 - (c - 1));
+                            } else {
+                                rat = c + '/' + (5 - c);
+                            }
+
+                            let bt5Headers = bt5HeaderRow.find('td:contains(' + rat + ')');
+
+                            let header;
+                            if (bt5Headers.length === 3) {
+                                header = bt5Headers[2];
+                            } else if (bt5Headers.length === 1) {
+                                header = bt5Headers[0];
+                            }
+                            let valueTD = $(header).parent().next().find('td').eq($(header).index());
+                            if (valueTD.hasClass('red')) {
+                                $(this).addClass('red-bag');
+                            } else if (valueTD.hasClass('yellow')) {
+                                $(this).addClass('yellow-bag');
+                            } else if (valueTD.hasClass('green')) {
+                                $(this).addClass('green-bag');
+                            }
+                        }
+                    }
+
+                });
+
+
+                //highlight sorted w backtest10
+                $('td.T').filter('[data-count]').each(function () {
+                    let c = parseInt($(this).attr('data-count'));
+                    if (c <= 5) {
+                        c = c - 1;
+                    }
+
+                    let bt10HeaderRowA = $(this).parents('div.row').find('table.BT10').find('tr:nth(1)');
+                    let bt10HeaderRowB = $(this).parents('div.row').find('table.BT10').find('tr:nth(11)');
+
+                    let headerA = bt10HeaderRowA.find('td:contains(' + c + '/' + (10 - c) + ')');
+                    let headerB = bt10HeaderRowB.find('td:contains(' + c + '/' + (10 - c) + ')');
+
+                    if (headerA && headerB) {
+                        let tdA = $(headerA).parent().next().find('td').eq($(headerA).index());
+                        let tdB = $(headerB).parent().next().find('td').eq($(headerB).index());
+
+                        if (tdA.hasClass('red') || tdB.hasClass('red')) {
+                            $(this).addClass('red-bag');
+                        } else if (tdA.hasClass('yellow') || tdB.hasClass('yellow')) {
+                            $(this).addClass('yellow-bag');
+                        } else if (tdA.hasClass('green') && tdB.hasClass('green')) {
+                            $(this).addClass('green-bag');
+                        }
+                    }
+                });
+            });
+
+
             $("input").on('input', function () {
 
                 var inp = $(this).val();
-                
+
                 var name = $(this).attr("name");
 
-                $('td[name="' + name + '"]').each(function () {
-                    $(this).removeClass("greater");
-                    $(this).removeClass("lower");
+                $('.highlight').each(function () {
+                    $(this).removeClass('highlight');
+                });
+                $('.highlight-sm').each(function () {
+                    $(this).removeClass('highlight-sm');
+                });
+                $('.highlight-left').each(function () {
+                    $(this).removeClass('highlight-left');
+                });
+                $('.highlight-right').each(function () {
+                    $(this).removeClass('highlight-right');
                 });
 
 
                 if (inp.length === 0) {
-                    $('td[name="' + name + '"]').each(function () {
-                        $(this).removeClass("greater");
-                        $(this).removeClass("lower");
-                    });
                     $('td[name="' + name + 'Odd"][class="A"]').text("");
                     $('td[name="' + name + 'Odd"][class="B"]').text("");
                     $('td[name="' + name + 'Odd"][class="G"]').text("");
                     $('td[name="' + name + 'Odd"][class="T"]').text("");
 
                 } else {
-                    
-                    $('td[name="' + name + '"]').each(function () {
-                        if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
-
-                        } else if (parseInt($(this).text()) >= parseInt(inp)) {
-                            $(this).addClass("greater");
-//                            num++;
-                        } else if (parseInt($(this).text()) < parseInt(inp)) {
-//                            alert($(this).text() +" :: "+ inp);
-                            $(this).addClass("lower");
-//                            den++;
-                        }
-
-                    });
+                    let T_N;
 
                     var num = 0;
                     var den = 0;
-
                     $('td[name="' + name + '"].A,td[name="' + name + '"].B').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
                         } else if (parseInt($(this).text()) >= parseInt(inp)) {
-//                            $(this).addClass("greater");
                             num++;
                         } else if (parseInt($(this).text()) < parseInt(inp)) {
-//                            alert($(this).text() +" :: "+ inp);
-//                            $(this).addClass("lower");
                             den++;
                         }
 
                     });
+                    T_N = den;
+                    let TOdd = den.toString() + "/" + num.toString();
+                    $('td[name="' + name + 'Odd"].T').text(TOdd);
 
-                    $('td[name="' + name + 'Odd"][class="T"]').text(den.toString() + "/" + num.toString());
-                    
                     num = 0;
                     den = 0;
-
                     $('td[name="' + name + '"].A').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
@@ -665,14 +858,12 @@
                         }
 
                     });
-
                     $('td[name="' + name + 'Odd"][class="A"]').text(den.toString() + "/" + num.toString());
-                    
-                    
-                    
+
+
+
                     num = 0;
                     den = 0;
-
                     $('td[name="' + name + '"].B').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
@@ -683,15 +874,13 @@
                         }
 
                     });
-
                     $('td[name="' + name + 'Odd"][class="B"]').text(den.toString() + "/" + num.toString());
-                    
-                    
-                    
-                    
+
+
+
+
                     num = 0;
                     den = 0;
-
                     $('td[name="' + name + '"].G').each(function () {
                         if (parseInt($(this).text()) === -1 || $(this).text().includes("(D/L)")) {
 
@@ -702,12 +891,64 @@
                         }
 
                     });
-
                     $('td[name="' + name + 'Odd"][class="G"]').text(den.toString() + "/" + num.toString());
 
+                    let rowDiv = $(this).parents('div.row').first();
+
+                    //outline .T ratio
+                    $(rowDiv).find('td.T').each(function () {
+                        if ($(this).text().trim().includes(TOdd)) {
+                            $(this).addClass('highlight');
+                        }
+                    });
+
+                    //outline .T cells
+                    if (T_N < 5) {
+                        $(rowDiv).find('.T').eq(T_N).addClass('highlight');
+                    } else if (T_N > 5) {
+                        $(rowDiv).find('.T').eq(T_N - 1).addClass('highlight');
+                    }
+
+                    //outline .G cells
+                    let groundRatio = rowDiv.find('[name$="Odd"].G').text().trim();
+                    let grCount = parseInt(groundRatio.split('/')[0]);
+                    let grDPCount = parseInt(groundRatio.split('/')[0]) + parseInt(groundRatio.split('/')[1]);
+                    if (grDPCount == 5) {
+                        if (grCount == 2) {
+                            $(rowDiv).find('.G[data-count=3]').addClass('highlight-left');
+                        } else if (grCount == 3) {
+                            $(rowDiv).find('.G[data-count=3]').addClass('highlight-right');
+                        } else if (grCount < 2) {
+                            $(rowDiv).find('.G[data-count=' + (grCount + 1) + ']').addClass('highlight');
+                        } else {
+                            $(rowDiv).find('.G[data-count=' + grCount + ']').addClass('highlight');
+                        }
+                    }
+
+                    //outline backtest10
+                    if (!TOdd.includes('5/5') && !TOdd.includes('0/10') && !TOdd.includes('10/0')) {
+                        let colIndex = $(rowDiv).find('table.BT10').find('tr:nth(1)').find('td:contains(' + TOdd + ')').index();
+                        $(rowDiv).find('colgroup col').eq(colIndex).addClass('highlight-sm');
+
+
+                        $(rowDiv).find('td:contains(Ground):contains(' + groundRatio + ')').each(function () {
+                            $(this).parent().addClass('highlight-sm');
+                            $(this).parent().find('td').eq(colIndex).addClass('highlight');
+                        });
+
+                        let bt10Main = [1, 11];
+                        $(rowDiv).find('table.BT10').find('tr').filter(function (i) {
+                            return $.inArray(i, bt10Main) > -1;
+                        }).each(function () {
+
+                            let headerTD = $(this).find('td:contains(' + TOdd + ')');
+                            $(headerTD).parent().next().find('td').eq(colIndex).addClass('highlight');
+
+                        });
+                    }
                 }
             });
-            
+
             function collapseSwitch(butt){ 
                 butt = $(butt);
                 var t1 = butt.parents('table');
