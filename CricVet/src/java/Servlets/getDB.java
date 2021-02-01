@@ -51,7 +51,7 @@ public class getDB extends HttpServlet {
 
             if (matchType == 1) {
 
-                TestType side = homeoraway.equals("Home") ? TestType.HOME : TestType.AWAY;
+                Location side = homeoraway.equals("Home") ? Location.HOME : Location.AWAY;
                 List<testMatch> matches = db.getTestMatches(teamOne, 0, side);
 
                 request.setAttribute("team", teamOne);
@@ -76,7 +76,7 @@ public class getDB extends HttpServlet {
                     String result;
 
                     matchId = matches.get(i).getMatchId();
-                    DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy");
+                    DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy HH:mm:ss");
                     System.out.println(matches.get(i).getMatchId());
                     Timestamp ts = matches.get(i).getMatchDate();
                     matchDate = dateFormat.format(ts);
@@ -137,7 +137,7 @@ public class getDB extends HttpServlet {
 
                     int totalSixes = Integer.parseInt(one.getParams().get(5)) + Integer.parseInt(two.getParams().get(5));
 
-                    List<String> details = db.getFavourites(matchId);
+                    
                     String favTeam = "";
                     String open1 = "";
                     String high1 = "";
@@ -146,17 +146,14 @@ public class getDB extends HttpServlet {
                     String high2 = "";
                     String low2 = "";
 
-                    if (details.size() == 7) {
-                        favTeam = details.get(0);
-                        open1 = details.get(1);
-                        high1 = details.get(2);
-                        low1 = details.get(3);
-                        open2 = details.get(4);
-                        high2 = details.get(5);
-                        low2 = details.get(6);
+                    String tempFav = db.getFavourites(matchId);
+                    if (tempFav != null) {
+                        favTeam = tempFav;
                     }
+                    
+                    OHL ohl = db.getOHL(matchId);
 
-                    temp = new dbMatch(matchId, matchDate, team, oppTeam, tossWinner, BorC, result, totalSixes, one, two, favTeam, open1, high1, low1, open2, high2, low2);
+                    temp = new dbMatch(matchId, matchDate, team, oppTeam, tossWinner, BorC, result, totalSixes, one, two, favTeam, ohl);
                     dbMatches.add(temp);
 
                 }

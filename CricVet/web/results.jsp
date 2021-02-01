@@ -98,8 +98,31 @@
                 text-align:right;
             }
         </style>
+
+        <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand">${teamOne} v/s ${teamTwo}</a>
+            <li class="nav-item">
+                <a class="nav-link disabled" tabindex="-1" aria-disabled="true">
+                    Favorite team: 
+                    <c:choose>
+                        <c:when test="${ isFavNone }">
+                            None
+                        </c:when>
+                        <c:when test="${ isFavBatting }">
+                            ${teamOne}
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            ${teamTwo}
+                        </c:when>
+                    </c:choose>
+                </a>
+            </li>
+        </nav>
         <div class="container-fluid text-center">
-            <h1 class="text-center">${teamOne} v/s ${teamTwo}</h1>
+            <h1 class="text-center"></h1>
+            <h3>
+
+            </h3>
 
             <!-- Head to head -->
             <div class="row">
@@ -156,9 +179,27 @@
                     <h3 class="card-title">Form Guide</h3>
                     <table class="table table-bordered">
                         <tr class="thead-dark">
-                            <th colspan="${fn:length(FormGuide_A)}">${teamOne}</th>
+                            <th colspan="${fn:length(FormGuide_A)}">
+                                <c:choose>
+                                    <c:when test="${ !isFavChasing }">
+                                        ${teamOne}
+                                    </c:when>
+                                    <c:when test="${ isFavChasing }">
+                                        ${teamTwo}
+                                    </c:when>
+                                </c:choose>
+                            </th>
                             <th>
-                            <th colspan="${fn:length(FormGuide_B)}">${teamTwo}</th>
+                            <th colspan="${fn:length(FormGuide_B)}">
+                                <c:choose>
+                                    <c:when test="${ !isFavChasing }">
+                                        ${teamTwo}
+                                    </c:when>
+                                    <c:when test="${ isFavChasing }">
+                                        ${teamOne}
+                                    </c:when>
+                                </c:choose>
+                            </th>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${FormGuide_A}">
@@ -255,11 +296,29 @@
 
                     <table class="table table-bordered">
                         <tr class="thead-dark">
-                            <th colspan="${fn:length(BCW_A)}">${teamOne} Batting First</th>
+                            <th colspan="${fn:length(BCW_A)}">
+                                <c:choose>
+                                    <c:when test="${ !isFavChasing }">
+                                        ${teamOne}
+                                    </c:when>
+                                    <c:when test="${ isFavChasing }">
+                                        ${teamTwo}
+                                    </c:when>
+                                </c:choose>
+                            </th>
                             <th>
-                            <th colspan="${fn:length(BCW_B)}">${teamTwo} Bowling First</th>
+                            <th colspan="${fn:length(BCW_B)}">
+                                <c:choose>
+                                    <c:when test="${ !isFavChasing }">
+                                        ${teamTwo}
+                                    </c:when>
+                                    <c:when test="${ isFavChasing }">
+                                        ${teamOne}
+                                    </c:when>
+                                </c:choose>
+                            </th>
                             <th>
-                            <th colspan="${fn:length(BCW_G)}">${groundName} First</th>
+                            <th colspan="${fn:length(BCW_G)}">${groundName}</th>
                         </tr>
                         <tr>
                             <c:forEach var="in" items="${BCW_A}">
@@ -308,14 +367,21 @@
                                     List<Inning> Ab = new ArrayList<Inning>((List<Inning>) request.getAttribute("BCW_A"));
                                     List<Inning> Bb = new ArrayList<Inning>((List<Inning>) request.getAttribute("BCW_B"));
                                     List<Inning> Gb = new ArrayList<Inning>((List<Inning>) request.getAttribute("BCW_G"));
+                                    boolean isFavChasing = (boolean) request.getAttribute("isFavChasing");
 
+                                    char numCheck = 'B';
+                                    char denCheck = 'C';
+                                    if(isFavChasing){
+                                        numCheck = 'C';
+                                        denCheck = 'B';
+                                    }
                                     int num = 0;
                                     int den = 0;
                                     for (Inning ti : Ab) {
 
-                                        if (ti.getParams().get(7).trim().charAt(0) == 'B') {
+                                        if (ti.getParams().get(7).trim().charAt(0) == numCheck) {
                                             num++;
-                                        } else if (ti.getParams().get(7).trim().charAt(0) == 'C') {
+                                        } else if (ti.getParams().get(7).trim().charAt(0) == denCheck) {
                                             den++;
                                         }
                                     }
@@ -325,9 +391,9 @@
                                     den = 0;
                                     for (Inning ti : Bb) {
 
-                                        if (ti.getParams().get(7).trim().charAt(0) == 'B') {
+                                        if (ti.getParams().get(7).trim().charAt(0) == numCheck) {
                                             num++;
-                                        } else if (ti.getParams().get(7).trim().charAt(0) == 'C') {
+                                        } else if (ti.getParams().get(7).trim().charAt(0) == denCheck) {
                                             den++;
                                         }
                                     }
@@ -352,9 +418,9 @@
                                     Tb.addAll(Bb);
                                     for (Inning ti : Tb) {
 
-                                        if (ti.getParams().get(7).trim().charAt(0) == 'B') {
+                                        if (ti.getParams().get(7).trim().charAt(0) == numCheck) {
                                             num++;
-                                        } else if (ti.getParams().get(7).trim().charAt(0) == 'C') {
+                                        } else if (ti.getParams().get(7).trim().charAt(0) == denCheck) {
                                             den++;
                                         }
                                     }
@@ -391,21 +457,42 @@
                 <div class ="col-12">
                     <h3 class="card-title">Total Fours</h3>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FST_A" />
-                        <jsp:param name="B" value="FST_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="4" />
-                        <jsp:param name="className" value="Fours" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FST_A" />
+                                <jsp:param name="B" value="FST_B" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="4" />
+                                <jsp:param name="className" value="Fours" />
+                            </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="foursA_bt" />
-                        <jsp:param name="TA_bt" value="foursTA_bt" />
-                        <jsp:param name="B_bt" value="foursB_bt" />
-                        <jsp:param name="TB_bt" value="foursTB_bt" />
-                        <jsp:param name="G_bt" value="foursG_bt" />
-                    </jsp:include>
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="foursA_bt" />
+                                <jsp:param name="TA_bt" value="foursTA_bt" />
+                                <jsp:param name="B_bt" value="foursB_bt" />
+                                <jsp:param name="TB_bt" value="foursTB_bt" />
+                                <jsp:param name="G_bt" value="foursG_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FST_B" />
+                                <jsp:param name="B" value="FST_A" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="4" />
+                                <jsp:param name="className" value="Fours" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="foursB_bt" />
+                                <jsp:param name="TA_bt" value="foursTB_bt" />
+                                <jsp:param name="B_bt" value="foursA_bt" />
+                                <jsp:param name="TB_bt" value="foursTA_bt" />
+                                <jsp:param name="G_bt" value="foursG_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -415,21 +502,42 @@
                 <div class ="col-12">
                     <h3 class="card-title">Total Sixes</h3>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FST_A" />
-                        <jsp:param name="B" value="FST_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="5" />
-                        <jsp:param name="className" value="Sixes" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FST_A" />
+                                <jsp:param name="B" value="FST_B" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="5" />
+                                <jsp:param name="className" value="Sixes" />
+                            </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="sixesA_bt" />
-                        <jsp:param name="TA_bt" value="sixesTA_bt" />
-                        <jsp:param name="B_bt" value="sixesB_bt" />
-                        <jsp:param name="TB_bt" value="sixesTB_bt" />
-                        <jsp:param name="G_bt" value="sixesG_bt" />
-                    </jsp:include>
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="sixesA_bt" />
+                                <jsp:param name="TA_bt" value="sixesTA_bt" />
+                                <jsp:param name="B_bt" value="sixesB_bt" />
+                                <jsp:param name="TB_bt" value="sixesTB_bt" />
+                                <jsp:param name="G_bt" value="sixesG_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FST_B" />
+                                <jsp:param name="B" value="FST_A" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="5" />
+                                <jsp:param name="className" value="Sixes" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="sixesB_bt" />
+                                <jsp:param name="TA_bt" value="sixesTB_bt" />
+                                <jsp:param name="B_bt" value="sixesA_bt" />
+                                <jsp:param name="TB_bt" value="sixesTA_bt" />
+                                <jsp:param name="G_bt" value="sixesG_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -439,21 +547,42 @@
                 <div class ="col-12">
                     <h3 class="card-title">Total Boundaries</h3>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FST_A" />
-                        <jsp:param name="B" value="FST_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="8" />
-                        <jsp:param name="className" value="TotalBoundaries" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FST_A" />
+                                <jsp:param name="B" value="FST_B" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="8" />
+                                <jsp:param name="className" value="TotalBoundaries" />
+                            </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="boundariesA_bt" />
-                        <jsp:param name="TA_bt" value="boundariesTA_bt" />
-                        <jsp:param name="B_bt" value="boundariesB_bt" />
-                        <jsp:param name="TB_bt" value="boundariesTB_bt" />
-                        <jsp:param name="G_bt" value="boundariesG_bt" />
-                    </jsp:include>
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="boundariesA_bt" />
+                                <jsp:param name="TA_bt" value="boundariesTA_bt" />
+                                <jsp:param name="B_bt" value="boundariesB_bt" />
+                                <jsp:param name="TB_bt" value="boundariesTB_bt" />
+                                <jsp:param name="G_bt" value="boundariesG_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FST_B" />
+                                <jsp:param name="B" value="FST_A" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="8" />
+                                <jsp:param name="className" value="TotalBoundaries" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="boundariesB_bt" />
+                                <jsp:param name="TA_bt" value="boundariesTB_bt" />
+                                <jsp:param name="B_bt" value="boundariesA_bt" />
+                                <jsp:param name="TB_bt" value="boundariesTA_bt" />
+                                <jsp:param name="G_bt" value="boundariesG_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -465,13 +594,26 @@
                 <div class ="col-12">
                     <h3 class="card-title">First Over</h3>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FO_A" />
-                        <jsp:param name="B" value="FO_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="0" />
-                        <jsp:param name="className" value="FirstOver" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FO_A" />
+                                <jsp:param name="B" value="FO_B" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="0" />
+                                <jsp:param name="className" value="FirstOver" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FO_B" />
+                                <jsp:param name="B" value="FO_A" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="0" />
+                                <jsp:param name="className" value="FirstOver" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -481,21 +623,42 @@
                 <div class ="col-12">
                     <h3 class="card-title">First Wicket</h3>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FW_A" />
-                        <jsp:param name="B" value="FW_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="3" />
-                        <jsp:param name="className" value="FirstWicket" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FW_A" />
+                                <jsp:param name="B" value="FW_B" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="3" />
+                                <jsp:param name="className" value="FirstWicket" />
+                            </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="FW_A_bt" />
-                        <jsp:param name="TA_bt" value="FW_TA_bt" />
-                        <jsp:param name="B_bt" value="FW_B_bt" />
-                        <jsp:param name="TB_bt" value="FW_TB_bt" />
-                        <jsp:param name="G_bt" value="FW_G_bt" />
-                    </jsp:include>
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="FW_A_bt" />
+                                <jsp:param name="TA_bt" value="FW_TA_bt" />
+                                <jsp:param name="B_bt" value="FW_B_bt" />
+                                <jsp:param name="TB_bt" value="FW_TB_bt" />
+                                <jsp:param name="G_bt" value="FW_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FW_B" />
+                                <jsp:param name="B" value="FW_A" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="3" />
+                                <jsp:param name="className" value="FirstWicket" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="FW_B_bt" />
+                                <jsp:param name="TA_bt" value="FW_TB_bt" />
+                                <jsp:param name="B_bt" value="FW_A_bt" />
+                                <jsp:param name="TB_bt" value="FW_TA_bt" />
+                                <jsp:param name="G_bt" value="FW_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -510,21 +673,43 @@
                         <h3 class="card-title">First 6 Overs</h3>
                     </c:if>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FX_A" />
-                        <jsp:param name="B" value="FX_B" />
-                        <jsp:param name="G" value="Gr_First" />
-                        <jsp:param name="pIndex" value="1" />
-                        <jsp:param name="className" value="FirstXOvers" />
-                    </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="FX_A_bt" />
-                        <jsp:param name="TA_bt" value="FX_TA_bt" />
-                        <jsp:param name="B_bt" value="FX_B_bt" />
-                        <jsp:param name="TB_bt" value="FX_TB_bt" />
-                        <jsp:param name="G_bt" value="FX_G_bt" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FX_A" />
+                                <jsp:param name="B" value="FX_B" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="1" />
+                                <jsp:param name="className" value="FirstXOvers" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="FX_A_bt" />
+                                <jsp:param name="TA_bt" value="FX_TA_bt" />
+                                <jsp:param name="B_bt" value="FX_B_bt" />
+                                <jsp:param name="TB_bt" value="FX_TB_bt" />
+                                <jsp:param name="G_bt" value="FX_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FX_B" />
+                                <jsp:param name="B" value="FX_A" />
+                                <jsp:param name="G" value="Gr_First" />
+                                <jsp:param name="pIndex" value="1" />
+                                <jsp:param name="className" value="FirstXOvers" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="FX_B_bt" />
+                                <jsp:param name="TA_bt" value="FX_TB_bt" />
+                                <jsp:param name="B_bt" value="FX_A_bt" />
+                                <jsp:param name="TB_bt" value="FX_TA_bt" />
+                                <jsp:param name="G_bt" value="FX_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -539,21 +724,43 @@
                         <h3 class="card-title">Last 5 Overs</h3>
                     </c:if>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="LO_A" />
-                        <jsp:param name="B" value="LO_B" />
-                        <jsp:param name="G" value="LO_G" />
-                        <jsp:param name="pIndex" value="2" />
-                        <jsp:param name="className" value="LastXOvers" />
-                    </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="LO_A_bt" />
-                        <jsp:param name="TA_bt" value="LO_TA_bt" />
-                        <jsp:param name="B_bt" value="LO_B_bt" />
-                        <jsp:param name="TB_bt" value="LO_TB_bt" />
-                        <jsp:param name="G_bt" value="LO_G_bt" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="LO_A" />
+                                <jsp:param name="B" value="LO_B" />
+                                <jsp:param name="G" value="LO_G" />
+                                <jsp:param name="pIndex" value="2" />
+                                <jsp:param name="className" value="LastXOvers" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="LO_A_bt" />
+                                <jsp:param name="TA_bt" value="LO_TA_bt" />
+                                <jsp:param name="B_bt" value="LO_B_bt" />
+                                <jsp:param name="TB_bt" value="LO_TB_bt" />
+                                <jsp:param name="G_bt" value="LO_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="LO_B" />
+                                <jsp:param name="B" value="LO_A" />
+                                <jsp:param name="G" value="LO_G" />
+                                <jsp:param name="pIndex" value="2" />
+                                <jsp:param name="className" value="LastXOvers" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="LO_B_bt" />
+                                <jsp:param name="TA_bt" value="LO_TB_bt" />
+                                <jsp:param name="B_bt" value="LO_A_bt" />
+                                <jsp:param name="TB_bt" value="LO_TA_bt" />
+                                <jsp:param name="G_bt" value="LO_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -563,21 +770,42 @@
                 <div class ="col-12">
                     <h3 class="card-title">Total Runs</h3>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="TR_A" />
-                        <jsp:param name="B" value="TR_B" />
-                        <jsp:param name="G" value="TR_G" />
-                        <jsp:param name="pIndex" value="6" />
-                        <jsp:param name="className" value="TotalRuns" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="TR_A" />
+                                <jsp:param name="B" value="TR_B" />
+                                <jsp:param name="G" value="TR_G" />
+                                <jsp:param name="pIndex" value="6" />
+                                <jsp:param name="className" value="TotalRuns" />
+                            </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="TR_A_bt" />
-                        <jsp:param name="TA_bt" value="TR_TA_bt" />
-                        <jsp:param name="B_bt" value="TR_B_bt" />
-                        <jsp:param name="TB_bt" value="TR_TB_bt" />
-                        <jsp:param name="G_bt" value="TR_G_bt" />
-                    </jsp:include>
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="TR_A_bt" />
+                                <jsp:param name="TA_bt" value="TR_TA_bt" />
+                                <jsp:param name="B_bt" value="TR_B_bt" />
+                                <jsp:param name="TB_bt" value="TR_TB_bt" />
+                                <jsp:param name="G_bt" value="TR_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="TR_B" />
+                                <jsp:param name="B" value="TR_A" />
+                                <jsp:param name="G" value="TR_G" />
+                                <jsp:param name="pIndex" value="6" />
+                                <jsp:param name="className" value="TotalRuns" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="TR_B_bt" />
+                                <jsp:param name="TA_bt" value="TR_TB_bt" />
+                                <jsp:param name="B_bt" value="TR_A_bt" />
+                                <jsp:param name="TB_bt" value="TR_TA_bt" />
+                                <jsp:param name="G_bt" value="TR_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -589,21 +817,42 @@
                 <div class ="col-12">
                     <h3 class="card-title">${headers.get(3)}</h3>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FWS_A" />
-                        <jsp:param name="B" value="FWS_B" />
-                        <jsp:param name="G" value="FWS_G" />
-                        <jsp:param name="pIndex" value="3" />
-                        <jsp:param name="className" value="FirstWicketSecond" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FWS_A" />
+                                <jsp:param name="B" value="FWS_B" />
+                                <jsp:param name="G" value="FWS_G" />
+                                <jsp:param name="pIndex" value="3" />
+                                <jsp:param name="className" value="FirstWicketSecond" />
+                            </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="FWS_A_bt" />
-                        <jsp:param name="TA_bt" value="FWS_TA_bt" />
-                        <jsp:param name="B_bt" value="FWS_B_bt" />
-                        <jsp:param name="TB_bt" value="FWS_TB_bt" />
-                        <jsp:param name="G_bt" value="FWS_G_bt" />
-                    </jsp:include>
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="FWS_A_bt" />
+                                <jsp:param name="TA_bt" value="FWS_TA_bt" />
+                                <jsp:param name="B_bt" value="FWS_B_bt" />
+                                <jsp:param name="TB_bt" value="FWS_TB_bt" />
+                                <jsp:param name="G_bt" value="FWS_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FWS_B" />
+                                <jsp:param name="B" value="FWS_A" />
+                                <jsp:param name="G" value="FWS_G" />
+                                <jsp:param name="pIndex" value="3" />
+                                <jsp:param name="className" value="FirstWicketSecond" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="FWS_B_bt" />
+                                <jsp:param name="TA_bt" value="FWS_TB_bt" />
+                                <jsp:param name="B_bt" value="FWS_A_bt" />
+                                <jsp:param name="TB_bt" value="FWS_TA_bt" />
+                                <jsp:param name="G_bt" value="FWS_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>
@@ -618,21 +867,43 @@
                         <h3 class="card-title">First 6 Overs</h3>
                     </c:if>
 
-                    <jsp:include page="/displayTestHeader.jsp">
-                        <jsp:param name="A" value="FXS_A" />
-                        <jsp:param name="B" value="FXS_B" />
-                        <jsp:param name="G" value="FXS_G" />
-                        <jsp:param name="pIndex" value="1" />
-                        <jsp:param name="className" value="FirstXOversSecond" />
-                    </jsp:include>
 
-                    <jsp:include page="/displayBacktests.jsp">
-                        <jsp:param name="A_bt" value="FXS_A_bt" />
-                        <jsp:param name="TA_bt" value="FXS_TA_bt" />
-                        <jsp:param name="B_bt" value="FXS_B_bt" />
-                        <jsp:param name="TB_bt" value="FXS_TB_bt" />
-                        <jsp:param name="G_bt" value="FXS_G_bt" />
-                    </jsp:include>
+                    <c:choose>
+                        <c:when test="${ isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FXS_A" />
+                                <jsp:param name="B" value="FXS_B" />
+                                <jsp:param name="G" value="FXS_G" />
+                                <jsp:param name="pIndex" value="1" />
+                                <jsp:param name="className" value="FirstXOversSecond" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="FXS_A_bt" />
+                                <jsp:param name="TA_bt" value="FXS_TA_bt" />
+                                <jsp:param name="B_bt" value="FXS_B_bt" />
+                                <jsp:param name="TB_bt" value="FXS_TB_bt" />
+                                <jsp:param name="G_bt" value="FXS_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                        <c:when test="${ !isFavChasing }">
+                            <jsp:include page="/displayTestHeader.jsp">
+                                <jsp:param name="A" value="FXS_B" />
+                                <jsp:param name="B" value="FXS_A" />
+                                <jsp:param name="G" value="FXS_G" />
+                                <jsp:param name="pIndex" value="1" />
+                                <jsp:param name="className" value="FirstXOversSecond" />
+                            </jsp:include>
+
+                            <jsp:include page="/displayBacktests.jsp">
+                                <jsp:param name="A_bt" value="FXS_B_bt" />
+                                <jsp:param name="TA_bt" value="FXS_TB_bt" />
+                                <jsp:param name="B_bt" value="FXS_A_bt" />
+                                <jsp:param name="TB_bt" value="FXS_TA_bt" />
+                                <jsp:param name="G_bt" value="FXS_G_bt" />
+                            </jsp:include>
+                        </c:when>
+                    </c:choose>
 
                 </div>
             </div>

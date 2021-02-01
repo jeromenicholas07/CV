@@ -26,103 +26,80 @@
         <br>
         <br>
 
-        <div class="container col-6">
+        <div class="container">
             <form action = "editFavourites" method = "POST">
-                <div class="card mx-auto">
-                    <div class="card-header">
-                        <input type="hidden" name ="matchID" value ="${matchID}">
-                        <input type="hidden" name ="redirUrl" value ="${redirUrl}">
-                        <div class="input-group col">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="label3">Favourite Team</span>
-                            </div>
-                            <select type="text" class="form-control" aria-describedby="label3"
-                                    name = "favTeam" value="${favTeam}" required>
-                                <option value="" selected disabled>Select Fav. Team</option>
-                                <option value="${team1}" <c:if test="${team1.equals(favTeam)}">selected</c:if> >${team1}</option>
-                                <option value="${team2}" <c:if test="${team2.equals(favTeam)}">selected</c:if>>${team2}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-3">
-                                        <h1>Inning 1</h1>
-                                    </div>
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="label2">Open</span>
-                                            </div>
-                                            <input type="number" class="form-control" aria-describedby="label2"
-                                                   name = "open1" value="${open1}">
-                                    </div>
-
-                                    <br>
-
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="label2">High</span>
-                                        </div>
-                                        <input type="number" class="form-control" aria-describedby="label2"
-                                               name = "high1" value="${high1}">
-                                    </div>
-
-                                    <br>
-
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="label2">Low</span>
-                                        </div>
-                                        <input type="number" class="form-control" aria-describedby="label2"
-                                               name = "low1" value="${low1}">
-                                    </div>
+                <div class="row">
+                    <div class="card mx-auto">
+                        <div class="card-header">
+                            <input type="hidden" name ="matchID" value ="${matchID}">
+                            <input type="hidden" name ="redirUrl" value ="${redirUrl}">
+                            <input type="hidden" name ="submitted" value ="true">
+                            <div class="input-group col">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="label3">Favourite Team</span>
+                                </div>
+                                <select type="text" class="form-control" aria-describedby="label3"
+                                        name = "favTeam" value="${favTeam}" >
+                                    <option value="" selected>Select Fav. Team</option>
+                                    <option value="${team1}" <c:if test="${team1.equals(favTeam)}">selected</c:if> >${team1}</option>
+                                    <option value="${team2}" <c:if test="${team2.equals(favTeam)}">selected</c:if>>${team2}</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-3">
-                                    <h1>Inning 2</h1>
-                                </div>
-                                <div class="col">
-                                    <div class="input-group ">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="label2">Open</span>
-                                        </div>
-                                        <input type="number" class="form-control" aria-describedby="label2"
-                                               name = "open2" value="${open2}">
-                                    </div>
 
-                                    <br>
+                    <br>
 
-                                    <div class="input-group ">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="label2">High</span>
-                                        </div>
-                                        <input type="number" class="form-control" aria-describedby="label2"
-                                               name = "high2" value="${high2}">
-                                    </div>
+                <jsp:include page="/editOHLRow.jsp">
+                    <jsp:param name="ohl_title" value="First Wicket" />
+                    <jsp:param name="ohl_pre" value="FW" />
+                    <jsp:param name="open" value="${OHL.getFW().getOpen()}" />
+                    <jsp:param name="high" value="${OHL.getFW().getHigh()}" />
+                    <jsp:param name="low" value="${OHL.getFW().getLow()}" />
+                </jsp:include>
 
-                                    <br>
+                <jsp:include page="/editOHLRow.jsp">
+                    <jsp:param name="ohl_title" value="First 5/10 overs" />
+                    <jsp:param name="ohl_pre" value="FX" />
+                    <jsp:param name="open" value="${OHL.getFX().getOpen()}" />
+                    <jsp:param name="high" value="${OHL.getFX().getHigh()}" />
+                    <jsp:param name="low" value="${OHL.getFX().getLow()}" />
+                </jsp:include>
 
-                                    <div class="input-group ">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="label2">Low</span>
-                                        </div>
-                                        <input type="number" class="form-control" aria-describedby="label2"
-                                               name = "low2" value="${low2}">
-                                    </div>
-                                </div>
-                            </div>
+                <jsp:include page="/editOHLRow.jsp">
+                    <jsp:param name="ohl_title" value="Last 5/10 overs" />
+                    <jsp:param name="ohl_pre" value="LX" />
+                    <jsp:param name="open" value="${OHL.getLX().getOpen()}" />
+                    <jsp:param name="high" value="${OHL.getLX().getHigh()}" />
+                    <jsp:param name="low" value="${OHL.getLX().getLow()}" />
+                </jsp:include>
+
+                <jsp:include page="/editOHLRow.jsp">
+                    <jsp:param name="ohl_title" value="Total runs" />
+                    <jsp:param name="ohl_pre" value="T" />
+                    <jsp:param name="open" value="${OHL.getT().getOpen()}" />
+                    <jsp:param name="high" value="${OHL.getT().getHigh()}" />
+                    <jsp:param name="low" value="${OHL.getT().getLow()}" />
+                </jsp:include>
+
+                <jsp:include page="/editOHLRow.jsp">
+                    <jsp:param name="ohl_title" value="First Wicket(Second Inning)" />
+                    <jsp:param name="ohl_pre" value="FW2" />
+                    <jsp:param name="open" value="${OHL.getFW2().getOpen()}" />
+                    <jsp:param name="high" value="${OHL.getFW2().getHigh()}" />
+                    <jsp:param name="low" value="${OHL.getFW2().getLow()}" />
+                </jsp:include>
+
+                <jsp:include page="/editOHLRow.jsp">
+                    <jsp:param name="ohl_title" value="First 5/10(Second Inning)" />
+                    <jsp:param name="ohl_pre" value="FX2" />
+                    <jsp:param name="open" value="${OHL.getFX2().getOpen()}" />
+                    <jsp:param name="high" value="${OHL.getFX2().getHigh()}" />
+                    <jsp:param name="low" value="${OHL.getFX2().getLow()}" />
+                </jsp:include>
 
 
-                        </div>
-                    </div>
-                </div>
                 <br>
                 <div class="input-group center-block col-12">
                     <input type="submit" class="btn btn-dark mx-auto col-md-4">

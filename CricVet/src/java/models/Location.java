@@ -9,7 +9,7 @@ package models;
  *
  * @author Jerome Nicholas
  */
-public enum TestType {
+public enum Location {
     NONE,
     HOME,
     AWAY

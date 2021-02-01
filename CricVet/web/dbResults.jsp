@@ -55,10 +55,14 @@
                     <th rowspan="2">Tot. Sixes</th>
                     <th rowspan="2">Delete Match</th>
                     <th rowspan="2"></th>
-                    <th rowspan="2">Edit Fav.</th>
+                    <th rowspan="2">Edit Fav/OHL</th>
                     <th rowspan="2">Favourite </th>
-                    <th colspan="3">Inning 1</th>
-                    <th colspan="3">Inning 2</th>
+                    <th colspan="3">First Wicket</th>
+                    <th colspan="3">First 5/10 overs</th>
+                    <th colspan="3">Last 5/10 overs</th>
+                    <th colspan="3">Total</th>
+                    <th colspan="3">First wicket(Second Inning)</th>
+                    <th colspan="3">First 5/10 overs(Second Inning)</th>
                 </tr>
                 <tr>
                     <c:forEach begin='0' end='6'varStatus="loop">
@@ -67,13 +71,13 @@
                         <c:forEach begin='0' end='6'varStatus="loop">
                         <th>${inningHeaders.get(loop.index)}
                         </c:forEach>
-                            
-                    <th>Open </th>
-                    <th>High </th>
-                    <th>Low </th>
-                    <th>Open </th>
-                    <th>High </th>
-                    <th>Low </th>
+
+                        <!--               Number of OHL headers-->
+                        <c:forEach begin='0' end='5'varStatus="loop">  
+                        <th>Open </th>
+                        <th>High </th>
+                        <th>Low </th>
+                        </c:forEach>
                 </tr>
             </thead>
             <c:forEach var="match" items="${matches}" varStatus="m">
@@ -113,7 +117,7 @@
                             <input type="hidden" name ="redirUrl" value="hmm">
                             <button type="submit" class="btn btn-light" onclick="confirmDelete(this)">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                                <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
                                 </svg>
                             </button>
                         </form>
@@ -137,12 +141,34 @@
                         </form>
                     </td>
                     <td>${match.getFavTeam()}
-                    <td>${match.getOpen1()}
-                    <td>${match.getHigh1()}
-                    <td>${match.getLow1()}
-                    <td>${match.getOpen2()}
-                    <td>${match.getHigh2()}
-                    <td>${match.getLow2()}
+
+                        <c:if test="${match.getOhl() != null}">
+
+                        <td>${match.getOhl().getFW().getOpen()}
+                        <td>${match.getOhl().getFW().getHigh()}
+                        <td>${match.getOhl().getFW().getLow()}
+
+                        <td>${match.getOhl().getFX().getOpen()}
+                        <td>${match.getOhl().getFX().getHigh()}
+                        <td>${match.getOhl().getFX().getLow()}
+
+                        <td>${match.getOhl().getLX().getOpen()}
+                        <td>${match.getOhl().getLX().getHigh()}
+                        <td>${match.getOhl().getLX().getLow()}
+
+                        <td>${match.getOhl().getT().getOpen()}
+                        <td>${match.getOhl().getT().getHigh()}
+                        <td>${match.getOhl().getT().getLow()}
+
+                        <td>${match.getOhl().getFW2().getOpen()}
+                        <td>${match.getOhl().getFW2().getHigh()}
+                        <td>${match.getOhl().getFW2().getLow()}
+
+                        <td>${match.getOhl().getFX2().getOpen()}
+                        <td>${match.getOhl().getFX2().getHigh()}
+                        <td>${match.getOhl().getFX2().getLow()}
+
+                        </c:if>
                 </tr>
             </c:forEach>
         </table>
@@ -160,9 +186,9 @@
                         .appendTo(form);
                 form.action = 'editMatch';
             }
-            
-            function confirmDelete(){
-                if(confirm("Are you sure you want to DELETE this match?")){
+
+            function confirmDelete() {
+                if (confirm("Are you sure you want to DELETE this match?")) {
                     form.action = 'deleteMatch';
                 }
             }

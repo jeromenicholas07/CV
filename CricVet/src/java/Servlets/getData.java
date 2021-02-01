@@ -44,7 +44,7 @@ public class getData extends HttpServlet {
 
     public interface TestProcessor {
 
-        List<testMatch> getMatches(String teamName, TestType xType);
+        List<testMatch> getMatches(String teamName, Location xType);
 
         List<testMatch> getGMatches(String groundName);
 
@@ -161,14 +161,14 @@ public class getData extends HttpServlet {
         }
         return btMap;
     }
-    
+
     private final String GR_0 = "Gr 0/5 | ";
     private final String GR_1 = "Gr 1/4 | ";
     private final String GR_2 = "Gr 2/3 | ";
     private final String GR_3 = "Gr 3/2 | ";
     private final String GR_4 = "Gr 4/1 | ";
     private final String GR_5 = "Gr 5/0 | ";
-    
+
     private Map<String, Integer> generateBtMap() {
         Map<String, Integer> btMap = new LinkedHashMap<>();
         btMap.put("N", 0);
@@ -183,35 +183,36 @@ public class getData extends HttpServlet {
 
         return btMap;
     }
-    
-    private void generateWithPrefix(String prefix, Map<String, Integer> btMap){
+
+    private void generateWithPrefix(String prefix, Map<String, Integer> btMap) {
         int NO_GR_INIT = 0;
-        if(!prefix.equals("")){
+        if (!prefix.equals("")) {
             NO_GR_INIT = NO_GR_BT;
         }
-        btMap.put(prefix+"<1", NO_GR_INIT);
-        btMap.put(prefix+"1<2", NO_GR_INIT);
-        btMap.put(prefix+"1/9", 0);
-        btMap.put(prefix+"2/8", 0);
-        btMap.put(prefix+"3/7", 0);
-        btMap.put(prefix+"4/6", 0);
-        btMap.put(prefix+"6/4", 0);
-        btMap.put(prefix+"7/3", 0);
-        btMap.put(prefix+"8/2", 0);
-        btMap.put(prefix+"9/1", 0);
-        btMap.put(prefix+"9<10", NO_GR_INIT);
-        btMap.put(prefix+"10<", NO_GR_INIT);
-        btMap.put(prefix+"3-3 above(6<)", NO_GR_INIT);
-        btMap.put(prefix+"4-4 above(8<)", NO_GR_INIT);
-        btMap.put(prefix+"3-3 below(<6)", NO_GR_INIT);
-        btMap.put(prefix+"4-4 below(<8)", NO_GR_INIT);
+        btMap.put(prefix + "<1", NO_GR_INIT);
+        btMap.put(prefix + "1<2", NO_GR_INIT);
+        btMap.put(prefix + "1/9", 0);
+        btMap.put(prefix + "2/8", 0);
+        btMap.put(prefix + "3/7", 0);
+        btMap.put(prefix + "4/6", 0);
+        btMap.put(prefix + "6/4", 0);
+        btMap.put(prefix + "7/3", 0);
+        btMap.put(prefix + "8/2", 0);
+        btMap.put(prefix + "9/1", 0);
+        btMap.put(prefix + "9<10", NO_GR_INIT);
+        btMap.put(prefix + "10<", NO_GR_INIT);
+        btMap.put(prefix + "3-3 above(6<)", NO_GR_INIT);
+        btMap.put(prefix + "4-4 above(8<)", NO_GR_INIT);
+        btMap.put(prefix + "3-3 below(<6)", NO_GR_INIT);
+        btMap.put(prefix + "4-4 below(<8)", NO_GR_INIT);
     }
 
     private final int NO_GR_BT = -42;
+
     private void fillMapBt10(Map<String, Integer> btMap, int curr, int pIndex, List<Inning> sub, List<Inning> subA, List<Inning> subB, List<Inning> subG) {
-        
+
         btMap.put("N", btMap.get("N") + 1);
-        
+
         if (subG.size() == 5) {
             btMap.put("NG", btMap.get("NG") + 1);
         }
@@ -277,50 +278,49 @@ public class getData extends HttpServlet {
 
         fillGroundBT10(curr, btMap, pIndex, sub, subG);
     }
-    
-    private void fillGroundBT10(int curr, Map<String, Integer> btMap, int pIndex, List<Inning> sub, List<Inning> subG){
-    
-        if(subG.size() == 5){
-            
-            for(int i = 1; i < 9; i++){
+
+    private void fillGroundBT10(int curr, Map<String, Integer> btMap, int pIndex, List<Inning> sub, List<Inning> subG) {
+
+        if (subG.size() == 5) {
+
+            for (int i = 1; i < 9; i++) {
                 int val = parseInt(sub.get(i).getParams().get(pIndex));
                 String header;
                 boolean isNumerator;
-                if(i<5){
-                    header = i + "/" + (10-i);
+                if (i < 5) {
+                    header = i + "/" + (10 - i);
                     isNumerator = curr >= val;
-                }
-                else{
-                    header = (i+1) + "/" + (10-(i+1));
+                } else {
+                    header = (i + 1) + "/" + (10 - (i + 1));
                     isNumerator = curr <= val;
                 }
-                
-                if(val <= parseInt(subG.get(0).getParams().get(pIndex))){
+
+                if (val <= parseInt(subG.get(0).getParams().get(pIndex))) {
                     incrementBt(btMap, GR_0 + header, isNumerator);
                 }
-                if(val > parseInt(subG.get(0).getParams().get(pIndex))
-                        && val <= parseInt(subG.get(1).getParams().get(pIndex))){
+                if (val > parseInt(subG.get(0).getParams().get(pIndex))
+                        && val <= parseInt(subG.get(1).getParams().get(pIndex))) {
                     incrementBt(btMap, GR_1 + header, isNumerator);
                 }
-                if(val > parseInt(subG.get(1).getParams().get(pIndex))
-                        && val <= parseInt(subG.get(2).getParams().get(pIndex))){
+                if (val > parseInt(subG.get(1).getParams().get(pIndex))
+                        && val <= parseInt(subG.get(2).getParams().get(pIndex))) {
                     incrementBt(btMap, GR_2 + header, isNumerator);
                 }
-                if(val > parseInt(subG.get(2).getParams().get(pIndex))
-                        && val <= parseInt(subG.get(3).getParams().get(pIndex))){
+                if (val > parseInt(subG.get(2).getParams().get(pIndex))
+                        && val <= parseInt(subG.get(3).getParams().get(pIndex))) {
                     incrementBt(btMap, GR_3 + header, isNumerator);
                 }
-                if(val > parseInt(subG.get(3).getParams().get(pIndex))
-                        && val <= parseInt(subG.get(4).getParams().get(pIndex))){
+                if (val > parseInt(subG.get(3).getParams().get(pIndex))
+                        && val <= parseInt(subG.get(4).getParams().get(pIndex))) {
                     incrementBt(btMap, GR_4 + header, isNumerator);
                 }
-                if(val > parseInt(subG.get(4).getParams().get(pIndex))){
+                if (val > parseInt(subG.get(4).getParams().get(pIndex))) {
                     incrementBt(btMap, GR_5 + header, isNumerator);
                 }
             }
-            
+
         }
-        
+
 //        0 <=1 
 //        1 1 - <= 2
 //        2 2 - <= 3
@@ -328,26 +328,25 @@ public class getData extends HttpServlet {
 //        4 4 - <= 5
 //        5 >5
     }
-    
-    private void incrementBt(Map<String, Integer> btMap, String header){
+
+    private void incrementBt(Map<String, Integer> btMap, String header) {
         btMap.put(header, btMap.get(header) + 1);
     }
-    
-    private void incrementBt(Map<String, Integer> btMap, String header, boolean isNumerator){
+
+    private void incrementBt(Map<String, Integer> btMap, String header, boolean isNumerator) {
         int val = btMap.get(header);
-        
+
         int num = val & 0xFFFF;
         int den = (val >> 16) & 0xFFFF;
-        
-        if(isNumerator){
+
+        if (isNumerator) {
             num++;
-        }
-        else{
+        } else {
             den++;
         }
-        
+
         int newVal = num | (den << 16);
-        
+
         btMap.put(header, newVal);
     }
 
@@ -360,10 +359,9 @@ public class getData extends HttpServlet {
 //                return o1.getMatchDate().compareTo(o2.getMatchDate());
 //            }
 //        });
-
         Map<String, List<Match>> cache = new LinkedHashMap<>();
         Map<String, List<Match>> grCache = new LinkedHashMap<>();
-        
+
         for (int i = 0; i < oneMatch.size() - 6; i++) {
             Match currMatch = oneMatch.get(i);
             int curr = parseInt(currMatch.getInningOne().getParams().get(pIndex));
@@ -371,10 +369,10 @@ public class getData extends HttpServlet {
             String oppTeam = currMatch.getHomeTeam().equals(teamName) ? currMatch.getAwayTeam() : currMatch.getHomeTeam();
             String groundName = currMatch.getGroundName();
 
-            if(!cache.keySet().contains(oppTeam)){
+            if (!cache.keySet().contains(oppTeam)) {
                 cache.put(oppTeam, matchProcessor.getMatches(oppTeam));
             }
-            if(!grCache.keySet().contains(groundName)){
+            if (!grCache.keySet().contains(groundName)) {
                 grCache.put(groundName, matchProcessor.getGMatches(groundName));
             }
             List<Match> twoMatch = new ArrayList<>(cache.get(oppTeam));
@@ -495,7 +493,7 @@ public class getData extends HttpServlet {
         return btMap;
     }
 
-    private Map<String, Integer> backTest10_Test(String teamName, List<testMatch> oneMatch, int pIndex, TestProcessor testProcessor, InningCaller inningCaller, TestType oppType) {
+    private Map<String, Integer> backTest10_Test(String teamName, List<testMatch> oneMatch, int pIndex, TestProcessor testProcessor, InningCaller inningCaller, Location oppType) {
         Map<String, Integer> btMap = generateBtMap();
 
 //        Collections.sort(oneMatch, new Comparator<Match>(){
@@ -570,8 +568,35 @@ public class getData extends HttpServlet {
         java.util.Date tempDate = new java.util.Date();
 
         int matchType = parseInt(request.getParameter("tournament"));
+
         String teamOne = request.getParameter("teamName1");
         String teamTwo = request.getParameter("teamName2");
+        String favInput = request.getParameter("favSelect");
+
+        FavSide favSide;
+        String favTeamName;
+        switch (favInput) {
+            case "B":
+                favSide = FavSide.Batting;
+                favTeamName = teamOne;
+                break;
+            case "C":
+                favSide = FavSide.Chasing;
+                favTeamName = teamTwo;
+                break;
+            default:
+                favSide = FavSide.None;
+                favTeamName = "N/A";
+                break;
+        }
+
+        boolean isFavNone = favSide.equals(FavSide.None);
+        request.setAttribute("isFavNone", isFavNone);
+        boolean isFavBatting = favSide.equals(FavSide.Batting);
+        request.setAttribute("isFavBatting", isFavBatting);
+        boolean isFavChasing = favSide.equals(FavSide.Chasing);
+        request.setAttribute("isFavChasing", isFavChasing);
+
         String groundName = request.getParameter("groundName");
         String bdate = request.getParameter("backDate");
         if (bdate != null && !bdate.isEmpty()) {
@@ -588,14 +613,20 @@ public class getData extends HttpServlet {
         if (matchType == 1) {
 //            test(request, response);
 
-            String hometeam = db.checkhomeoraway(teamOne, teamTwo, groundName);
+            Location homeLocation = db.checkLocationOf(teamOne, teamTwo, groundName, matchType);
 
-            TestType oneSide = hometeam.equalsIgnoreCase(teamOne) ? TestType.HOME : TestType.AWAY;
-            TestType twoSide = hometeam.equalsIgnoreCase(teamTwo) ? TestType.HOME : TestType.AWAY;
+            if (homeLocation.equals(Location.NONE)) {
+                throw new IOException("Test Ground not defined properly!!!!");
+            }
+
+            String hometeam = homeLocation.equals(Location.HOME) ? teamOne : teamTwo;
+
+            Location oneSide = homeLocation;
+            Location twoSide = homeLocation.equals(Location.AWAY) ? Location.HOME : Location.AWAY;
 
             TestProcessor type0 = new TestProcessor() {
                 @Override
-                public List<testMatch> getMatches(String teamName, TestType xType) {
+                public List<testMatch> getMatches(String teamName, Location xType) {
                     return process(db.getTestMatches(teamName, 0, xType));
                 }
 
@@ -636,7 +667,7 @@ public class getData extends HttpServlet {
 
             TestProcessor type1 = new TestProcessor() {
                 @Override
-                public List<testMatch> getMatches(String teamName, TestType xType) {
+                public List<testMatch> getMatches(String teamName, Location xType) {
                     return process(db.getTestMatches(teamName, 1, xType));
                 }
 
@@ -654,7 +685,7 @@ public class getData extends HttpServlet {
 
             TestProcessor type2 = new TestProcessor() {
                 @Override
-                public List<testMatch> getMatches(String teamName, TestType xType) {
+                public List<testMatch> getMatches(String teamName, Location xType) {
                     return process(db.getTestMatches(teamName, 2, xType));
                 }
 
@@ -902,7 +933,7 @@ public class getData extends HttpServlet {
                 {
                     TestProcessor type1_N15 = new TestProcessor() {
                         @Override
-                        public List<testMatch> getMatches(String teamName, TestType xType) {
+                        public List<testMatch> getMatches(String teamName, Location xType) {
                             return process(type1.getMatches(teamName, xType));
                         }
 
@@ -919,7 +950,7 @@ public class getData extends HttpServlet {
                     };
                     TestProcessor type2_N15 = new TestProcessor() {
                         @Override
-                        public List<testMatch> getMatches(String teamName, TestType xType) {
+                        public List<testMatch> getMatches(String teamName, Location xType) {
                             return process(type2.getMatches(teamName, xType));
                         }
 
@@ -1014,7 +1045,7 @@ public class getData extends HttpServlet {
                 {
                     TestProcessor type1_N25 = new TestProcessor() {
                         @Override
-                        public List<testMatch> getMatches(String teamName, TestType xType) {
+                        public List<testMatch> getMatches(String teamName, Location xType) {
                             return process(type1.getMatches(teamName, xType));
                         }
 
@@ -1031,7 +1062,7 @@ public class getData extends HttpServlet {
                     };
                     TestProcessor type2_N25 = new TestProcessor() {
                         @Override
-                        public List<testMatch> getMatches(String teamName, TestType xType) {
+                        public List<testMatch> getMatches(String teamName, Location xType) {
                             return process(type2.getMatches(teamName, xType));
                         }
 
@@ -1126,7 +1157,7 @@ public class getData extends HttpServlet {
                 {
                     TestProcessor type1_N35 = new TestProcessor() {
                         @Override
-                        public List<testMatch> getMatches(String teamName, TestType xType) {
+                        public List<testMatch> getMatches(String teamName, Location xType) {
                             return process(type1.getMatches(teamName, xType));
                         }
 
@@ -1143,7 +1174,7 @@ public class getData extends HttpServlet {
                     };
                     TestProcessor type2_N35 = new TestProcessor() {
                         @Override
-                        public List<testMatch> getMatches(String teamName, TestType xType) {
+                        public List<testMatch> getMatches(String teamName, Location xType) {
                             return process(type2.getMatches(teamName, xType));
                         }
 
@@ -1238,7 +1269,7 @@ public class getData extends HttpServlet {
                 {
                     TestProcessor type1_N25 = new TestProcessor() {
                         @Override
-                        public List<testMatch> getMatches(String teamName, TestType xType) {
+                        public List<testMatch> getMatches(String teamName, Location xType) {
                             return process(type1.getMatches(teamName, xType));
                         }
 
@@ -1255,7 +1286,7 @@ public class getData extends HttpServlet {
                     };
                     TestProcessor type2_N25 = new TestProcessor() {
                         @Override
-                        public List<testMatch> getMatches(String teamName, TestType xType) {
+                        public List<testMatch> getMatches(String teamName, Location xType) {
                             return process(type2.getMatches(teamName, xType));
                         }
 
@@ -1323,12 +1354,21 @@ public class getData extends HttpServlet {
                 @Override
                 public List<Match> getMatches(String teamName) {
                     List<Match> matches = db.getMatches(teamName, matchType, 0);
+                    matches.removeIf(m -> {
+                        String favDeets = db.getFavourites(m.getMatchId());
+                        return !(favDeets != null && favDeets.equals(teamName));
+                    });
                     return process(matches);
                 }
 
                 @Override
                 public List<Match> getGMatches(String groundName) {
                     List<Match> matches = db.getGroundInfo(groundName, matchType);
+                    matches.removeIf(m -> {
+                        String favDeets = db.getFavourites(m.getMatchId());
+                        String chosenTeam = isFavBatting ? m.getHomeTeam() : m.getAwayTeam();
+                        return !(favDeets != null && favDeets.equals(chosenTeam));
+                    });
                     return process(matches);
                 }
 
@@ -1359,12 +1399,30 @@ public class getData extends HttpServlet {
                 @Override
                 public List<Match> getMatches(String teamName) {
                     List<Match> matches = db.getMatches(teamName, matchType, 1);
+                    boolean isTeamBatting = teamOne.equals(teamName);
+
+                    if ((isFavBatting && isTeamBatting) || (isFavChasing && !isTeamBatting)) {
+                        matches.removeIf(m -> {
+                            String favDeets = db.getFavourites(m.getMatchId());
+                            return !(favDeets != null && favDeets.equals(teamName));
+                        });
+                    } else if ((isFavChasing && isTeamBatting) || (isFavBatting && !isTeamBatting)) {
+                        matches.removeIf(m -> {
+                            String favDeets = db.getFavourites(m.getMatchId());
+                            return !(favDeets != null && !favDeets.equals(teamName));
+                        });
+                    }
                     return process(matches);
                 }
 
                 @Override
                 public List<Match> getGMatches(String groundName) {
                     List<Match> matches = db.getGroundInfo(groundName, matchType);
+                    matches.removeIf(m -> {
+                        String favDeets = db.getFavourites(m.getMatchId());
+                        String chosenTeam = isFavBatting ? m.getHomeTeam() : m.getAwayTeam();
+                        return !(favDeets != null && favDeets.equals(chosenTeam));
+                    });
                     return process(matches);
                 }
 
@@ -1418,6 +1476,25 @@ public class getData extends HttpServlet {
                 @Override
                 public List<Match> getMatches(String teamName) {
                     List<Match> matches = db.getMatches(teamName, matchType, 2);
+                    boolean isTeamBatting = teamOne.equals(teamName);
+//                        bat
+//                            nf
+//                            f    
+//                        chase
+//                            f
+//                            nf
+
+                    if ((isFavBatting && !isTeamBatting) || (isFavChasing && isTeamBatting)) {
+                        matches.removeIf(m -> {
+                            String favDeets = db.getFavourites(m.getMatchId());
+                            return !(favDeets != null && favDeets.equals(teamName));
+                        });
+                    } else if ((isFavChasing && !isTeamBatting) || (isFavBatting && isTeamBatting)) {
+                        matches.removeIf(m -> {
+                            String favDeets = db.getFavourites(m.getMatchId());
+                            return !(favDeets != null && !favDeets.equals(teamName));
+                        });
+                    }
                     return process(matches);
                 }
 
@@ -1468,7 +1545,12 @@ public class getData extends HttpServlet {
                     String worl = "";
 
                     String BorC = "";
-                    if (q.getHomeTeam().equalsIgnoreCase(teamOne)) {
+                    String desiredTeam = teamOne;
+                    if (favSide.equals(FavSide.Chasing)) {
+                        desiredTeam = teamTwo;
+                    }
+
+                    if (q.getHomeTeam().equalsIgnoreCase(desiredTeam)) {
                         BorC = "B";
                     } else {
                         BorC = "C";
@@ -1544,8 +1626,12 @@ public class getData extends HttpServlet {
                         m.setParams(params);
                         selects.add(m);
                     }
-                    selects = selects;
-                    request.setAttribute("FormGuide_A", selects.subList(0, Math.min(5, selects.size())));
+
+                    if (isFavChasing) {
+                        request.setAttribute("FormGuide_B", selects.subList(0, Math.min(5, selects.size())));
+                    } else {
+                        request.setAttribute("FormGuide_A", selects.subList(0, Math.min(5, selects.size())));
+                    }
                 }
 
                 B:
@@ -1592,8 +1678,12 @@ public class getData extends HttpServlet {
                         m.setParams(params);
                         selects.add(m);
                     }
-                    selects = selects;
-                    request.setAttribute("FormGuide_B", selects.subList(0, Math.min(5, selects.size())));
+
+                    if (isFavChasing) {
+                        request.setAttribute("FormGuide_A", selects.subList(0, Math.min(5, selects.size())));
+                    } else {
+                        request.setAttribute("FormGuide_B", selects.subList(0, Math.min(5, selects.size())));
+                    }
                 }
                 // </editor-fold>
             }
@@ -1645,7 +1735,8 @@ public class getData extends HttpServlet {
                 // <editor-fold defaultstate="collapsed">
                 A:
                 {
-                    List<Match> matches = type1.getMatches(teamOne);
+                    List<Match> matches = db.getMatches(teamOne, matchType, 1);
+                    matches = type1.process(matches);
                     matches.removeIf(m -> m.getBCW().contains("--"));
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
@@ -1653,12 +1744,22 @@ public class getData extends HttpServlet {
                 }
                 B:
                 {
-                    List<Match> matches = type2.getMatches(teamTwo);
+                    List<Match> matches = db.getMatches(teamTwo, matchType, 2);
+                    matches = type2.process(matches);
                     matches.removeIf(m -> m.getBCW().contains("--"));
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
                     request.setAttribute("BCW_B", selects.subList(0, Math.min(5, selects.size())));
                 }
+
+                if (isFavChasing) {
+                    List<Inning> selectA = (List<Inning>) request.getAttribute("BCW_A");
+                    List<Inning> selectB = (List<Inning>) request.getAttribute("BCW_B");
+
+                    request.setAttribute("BCW_A", selectB);
+                    request.setAttribute("BCW_B", selectA);
+                }
+
                 G:
                 {
                     List<Match> matches = type1.getGMatches(groundName);
@@ -1694,41 +1795,6 @@ public class getData extends HttpServlet {
             {
                 // <editor-fold defaultstate="collapsed">
                 int pIndex = 2;
-                MatchProcessor LO1 = new MatchProcessor() {
-                    @Override
-                    public List<Match> getMatches(String teamName) {
-                        return process(type1_NoMajQuit.getMatches(teamName));
-                    }
-
-                    @Override
-                    public List<Match> getGMatches(String groundName) {
-                        return process(type1_NoMajQuit.getGMatches(groundName));
-                    }
-
-                    @Override
-                    public List<Match> process(List<Match> matches) {
-                        matches.removeIf(m -> m.getInningOne().getParams().get(2).contains("-1"));
-                        return matches;
-                    }
-                };
-
-                MatchProcessor LO2 = new MatchProcessor() {
-                    @Override
-                    public List<Match> getMatches(String teamName) {
-                        return process(type2_NoMajQuit.getMatches(teamName));
-                    }
-
-                    @Override
-                    public List<Match> getGMatches(String groundName) {
-                        return LO1.getGMatches(groundName);
-                    }
-
-                    @Override
-                    public List<Match> process(List<Match> matches) {
-                        return LO1.process(matches);
-                    }
-                };
-
                 A:
                 {
                     List<Match> matches = type1_NoMajQuit.getMatches(teamOne);

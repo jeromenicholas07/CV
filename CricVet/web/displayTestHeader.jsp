@@ -50,9 +50,28 @@
 
         <table class="table table-bordered">
             <tr class="thead-dark">
-                <th colspan="${fn:length(X_A)}">${teamOne}</th>
+
+                <th colspan="${fn:length(X_A)}">
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            ${teamOne}
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            ${teamTwo}
+                        </c:when>
+                    </c:choose>
+                </th>
                 <th>
-                <th colspan="${fn:length(X_B)}">${teamTwo}</th>
+                <th colspan="${fn:length(X_B)}">
+                    <c:choose>
+                        <c:when test="${ !isFavChasing }">
+                            ${teamTwo}
+                        </c:when>
+                        <c:when test="${ isFavChasing }">
+                            ${teamOne}
+                        </c:when>
+                    </c:choose>
+                </th>
                 <th>
                 <th colspan="${fn:length(X_G)}">${groundName}</th>
             </tr>

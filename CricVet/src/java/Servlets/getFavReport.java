@@ -49,7 +49,7 @@ public class getFavReport extends HttpServlet {
             int num1 = 0, den1 = 0;
             int num2 = 0, den2 = 0;
             for (Match m : allFavMatches) {
-                String favTeam = db.getFavourites(m.getMatchId()).get(0);
+                String favTeam = db.getFavourites(m.getMatchId());
                 if (favTeam.equals(m.getHomeTeam())) {
                     if (m.getBCW().equals("B")) {
                         num1++;
@@ -73,7 +73,7 @@ public class getFavReport extends HttpServlet {
             int num1 = 0, den1 = 0;
             int num2 = 0, den2 = 0;
             for (Match m : allFavMatches) {
-                String favTeam = db.getFavourites(m.getMatchId()).get(0);
+                String favTeam = db.getFavourites(m.getMatchId());
                 if (favTeam.equals(m.getHomeTeam()) && m.isHomeTeamTossWinner()) {
                     if (m.getBCW().equals("B")) {
                         num1++;
@@ -97,7 +97,7 @@ public class getFavReport extends HttpServlet {
             int num1 = 0, den1 = 0;
             int num2 = 0, den2 = 0;
             for (Match m : allFavMatches) {
-                String favTeam = db.getFavourites(m.getMatchId()).get(0);
+                String favTeam = db.getFavourites(m.getMatchId());
                 if (favTeam.equals(m.getHomeTeam()) && !m.isHomeTeamTossWinner()) {
                     if (m.getBCW().equals("B")) {
                         num1++;

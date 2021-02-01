@@ -6,6 +6,7 @@
 package Servlets;
 
 import Database.CricDB;
+import com.mysql.cj.util.StringUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -14,6 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import models.Header;
+import models.OHL;
 
 /**
  *
@@ -44,41 +47,78 @@ public class editFavourites extends HttpServlet {
             request.setAttribute("redirUrl", redirUrl);
             CricDB db = new CricDB();
 
-            if (request.getParameter("favTeam") != null && !request.getParameter("favTeam").trim().equals("")) {
+            //using the same servlet to render the form and save the value
+            if (request.getParameter("submitted") != null && request.getParameter("submitted").trim().equals("true")) {
+                boolean favSuccess = false, ohlSuccess = false;
                 String favTeam = request.getParameter("favTeam");
-                String open1 = request.getParameter("open1");
-                String high1 = request.getParameter("high1");
-                String low1 = request.getParameter("low1");
-                String open2 = request.getParameter("open2");
-                String high2 = request.getParameter("high2");
-                String low2 = request.getParameter("low2");
 
-                if (db.updateFavourites(matchID, favTeam, open1, high1, low1, open2, high2, low2)) {
+                if (StringUtils.isNullOrEmpty(favTeam)) {
+                    favSuccess = true;
+                } else {
+                    favSuccess = db.updateFavourites(matchID, favTeam);
+                }
+
+                double open;
+                double high;
+                double low;
+
+                open = parseDouble(request.getParameter("FW_O"));
+                high = parseDouble(request.getParameter("FW_H"));
+                low = parseDouble(request.getParameter("FW_L"));
+                Header FW = new Header(open, high, low);
+
+                open = parseDouble(request.getParameter("FX_O"));
+                high = parseDouble(request.getParameter("FX_H"));
+                low = parseDouble(request.getParameter("FX_L"));
+                Header FX = new Header(open, high, low);
+
+                open = parseDouble(request.getParameter("LX_O"));
+                high = parseDouble(request.getParameter("LX_H"));
+                low = parseDouble(request.getParameter("LX_L"));
+                Header LX = new Header(open, high, low);
+
+                open = parseDouble(request.getParameter("T_O"));
+                high = parseDouble(request.getParameter("T_H"));
+                low = parseDouble(request.getParameter("T_L"));
+                Header T = new Header(open, high, low);
+
+                open = parseDouble(request.getParameter("FW2_O"));
+                high = parseDouble(request.getParameter("FW2_H"));
+                low = parseDouble(request.getParameter("FW2_L"));
+                Header FW2 = new Header(open, high, low);
+
+                open = parseDouble(request.getParameter("FX2_O"));
+                high = parseDouble(request.getParameter("FX2_H"));
+                low = parseDouble(request.getParameter("FX2_L"));
+                Header FX2 = new Header(open, high, low);
+
+                OHL ohlObj = new OHL(FW, FX, LX, T, FW2, FX2);
+
+                if (ohlObj.isEmpty()) {
+                    ohlSuccess = true;
+                } else {
+                    ohlSuccess = db.updateOHL(matchID, ohlObj);
+                }
+
+                if (favSuccess && ohlSuccess) {
                     out.println("<h2>Edit successful<br>");
-                    out.println("<a href="+redirUrl+">< Back to DB page</a>");
+                    out.println("<a href=" + redirUrl + ">< Back to DB page</a>");
                 } else {
                     out.println("Edit UNSUCCESSFUL// Please try again.");
                 }
             } else {
                 String favTeam = "";
-                String open1 = "";
-                String high1 = "";
-                String low1 = "";
-                String open2 = "";
-                String high2 = "";
-                String low2 = "";
 
-                List<String> details = db.getFavourites(matchID);
-                if (details.size() == 7) {
-                    favTeam = details.get(0);
-                    open1 = details.get(1);
-                    high1 = details.get(2);
-                    low1 = details.get(3);
-                    open2 = details.get(4);
-                    high2 = details.get(5);
-                    low2 = details.get(6);
+                String tempFav = db.getFavourites(matchID);
+                if (tempFav != null) {
+                    favTeam = tempFav;
                 }
-                
+
+                OHL ohl = db.getOHL(matchID);
+                if (ohl != null) {
+                    request.setAttribute("OHL", ohl);
+                }
+
                 String team1 = request.getParameter("team1");
                 String team2 = request.getParameter("team2");
 
@@ -86,16 +126,18 @@ public class editFavourites extends HttpServlet {
                 request.setAttribute("team1", team1);
                 request.setAttribute("team2", team2);
                 request.setAttribute("favTeam", favTeam);
-                request.setAttribute("open1", open1);
-                request.setAttribute("high1", high1);
-                request.setAttribute("low1", low1);
-                request.setAttribute("open2", open2);
-                request.setAttribute("high2", high2);
-                request.setAttribute("low2", low2);
+
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/editFavourites.jsp");
                 dispatcher.forward(request, response);
             }
         }
+    }
+
+    private double parseDouble(String text) {
+        if (StringUtils.isNullOrEmpty(text)) {
+            return 0;
+        }
+        return Double.parseDouble(text);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -9,6 +9,11 @@ package Database;
  *
  * @author DELL
  */
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import models.*;
 
 import java.sql.Connection;
@@ -54,58 +59,17 @@ import org.jsoup.nodes.Document;
 
 public class CricDB extends BaseDAO {
 
-    public String checkhomeoraway(String teamOne, String teamTwo, String groundName) {
-        Connection con = null;
-        Statement s = null;
-        ResultSet r = null;
-        String hometeam = null;
-        try {
-            con = getConnection();
-            String sq = "select * from APP.HOMEGROUND WHERE teamname='" + teamOne + "'";
-            s = con.createStatement();
-            r = s.executeQuery(sq);
-            while (r.next()) {
-                String ground1 = r.getString("GROUND1");
-                String ground2 = r.getString("GROUND2");
-                String ground3 = r.getString("GROUND3");
-                String ground4 = r.getString("GROUND4");
-                String ground5 = r.getString("GROUND5");
-                String ground6 = r.getString("GROUND6");
-                String ground7 = r.getString("GROUND7");
-                String ground8 = r.getString("GROUND8");
-                String ground9 = r.getString("GROUND9");
-                String ground10 = r.getString("GROUND10");
-                String ground11 = r.getString("GROUND11");
-                String ground12 = r.getString("GROUND12");
-                String ground13 = r.getString("GROUND13");
-                String ground14 = r.getString("GROUND14");
-                String ground15 = r.getString("GROUND15");
-                String ground16 = r.getString("GROUND16");
-                String ground17 = r.getString("GROUND17");
-                String ground18 = r.getString("GROUND18");
+    public Location checkLocationOf(String team, String otherTeam, String groundName, int matchType) {
+        List<String> homeGroundsOne = getHomeGroundsFor(team, matchType);
+        List<String> homeGroundsTwo = getHomeGroundsFor(otherTeam, matchType);
 
-            if(groundName.equals(ground1)||groundName.equals(ground2)||groundName.equals(ground3)||groundName.equals(ground4)||groundName.equals(ground5)||groundName.equals(ground6)||groundName.equals(ground7)||groundName.equals(ground8)||groundName.equals(ground9)||groundName.equals(ground10)||groundName.equals(ground11)||groundName.equals(ground12)||groundName.equals(ground13)||groundName.equals(ground14)||groundName.equals(ground15)||groundName.equals(ground16)||groundName.equals(ground17)||groundName.equals(ground18)){
-                 hometeam = teamOne;
-                 return hometeam;
-
-            }
-            else{
-                hometeam = teamTwo;
-                return hometeam;
-            }
-
-            }
-            con.close();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }finally {
-            try { r.close(); } catch (Exception e) { /* ignored */ }
-            try { s.close(); } catch (Exception e) { /* ignored */ }
-            try { con.close(); } catch (Exception e) { /* ignored */ }
+        if (homeGroundsOne.contains(groundName)) {
+            return Location.HOME;
+        } else if (homeGroundsTwo.contains(groundName)) {
+            return Location.AWAY;
+        } else {
+            return Location.NONE;
         }
-        return teamOne;
-
     }
 
     public void addtestMatch(testMatch match) throws Exception {
@@ -1110,6 +1074,84 @@ public class CricDB extends BaseDAO {
             }
         }
 
+        try {
+            String sql = "create table \"APP\".OHL\n"
+                    + "(\n"
+                    + "	MATCHID INTEGER not null primary key,\n"
+                    + "	OHLOBJ blob )";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            System.out.println("Unable to create OHL");
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+
+        try {
+            con = getConnection();
+            stmt = con.createStatement();
+
+            String sql = "alter table APP.FAVOURITES\n"
+                    + "DROP column OPENING1";
+
+            stmt.execute(sql);
+
+            sql = "alter table APP.FAVOURITES\n"
+                    + "DROP column high1";
+
+            stmt.execute(sql);
+
+            sql = "alter table APP.FAVOURITES\n"
+                    + "DROP column low1";
+
+            stmt.execute(sql);
+
+            sql = "alter table APP.FAVOURITES\n"
+                    + "DROP column opening2";
+
+            stmt.execute(sql);
+
+            sql = "alter table APP.FAVOURITES\n"
+                    + "DROP column high2";
+
+            stmt.execute(sql);
+
+            sql = "alter table APP.FAVOURITES\n"
+                    + "DROP column low2";
+
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            System.out.println("Unable to create OHL");
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+
 //
 //        try {
 //            String sql = "UPDATE APP.MATCHES SET HOMETEAM = 'Delhi Capitals' WHERE HOMETEAM = 'Delhi Daredevils' ";
@@ -1567,7 +1609,7 @@ public class CricDB extends BaseDAO {
     }
 
     // case 0:any side ; 1: batting; 2: bowling
-    public List<testMatch> getTestMatches(String teamName, int caseNo, TestType type) {
+    public List<testMatch> getTestMatches(String teamName, int caseNo, Location type) {
 
         List<testMatch> testmatches = new ArrayList<>();
         Connection con = null;
@@ -1575,9 +1617,9 @@ public class CricDB extends BaseDAO {
         ResultSet rs = null;
         String sql;
         String addCondn = "";
-        if (type.equals(TestType.HOME)) {
+        if (type.equals(Location.HOME)) {
             addCondn = "AND teamathome = '" + teamName + "' ";
-        } else if (type.equals(TestType.AWAY)) {
+        } else if (type.equals(Location.AWAY)) {
             addCondn = "AND teamataway = '" + teamName + "' ";
         }
 
@@ -2436,8 +2478,8 @@ public class CricDB extends BaseDAO {
         return true;
     }
 
-    public List<String> getFavourites(int matchID) {
-        List<String> details = new ArrayList<String>();
+    public String getFavourites(int matchID) {
+        String favTeam = null;
 
         Connection con = null;
         Statement stmt = null;
@@ -2446,19 +2488,14 @@ public class CricDB extends BaseDAO {
 
         try {
             con = getConnection();
-            sql = "select FAVTEAM, OPENING1, HIGH1, LOW1, OPENING2, HIGH2, LOW2 from APP.FAVOURITES where MATCHID = " + matchID + " ";
+            sql = "select FAVTEAM from APP.FAVOURITES where MATCHID = " + matchID + " ";
 
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
 
             if (rs.next()) {
-                details.add(rs.getString("favteam"));
-                details.add(rs.getString("opening1"));
-                details.add(rs.getString("high1"));
-                details.add(rs.getString("low1"));
-                details.add(rs.getString("opening2"));
-                details.add(rs.getString("high2"));
-                details.add(rs.getString("low2"));
+                favTeam = rs.getString("favteam");
+
             }
             con.close();
         } catch (SQLException ex) {
@@ -2477,10 +2514,10 @@ public class CricDB extends BaseDAO {
             } catch (Exception e) {
                 /* ignored */ }
         }
-        return details;
+        return favTeam;
     }
 
-    public boolean updateFavourites(int matchID, String favTeam, String open1, String high1, String low1, String open2, String high2, String low2) {
+    public boolean updateFavourites(int matchID, String favTeam) {
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -2495,12 +2532,11 @@ public class CricDB extends BaseDAO {
             rs = stmt.executeQuery(sql);
 
             if (rs.next()) {
-                sql = "UPDATE APP.FAVOURITES SET FAVTEAM = '" + favTeam + "', OPENING1 = '" + open1 + "', HIGH1 = '" + high1 + "', low1 = '" + low1 + "',   "
-                        + "OPENING2 = '" + open2 + "', HIGH2 = '" + high2 + "', low2 = '" + low2 + "'  "
+                sql = "UPDATE APP.FAVOURITES SET FAVTEAM = '" + favTeam + "'  "
                         + "WHERE MATCHID=" + matchID + " ";
             } else {
-                sql = "INSERT INTO APP.FAVOURITES (MATCHID, FAVTEAM, OPENING1, HIGH1, LOW1, OPENING2, HIGH2, LOW2) \n"
-                        + " VALUES (" + matchID + ", '" + favTeam + "', '" + open1 + "', '" + high1 + "', '" + low1 + "', '" + open2 + "', '" + high2 + "', '" + low2 + "')";
+                sql = "INSERT INTO APP.FAVOURITES (MATCHID, FAVTEAM) \n"
+                        + " VALUES (" + matchID + ", '" + favTeam + "' )";
             }
 
             nr = stmt.executeUpdate(sql);
@@ -2660,7 +2696,7 @@ public class CricDB extends BaseDAO {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
 
-            if (rs.next()) {
+            while (rs.next()) {
                 String groundName = rs.getString("GROUNDNAME");
                 homeGrounds.add(groundName);
             }
@@ -2830,7 +2866,7 @@ public class CricDB extends BaseDAO {
         }
         return favMatches;
     }
-    
+
     public List<testMatch> getAllFavTestMatches() {
         List<testMatch> favMatches = new ArrayList<>();
         Connection con = null;
@@ -2891,5 +2927,104 @@ public class CricDB extends BaseDAO {
                 /* ignored */ }
         }
         return favMatches;
+    }
+
+    public OHL getOHL(int matchID) {
+        OHL ohlObj = null;
+
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        String sql;
+
+        try {
+            con = getConnection();
+            sql = "select * from APP.OHL where MATCHID = " + matchID + " ";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                byte[] buf = rs.getBytes("ohlobj");
+                if (buf != null) {
+                    ObjectInputStream objectIn = new ObjectInputStream(
+                            new ByteArrayInputStream(buf));
+                    ohlObj = (OHL) objectIn.readObject();
+                    
+                    objectIn.close();
+                }
+
+            }
+            con.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return ohlObj;
+    }
+
+    public boolean updateOHL(int matchID, OHL ohlObj) {
+        Connection con = null;
+        Statement stmt = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int nr = 0;
+        String sql;
+
+        try {
+            con = getConnection();
+
+            sql = "SELECT * FROM APP.OHL where MATCHID=" + matchID + " ";
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                sql = "UPDATE APP.OHL SET OHLOBJ = ?  "
+                        + "WHERE MATCHID=" + matchID + " ";
+            } else {
+                sql = "INSERT INTO APP.OHL (MATCHID, OHLOBJ) \n"
+                        + " VALUES (" + matchID + ", ? )";
+            }
+            ps = con.prepareStatement(sql);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oout = new ObjectOutputStream(baos);
+            oout.writeObject(ohlObj);
+            oout.close();
+
+            ps.setBytes(1, baos.toByteArray());
+
+            nr = ps.executeUpdate();
+
+            con.close();
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return nr > 0;
     }
 }

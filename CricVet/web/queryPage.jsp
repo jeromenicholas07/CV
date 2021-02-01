@@ -93,23 +93,39 @@
                                 <div class="col-6 teams">
                                     <select class="form-control form-control required" id="teamSelect2" name="teamName2">
                                         <option value="-1">Chasing Team</option>
-
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-12 teams">
-                                    <select class="form-control form-control-sm required" id="groundSelect" name="groundName">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text" for="favSelect">Favorite : </label>
+                                        </div>
+                                        <select class="form-control form-control required" id="favSelect" name="favSelect">
+                                            <option value="N" default selected>None</option>
+                                            <option value="B">Batting team</option>
+                                            <option value="C">Chasing team</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="form-group row">
+                                <div class="col-12 teams">
+                                    <select class="form-control form-control required" id="groundSelect" name="groundName">
                                         <option value="-1">Select Ground</option>
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group row">
                                 <div class="col-12 teams">
                                     <input type="date" class="form-control form-control-sm" id="backDate" name="backDate">
                                 </div>
                             </div>
+                            
+                            <br>
 
                             <div class="form-group row">
                                 <div class="col-12 teams">
@@ -121,8 +137,8 @@
 
 
                     <script>
-                        
-                        $(document).ready(function(){
+
+                        $(document).ready(function () {
                             $("#tourSelect").children('[value="-1"]').attr('selected', true);
                         });
 
@@ -131,7 +147,7 @@
                             $('#teamSelect2').empty().append('<option selected="selected" value="-1">Chasing Team</option>');
                             $('#groundSelect').empty().append('<option selected="selected" value="-1">Select Ground</option>');
                             var id = $(this).children(":selected").attr("value");
-                            
+
 //                            var t1 = document.getElementById('tourSelect');
 //                            
 //                            if(t1.value == '-1'){

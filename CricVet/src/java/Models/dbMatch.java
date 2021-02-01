@@ -10,28 +10,24 @@ package models;
  * @author DELL
  */
 public class dbMatch {
+
     private String matchDate;
-    
+
     private String team;
     private String oppTeam;
     private String toss;
     private String BorC;
     private String result;
     private int totalSixes;
-    
+
     private Inning one;
     private Inning two;
     private int matchId;
-    
-    private String favTeam;
-    private String open1;
-    private String high1;
-    private String low1;
-    private String open2;
-    private String high2;
-    private String low2;
 
-    public dbMatch(int matchId, String matchDate,String team, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two, String favTeam, String open1, String high1, String low1, String open2, String high2, String low2) {
+    private String favTeam;
+    private OHL ohl;
+
+    public dbMatch(int matchId, String matchDate, String team, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two, String favTeam, OHL ohl) {
         this.matchId = matchId;
         this.matchDate = matchDate;
         this.team = team;
@@ -42,21 +38,19 @@ public class dbMatch {
         this.totalSixes = totalSixes;
         this.one = one;
         this.two = two;
-        
+
         this.favTeam = favTeam;
-        this.open1 = open1;
-        this.high1 = high1;
-        this.low1 = low1;
-        this.open2 = open2;
-        this.high2 = high2;
-        this.low2 = low2;
+        this.ohl = ohl;
     }
+
     public int getMatchId() {
         return matchId;
     }
+
     public void setMatchId(int matchId) {
         this.matchId = matchId;
     }
+
     public String getMatchDate() {
         return matchDate;
     }
@@ -68,13 +62,11 @@ public class dbMatch {
     public void setTeam(String team) {
         this.team = team;
     }
-    
 
     public void setMatchDate(String matchDate) {
         this.matchDate = matchDate;
     }
 
-    
     public String getOppTeam() {
         return oppTeam;
     }
@@ -139,32 +131,12 @@ public class dbMatch {
         this.favTeam = favTeam;
     }
 
-    public String getOpen1() {
-        return open1;
+    public OHL getOhl() {
+        return ohl;
     }
 
-    public String getHigh1() {
-        return high1;
+    public void setOhl(OHL ohl) {
+        this.ohl = ohl;
     }
 
-    public String getLow1() {
-        return low1;
-    }
-
-    public String getOpen2() {
-        return open2;
-    }
-
-    public String getHigh2() {
-        return high2;
-    }
-
-    public String getLow2() {
-        return low2;
-    }
-
-    
-    
-    
-    
-    }
+}

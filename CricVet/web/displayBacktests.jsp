@@ -24,30 +24,41 @@
         <c:set var="X_B_bt" value="${requestScope[param.B_bt]}" scope="page"></c:set>
         <c:set var="X_TB_bt" value="${requestScope[param.TB_bt]}" scope="page"></c:set>
         <c:set var="X_G_bt" value="${requestScope[param.G_bt]}" scope="page"></c:set>
+        <c:choose>
+            <c:when test="${ !isFavChasing }">
+                <c:set var="T1" value="${teamOne}" scope="page"></c:set>
+                <c:set var="T2" value="${teamTwo}" scope="page"></c:set>
+            </c:when>
+            <c:when test="${ isFavChasing }">
+                <c:set var="T1" value="${teamTwo}" scope="page"></c:set>
+                <c:set var="T2" value="${teamOne}" scope="page"></c:set>
+            </c:when>
+        </c:choose>
+
 
         <c:set var="bt10_count" value="15" scope="page"></c:set>
-        
+
         <c:set var="row1_end" value="${bt10_count+1}" scope="page"></c:set>
-        
+
         <c:set var="row2_start" value="18" scope="page"></c:set>
         <c:set var="row2_end" value="${row2_start + bt10_count}" scope="page"></c:set>
-        
+
         <c:set var="row3_start" value="${row2_end + 1}" scope="page"></c:set>
         <c:set var="row3_end" value="${row3_start + bt10_count}" scope="page"></c:set>
-        
+
         <c:set var="row4_start" value="${row3_end + 1}" scope="page"></c:set>
         <c:set var="row4_end" value="${row4_start + bt10_count}" scope="page"></c:set>
-        
+
         <c:set var="row5_start" value="${row4_end + 1}" scope="page"></c:set>
         <c:set var="row5_end" value="${row5_start + bt10_count}" scope="page"></c:set>
-        
+
         <c:set var="row6_start" value="${row5_end + 1}" scope="page"></c:set>
         <c:set var="row6_end" value="${row6_start + bt10_count}" scope="page"></c:set>
-        
+
         <c:set var="row7_start" value="${row6_end + 1}" scope="page"></c:set>
         <c:set var="row7_end" value="${row7_start + bt10_count}" scope="page"></c:set>
-        
-        
+
+
             <table class="table table-bordered BT5">
                 <tr class="thead-light">
                     <th colspan="30">Back testing:
@@ -60,9 +71,9 @@
                         </div>
                 </tr>
                 <tr>
-                    <th colspan="${fn:length(X_A_bt)}">${teamOne}</th>
+                    <th colspan="${fn:length(X_A_bt)}">${T1}</th>
                 <th>
-                <th colspan="${fn:length(X_B_bt)}">${teamTwo}</th>
+                <th colspan="${fn:length(X_B_bt)}">${T2}</th>
                 <th>
                 <th colspan="${fn:length(X_G_bt)}">${groundName}</th>
             </tr>
@@ -140,7 +151,7 @@
 
         <table class="table table-bordered BT10">
             <tr>
-                <th colspan="30">${teamOne}</th>
+                <th colspan="30">${T1}</th>
             </tr>
             <colgroup>
                 <col>
@@ -172,57 +183,57 @@
                     </td>
                 </c:forEach>
             </tr>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 0/5" />
                 <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row2_start}" />
                 <jsp:param name="row_end" value="${row2_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 1/4" />
                 <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row3_start}" />
                 <jsp:param name="row_end" value="${row3_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 2/3" />
                 <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row4_start}" />
                 <jsp:param name="row_end" value="${row4_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 3/2" />
                 <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row5_start}" />
                 <jsp:param name="row_end" value="${row5_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 4/1" />
                 <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row6_start}" />
                 <jsp:param name="row_end" value="${row6_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 5/0" />
                 <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row7_start}" />
                 <jsp:param name="row_end" value="${row7_end}" />
             </jsp:include>
-            
-            
+
+
 
             <tr>
                 <td colspan="30"></td>
             </tr>
 
             <tr>
-                <th colspan="30">${teamTwo}</th>
+                <th colspan="30">${T2}</th>
             </tr>
             <tr>
                 <td></td>
@@ -248,53 +259,53 @@
                     </td>
                 </c:forEach>
             </tr>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 0/5" />
                 <jsp:param name="X_T_bt" value="${param.TB_bt}" />
                 <jsp:param name="row_start" value="${row2_start}" />
                 <jsp:param name="row_end" value="${row2_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 1/4" />
                 <jsp:param name="X_T_bt" value="${param.TB_bt}" />
                 <jsp:param name="row_start" value="${row3_start}" />
                 <jsp:param name="row_end" value="${row3_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 2/3" />
                 <jsp:param name="X_T_bt" value="${param.TB_bt}" />
                 <jsp:param name="row_start" value="${row4_start}" />
                 <jsp:param name="row_end" value="${row4_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 3/2" />
                 <jsp:param name="X_T_bt" value="${param.TB_bt}" />
                 <jsp:param name="row_start" value="${row5_start}" />
                 <jsp:param name="row_end" value="${row5_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 4/1" />
                 <jsp:param name="X_T_bt" value="${param.TB_bt}" />
                 <jsp:param name="row_start" value="${row6_start}" />
                 <jsp:param name="row_end" value="${row6_end}" />
             </jsp:include>
-            
+
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 5/0" />
                 <jsp:param name="X_T_bt" value="${param.TB_bt}" />
                 <jsp:param name="row_start" value="${row7_start}" />
                 <jsp:param name="row_end" value="${row7_end}" />
             </jsp:include>
-            
+
             <tr>
                 <td colspan="30"></td>
             </tr>
-            
+
         </table>
     </body>
 </html>
