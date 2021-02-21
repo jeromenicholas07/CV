@@ -72,9 +72,36 @@ public class OHL implements Serializable {
     public void setFX2(Header FX2) {
         this.FX2 = FX2;
     }
-    
-    public boolean isEmpty(){
+
+    public boolean isEmpty() {
         return FW.isEmpty() && FX.isEmpty() && LX.isEmpty() && T.isEmpty() && FW2.isEmpty() && FX2.isEmpty();
+    }
+
+    public Header getHeader(boolean isFirstInning, int pIndex) {
+        if (isFirstInning) {
+            switch (pIndex) {
+                case 1:
+                    return FX;
+                case 2:
+                    return LX;
+                case 3:
+                    return FW;
+                case 6:
+                    return T;
+            }
+        } else {
+            switch (pIndex) {
+                case 1:
+                    return FX2;
+                case 3:
+                    return FW2;
+            }
+        }
+        return null;
+    }
+
+    public Header getTestHeader(int pIndex) {
+        return null;
     }
 
 }

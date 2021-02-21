@@ -407,14 +407,14 @@ public class DataFetch {
                         }
 
                         List<String> params = new ArrayList<>();
-                        params.add(String.valueOf(firstOverScore));
-                        params.add(String.valueOf(XOverScore));
-                        params.add(String.valueOf(lastXOverScore));
-                        params.add(String.valueOf(firstWicketScore));
-                        params.add(String.valueOf(fourCount));
-                        params.add(String.valueOf(sixCount));
-                        params.add(String.valueOf(totalRuns));
-                        params.add(BCW);
+                        params.add(String.valueOf(firstOverScore));//0
+                        params.add(String.valueOf(XOverScore));//1
+                        params.add(String.valueOf(lastXOverScore));//2
+                        params.add(String.valueOf(firstWicketScore));//3
+                        params.add(String.valueOf(fourCount));//4
+                        params.add(String.valueOf(sixCount));//5
+                        params.add(String.valueOf(totalRuns));//6
+                        params.add(BCW);//7
 
                         if (inning == 1) {
                             one = new Inning(params);

@@ -1,0 +1,30 @@
+  {
+    "name": "CricVet",
+    "version": "1.1",
+    "description": "An extension for advanced analysis of Cricket websites.",
+	"permissions": ["tabs", "storage"],
+	"background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    },
+    "browser_action": {
+      "default_popup": "popup.html",
+		"default_icons": {
+		  "16": "images/logo16.png",
+		  "128": "images/logo128.png"
+		}
+    },
+	"options_page": "options.html",
+	"icons": {
+      "16": "images/logo16.png",
+      "128": "images/logo128.png"
+    },
+	"content_scripts": [
+	   {
+		 "matches": ["<all_urls>"],
+		 "run_at": "document_start",
+		 "js": ["bootstrap/js/jquery-3.5.1.js", "contentScript.js"]
+	   }
+ ],
+    "manifest_version": 2
+  }

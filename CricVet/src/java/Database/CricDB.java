@@ -1101,56 +1101,6 @@ public class CricDB extends BaseDAO {
             }
         }
 
-        try {
-            con = getConnection();
-            stmt = con.createStatement();
-
-            String sql = "alter table APP.FAVOURITES\n"
-                    + "DROP column OPENING1";
-
-            stmt.execute(sql);
-
-            sql = "alter table APP.FAVOURITES\n"
-                    + "DROP column high1";
-
-            stmt.execute(sql);
-
-            sql = "alter table APP.FAVOURITES\n"
-                    + "DROP column low1";
-
-            stmt.execute(sql);
-
-            sql = "alter table APP.FAVOURITES\n"
-                    + "DROP column opening2";
-
-            stmt.execute(sql);
-
-            sql = "alter table APP.FAVOURITES\n"
-                    + "DROP column high2";
-
-            stmt.execute(sql);
-
-            sql = "alter table APP.FAVOURITES\n"
-                    + "DROP column low2";
-
-            stmt.execute(sql);
-            con.close();
-        } catch (SQLException ex) {
-            System.out.println("Unable to create OHL");
-        } finally {
-            try {
-                rs.close();
-            } catch (Exception e) {
-            }
-            try {
-                stmt.close();
-            } catch (Exception e) {
-            }
-            try {
-                con.close();
-            } catch (Exception e) {
-            }
-        }
 
 //
 //        try {

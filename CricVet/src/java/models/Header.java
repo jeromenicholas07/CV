@@ -42,7 +42,7 @@ public class Header implements Serializable {
         return high;
     }
 
-    public void setHigh(double high) {
+    public void setHigh(int high) {
         this.high = high;
     }
     
