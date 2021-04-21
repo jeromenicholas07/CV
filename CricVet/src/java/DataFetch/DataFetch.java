@@ -100,7 +100,7 @@ public class DataFetch {
         }
     }
 
-    int yr = 2017;
+    int yr = 2019;
     Pattern matchIdFinder = Pattern.compile("/ci/engine/match/(.*)\\.html");
     Pattern teamIndexFinder = Pattern.compile("/team/_/id/(.*)/(.*)");
     Pattern datePattern = Pattern.compile("(?<MM>Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sep(t(ember)?)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\\s(?<dd>\\d{1,2})(\\s?-\\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sep(t(ember)?)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)?\\s?\\d{1,2})?\\s(?<yyyy>20[0-9][0-9])");
@@ -109,11 +109,11 @@ public class DataFetch {
 
     CricDB db = new CricDB();
 
-    public List<MatchReport> loadData() {
+    public List<MatchReport> loadData() throws Exception {
         System.out.println("------- Starting loadData() -------");
         String baseUrl = "http://stats.espncricinfo.com/";
 
-        List<Integer> matchTypes = Arrays.asList(205, 117, 2, 158, 159, 748, 3);
+        List<Integer> matchTypes = Arrays.asList(117, 2, 205,  158, 159, 748, 3);
         for (int matchType : matchTypes) {
             System.out.println("------- matchType: " + matchType + " -------");
             List<String> loadedMatchIDs = db.getLoadedMatchIDs(matchType);
@@ -124,7 +124,7 @@ public class DataFetch {
                 String matchListPage = null;
                 switch (matchType) {
                     case 117:
-                        if (y > 2019) {
+                        if (y == 2020) {
                             matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + "%2F" + ((y + 1) % 100) + ";trophy=" + matchType + ";type=season";
                         } else {
                             matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=" + matchType + ";type=season";
@@ -312,6 +312,7 @@ public class DataFetch {
                         String fourcheck = " FOUR";
                         String sixcheck = " SIX";
                         int firstOverScore = -1;
+                        double firstWicketBall = Double.MAX_VALUE;
                         int XOverScore = -1;
                         int lastXOverScore = -1;
                         int firstWicketScore = -1;
@@ -334,7 +335,7 @@ public class DataFetch {
                             }
                         }
 
-                        String commentaryUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" + seriesNo + "&eventId=" + eventNo + "&period=" + inning + "&page=1&filter=full&liveTest=false";
+                        String commentaryUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesNo + "&matchId=" + eventNo + "&inningNumber=" + inning + "&commentType=ALL";
                         String json;
                         try {
                             json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
@@ -342,10 +343,18 @@ public class DataFetch {
                             throw new Exception("Unable to access page", new Exception(commentaryUrl));
                         }
                         JSONObject j = new JSONObject(json);
-                        int pageCount = j.getJSONObject("pagination").getInt("pageCount");
 
-                        for (int i = 1; i <= pageCount; i++) {
-                            String currentPageUrl = "https://hsapi.espncricinfo.com/v1/pages/match/comments?lang=en&leagueId=" + seriesNo + "&eventId=" + eventNo + "&period=" + inning + "&page=" + i + "&filter=full&liveTest=false";
+                        int nextOverNumber = 0;
+                        boolean firstCommentFlag = true;
+
+                        while (nextOverNumber != -1) {
+                            String currentPageUrl;
+                            if (firstCommentFlag) {
+                                firstCommentFlag = false;
+                                currentPageUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesNo + "&matchId=" + eventNo + "&inningNumber=" + inning + "&commentType=ALL";
+                            } else {
+                                currentPageUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesNo + "&matchId=" + eventNo + "&inningNumber=" + inning + "&commentType=ALL&fromInningOver=" + nextOverNumber;
+                            }
 
                             String body;
                             System.out.println("trying test :" + currentPageUrl);
@@ -361,41 +370,49 @@ public class DataFetch {
                                 throw new JSONException("corrupt JSON", new Exception(currentPageUrl, je));
                             }
 
+                            try {
+                                nextOverNumber = jObj.getInt("nextInningOver");
+                            } catch (JSONException ex) {
+                                nextOverNumber = -1;
+                            }
+
                             for (int it = 0; it < jObj.getJSONArray("comments").length(); it++) {
                                 JSONObject jItem = jObj.getJSONArray("comments").getJSONObject(it);
                                 System.out.println("it:" + it + " url: " + currentPageUrl);
 
-                                if (jItem.getInt("over") == 0 && jItem.getInt("ball") == 6) {
-                                    firstOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                                if (jItem.getInt("oversActual") == 0 && jItem.getInt("ballNumber") == 6) {
+                                    firstOverScore = jItem.getInt("totalInningRuns");
                                 }
 
-                                if (jItem.getInt("over") == firstX && jItem.getInt("ball") == 6) {
-                                    XOverScore = jItem.getJSONObject("currentInning").getInt("runs");
+                                if (jItem.getInt("oversActual") == firstX && jItem.getInt("ballNumber") == 6) {
+                                    XOverScore = jItem.getInt("totalInningRuns");
                                 }
 
-                                if (jItem.getInt("over") == lastX && jItem.getInt("ball") == 6) {
-                                    lastXOverScore = totalRuns - jItem.getJSONObject("currentInning").getInt("runs");
-                                    if (jItem.getJSONObject("currentInning").getInt("wickets") > 7) {
+                                System.out.println("--------" + jItem.getDouble("oversUnique") + "-------");
+                                if (jItem.getInt("oversActual") == lastX && !jItem.get("over").equals(null)) {
+                                    lastXOverScore = totalRuns - jItem.getInt("totalInningRuns");
+                                    System.out.println(jItem.getDouble("oversUnique"));
+                                    System.out.println("over:" + jItem.get("over").getClass());
+                                    if (jItem.getJSONObject("over").getInt("totalWickets") > 7) {
                                         lastXOverScore = -1;
                                     }
                                 }
 
-                                if (jItem.getJSONObject("currentInning").getInt("wickets") == 1 && jItem.has("matchWicket") && firstWicketScore == -1) {
-                                    firstWicketScore = jItem.getJSONObject("currentInning").getInt("runs");
+                                if (jItem.getBoolean("isWicket") && jItem.getDouble("oversUnique") < firstWicketBall) {
+                                    firstWicketScore = jItem.getInt("totalInningRuns");
+                                    firstWicketBall = jItem.getDouble("oversUnique");
                                 }
-                                try {
-                                    if (jItem.getString("shortText").toLowerCase().contains(fourcheck.toLowerCase())) {
-                                        fourCount++;
-                                    }
-                                    if (jItem.getString("shortText").toLowerCase().contains(sixcheck.toLowerCase())) {
-                                        sixCount++;
-                                    }
-                                } catch (JSONException e) {
-                                    System.out.println(e.getMessage());
+
+                                if (jItem.getBoolean("isFour")) {
+                                    fourCount++;
+                                }
+
+                                if (jItem.getBoolean("isSix")) {
+                                    sixCount++;
                                 }
 
                                 if (inning == 1) {
-                                    if (jItem.getInt("over") >= majorOv) {
+                                    if (jItem.getInt("oversActual") >= majorOv) {
                                         majorityPlayed = true;
                                     }
                                 }
@@ -437,6 +454,8 @@ public class DataFetch {
 
                 } catch (Exception ex) {
                     reports.add(new MatchReport(url, MatchStatus.UNLOADED, ex));
+                } catch (Throwable th) {
+                    reports.add(new MatchReport(url, MatchStatus.UNLOADED, new Exception(th)));
                 }
             }
         }
@@ -541,7 +560,7 @@ public class DataFetch {
                 if (foCheck.text().contains("f/o")) {
                     foflag = 1;
                 }
-                
+
                 LocalDate matchDate;
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy");
                 String resultTitle = matchHeader.getElementsByClass("description").first().text();
@@ -552,7 +571,6 @@ public class DataFetch {
                 } else {
                     throw new Exception("Couldn't parse date in: " + resultTitle);
                 }
-
 
                 String homeScore = home.select("span.score").text();
                 String awayScore = away.select("span.score").text();
@@ -743,6 +761,8 @@ public class DataFetch {
                 reports.add(new MatchReport(url, MatchStatus.LOADED, null));
             } catch (Exception ex) {
                 reports.add(new MatchReport(url, MatchStatus.UNLOADED, ex));
+            } catch (Throwable th) {
+                reports.add(new MatchReport(url, MatchStatus.UNLOADED, new Exception(th)));
             }
         }
         return reports;

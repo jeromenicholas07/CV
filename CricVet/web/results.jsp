@@ -100,7 +100,7 @@
         </style>
 
         <nav class="navbar navbar-light bg-light">
-            <a class="navbar-brand">${teamOne} v/s ${teamTwo}</a>
+            <a class="navbar-brand">${teamOne}(Batting) v/s ${teamTwo}(chasing)</a>
             <li class="nav-item">
                 <a class="nav-link disabled" tabindex="-1" aria-disabled="true">
                     Favorite team: 
@@ -371,10 +371,7 @@
 
                                     char numCheck = 'B';
                                     char denCheck = 'C';
-                                    if(isFavChasing){
-                                        numCheck = 'C';
-                                        denCheck = 'B';
-                                    }
+                                    
                                     int num = 0;
                                     int den = 0;
                                     for (Inning ti : Ab) {
