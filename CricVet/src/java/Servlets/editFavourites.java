@@ -6,6 +6,7 @@
 package Servlets;
 
 import Database.CricDB;
+import models.*;
 import com.mysql.cj.util.StringUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,8 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import models.Header;
-import models.OHL;
 
 /**
  *
@@ -51,45 +50,56 @@ public class editFavourites extends HttpServlet {
             if (request.getParameter("submitted") != null && request.getParameter("submitted").trim().equals("true")) {
                 boolean favSuccess = false, ohlSuccess = false;
                 String favTeam = request.getParameter("favTeam");
+                String bias = request.getParameter("bias");
 
-                if (StringUtils.isNullOrEmpty(favTeam)) {
-                    favSuccess = true;
-                } else {
-                    favSuccess = db.updateFavourites(matchID, favTeam);
+                int open;
+                int high;
+                int low;
+
+                open = parseInt(request.getParameter("O1_O"));
+                high = parseInt(request.getParameter("O1_H"));
+                low = parseInt(request.getParameter("O1_L"));
+                Header inning1 = new Header(open, high, low);
+
+                open = parseInt(request.getParameter("O2_O"));
+                high = parseInt(request.getParameter("O2_H"));
+                low = parseInt(request.getParameter("O2_L"));
+                Header inning2 = new Header(open, high, low);
+
+                OverallOHL O_OHL = new OverallOHL(inning1, inning2);
+
+                if (!StringUtils.isNullOrEmpty(favTeam) && !StringUtils.isNullOrEmpty(bias)) {
+                    favSuccess = db.updateFavourites(matchID, favTeam, bias, O_OHL);
                 }
 
-                double open;
-                double high;
-                double low;
-
-                open = parseDouble(request.getParameter("FW_O"));
-                high = parseDouble(request.getParameter("FW_H"));
-                low = parseDouble(request.getParameter("FW_L"));
+                open = parseInt(request.getParameter("FW_O"));
+                high = parseInt(request.getParameter("FW_H"));
+                low = parseInt(request.getParameter("FW_L"));
                 Header FW = new Header(open, high, low);
 
-                open = parseDouble(request.getParameter("FX_O"));
-                high = parseDouble(request.getParameter("FX_H"));
-                low = parseDouble(request.getParameter("FX_L"));
+                open = parseInt(request.getParameter("FX_O"));
+                high = parseInt(request.getParameter("FX_H"));
+                low = parseInt(request.getParameter("FX_L"));
                 Header FX = new Header(open, high, low);
 
-                open = parseDouble(request.getParameter("LX_O"));
-                high = parseDouble(request.getParameter("LX_H"));
-                low = parseDouble(request.getParameter("LX_L"));
+                open = parseInt(request.getParameter("LX_O"));
+                high = parseInt(request.getParameter("LX_H"));
+                low = parseInt(request.getParameter("LX_L"));
                 Header LX = new Header(open, high, low);
 
-                open = parseDouble(request.getParameter("T_O"));
-                high = parseDouble(request.getParameter("T_H"));
-                low = parseDouble(request.getParameter("T_L"));
+                open = parseInt(request.getParameter("T_O"));
+                high = parseInt(request.getParameter("T_H"));
+                low = parseInt(request.getParameter("T_L"));
                 Header T = new Header(open, high, low);
 
-                open = parseDouble(request.getParameter("FW2_O"));
-                high = parseDouble(request.getParameter("FW2_H"));
-                low = parseDouble(request.getParameter("FW2_L"));
+                open = parseInt(request.getParameter("FW2_O"));
+                high = parseInt(request.getParameter("FW2_H"));
+                low = parseInt(request.getParameter("FW2_L"));
                 Header FW2 = new Header(open, high, low);
 
-                open = parseDouble(request.getParameter("FX2_O"));
-                high = parseDouble(request.getParameter("FX2_H"));
-                low = parseDouble(request.getParameter("FX2_L"));
+                open = parseInt(request.getParameter("FX2_O"));
+                high = parseInt(request.getParameter("FX2_H"));
+                low = parseInt(request.getParameter("FX2_L"));
                 Header FX2 = new Header(open, high, low);
 
                 OHL ohlObj = new OHL(FW, FX, LX, T, FW2, FX2);
@@ -107,11 +117,18 @@ public class editFavourites extends HttpServlet {
                     out.println("Edit UNSUCCESSFUL// Please try again.");
                 }
             } else {
-                String favTeam = "";
+                String favTeam = null;
+                String bias = null;
 
-                String tempFav = db.getFavourites(matchID);
+                String[] tempFav = db.getFavourites(matchID);
                 if (tempFav != null) {
-                    favTeam = tempFav;
+                    favTeam = tempFav[0];
+                    bias = tempFav[1];
+                }
+
+                OverallOHL O_ohl = db.getOverallOHL(matchID);
+                if (O_ohl != null) {
+                    request.setAttribute("O_OHL", O_ohl);
                 }
 
                 OHL ohl = db.getOHL(matchID);
@@ -126,6 +143,7 @@ public class editFavourites extends HttpServlet {
                 request.setAttribute("team1", team1);
                 request.setAttribute("team2", team2);
                 request.setAttribute("favTeam", favTeam);
+                request.setAttribute("bias", bias);
 
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/editFavourites.jsp");
                 dispatcher.forward(request, response);
@@ -133,11 +151,13 @@ public class editFavourites extends HttpServlet {
         }
     }
 
-    private double parseDouble(String text) {
-        if (StringUtils.isNullOrEmpty(text)) {
+    public static int parseInt(String s) {
+        s = s.trim();
+        if (StringUtils.isEmptyOrWhitespaceOnly(s)) {
             return 0;
         }
-        return Double.parseDouble(text);
+        double d = Double.parseDouble(s);
+        return (int) d;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

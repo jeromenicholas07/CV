@@ -43,6 +43,7 @@ public class LoadAll extends HttpServlet {
             DataFetch df = new DataFetch();
             CricDB db = new CricDB();
 
+//            db.deleteFav();
             db.initDB();
             List<MatchReport> reports = new ArrayList<>();
 //            reports.add(new MatchReport("blaa", MatchStatus.UNLOADED, new Exception("blalalala")));

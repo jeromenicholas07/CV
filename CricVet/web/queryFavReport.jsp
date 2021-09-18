@@ -86,7 +86,7 @@
                             </select>
                         </div>
                         <div class="form-group row">
-                            <div class="input-group col-8 mx-auto">
+                            <div class="input-group col-12 mx-auto">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="sideSelect">Favourite is </label>
                                 </div>
@@ -94,6 +94,27 @@
                                     <option value="B" selected>Batting</option>
                                     <option value="C">Chasing</option>
                                 </select>
+                                <span class="input-group-text">@</span>
+                                <select class="form-control form-control-lg" id="locSelect" name="locSelect">
+                                    <option value="H" selected>Home</option>
+                                    <option value="A">Away</option>
+                                    <option value="N">Neutral</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <div class="input-group mb-3 col-9 mx-auto">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="openingOdds">Opening odds </label>
+                                </div>
+                                <select class="form-control form-control-lg" id="tossSelect" name="openingOdds">
+                                    <option value="A" selected>Above</option>
+                                    <option value="B">Below</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <label class="input-group-text" for="openingOdds">50p</label>
+                                </div>
                             </div>
                         </div>
 
@@ -102,7 +123,7 @@
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="tossSelect">Favourite </label>
                                 </div>
-                                <select class="form-control form-control-lg" id="tossSelect" name="tossSelect">
+                                <select class="form-control form-control-lg" id="tossSelect" name="tossSelect" required>
                                     <option value="W" selected>Won</option>
                                     <option value="L">Lost</option>
                                 </select>

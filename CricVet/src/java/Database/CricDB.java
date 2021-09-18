@@ -9,6 +9,7 @@ package Database;
  *
  * @author DELL
  */
+import models.OverallOHL;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -761,6 +762,35 @@ public class CricDB extends BaseDAO {
         return names;
     }
 
+    public void deleteFav() {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "drop table \"APP\".FAVOURITES";
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+    }
+
     public void initDB() {
 
         System.out.println("at init");
@@ -1017,13 +1047,10 @@ public class CricDB extends BaseDAO {
                     + "(\n"
                     + "	MATCHID INTEGER not null primary key,\n"
                     + "	FAVTEAM VARCHAR(120) not null,\n"
-                    + "	OPENING1 VARCHAR(120),\n"
-                    + "	HIGH1 VARCHAR(120),\n"
-                    + "	LOW1 VARCHAR(120),"
-                    + "	OPENING2 VARCHAR(120),\n"
-                    + "	HIGH2 VARCHAR(120),\n"
-                    + "	LOW2 VARCHAR(120) )";
-
+                    + "	BIAS VARCHAR(120) not null,"
+                    + " OVERALLOHL blob )";
+                                                                                                                                                                                                                                                                   
+            
             con = getConnection();
             stmt = con.createStatement();
             stmt.execute(sql);
@@ -1100,7 +1127,6 @@ public class CricDB extends BaseDAO {
             } catch (Exception e) {
             }
         }
-
 
 //
 //        try {
@@ -2428,8 +2454,8 @@ public class CricDB extends BaseDAO {
         return true;
     }
 
-    public String getFavourites(int matchID) {
-        String favTeam = null;
+    public String[] getFavourites(int matchID) {
+        String[] favTeam = new String[2];
 
         Connection con = null;
         Statement stmt = null;
@@ -2438,13 +2464,15 @@ public class CricDB extends BaseDAO {
 
         try {
             con = getConnection();
-            sql = "select FAVTEAM from APP.FAVOURITES where MATCHID = " + matchID + " ";
+            sql = "select * from APP.FAVOURITES where MATCHID = " + matchID + " ";
 
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
 
             if (rs.next()) {
-                favTeam = rs.getString("favteam");
+                favTeam[0] = rs.getString("favteam");
+                favTeam[1] = rs.getString("bias");
+                return favTeam;
 
             }
             con.close();
@@ -2464,12 +2492,59 @@ public class CricDB extends BaseDAO {
             } catch (Exception e) {
                 /* ignored */ }
         }
-        return favTeam;
+        return null;
     }
-
-    public boolean updateFavourites(int matchID, String favTeam) {
+    
+    public OverallOHL getOverallOHL(int matchID) {
+        OverallOHL ohl = null;
+        
         Connection con = null;
         Statement stmt = null;
+        ResultSet rs = null;
+        String sql;
+
+        try {
+            con = getConnection();
+            sql = "select * from APP.FAVOURITES where MATCHID = " + matchID + " ";
+
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            if (rs.next()) {
+                byte[] buf = rs.getBytes("OVERALLOHL");
+                if (buf != null) {
+                    ObjectInputStream objectIn = new ObjectInputStream(
+                            new ByteArrayInputStream(buf));
+                    ohl = (OverallOHL) objectIn.readObject();
+
+                    objectIn.close();
+                }
+
+            }
+            con.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return ohl;
+    }
+
+    public boolean updateFavourites(int matchID, String favTeam, String bias, OverallOHL ohl) {
+        Connection con = null;
+        Statement stmt = null;
+        PreparedStatement ps = null;
         ResultSet rs = null;
         int nr = 0;
         String sql;
@@ -2482,17 +2557,26 @@ public class CricDB extends BaseDAO {
             rs = stmt.executeQuery(sql);
 
             if (rs.next()) {
-                sql = "UPDATE APP.FAVOURITES SET FAVTEAM = '" + favTeam + "'  "
+                sql = "UPDATE APP.FAVOURITES SET FAVTEAM = '" + favTeam + "', BIAS = '" + bias + "', "
+                        + " OVERALLOHL = ? "
                         + "WHERE MATCHID=" + matchID + " ";
             } else {
-                sql = "INSERT INTO APP.FAVOURITES (MATCHID, FAVTEAM) \n"
-                        + " VALUES (" + matchID + ", '" + favTeam + "' )";
+                sql = "INSERT INTO APP.FAVOURITES (MATCHID, FAVTEAM, BIAS, OVERALLOHL) \n"
+                        + " VALUES (" + matchID + ", '" + favTeam + "', '" + bias + "', ? )";
             }
 
-            nr = stmt.executeUpdate(sql);
+            ps = con.prepareStatement(sql);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oout = new ObjectOutputStream(baos);
+            oout.writeObject(ohl);
+            oout.close();
+
+            ps.setBytes(1, baos.toByteArray());
+
+            nr = ps.executeUpdate();
 
             con.close();
-        } catch (SQLException ex) {
+        } catch (SQLException | IOException ex) {
             ex.printStackTrace();
             return false;
         } finally {
@@ -2900,7 +2984,7 @@ public class CricDB extends BaseDAO {
                     ObjectInputStream objectIn = new ObjectInputStream(
                             new ByteArrayInputStream(buf));
                     ohlObj = (OHL) objectIn.readObject();
-                    
+
                     objectIn.close();
                 }
 

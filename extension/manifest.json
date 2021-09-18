@@ -23,8 +23,11 @@
 	   {
 		 "matches": ["<all_urls>"],
 		 "run_at": "document_start",
-		 "js": ["bootstrap/js/jquery-3.5.1.js", "contentScript.js"]
+		 "js": ["lodash.min.js", "bootstrap/js/jquery-3.5.1.js", "contentScript.js"]
 	   }
- ],
+	],
+	"web_accessible_resources": [
+		"res/alert.wav"
+	],
     "manifest_version": 2
   }

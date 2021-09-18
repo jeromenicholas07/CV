@@ -80,7 +80,6 @@ public class getDB extends HttpServlet {
                     System.out.println(matches.get(i).getMatchId());
                     Timestamp ts = matches.get(i).getMatchDate();
                     matchDate = dateFormat.format(ts);
-                    
 
                     if (matches.get(i).getHomeTeam().equals(teamOne)) {
                         team = matches.get(i).getHomeTeam();
@@ -137,8 +136,8 @@ public class getDB extends HttpServlet {
 
                     int totalSixes = Integer.parseInt(one.getParams().get(5)) + Integer.parseInt(two.getParams().get(5));
 
-                    
-                    String favTeam = "";
+                    String favTeam = null;
+                    String bias = null;
                     String open1 = "";
                     String high1 = "";
                     String low1 = "";
@@ -146,14 +145,17 @@ public class getDB extends HttpServlet {
                     String high2 = "";
                     String low2 = "";
 
-                    String tempFav = db.getFavourites(matchId);
+                    String tempFav[] = db.getFavourites(matchId);
                     if (tempFav != null) {
-                        favTeam = tempFav;
+                        favTeam = tempFav[0];
+                        bias = tempFav[1];
                     }
-                    
-                    OHL ohl = db.getOHL(matchId);
 
-                    temp = new dbMatch(matchId, matchDate, team, oppTeam, tossWinner, BorC, result, totalSixes, one, two, favTeam, ohl);
+                    OHL ohl = db.getOHL(matchId);
+                    
+                    OverallOHL oOHL = db.getOverallOHL(matchId);
+
+                    temp = new dbMatch(matchId, matchDate, team, oppTeam, tossWinner, BorC, result, totalSixes, one, two, favTeam, bias, ohl, oOHL);
                     dbMatches.add(temp);
 
                 }

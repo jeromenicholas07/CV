@@ -39,10 +39,24 @@
                                     <span class="input-group-text" id="label3">Favourite Team</span>
                                 </div>
                                 <select type="text" class="form-control" aria-describedby="label3"
-                                        name = "favTeam" value="${favTeam}" >
-                                    <option value="" selected>Select Fav. Team</option>
+                                        name = "favTeam" value="${favTeam}" required>
+                                    <option value="" selected disabled>Select Fav. Team</option>
                                     <option value="${team1}" <c:if test="${team1.equals(favTeam)}">selected</c:if> >${team1}</option>
                                     <option value="${team2}" <c:if test="${team2.equals(favTeam)}">selected</c:if>>${team2}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="card-header">
+                                <div class="input-group col">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="label3">Bias</span>
+                                    </div>
+                                    <select type="text" class="form-control" aria-describedby="label3"
+                                            name = "bias" value="${bias}" required>
+                                    <option value="" selected disabled>Select Bias</option>
+                                    <option value="f" <c:if test='${bias.equals("f")}'>selected</c:if> >Favorite</option>
+                                    <option value="nf" <c:if test='${bias.equals("nf")}'>selected</c:if>>Non-Favorite</option>
                                     </select>
                                 </div>
                             </div>
@@ -50,6 +64,22 @@
                     </div>
 
                     <br>
+
+                <jsp:include page="/editOHLRow.jsp">
+                    <jsp:param name="ohl_title" value="Overall Inning 1" />
+                    <jsp:param name="ohl_pre" value="O1" />
+                    <jsp:param name="open" value="${O_OHL.getInning1().getOpen()}" />
+                    <jsp:param name="high" value="${O_OHL.getInning1().getHigh()}" />
+                    <jsp:param name="low" value="${O_OHL.getInning1().getLow()}" />
+                </jsp:include>
+
+                <jsp:include page="/editOHLRow.jsp">
+                    <jsp:param name="ohl_title" value="Overall Inning 2" />
+                    <jsp:param name="ohl_pre" value="O2" />
+                    <jsp:param name="open" value="${O_OHL.getInning2().getOpen()}" />
+                    <jsp:param name="high" value="${O_OHL.getInning2().getHigh()}" />
+                    <jsp:param name="low" value="${O_OHL.getInning2().getLow()}" />
+                </jsp:include>
 
                 <jsp:include page="/editOHLRow.jsp">
                     <jsp:param name="ohl_title" value="First Wicket" />
@@ -60,7 +90,7 @@
                 </jsp:include>
 
                 <jsp:include page="/editOHLRow.jsp">
-                    <jsp:param name="ohl_title" value="First 5/10 overs" />
+                    <jsp:param name="ohl_title" value="First 6/10 overs" />
                     <jsp:param name="ohl_pre" value="FX" />
                     <jsp:param name="open" value="${OHL.getFX().getOpen()}" />
                     <jsp:param name="high" value="${OHL.getFX().getHigh()}" />

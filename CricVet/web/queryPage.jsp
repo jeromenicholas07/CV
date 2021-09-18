@@ -103,9 +103,18 @@
                                             <label class="input-group-text" for="favSelect">Favorite : </label>
                                         </div>
                                         <select class="form-control form-control required" id="favSelect" name="favSelect">
-                                            <option value="N" default selected>None</option>
-                                            <option value="B">Batting team</option>
+                                            <option value="B" default selected>Batting team</option>
                                             <option value="C">Chasing team</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text" for="biasSelect">Bias : </label>
+                                        </div>
+                                        <select class="form-control form-control required" id="biasSelect" name="biasSelect">
+                                            <option value="f" default selected>Favorite</option>
+                                            <option value="nf">Non-Favorite</option>
                                         </select>
                                     </div>
                                 </div>

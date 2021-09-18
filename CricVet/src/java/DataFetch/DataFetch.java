@@ -45,7 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DataFetch {
-
+    
     List<MatchReport> reports = new ArrayList<>();
     List<String> impTeams = Arrays.asList("England", "India", "New Zealand", "Australia", "South Africa", "Pakistan", "Bangladesh",
             "Sri Lanka", "West Indies", "Afghanistan", "Ireland", "Zimbabwe", "Netherlands", "Scotland");
@@ -100,7 +100,7 @@ public class DataFetch {
         }
     }
 
-    int yr = 2019;
+    int yr = 2017;
     Pattern matchIdFinder = Pattern.compile("/ci/engine/match/(.*)\\.html");
     Pattern teamIndexFinder = Pattern.compile("/team/_/id/(.*)/(.*)");
     Pattern datePattern = Pattern.compile("(?<MM>Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sep(t(ember)?)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\\s(?<dd>\\d{1,2})(\\s?-\\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sep(t(ember)?)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)?\\s?\\d{1,2})?\\s(?<yyyy>20[0-9][0-9])");
@@ -109,11 +109,12 @@ public class DataFetch {
 
     CricDB db = new CricDB();
 
-    public List<MatchReport> loadData() throws Exception {
+    public List<MatchReport> loadData() {
         System.out.println("------- Starting loadData() -------");
         String baseUrl = "http://stats.espncricinfo.com/";
 
-        List<Integer> matchTypes = Arrays.asList(117, 2, 205,  158, 159, 748, 3);
+//        List<Integer> matchTypes = Arrays.asList(205,  117, 2, 158, 159, 748, 3);
+        List<Integer> matchTypes = Arrays.asList(205,  117, 2, 158, 159, 748, 3);
         for (int matchType : matchTypes) {
             System.out.println("------- matchType: " + matchType + " -------");
             List<String> loadedMatchIDs = db.getLoadedMatchIDs(matchType);
@@ -139,7 +140,12 @@ public class DataFetch {
                     case 158:
                     case 159:
                     case 205:
-                        matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=" + matchType + ";type=season";
+                        if(y == 2021){
+                            matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + y + ";trophy=" + matchType + ";type=season";
+                        }
+                        else {
+                            matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?id=" + (y - 1) + "%2F" + (y % 100) + ";trophy=" + matchType + ";type=season";
+                        }
                         break;
                     case 3:
                         matchListPage = "http://stats.espncricinfo.com/ci/engine/records/team/match_results.html?class=" + matchType + ";id=" + y + ";type=year";
@@ -199,7 +205,7 @@ public class DataFetch {
                     String matchUrl = matchPage.baseUri();
                     String[] splitUrl = matchUrl.split("/");
 
-                    Element matchHeader = matchPage.getElementsByClass("match-header").first();
+                    Element matchHeader = matchPage.getElementsByClass("match-header-container").first();
 
                     Elements teamLinkRows = matchHeader.select(".teams .team");
                     if (teamLinkRows.size() != 2) {

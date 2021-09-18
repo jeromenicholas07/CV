@@ -12,10 +12,17 @@
 		text-align: center;
 		background-color: #a7d8fd;
 	}
+	.market-title {
+		background-color: #dfe2e4;
+	}
+	.market-footer {
+		background-color: #dfe2e4;
+		border-bottom: 1px solid #343a40;
+	}
 	</style>
     </head>
     <body>
-	<nav class="navbar navbar-light bg-light">
+	<nav class="navbar navbar-light">
 	  <span class="navbar-brand mb-0 h1">CricVet Settings</span>
 	</nav>
 	<!-- <div class="container-fluid">
@@ -49,21 +56,23 @@
 				Rules
 			</div>
 			<div class="card-body">
-				<table class="table table-striped">
-				  <thead>
+				<table class="table">
+				  <thead class="thead-dark">
 					<tr>
-					  <th scope="col">Bet ID</th>
-					  <th scope="col">Match</th>
 					  <th scope="col">Market Name</th>
 					  <th scope="col"></th>
 					  <th scope="col">Amount</th>
 					  <th scope="col">Side</th>
 					  <th scope="col">Delay</th>
 					  <th scope="col">Condition</th>
+					  <th scope="col">low</th>
 					  <th scope="col">Live value</th>
+					  <th scope="col">high</th>
 					  <th scope="col">Last updated</th>
 					  <th scope="col">Status</th>
 					  <th scope="col">Page Status</th>
+					  <th scope="col"></th>
+					  <th scope="col"></th>
 					  <th scope="col"></th>
 					</tr>
 				  </thead>
@@ -75,7 +84,52 @@
 		</div>
 	</div>
 	  
-	  
+	<div id="edit-modal" class="modal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h5 class="modal-title">Edit rule</h5>
+				<button type="button" class="btn-close close-modal" data-bs-dismiss="modal" aria-label="Close" data-bs-target="#edit-modal"></button>
+			  </div>
+			  <div class="modal-body">
+			    <input name="rule-id" id="rule-id" type="hidden" />
+				<div class="form-row">
+					<div class="input-group">
+						<span class="input-group-text">Threshold</span>
+						<input name="threshold" id="threshold" type="number" step="0.001" class="form-control" placeholder="threshold" required>
+					</div>
+				</div>
+				<br/>
+				<div class="form-row">
+					<div class="form-group input-group">
+						<span class="input-group-text">Amount</span>
+						<input name="amount" id="amount" type="number" class="form-control no-record" placeholder="Amount" required>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group input-group">
+						<span class="input-group-text" id="basic-addon1">Delay</span>
+						<select name="delay-dropdown" id="delay-dropdown" class="form-control no-record" required>
+							<option value="1">+1 over</option>
+							<option value="2">+2 overs</option>
+							<option value="0">No delay</option>
+							<option value="5">5 secs.</option>
+							<option value="7">7 secs.</option>
+							<option value="10">10 secs.</option>
+							<option value="15">15 secs.</option>
+							<option value="20">20 secs.</option>
+						</select>
+					</div>
+				</div>
+				
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-secondary close-modal" >Close</button>
+				<button type="button" class="btn btn-primary" id="save-edit">Save changes</button>
+			  </div>
+			</div>
+		  </div>
+	</div>
 	  
 	  
 	  
@@ -84,5 +138,6 @@
 		<script src="bootstrap/js/popper.min.js"></script>
 		<script src="bootstrap/js/bootstrap.min.js"></script>
     </body>
+	<script type="module" src="lodash.js"></script>
     <script src="options.js"></script>
   </html>

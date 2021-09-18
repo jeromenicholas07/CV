@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -33,7 +34,6 @@ import models.*;
 
 public class getData extends HttpServlet {
 
-    private boolean considerFAVCondition = false;
     CricDB db = new CricDB();
 
     private Object backTest5_Test(List<Inning> selects, int fiveWktIndex) {
@@ -44,11 +44,9 @@ public class getData extends HttpServlet {
 
         List<Match> getMatches(String teamName);
 
-        List<Match> getBtMatches(String teamName);
+        List<Match> getBtMatches();
 
         List<Match> getGMatches(String groundName);
-
-        List<Match> getGBtMatches(String groundName);
 
         List<Match> process(List<Match> matches);
     }
@@ -67,22 +65,20 @@ public class getData extends HttpServlet {
         Inning call(testMatch match);
     }
 
-    private Map<String, Integer> backTest5(List<Match> btMatches, List<Match> matches, boolean isFirstInning, int pIndex) {
-        Map<String, Integer> btMap = new LinkedHashMap<>();
-        btMap.put("N", 0);
-        btMap.put("<1", 0);
-        btMap.put("1<2", 0);
-        btMap.put("1/4", 0);
-        btMap.put("2/3", 0);
-        btMap.put("3/2", 0);
-        btMap.put("4/1", 0);
-        btMap.put("4<5", 0);
-        btMap.put("5<", 0);
+    public int toInt(double d) {
+        return (int) d;
+    }
+
+    private Map<String, String> backTest5(MatchProcessor type, boolean isFirstInning, int pIndex, boolean isBatting) {
+        Map<String, String> btMap = generateBt5Map();
+
+        List<Match> btMatches = type.getBtMatches();
 
         for (int i = 0; i < btMatches.size(); i++) {
 
             Match currMatch = btMatches.get(i);
             int curr = isFirstInning ? parseInt(currMatch.getInningOne().getParams().get(pIndex)) : parseInt(currMatch.getInningTwo().getParams().get(pIndex));
+            List<Match> matches = isBatting ? type.getMatches(currMatch.getHomeTeam()) : type.getMatches(currMatch.getHomeTeam());
             Timestamp currDate = currMatch.getMatchDate();
             List<Match> temp = new ArrayList<>(matches);
             temp.removeIf(m -> (m.getMatchDate().after(currDate) || m.getMatchDate().equals(currDate)));
@@ -103,6 +99,12 @@ public class getData extends HttpServlet {
                 noOhlHeader = true;
             }
 
+            if (!noOhlHeader && pIndex == 2) {
+                currHeader.setOpen(curr - currHeader.getOpen());
+                currHeader.setHigh((int) (curr - currHeader.getHigh()));
+                currHeader.setLow(curr - currHeader.getLow());
+            }
+
             List<Inning> sub = new ArrayList<>(tempInns.subList(0, 5));
             Collections.sort(sub, new Comparator<Inning>() {
                 @Override
@@ -112,73 +114,108 @@ public class getData extends HttpServlet {
                 }
             });
 
-            btMap.put("N", btMap.get("N") + 1);
-
-            if (noOhlHeader || parseInt(sub.get(0).getParams().get(pIndex)) > currHeader.getLow()) {
-                if (curr < parseInt(sub.get(0).getParams().get(pIndex))) {
-                    btMap.put("<1", btMap.get("<1") + 1);
-                }
+            int[] p = new int[5];
+            for (int j = 0; j < 5; j++) {
+                p[j] = parseInt(sub.get(j).getParams().get(pIndex));
             }
 
-            if (noOhlHeader || parseInt(sub.get(0).getParams().get(pIndex)) > currHeader.getLow()) {
-                if (curr >= parseInt(sub.get(0).getParams().get(pIndex))
-                        && curr < parseInt(sub.get(1).getParams().get(pIndex))) {
-                    btMap.put("1<2", btMap.get("1<2") + 1);
+            incrementBt(btMap, "N");
+
+            if (!noOhlHeader) {
+                String OO_Header = "";
+                if (currHeader.getOpen() < p[0]) {
+                    OO_Header = "0/5";
+                } else if (currHeader.getOpen() >= p[4]) {
+                    OO_Header = "5/0";
+                } else {
+                    for (int j = 0; j <= 3; j++) {
+                        if (currHeader.getOpen() >= p[j] && currHeader.getOpen() < p[j + 1]) {
+                            OO_Header = (j + 1) + "/" + (4 - j);
+                        }
+                    }
                 }
+
+                belowAboveIncrement(curr, toInt(currHeader.getOpen()), OO_BT + OO_Header, btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(1).getParams().get(pIndex)) > currHeader.getLow()) {
-                if (curr >= parseInt(sub.get(1).getParams().get(pIndex))) {
-                    btMap.put("1/4", btMap.get("1/4") + 1);
-                }
+            if (noOhlHeader || OH_Condition(p[0], currHeader)) {
+                belowAboveIncrement(curr, p[0], OH_BT + "0/5", btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(2).getParams().get(pIndex)) > currHeader.getLow()) {
-                if (curr >= parseInt(sub.get(2).getParams().get(pIndex))) {
-                    btMap.put("2/3", btMap.get("2/3") + 1);
-                }
+            if (noOhlHeader || OL_Condition(p[0], currHeader)) {
+                belowAboveIncrement(curr, p[0], OL_BT + "0/5", btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(2).getParams().get(pIndex)) <= currHeader.getHigh()) {
-                if (curr <= parseInt(sub.get(2).getParams().get(pIndex))) {
-                    btMap.put("3/2", btMap.get("3/2") + 1);
-                }
+            if (noOhlHeader || OH_Condition(p[1], currHeader)) {
+                belowAboveIncrement(curr, p[1], OH_BT + "1/4", btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(3).getParams().get(pIndex)) <= currHeader.getHigh()) {
-                if (curr <= parseInt(sub.get(3).getParams().get(pIndex))) {
-                    btMap.put("4/1", btMap.get("4/1") + 1);
-                }
+            if (noOhlHeader || OL_Condition(p[1], currHeader)) {
+                belowAboveIncrement(curr, p[1], OL_BT + "1/4", btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(4).getParams().get(pIndex)) <= currHeader.getHigh()) {
-                if (curr > parseInt(sub.get(3).getParams().get(pIndex))
-                        && curr < parseInt(sub.get(4).getParams().get(pIndex))) {
-                    btMap.put("4<5", btMap.get("4<5") + 1);
-                }
+            if (noOhlHeader || OL_Condition(p[2], currHeader)) {
+                belowAboveIncrement(curr, p[2], OL_BT + "2/3", btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(4).getParams().get(pIndex)) <= currHeader.getHigh()) {
-                if (curr >= parseInt(sub.get(4).getParams().get(pIndex))) {
-                    btMap.put("5<", btMap.get("5<") + 1);
-                }
+            if (noOhlHeader || OH_Condition(p[2], currHeader)) {
+                belowAboveIncrement(curr, p[2], OH_BT + "3/2", btMap);
             }
+
+            if (noOhlHeader || OH_Condition(p[3], currHeader)) {
+                belowAboveIncrement(curr, p[3], OH_BT + "4/1", btMap);
+            }
+
+            if (noOhlHeader || OL_Condition(p[3], currHeader)) {
+                belowAboveIncrement(curr, p[3], OL_BT + "4/1", btMap);
+            }
+
+            if (noOhlHeader || OH_Condition(p[4], currHeader)) {
+                belowAboveIncrement(curr, p[4], OH_BT + "5/0", btMap);
+            }
+
+            if (noOhlHeader || OL_Condition(p[4], currHeader)) {
+                belowAboveIncrement(curr, p[4], OL_BT + "5/0", btMap);
+            }
+
         }
         return btMap;
     }
 
-    private Map<String, Integer> backTest5_Gr(List<Match> btMatches, List<Match> matches, boolean isFirstInning, int pIndex) {
-        Map<String, Integer> btMap = new LinkedHashMap<>();
-        btMap.put("N", 0);
-        btMap.put("0/5", 0);
-        btMap.put("1/4", 0);
-        btMap.put("2/3", 0);
-        btMap.put("3/2", 0);
-        btMap.put("4/1", 0);
-        btMap.put("5/0", 0);
+    private Map<String, String> generateBt5Map() {
+        Map<String, String> btMap = new LinkedHashMap<>();
+        btMap.put("N", "0");
+        initBt5WithPrefix(OO_BT, btMap);
+        initBt5WithPrefix(OH_BT, btMap);
+        initBt5WithPrefix(OL_BT, btMap);
+        return btMap;
+    }
+
+    private void initBt5WithPrefix(String prefix, Map<String, String> btMap) {
+        btMap.put(prefix + "0/5", BT_INIT);
+        btMap.put(prefix + "1/4", BT_INIT);
+        if (prefix.contains(OH_BT)) {
+            btMap.put(prefix + "2/3", "");
+            btMap.put(prefix + "3/2", BT_INIT);
+        } else if (prefix.contains(OL_BT)) {
+            btMap.put(prefix + "2/3", BT_INIT);
+            btMap.put(prefix + "3/2", "");
+        } else {
+            btMap.put(prefix + "2/3", BT_INIT);
+            btMap.put(prefix + "3/2", BT_INIT);
+        }
+        btMap.put(prefix + "4/1", BT_INIT);
+        btMap.put(prefix + "5/0", BT_INIT);
+    }
+
+    private Map<String, String> backTest5_Gr(MatchProcessor type, boolean isFirstInning, int pIndex) {
+        Map<String, String> btMap = generateBt5Map();
+
+        List<Match> btMatches = type.getBtMatches();
 
         for (int i = 0; i < btMatches.size(); i++) {
             Match currMatch = btMatches.get(i);
+            List<Match> matches = type.getGMatches(currMatch.getGroundName());
             int curr = isFirstInning ? parseInt(currMatch.getInningOne().getParams().get(pIndex)) : parseInt(currMatch.getInningTwo().getParams().get(pIndex));
             Timestamp currDate = currMatch.getMatchDate();
             List<Match> temp = new ArrayList<>(matches);
@@ -201,6 +238,12 @@ public class getData extends HttpServlet {
                 noOhlHeader = true;
             }
 
+            if (!noOhlHeader && pIndex == 2) {
+                currHeader.setOpen(curr - currHeader.getOpen());
+                currHeader.setHigh((int) (curr - currHeader.getHigh()));
+                currHeader.setLow(curr - currHeader.getLow());
+            }
+
             List<Inning> sub = new ArrayList<>(tempInns.subList(0, 5));
             Collections.sort(sub, new Comparator<Inning>() {
                 @Override
@@ -210,43 +253,69 @@ public class getData extends HttpServlet {
                 }
             });
 
-            btMap.put("N", btMap.get("N") + 1);
-
-            if (noOhlHeader || parseInt(sub.get(0).getParams().get(pIndex)) > currHeader.getLow()) {
-                if (curr >= parseInt(sub.get(0).getParams().get(pIndex))) {
-                    btMap.put("0/5", btMap.get("0/5") + 1);
-                }
+            int[] p = new int[5];
+            for (int j = 0; j < 5; j++) {
+                p[j] = parseInt(sub.get(j).getParams().get(pIndex));
             }
 
-            if (noOhlHeader || parseInt(sub.get(1).getParams().get(pIndex)) > currHeader.getLow()) {
-                if (curr >= parseInt(sub.get(1).getParams().get(pIndex))) {
-                    btMap.put("1/4", btMap.get("1/4") + 1);
+            incrementBt(btMap, "N");
+
+            if (!noOhlHeader) {
+                String OO_Header = "";
+                if (currHeader.getOpen() < p[0]) {
+                    OO_Header = "0/5";
+                } else if (currHeader.getOpen() >= p[4]) {
+                    OO_Header = "5/0";
+                } else {
+                    for (int j = 0; j <= 3; j++) {
+                        if (currHeader.getOpen() >= p[j] && currHeader.getOpen() < p[j + 1]) {
+                            OO_Header = (j + 1) + "/" + (4 - j);
+                        }
+                    }
                 }
+                belowAboveIncrement(curr, toInt(currHeader.getOpen()), OO_BT + OO_Header, btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(2).getParams().get(pIndex)) > currHeader.getLow()) {
-                if (curr >= parseInt(sub.get(2).getParams().get(pIndex))) {
-                    btMap.put("2/3", btMap.get("2/3") + 1);
-                }
+            if (noOhlHeader || OH_Condition(p[0], currHeader)) {
+                belowAboveIncrement(curr, p[0], OH_BT + "0/5", btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(2).getParams().get(pIndex)) <= currHeader.getHigh()) {
-                if (curr <= parseInt(sub.get(2).getParams().get(pIndex))) {
-                    btMap.put("3/2", btMap.get("3/2") + 1);
-                }
+            if (noOhlHeader || OL_Condition(p[0], currHeader)) {
+                belowAboveIncrement(curr, p[0], OL_BT + "0/5", btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(3).getParams().get(pIndex)) <= currHeader.getHigh()) {
-                if (curr <= parseInt(sub.get(3).getParams().get(pIndex))) {
-                    btMap.put("4/1", btMap.get("4/1") + 1);
-                }
+            if (noOhlHeader || OH_Condition(p[1], currHeader)) {
+                belowAboveIncrement(curr, p[1], OH_BT + "1/4", btMap);
             }
 
-            if (noOhlHeader || parseInt(sub.get(4).getParams().get(pIndex)) <= currHeader.getHigh()) {
-                if (curr <= parseInt(sub.get(4).getParams().get(pIndex))) {
-                    btMap.put("5/0", btMap.get("5/0") + 1);
-                }
+            if (noOhlHeader || OL_Condition(p[1], currHeader)) {
+                belowAboveIncrement(curr, p[1], OL_BT + "1/4", btMap);
             }
+
+            if (noOhlHeader || OL_Condition(p[2], currHeader)) {
+                belowAboveIncrement(curr, p[2], OL_BT + "2/3", btMap);
+            }
+
+            if (noOhlHeader || OH_Condition(p[2], currHeader)) {
+                belowAboveIncrement(curr, p[2], OH_BT + "3/2", btMap);
+            }
+
+            if (noOhlHeader || OH_Condition(p[3], currHeader)) {
+                belowAboveIncrement(curr, p[3], OH_BT + "4/1", btMap);
+            }
+
+            if (noOhlHeader || OL_Condition(p[3], currHeader)) {
+                belowAboveIncrement(curr, p[3], OL_BT + "4/1", btMap);
+            }
+
+            if (noOhlHeader || OH_Condition(p[4], currHeader)) {
+                belowAboveIncrement(curr, p[4], OH_BT + "5/0", btMap);
+            }
+
+            if (noOhlHeader || OL_Condition(p[4], currHeader)) {
+                belowAboveIncrement(curr, p[4], OL_BT + "5/0", btMap);
+            }
+
         }
         return btMap;
     }
@@ -258,11 +327,17 @@ public class getData extends HttpServlet {
     private final String GR_4 = "Gr 4/1 | ";
     private final String GR_5 = "Gr 5/0 | ";
 
-    private Map<String, Integer> generateBtMap() {
-        Map<String, Integer> btMap = new LinkedHashMap<>();
-        btMap.put("N", 0);
-        generateWithPrefix("", btMap);
-        btMap.put("NG", 0);
+    private final String OO_BT = "open---";
+    private final String OH_BT = "openhigh---";
+    private final String OL_BT = "openlow---";
+
+    private Map<String, String> generateBtMap() {
+        Map<String, String> btMap = new LinkedHashMap<>();
+        btMap.put("N", "0");
+        generateWithPrefix(OO_BT, btMap);
+        generateWithPrefix(OH_BT, btMap);
+        generateWithPrefix(OL_BT, btMap);
+        btMap.put("NG", "0");
         generateWithPrefix(GR_0, btMap);
         generateWithPrefix(GR_1, btMap);
         generateWithPrefix(GR_2, btMap);
@@ -273,142 +348,200 @@ public class getData extends HttpServlet {
         return btMap;
     }
 
-    private void generateWithPrefix(String prefix, Map<String, Integer> btMap) {
-        int NO_GR_INIT = 0;
-        if (!prefix.equals("")) {
-            NO_GR_INIT = NO_GR_BT;
+    private void generateWithPrefix(String prefix, Map<String, String> btMap) {
+        String NO_GR_INIT = BT_INIT;
+        String XTRA_BT_INIT = "0";
+        if (!prefix.startsWith("open")) {
+            NO_GR_INIT = "";
+        }
+        if (!prefix.startsWith(OO_BT)) {
+            XTRA_BT_INIT = "";
+        }
+        String OO_INIT = "";
+        if (prefix.equals(OO_BT)) {
+            OO_INIT = BT_INIT;
         }
         btMap.put(prefix + "<1", NO_GR_INIT);
-        btMap.put(prefix + "1<2", NO_GR_INIT);
-        btMap.put(prefix + "1/9", 0);
-        btMap.put(prefix + "2/8", 0);
-        btMap.put(prefix + "3/7", 0);
-        btMap.put(prefix + "4/6", 0);
-        btMap.put(prefix + "6/4", 0);
-        btMap.put(prefix + "7/3", 0);
-        btMap.put(prefix + "8/2", 0);
-        btMap.put(prefix + "9/1", 0);
-        btMap.put(prefix + "9<10", NO_GR_INIT);
+        btMap.put(prefix + "1/9", BT_INIT);
+        btMap.put(prefix + "2/8", BT_INIT);
+        btMap.put(prefix + "3/7", BT_INIT);
+        btMap.put(prefix + "4/6", BT_INIT);
+        btMap.put(prefix + "5/5", OO_INIT);
+        btMap.put(prefix + "6/4", BT_INIT);
+        btMap.put(prefix + "7/3", BT_INIT);
+        btMap.put(prefix + "8/2", BT_INIT);
+        btMap.put(prefix + "9/1", BT_INIT);
         btMap.put(prefix + "10<", NO_GR_INIT);
-        btMap.put(prefix + "3-3 above(6<)", NO_GR_INIT);
-        btMap.put(prefix + "4-4 above(8<)", NO_GR_INIT);
-        btMap.put(prefix + "3-3 below(<6)", NO_GR_INIT);
-        btMap.put(prefix + "4-4 below(<8)", NO_GR_INIT);
+        btMap.put(prefix + "3-3 above(6<)", XTRA_BT_INIT);
+        btMap.put(prefix + "4-4 above(8<)", XTRA_BT_INIT);
+        btMap.put(prefix + "3-3 below(<6)", XTRA_BT_INIT);
+        btMap.put(prefix + "4-4 below(<8)", XTRA_BT_INIT);
     }
 
-    private final int NO_GR_BT = -42;
+    private final String BT_INIT = "0/0/0";
 
-    private void fillMapBt10(Map<String, Integer> btMap, int curr, int pIndex, List<Inning> sub, List<Inning> subA, List<Inning> subB, List<Inning> subG, Header currHeader) {
+    private boolean OL_Condition(int p, Header currHeader) {
+        return p >= currHeader.getLow() && p < currHeader.getOpen();
+    }
+
+    private boolean OH_Condition(int p, Header currHeader) {
+        return p <= currHeader.getHigh() && p > currHeader.getOpen();
+    }
+
+    private void belowAboveIncrement(int curr, int p, String header, Map<String, String> btMap) {
+        if (curr < p) {
+            incrementBt(btMap, header, pos.BELOW);
+        } else if (curr == p) {
+            incrementBt(btMap, header, pos.EQUAL);
+        } else {
+            incrementBt(btMap, header, pos.ABOVE);
+        }
+    }
+
+    private void fillMapBt10(Map<String, String> btMap, int curr, int pIndex, List<Inning> sub, List<Inning> subA, List<Inning> subB, List<Inning> subG, Header currHeader) {
         boolean noOhlHeader = false;
         if (currHeader == null) {
             noOhlHeader = true;
         }
 
-        btMap.put("N", btMap.get("N") + 1);
+        if (!noOhlHeader && pIndex == 2) {
+            currHeader.setOpen(curr - currHeader.getOpen());
+            currHeader.setHigh((int) (curr - currHeader.getHigh()));
+            currHeader.setLow(curr - currHeader.getLow());
+        }
+
+        incrementBt(btMap, "N");
 
         if (subG.size() == 5) {
-            btMap.put("NG", btMap.get("NG") + 1);
+            incrementBt(btMap, "NG");
+        }
+        int[] p = new int[10];
+        for (int i = 0; i < 10; i++) {
+            p[i] = parseInt(sub.get(i).getParams().get(pIndex));
         }
 
-        if (noOhlHeader || parseInt(sub.get(0).getParams().get(pIndex)) > currHeader.getLow()) {
-            if (curr < parseInt(sub.get(0).getParams().get(pIndex))) {
-                incrementBt(btMap, "<1");
+        if (!noOhlHeader) {
+            String OO_Header = "";
+            if (currHeader.getOpen() < p[0]) {
+                OO_Header = "<1";
+            } else if (currHeader.getOpen() >= p[9]) {
+                OO_Header = "10<";
+            } else {
+                for (int i = 0; i <= 8; i++) {
+                    if (currHeader.getOpen() >= p[i] && currHeader.getOpen() < p[i + 1]) {
+                        OO_Header = (i + 1) + "/" + (9 - i);
+                    }
+                }
             }
+            System.out.println("header ----->" + OO_BT + OO_Header);
+            belowAboveIncrement(curr, toInt(currHeader.getOpen()), OO_BT + OO_Header, btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(0).getParams().get(pIndex)) > currHeader.getLow()) {
-            if (curr >= parseInt(sub.get(0).getParams().get(pIndex))
-                    && curr < parseInt(sub.get(1).getParams().get(pIndex))) {
-                incrementBt(btMap, "1<2");
-            }
+        if (noOhlHeader || OH_Condition(p[0], currHeader)) {
+            belowAboveIncrement(curr, p[0], OH_BT + "<1", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(1).getParams().get(pIndex)) > currHeader.getLow()) {
-            if (curr >= parseInt(sub.get(1).getParams().get(pIndex))) {
-                incrementBt(btMap, "1/9");
-            }
+        if (noOhlHeader || OL_Condition(p[0], currHeader)) {
+            belowAboveIncrement(curr, p[0], OL_BT + "<1", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(2).getParams().get(pIndex)) > currHeader.getLow()) {
-            if (curr >= parseInt(sub.get(2).getParams().get(pIndex))) {
-                incrementBt(btMap, "2/8");
-            }
+        if (noOhlHeader || OH_Condition(p[1], currHeader)) {
+            belowAboveIncrement(curr, p[1], OH_BT + "1/9", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(3).getParams().get(pIndex)) > currHeader.getLow()) {
-            if (curr >= parseInt(sub.get(3).getParams().get(pIndex))) {
-                incrementBt(btMap, "3/7");
-            }
+        if (noOhlHeader || OL_Condition(p[1], currHeader)) {
+            belowAboveIncrement(curr, p[1], OL_BT + "1/9", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(4).getParams().get(pIndex)) > currHeader.getLow()) {
-            if (curr >= parseInt(sub.get(4).getParams().get(pIndex))) {
-                incrementBt(btMap, "4/6");
-            }
+        if (noOhlHeader || OH_Condition(p[2], currHeader)) {
+            belowAboveIncrement(curr, p[2], OH_BT + "2/8", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(5).getParams().get(pIndex)) < currHeader.getHigh()) {
-            if (curr <= parseInt(sub.get(5).getParams().get(pIndex))) {
-                incrementBt(btMap, "6/4");
-            }
+        if (noOhlHeader || OL_Condition(p[2], currHeader)) {
+            belowAboveIncrement(curr, p[2], OL_BT + "2/8", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(6).getParams().get(pIndex)) < currHeader.getHigh()) {
-            if (curr <= parseInt(sub.get(6).getParams().get(pIndex))) {
-                incrementBt(btMap, "7/3");
-            }
+        if (noOhlHeader || OH_Condition(p[3], currHeader)) {
+            belowAboveIncrement(curr, p[3], OH_BT + "3/7", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(7).getParams().get(pIndex)) < currHeader.getHigh()) {
-            if (curr <= parseInt(sub.get(7).getParams().get(pIndex))) {
-                incrementBt(btMap, "8/2");
-            }
+        if (noOhlHeader || OL_Condition(p[3], currHeader)) {
+            belowAboveIncrement(curr, p[3], OL_BT + "3/7", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(8).getParams().get(pIndex)) < currHeader.getHigh()) {
-            if (curr <= parseInt(sub.get(8).getParams().get(pIndex))) {
-                incrementBt(btMap, "9/1");
-            }
+        if (noOhlHeader || OH_Condition(p[4], currHeader)) {
+            belowAboveIncrement(curr, p[4], OH_BT + "4/6", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(9).getParams().get(pIndex)) < currHeader.getHigh()) {
-            if (curr > parseInt(sub.get(8).getParams().get(pIndex))
-                    && curr < parseInt(sub.get(9).getParams().get(pIndex))) {
-                incrementBt(btMap, "9<10");
-            }
+        if (noOhlHeader || OL_Condition(p[4], currHeader)) {
+            belowAboveIncrement(curr, p[4], OL_BT + "4/6", btMap);
         }
 
-        if (noOhlHeader || parseInt(sub.get(9).getParams().get(pIndex)) < currHeader.getHigh()) {
-            if (curr >= parseInt(sub.get(9).getParams().get(pIndex))) {
-                incrementBt(btMap, "10<");
-            }
+        if (noOhlHeader || OH_Condition(p[5], currHeader)) {
+            belowAboveIncrement(curr, p[5], OH_BT + "6/4", btMap);
+        }
+
+        if (noOhlHeader || OL_Condition(p[5], currHeader)) {
+            belowAboveIncrement(curr, p[5], OL_BT + "6/4", btMap);
+        }
+
+        if (noOhlHeader || OH_Condition(p[6], currHeader)) {
+            belowAboveIncrement(curr, p[6], OH_BT + "7/3", btMap);
+        }
+
+        if (noOhlHeader || OL_Condition(p[6], currHeader)) {
+            belowAboveIncrement(curr, p[6], OL_BT + "7/3", btMap);
+        }
+
+        if (noOhlHeader || OH_Condition(p[7], currHeader)) {
+            belowAboveIncrement(curr, p[7], OH_BT + "8/2", btMap);
+        }
+
+        if (noOhlHeader || OL_Condition(p[7], currHeader)) {
+            belowAboveIncrement(curr, p[7], OL_BT + "8/2", btMap);
+        }
+
+        if (noOhlHeader || OH_Condition(p[8], currHeader)) {
+            belowAboveIncrement(curr, p[8], OH_BT + "9/1", btMap);
+        }
+
+        if (noOhlHeader || OL_Condition(p[8], currHeader)) {
+            belowAboveIncrement(curr, p[8], OL_BT + "9/1", btMap);
+        }
+
+        if (noOhlHeader || OH_Condition(p[9], currHeader)) {
+            belowAboveIncrement(curr, p[9], OH_BT + "10<", btMap);
+        }
+
+        if (noOhlHeader || OL_Condition(p[9], currHeader)) {
+            belowAboveIncrement(curr, p[9], OL_BT + "10<", btMap);
         }
 
         if (curr >= parseInt(subA.get(2).getParams().get(pIndex))
                 && curr >= parseInt(subB.get(2).getParams().get(pIndex))
                 && curr >= parseInt(sub.get(5).getParams().get(pIndex))) {
-            incrementBt(btMap, "3-3 above(6<)");
+            incrementBt(btMap, OO_BT + "3-3 above(6<)");
         }
         if (curr >= parseInt(subA.get(3).getParams().get(pIndex))
                 && curr >= parseInt(subB.get(3).getParams().get(pIndex))
                 && curr >= parseInt(sub.get(7).getParams().get(pIndex))) {
-            incrementBt(btMap, "4-4 above(8<)");
+            incrementBt(btMap, OO_BT + "4-4 above(8<)");
         }
         if (curr <= parseInt(subA.get(2).getParams().get(pIndex))
                 && curr <= parseInt(subB.get(2).getParams().get(pIndex))
                 && curr <= parseInt(sub.get(5).getParams().get(pIndex))) {
-            incrementBt(btMap, "3-3 below(<6)");
+            incrementBt(btMap, OO_BT + "3-3 below(<6)");
         }
         if (curr <= parseInt(subA.get(3).getParams().get(pIndex))
                 && curr <= parseInt(subB.get(3).getParams().get(pIndex))
                 && curr <= parseInt(sub.get(7).getParams().get(pIndex))) {
-            incrementBt(btMap, "4-4 below(<8)");
+            incrementBt(btMap, OO_BT + "4-4 below(<8)");
         }
 
         fillGroundBT10(curr, btMap, pIndex, sub, subG, currHeader);
     }
 
-    private void fillGroundBT10(int curr, Map<String, Integer> btMap, int pIndex, List<Inning> sub, List<Inning> subG, Header currHeader) {
+    private void fillGroundBT10(int curr, Map<String, String> btMap, int pIndex, List<Inning> sub, List<Inning> subG, Header currHeader) {
         boolean noOhlHeader = false;
         if (currHeader == null) {
             noOhlHeader = true;
@@ -419,52 +552,58 @@ public class getData extends HttpServlet {
             for (int i = 1; i < 9; i++) {
                 int val = parseInt(sub.get(i).getParams().get(pIndex));
                 String header;
-                boolean isNumerator;
+//                boolean isNumerator;
                 if (i < 5) {
                     header = i + "/" + (10 - i);
-                    isNumerator = curr >= val;
+//                    isNumerator = curr >= val;
                 } else {
                     header = (i + 1) + "/" + (10 - (i + 1));
-                    isNumerator = curr <= val;
+//                    isNumerator = curr <= val;
                 }
 
                 if (noOhlHeader || parseInt(subG.get(0).getParams().get(pIndex)) > currHeader.getLow()) {
                     if (val <= parseInt(subG.get(0).getParams().get(pIndex))) {
-                        incrementBt(btMap, GR_0 + header, isNumerator);
+//                        incrementBt(btMap, GR_0 + header, isNumerator);
+                        belowAboveIncrement(curr, val, GR_0 + header, btMap);
                     }
                 }
 
                 if (noOhlHeader || parseInt(subG.get(0).getParams().get(pIndex)) > currHeader.getLow()) {
                     if (val > parseInt(subG.get(0).getParams().get(pIndex))
                             && val <= parseInt(subG.get(1).getParams().get(pIndex))) {
-                        incrementBt(btMap, GR_1 + header, isNumerator);
+//                        incrementBt(btMap, GR_1 + header, isNumerator);
+                        belowAboveIncrement(curr, val, GR_1 + header, btMap);
                     }
                 }
 
                 if (noOhlHeader || parseInt(subG.get(1).getParams().get(pIndex)) > currHeader.getLow()) {
                     if (val > parseInt(subG.get(1).getParams().get(pIndex))
                             && val <= parseInt(subG.get(2).getParams().get(pIndex))) {
-                        incrementBt(btMap, GR_2 + header, isNumerator);
+//                        incrementBt(btMap, GR_2 + header, isNumerator);
+                        belowAboveIncrement(curr, val, GR_2 + header, btMap);
                     }
                 }
 
                 if (noOhlHeader || parseInt(subG.get(3).getParams().get(pIndex)) <= currHeader.getHigh()) {
                     if (val > parseInt(subG.get(2).getParams().get(pIndex))
                             && val <= parseInt(subG.get(3).getParams().get(pIndex))) {
-                        incrementBt(btMap, GR_3 + header, isNumerator);
+//                        incrementBt(btMap, GR_3 + header, isNumerator);
+                        belowAboveIncrement(curr, val, GR_3 + header, btMap);
                     }
                 }
 
                 if (noOhlHeader || parseInt(subG.get(4).getParams().get(pIndex)) <= currHeader.getHigh()) {
                     if (val > parseInt(subG.get(3).getParams().get(pIndex))
                             && val <= parseInt(subG.get(4).getParams().get(pIndex))) {
-                        incrementBt(btMap, GR_4 + header, isNumerator);
+//                        incrementBt(btMap, GR_4 + header, isNumerator);
+                        belowAboveIncrement(curr, val, GR_4 + header, btMap);
                     }
                 }
 
                 if (noOhlHeader || parseInt(subG.get(4).getParams().get(pIndex)) <= currHeader.getHigh()) {
                     if (val > parseInt(subG.get(4).getParams().get(pIndex))) {
-                        incrementBt(btMap, GR_5 + header, isNumerator);
+//                        incrementBt(btMap, GR_5 + header, isNumerator);
+                        belowAboveIncrement(curr, val, GR_5 + header, btMap);
                     }
                 }
             }
@@ -479,30 +618,69 @@ public class getData extends HttpServlet {
 //        5 >5
     }
 
-    private void incrementBt(Map<String, Integer> btMap, String header) {
-        btMap.put(header, btMap.get(header) + 1);
+    private void incrementBt(Map<String, String> btMap, String header) {
+        System.out.println(header);
+        btMap.put(header, String.valueOf(parseInt(btMap.get(header)) + 1));
     }
 
-    private void incrementBt(Map<String, Integer> btMap, String header, boolean isNumerator) {
-        int val = btMap.get(header);
+//    private void incrementBt(Map<String, Integer> btMap, String header, boolean isNumerator) {
+//        int val = btMap.get(header);
+//
+//        int num = val & 0xFFFF;
+//        int den = (val >> 16) & 0xFFFF;
+//
+//        if (isNumerator) {
+//            num++;
+//        } else {
+//            den++;
+//        }
+//
+//        int newVal = num | (den << 16);
+//
+//        btMap.put(header, newVal);
+//    }
+    enum pos {
+        BELOW,
+        EQUAL,
+        ABOVE
+    }
 
-        int num = val & 0xFFFF;
-        int den = (val >> 16) & 0xFFFF;
+    private void incrementBt(Map<String, String> btMap, String header, pos position) {
+        String val = btMap.get(header);
+        if (val == null) {
+            throw new Error("Invalid header : " + header);
+        }
+        String[] tempValues = val.split("/");
+        int[] value = new int[3];
 
-        if (isNumerator) {
-            num++;
-        } else {
-            den++;
+        if (tempValues.length != 3) {
+            throw new Error("BT legth should be 3 like : 0/0/0");
+        }
+        for (int i = 0; i < 3; i++) {
+            value[i] = parseInt(tempValues[i]);
         }
 
-        int newVal = num | (den << 16);
+        switch (position) {
+            case BELOW:
+                value[0]++;
+                break;
+            case EQUAL:
+                value[1]++;
+                break;
+            case ABOVE:
+                value[2]++;
+                break;
+        }
+
+        String newVal = value[0] + "/" + value[1] + "/" + value[2];
 
         btMap.put(header, newVal);
     }
 
-    private Map<String, Integer> backTest10(String teamName, List<Match> btMatches, List<Match> teamMatches, int pIndex, MatchProcessor matchProcessor) {
-        Map<String, Integer> btMap = generateBtMap();
-        CricDB db = new CricDB();
+    private Map<String, String> backTest10(int pIndex, MatchProcessor matchProcessor1, MatchProcessor matchProcessor2) {
+
+        List<Match> btMatches = matchProcessor1.getBtMatches();
+        Map<String, String> btMap = generateBtMap();
         boolean isFirstInning = true;
 //        Collections.sort(oneMatch, new Comparator<Match>(){
 //            @Override
@@ -510,13 +688,15 @@ public class getData extends HttpServlet {
 //                return o1.getMatchDate().compareTo(o2.getMatchDate());
 //            }
 //        });
-        Map<String, List<Match>> cache = new LinkedHashMap<>();
+        Map<String, List<Match>> cache1 = new LinkedHashMap<>();
+        Map<String, List<Match>> cache2 = new LinkedHashMap<>();
         Map<String, List<Match>> grCache = new LinkedHashMap<>();
 
         for (int i = 0; i < btMatches.size(); i++) {
             Match currMatch = btMatches.get(i);
             int curr = parseInt(currMatch.getInningOne().getParams().get(pIndex));
             Timestamp currDate = currMatch.getMatchDate();
+            Predicate<Match> dateFilter = m -> (m.getMatchDate().after(currDate) || m.getMatchDate().equals(currDate));
             OHL currOhl = db.getOHL(currMatch.getMatchId());
             if (currOhl == null) {
                 continue;
@@ -526,18 +706,22 @@ public class getData extends HttpServlet {
             if (currHeader != null && currHeader.isEmpty()) {
                 continue;
             }
-            String oppTeam = currMatch.getHomeTeam().equals(teamName) ? currMatch.getAwayTeam() : currMatch.getHomeTeam();
+            String home = currMatch.getHomeTeam();
+            String away = currMatch.getAwayTeam();
             String groundName = currMatch.getGroundName();
 
-            if (!cache.keySet().contains(oppTeam)) {
-                cache.put(oppTeam, matchProcessor.getMatches(oppTeam));
+            if (!cache1.keySet().contains(home)) {
+                cache1.put(home, matchProcessor1.getMatches(home));
+            }
+            if (!cache2.keySet().contains(away)) {
+                cache2.put(away, matchProcessor2.getMatches(away));
             }
             if (!grCache.keySet().contains(groundName)) {
-                grCache.put(groundName, matchProcessor.getGMatches(groundName));
+                grCache.put(groundName, matchProcessor1.getGMatches(groundName));
             }
-            List<Match> oneMatch = new ArrayList<>(teamMatches);
+            List<Match> oneMatch = new ArrayList<>(cache1.get(home));
             oneMatch.removeIf(m -> m.getInningOne().getParams().get(pIndex).contains("-1"));
-            List<Match> twoMatch = new ArrayList<>(cache.get(oppTeam));
+            List<Match> twoMatch = new ArrayList<>(cache2.get(away));
             twoMatch.removeIf(m -> m.getInningOne().getParams().get(pIndex).contains("-1"));
             List<Match> grMatch = new ArrayList<>(grCache.get(groundName));
             grMatch.removeIf(m -> m.getInningOne().getParams().get(pIndex).contains("-1"));
@@ -547,7 +731,7 @@ public class getData extends HttpServlet {
             List<Inning> subB = new ArrayList<>();
             List<Inning> subG = new ArrayList<>();
 
-            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate) || m.getMatchDate().equals(currDate)));
+            oneMatch.removeIf(dateFilter);
             if (oneMatch.size() < 5) {
                 continue;
             }
@@ -556,7 +740,7 @@ public class getData extends HttpServlet {
                 subA.add(oneMatch.get(j).getInningOne());
             }
 
-            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+            twoMatch.removeIf(dateFilter);
             if (twoMatch.size() < 5) {
                 continue;
             }
@@ -565,7 +749,7 @@ public class getData extends HttpServlet {
                 subB.add(twoMatch.get(j).getInningOne());
             }
 
-            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+            grMatch.removeIf(dateFilter);
             if (grMatch.size() >= 5) {
                 for (int j = 0; j < 5; j++) {
                     subG.add(grMatch.get(j).getInningOne());
@@ -592,9 +776,9 @@ public class getData extends HttpServlet {
         return btMap;
     }
 
-    private Map<String, Integer> backTest10_Second(String teamName, List<Match> btMatches, List<Match> teamMatches, int pIndex, MatchProcessor matchProcessor) {
-        Map<String, Integer> btMap = generateBtMap();
-        CricDB db = new CricDB();
+    private Map<String, String> backTest10_Second(int pIndex, MatchProcessor matchProcessor1, MatchProcessor matchProcessor2) {
+        Map<String, String> btMap = generateBtMap();
+        List<Match> btMatches = matchProcessor1.getBtMatches();
         boolean isFirstInning = false;
 //        Collections.sort(oneMatch, new Comparator<Match>(){
 //            @Override
@@ -602,11 +786,15 @@ public class getData extends HttpServlet {
 //                return o1.getMatchDate().compareTo(o2.getMatchDate());
 //            }
 //        });
+        Map<String, List<Match>> cache1 = new LinkedHashMap<>();
+        Map<String, List<Match>> cache2 = new LinkedHashMap<>();
+        Map<String, List<Match>> grCache = new LinkedHashMap<>();
 
         for (int i = 0; i < btMatches.size() - 6; i++) {
             Match currMatch = btMatches.get(i);
             int curr = parseInt(currMatch.getInningTwo().getParams().get(pIndex));
             Timestamp currDate = currMatch.getMatchDate();
+            Predicate<Match> dateFilter = m -> (m.getMatchDate().after(currDate) || m.getMatchDate().equals(currDate));
             OHL currOhl = db.getOHL(currMatch.getMatchId());
             if (currOhl == null) {
                 continue;
@@ -616,14 +804,25 @@ public class getData extends HttpServlet {
             if (currHeader != null && currHeader.isEmpty()) {
                 continue;
             }
-            String oppTeam = currMatch.getHomeTeam().equals(teamName) ? currMatch.getAwayTeam() : currMatch.getHomeTeam();
+
+            String home = currMatch.getHomeTeam();
+            String away = currMatch.getAwayTeam();
             String groundName = currMatch.getGroundName();
 
-            List<Match> oneMatch = new ArrayList<>(teamMatches);
+            if (!cache1.keySet().contains(home)) {
+                cache1.put(home, matchProcessor1.getMatches(home));
+            }
+            if (!cache2.keySet().contains(away)) {
+                cache2.put(away, matchProcessor2.getMatches(away));
+            }
+            if (!grCache.keySet().contains(groundName)) {
+                grCache.put(groundName, matchProcessor1.getGMatches(groundName));
+            }
+            List<Match> oneMatch = new ArrayList<>(cache1.get(home));
             oneMatch.removeIf(m -> m.getInningTwo().getParams().get(pIndex).contains("-1"));
-            List<Match> twoMatch = matchProcessor.getMatches(oppTeam);
+            List<Match> twoMatch = new ArrayList<>(cache2.get(away));
             twoMatch.removeIf(m -> m.getInningTwo().getParams().get(pIndex).contains("-1"));
-            List<Match> grMatch = matchProcessor.getGMatches(groundName);
+            List<Match> grMatch = new ArrayList<>(grCache.get(groundName));
             grMatch.removeIf(m -> m.getInningTwo().getParams().get(pIndex).contains("-1"));
 
             List<Inning> sub = new ArrayList<>();
@@ -631,13 +830,16 @@ public class getData extends HttpServlet {
             List<Inning> subB = new ArrayList<>();
             List<Inning> subG = new ArrayList<>();
 
-            oneMatch.removeIf(m -> (m.getMatchDate().after(currDate) || m.getMatchDate().equals(currDate)));
-            for (int j = i + 1; j < i + 6; j++) {
+            oneMatch.removeIf(dateFilter);
+            if (oneMatch.size() < 5) {
+                continue;
+            }
+            for (int j = 0; j < 5; j++) {
                 sub.add(oneMatch.get(j).getInningTwo());
                 subA.add(oneMatch.get(j).getInningTwo());
             }
 
-            twoMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+            twoMatch.removeIf(dateFilter);
             if (twoMatch.size() < 5) {
                 continue;
             }
@@ -646,7 +848,7 @@ public class getData extends HttpServlet {
                 subB.add(twoMatch.get(j).getInningTwo());
             }
 
-            grMatch.removeIf(m -> (m.getMatchDate().after(currDate)));
+            grMatch.removeIf(dateFilter);
             if (grMatch.size() >= 5) {
                 for (int j = 0; j < 5; j++) {
                     subG.add(grMatch.get(j).getInningTwo());
@@ -673,8 +875,8 @@ public class getData extends HttpServlet {
         return btMap;
     }
 
-    private Map<String, Integer> backTest10_Test(String teamName, List<testMatch> oneMatch, int pIndex, TestProcessor testProcessor, InningCaller inningCaller, Location oppType) {
-        Map<String, Integer> btMap = generateBtMap();
+    private Map<String, String> backTest10_Test(String teamName, List<testMatch> oneMatch, int pIndex, TestProcessor testProcessor, InningCaller inningCaller, Location oppType) {
+        Map<String, String> btMap = generateBtMap();
 
 //        Collections.sort(oneMatch, new Comparator<Match>(){
 //            @Override
@@ -752,6 +954,7 @@ public class getData extends HttpServlet {
         String teamOne = request.getParameter("teamName1");
         String teamTwo = request.getParameter("teamName2");
         String favInput = request.getParameter("favSelect");
+        String biasInput = request.getParameter("biasSelect");
 
         FavSide favSide;
         String favTeamName;
@@ -765,13 +968,12 @@ public class getData extends HttpServlet {
                 favTeamName = teamTwo;
                 break;
             default:
-                favSide = FavSide.None;
-                favTeamName = "N/A";
-                break;
+                throw new ServletException("Select fav side");
         }
 
-        boolean isFavNone = favSide.equals(FavSide.None);
-        request.setAttribute("isFavNone", isFavNone);
+        request.setAttribute("favTeamName", favTeamName);
+        request.setAttribute("bias", biasInput);
+
         boolean isFavBatting = favSide.equals(FavSide.Batting);
         request.setAttribute("isFavBatting", isFavBatting);
         boolean isFavChasing = favSide.equals(FavSide.Chasing);
@@ -1533,19 +1735,20 @@ public class getData extends HttpServlet {
                 // <editor-fold defaultstate="collapsed">
                 @Override
                 public List<Match> getMatches(String teamName) {
-                    List<Match> matches = db.getMatches(teamName, matchType, 0);
-                    return process(matches);
+//                    List<Match> matches = db.getMatches(teamName, matchType, 0);
+//                    return process(matches);
+                    return null;
                 }
 
                 @Override
-                public List<Match> getBtMatches(String teamName) {
-                    List<Match> matches = getMatches(teamName);
-                    if (!isFavNone) {
-                        matches.removeIf(m -> {
-                            String favDeets = db.getFavourites(m.getMatchId());
-                            return !(favDeets != null && favDeets.equals(teamName));
-                        });
-                    }
+                public List<Match> getBtMatches() {
+                    List<Match> matches = db.getAllFavMatches(matchType);
+                    matches.removeIf(m -> {
+                        String[] favDeets = db.getFavourites(m.getMatchId());
+                        String chosenTeam = isFavBatting ? m.getHomeTeam() : m.getAwayTeam();
+                        return (favDeets == null || (!favDeets[0].equals(chosenTeam) && !favDeets[1].equals(biasInput)));
+                    });
+
                     return matches;
                 }
 
@@ -1553,19 +1756,6 @@ public class getData extends HttpServlet {
                 public List<Match> getGMatches(String groundName) {
                     List<Match> matches = db.getGroundInfo(groundName, matchType);
                     return process(matches);
-                }
-
-                @Override
-                public List<Match> getGBtMatches(String groundName) {
-                    List<Match> matches = getGMatches(groundName);
-                    if (!isFavNone) {
-                        matches.removeIf(m -> {
-                            String favDeets = db.getFavourites(m.getMatchId());
-                            String chosenTeam = isFavBatting ? m.getHomeTeam() : m.getAwayTeam();
-                            return !(favDeets != null && favDeets.equals(chosenTeam));
-                        });
-                    }
-                    return matches;
                 }
 
                 public List<Match> process(List<Match> matches) {
@@ -1591,7 +1781,7 @@ public class getData extends HttpServlet {
             };
 
             MatchProcessor type1 = new MatchProcessor() {
-                // <editor-fold defaultstate="collapsed">
+                // <editor-fold defaultstate="collapsed">   
                 @Override
                 public List<Match> getMatches(String teamName) {
                     List<Match> matches = db.getMatches(teamName, matchType, 1);
@@ -1599,41 +1789,21 @@ public class getData extends HttpServlet {
                 }
 
                 @Override
-                public List<Match> getBtMatches(String teamName) {
-                    List<Match> matches = getMatches(teamName);
-                    if (!isFavNone) {
-                        if (favTeamName.equals(teamName)) {
-                            matches.removeIf(m -> {
-                                String favDeets = db.getFavourites(m.getMatchId());
-                                return !(favDeets != null && favDeets.equals(teamName));
-                            });
-                        } else {
-                            matches.removeIf(m -> {
-                                String favDeets = db.getFavourites(m.getMatchId());
-                                return !(favDeets != null && !favDeets.equals(teamName));
-                            });
-                        }
-                    }
+                public List<Match> getBtMatches() {
+                    List<Match> matches = db.getAllFavMatches(matchType);
+                    matches.removeIf(m -> {
+                        String[] favDeets = db.getFavourites(m.getMatchId());
+                        String chosenTeam = isFavBatting ? m.getHomeTeam() : m.getAwayTeam();
+                        return (favDeets == null || (!favDeets[0].equals(chosenTeam) && !favDeets[1].equals(biasInput)));
+                    });
+
                     return matches;
                 }
 
                 @Override
+
                 public List<Match> getGMatches(String groundName) {
-                    List<Match> matches = db.getGroundInfo(groundName, matchType);
-                    return process(matches);
-                }
-
-                @Override
-                public List<Match> getGBtMatches(String groundName) {
-                    List<Match> matches = getGMatches(groundName);
-                    if (!isFavNone) {
-                        matches.removeIf(m -> {
-                            String favDeets = db.getFavourites(m.getMatchId());
-                            String chosenTeam = isFavBatting ? m.getHomeTeam() : m.getAwayTeam();
-                            return !(favDeets != null && favDeets.equals(chosenTeam));
-                        });
-                    }
-                    return matches;
+                    return type0.getGMatches(groundName);
                 }
 
                 @Override
@@ -1669,18 +1839,13 @@ public class getData extends HttpServlet {
                 }
 
                 @Override
-                public List<Match> getBtMatches(String teamName) {
-                    return process(type1.getBtMatches(teamName));
+                public List<Match> getBtMatches() {
+                    return process(type1.getBtMatches());
                 }
 
                 @Override
                 public List<Match> getGMatches(String groundName) {
                     return process(type1.getGMatches(groundName));
-                }
-
-                @Override
-                public List<Match> getGBtMatches(String groundName) {
-                    return process(type1.getGBtMatches(groundName));
                 }
 
                 @Override
@@ -1700,32 +1865,13 @@ public class getData extends HttpServlet {
                 }
 
                 @Override
-                public List<Match> getBtMatches(String teamName) {
-                    List<Match> matches = getMatches(teamName);
-                    if (!isFavNone) {
-                        if (favTeamName.equals(teamName)) {
-                            matches.removeIf(m -> {
-                                String favDeets = db.getFavourites(m.getMatchId());
-                                return !(favDeets != null && favDeets.equals(teamName));
-                            });
-                        } else {
-                            matches.removeIf(m -> {
-                                String favDeets = db.getFavourites(m.getMatchId());
-                                return !(favDeets != null && !favDeets.equals(teamName));
-                            });
-                        }
-                    }
-                    return matches;
+                public List<Match> getBtMatches() {
+                    return type1.getBtMatches();
                 }
 
                 @Override
                 public List<Match> getGMatches(String groundName) {
                     return type1.getGMatches(groundName);
-                }
-
-                @Override
-                public List<Match> getGBtMatches(String groundName) {
-                    return type1.getGBtMatches(groundName);
                 }
 
                 @Override
@@ -1743,18 +1889,13 @@ public class getData extends HttpServlet {
                 }
 
                 @Override
-                public List<Match> getBtMatches(String teamName) {
-                    return process(type2.getBtMatches(teamName));
+                public List<Match> getBtMatches() {
+                    return process(type2.getBtMatches());
                 }
 
                 @Override
                 public List<Match> getGMatches(String groundName) {
                     return type1_NoMajQuit.getGMatches(groundName);
-                }
-
-                @Override
-                public List<Match> getGBtMatches(String groundName) {
-                    return type1_NoMajQuit.getGBtMatches(groundName);
                 }
 
                 @Override
@@ -1780,12 +1921,8 @@ public class getData extends HttpServlet {
                     String worl = "";
 
                     String BorC = "";
-                    String desiredTeam = teamOne;
-                    if (favSide.equals(FavSide.Chasing)) {
-                        desiredTeam = teamTwo;
-                    }
 
-                    if (q.getHomeTeam().equalsIgnoreCase(desiredTeam)) {
+                    if (q.getHomeTeam().equalsIgnoreCase(favTeamName)) {
                         BorC = "B";
                     } else {
                         BorC = "C";
@@ -1923,57 +2060,6 @@ public class getData extends HttpServlet {
                 // </editor-fold>
             }
 
-            boundaries:
-            {
-                // <editor-fold defaultstate="collapsed">
-                A:
-                {
-                    List<Match> matches = type0.getMatches(teamOne);
-                    List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
-
-                    request.setAttribute("FST_A", selects);
-
-                    List<Match> btMatches = type0.getBtMatches(teamOne);
-
-                    request.setAttribute("foursA_bt", backTest5(btMatches, matches, true, 4));
-                    request.setAttribute("sixesA_bt", backTest5(btMatches, matches, true, 5));
-                    request.setAttribute("boundariesA_bt", backTest5(btMatches, matches, true, 8));
-                    request.setAttribute("foursTA_bt", backTest10(teamOne, btMatches, matches, 4, type0));
-                    request.setAttribute("sixesTA_bt", backTest10(teamOne, btMatches, matches, 5, type0));
-                    request.setAttribute("boundariesTA_bt", backTest10(teamOne, btMatches, matches, 6, type0));
-                }
-                B:
-                {
-                    List<Match> matches = type0.getMatches(teamTwo);
-                    List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
-
-                    request.setAttribute("FST_B", selects);
-
-                    List<Match> btMatches = type0.getBtMatches(teamTwo);
-
-                    request.setAttribute("foursB_bt", backTest5(btMatches, matches, true, 4));
-                    request.setAttribute("sixesB_bt", backTest5(btMatches, matches, true, 5));
-                    request.setAttribute("boundariesB_bt", backTest5(btMatches, matches, true, 8));
-                    request.setAttribute("foursTB_bt", backTest10(teamTwo, btMatches, matches, 4, type0));
-                    request.setAttribute("sixesTB_bt", backTest10(teamTwo, btMatches, matches, 5, type0));
-                    request.setAttribute("boundariesTB_bt", backTest10(teamTwo, btMatches, matches, 6, type0));
-                }
-                G:
-                {
-                    List<Match> matches = type0.getGMatches(groundName);
-                    List<Inning> selects1 = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
-
-                    request.setAttribute("Gr_First", selects1.subList(0, Math.min(5, selects1.size())));
-
-                    List<Match> btMatches = type0.getGBtMatches(groundName);
-
-                    request.setAttribute("foursG_bt", backTest5_Gr(btMatches, matches, true, 4));
-                    request.setAttribute("sixesG_bt", backTest5_Gr(btMatches, matches, true, 5));
-                    request.setAttribute("boundariesG_bt", backTest5_Gr(btMatches, matches, true, 6));
-                }
-                // </editor-fold>
-            }
-
             BCW_total:
             {
                 // <editor-fold defaultstate="collapsed">
@@ -2015,23 +2101,17 @@ public class getData extends HttpServlet {
                 // </editor-fold>
             }
 
-            First_Over:
+            G:
             {
                 // <editor-fold defaultstate="collapsed">
-                A:
-                {
-                    List<Match> matches = type1.getMatches(teamOne);
-                    List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
+                List<Match> matches = type0.getGMatches(groundName);
+                List<Inning> selects1 = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
-                    request.setAttribute("FO_A", selects);
-                }
-                B:
-                {
-                    List<Match> matches = type2.getMatches(teamTwo);
-                    List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
+                request.setAttribute("Gr_First", selects1.subList(0, Math.min(5, selects1.size())));
 
-                    request.setAttribute("FO_B", selects);
-                }
+                request.setAttribute("foursG_bt", backTest5_Gr(type0, true, 4));
+                request.setAttribute("sixesG_bt", backTest5_Gr(type0, true, 5));
+                request.setAttribute("boundariesG_bt", backTest5_Gr(type0, true, 6));
                 // </editor-fold>
             }
 
@@ -2046,10 +2126,8 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("LO_A", selects);
 
-                    List<Match> btMatches = type1_NoMajQuit.getBtMatches(teamOne);
-
-                    request.setAttribute("LO_A_bt", backTest5(btMatches, matches, true, pIndex));
-                    request.setAttribute("LO_TA_bt", backTest10(teamOne, btMatches, matches, pIndex, type2_NoMajQuit));
+                    request.setAttribute("LO_A_bt", backTest5(type1_NoMajQuit, true, pIndex, true));
+                    request.setAttribute("LO_T_bt", backTest10(pIndex, type1_NoMajQuit, type2_NoMajQuit));
                 }
                 B:
                 {
@@ -2058,10 +2136,7 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("LO_B", selects);
 
-                    List<Match> btMatches = type2_NoMajQuit.getBtMatches(teamTwo);
-
-                    request.setAttribute("LO_B_bt", backTest5(btMatches, matches, true, pIndex));
-                    request.setAttribute("LO_TB_bt", backTest10(teamTwo, btMatches, matches, pIndex, type1_NoMajQuit));
+                    request.setAttribute("LO_B_bt", backTest5(type2_NoMajQuit, true, pIndex, false));
                 }
                 G:
                 {
@@ -2070,9 +2145,7 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("LO_G", selects);
 
-                    List<Match> btMatches = type1_NoMajQuit.getGBtMatches(groundName);
-
-                    request.setAttribute("LO_G_bt", backTest5_Gr(btMatches, matches, true, pIndex));
+                    request.setAttribute("LO_G_bt", backTest5_Gr(type1_NoMajQuit, true, pIndex));
                 }
                 // </editor-fold>
             }
@@ -2087,11 +2160,9 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
                     request.setAttribute("FW_A", selects);
- 
-                    List<Match> btMatches = type1.getBtMatches(teamOne);
 
-                    request.setAttribute("FW_A_bt", backTest5(btMatches, matches, true, pIndex));
-                    request.setAttribute("FW_TA_bt", backTest10(teamOne, btMatches, matches, pIndex, type2));
+                    request.setAttribute("FW_A_bt", backTest5(type1, true, pIndex, true));
+                    request.setAttribute("FW_T_bt", backTest10(pIndex, type1, type2));
                 }
                 B:
                 {
@@ -2100,17 +2171,11 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FW_B", selects);
 
-                    List<Match> btMatches = type2.getBtMatches(teamTwo);
-
-                    request.setAttribute("FW_B_bt", backTest5(btMatches, matches, true, pIndex));
-                    request.setAttribute("FW_TB_bt", backTest10(teamTwo, btMatches, matches, pIndex, type1));
+                    request.setAttribute("FW_B_bt", backTest5(type2, true, pIndex, false));
                 }
                 G:
                 {
-                    List<Match> matches = type1.getGMatches(groundName);
-                    List<Match> btMatches = type1.getGBtMatches(groundName);
-
-                    request.setAttribute("FW_G_bt", backTest5_Gr(btMatches, matches, true, pIndex));
+                    request.setAttribute("FW_G_bt", backTest5_Gr(type1, true, pIndex));
                 }
                 // </editor-fold>
             }
@@ -2126,10 +2191,8 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("TR_A", selects);
 
-                    List<Match> btMatches = type1_NoMajQuit.getBtMatches(teamOne);
-
-                    request.setAttribute("TR_A_bt", backTest5(btMatches, matches, true, pIndex));
-                    request.setAttribute("TR_TA_bt", backTest10(teamOne, btMatches, matches, pIndex, type2_NoMajQuit));
+                    request.setAttribute("TR_A_bt", backTest5(type1_NoMajQuit, true, pIndex, true));
+                    request.setAttribute("TR_T_bt", backTest10(pIndex, type1_NoMajQuit, type2_NoMajQuit));
                 }
                 B:
                 {
@@ -2138,10 +2201,7 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("TR_B", selects);
 
-                    List<Match> btMatches = type2_NoMajQuit.getBtMatches(teamTwo);
-
-                    request.setAttribute("TR_B_bt", backTest5(btMatches, matches, true, pIndex));
-                    request.setAttribute("TR_TB_bt", backTest10(teamTwo, btMatches, matches, pIndex, type1_NoMajQuit));
+                    request.setAttribute("TR_B_bt", backTest5(type2_NoMajQuit, true, pIndex, false));
                 }
                 G:
                 {
@@ -2150,9 +2210,7 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("TR_G", selects);
 
-                    List<Match> btMatches = type1_NoMajQuit.getGBtMatches(groundName);
-
-                    request.setAttribute("TR_G_bt", backTest5_Gr(btMatches, matches, true, pIndex));
+                    request.setAttribute("TR_G_bt", backTest5_Gr(type1_NoMajQuit, true, pIndex));
                 }
                 // </editor-fold>
             }
@@ -2168,10 +2226,8 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FX_A", selects);
 
-                    List<Match> btMatches = type1_NoMajQuit.getBtMatches(teamOne);
-
-                    request.setAttribute("FX_A_bt", backTest5(btMatches, matches, true, pIndex));
-                    request.setAttribute("FX_TA_bt", backTest10(teamOne, btMatches, matches, pIndex, type2_NoMajQuit));
+                    request.setAttribute("FX_A_bt", backTest5(type1_NoMajQuit, true, pIndex, true));
+                    request.setAttribute("FX_T_bt", backTest10(pIndex, type1_NoMajQuit, type2_NoMajQuit));
                 }
                 B:
                 {
@@ -2180,18 +2236,11 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FX_B", selects);
 
-                    List<Match> btMatches = type2_NoMajQuit.getBtMatches(teamTwo);
-
-                    request.setAttribute("FX_B_bt", backTest5(btMatches, matches, true, pIndex));
-                    request.setAttribute("FX_TB_bt", backTest10(teamTwo, btMatches, matches, pIndex, type1_NoMajQuit));
+                    request.setAttribute("FX_B_bt", backTest5(type2_NoMajQuit, true, pIndex, false));
                 }
                 G:
                 {
-                    List<Match> matches = type1_NoMajQuit.getGMatches(groundName);
-
-                    List<Match> btMatches = type1_NoMajQuit.getGBtMatches(groundName);
-
-                    request.setAttribute("FX_G_bt", backTest5_Gr(btMatches, matches, true, pIndex));
+                    request.setAttribute("FX_G_bt", backTest5_Gr(type1_NoMajQuit, true, pIndex));
                 }
                 // </editor-fold>
             }
@@ -2207,9 +2256,8 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FXS_A", selects);
 
-                    List<Match> btMatches = type2_NoMajQuit.getBtMatches(teamTwo);
-                    request.setAttribute("FXS_A_bt", backTest5(btMatches, matches, false, pIndex));
-                    request.setAttribute("FXS_TA_bt", backTest10_Second(teamTwo, btMatches, matches, pIndex, type1_NoMajQuit));
+                    request.setAttribute("FXS_A_bt", backTest5(type2_NoMajQuit, false, pIndex, false));
+                    request.setAttribute("FXS_T_bt", backTest10_Second(pIndex, type2_NoMajQuit, type1_NoMajQuit));
                 }
                 B:
                 {
@@ -2218,10 +2266,7 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FXS_B", selects);
 
-                    List<Match> btMatches = type1_NoMajQuit.getBtMatches(teamOne);
-
-                    request.setAttribute("FXS_B_bt", backTest5(btMatches, matches, false, pIndex));
-                    request.setAttribute("FXS_TB_bt", backTest10_Second(teamOne, btMatches, matches, pIndex, type2_NoMajQuit));
+                    request.setAttribute("FXS_B_bt", backTest5(type1_NoMajQuit, false, pIndex, true));
                 }
                 G:
                 {
@@ -2230,9 +2275,7 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FXS_G", selects);
 
-                    List<Match> btMatches = type1_NoMajQuit.getGBtMatches(groundName);
-
-                    request.setAttribute("FXS_G_bt", backTest5_Gr(btMatches, matches, false, pIndex));
+                    request.setAttribute("FXS_G_bt", backTest5_Gr(type1_NoMajQuit, false, pIndex));
                 }
                 // </editor-fold>
             }
@@ -2248,10 +2291,8 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FWS_A", selects);
 
-                    List<Match> btMatches = type2.getBtMatches(teamTwo);
-
-                    request.setAttribute("FWS_A_bt", backTest5(btMatches, matches, false, pIndex));
-                    request.setAttribute("FWS_TA_bt", backTest10_Second(teamTwo, btMatches, matches, pIndex, type1));
+                    request.setAttribute("FWS_A_bt", backTest5(type2, false, pIndex, false));
+                    request.setAttribute("FWS_T_bt", backTest10_Second(pIndex, type2, type1));
                 }
                 B:
                 {
@@ -2260,11 +2301,7 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FWS_B", selects);
 
-                    considerFAVCondition = true;
-                    List<Match> btMatches = type1.getBtMatches(teamOne);
-                    request.setAttribute("FWS_B_bt", backTest5(btMatches, matches, false, pIndex));
-                    request.setAttribute("FWS_TB_bt", backTest10_Second(teamOne, btMatches, matches, pIndex, type2));
-                    considerFAVCondition = false;
+                    request.setAttribute("FWS_B_bt", backTest5(type1, false, pIndex, true));
                 }
                 G:
                 {
@@ -2273,9 +2310,7 @@ public class getData extends HttpServlet {
 
                     request.setAttribute("FWS_G", selects);
 
-                    List<Match> btMatches = type1.getGBtMatches(groundName);
-
-                    request.setAttribute("FWS_G_bt", backTest5_Gr(btMatches, matches, false, pIndex));
+                    request.setAttribute("FWS_G_bt", backTest5_Gr(type1, false, pIndex));
                 }
                 // </editor-fold>
             }

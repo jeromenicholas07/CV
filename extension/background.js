@@ -13,8 +13,33 @@ chrome.storage.sync.get('rules', function(ruleData){
         if (port.name === 'rule-live-stream') {
             port.onMessage.addListener(function(sRule) {
 				
+				let isUpdated = false;
+				
+				let rule = ruleList.find(r => r.id == sRule.id);
+				
+				if(rule){
+					if(sRule.value){
+							
+						if(rule.highest < sRule.value || rule.highest == "N/A"){
+							rule.highest = sRule.value;
+							isUpdated = true;
+						}
+						if(rule.lowest > sRule.value || rule.lowest == "N/A"){
+							rule.lowest = sRule.value;
+							isUpdated = true;
+						}
+					}
+					if(isUpdated){
+						chrome.storage.sync.set({rules : ruleList}, function(){
+							console.log('Rule high-low updated');
+						});
+					}
+				}
+				
 				if(sRule.isDone){
-					if(rule = ruleList.find(r => r.id == sRule.id)){
+					if(rule){
+						
+						
 						if(!rule.isDone){
 							rule.isDone = true;
 							if(childRule = ruleList.find(r => r.parentId == rule.id)){
@@ -33,32 +58,22 @@ chrome.storage.sync.get('rules', function(ruleData){
 						ruleStatus[sRule.id].lastUpdated = (new Date()).getTime();
 						ruleStatus[sRule.id].pageStatus = sRule.pageStatus;
 						ruleStatus[sRule.id].isDone = sRule.isDone;
+						ruleStatus[sRule.id].lowest = rule.lowest;
+						ruleStatus[sRule.id].highest = rule.highest;
+						ruleStatus[sRule.id].isPaused = rule.isPaused;
 				}
 				else{
 					ruleStatus[sRule.id] = {
 						currValue: sRule.value,
 						lastUpdated: (new Date()).getTime(),
 						pageStatus: sRule.pageStatus,
-						isDone: sRule.isDone
+						isDone: sRule.isDone,
+						lowest: rule.lowest,
+						highest: rule.highest,
+						isPaused: rule.isPaused
 					};
 				}
 				
-				for(rule of ruleList){
-					if(rule.id == sRule.id && sRule.value){
-						if(rule.highest < sRule.value || rule.highest == "N/A"){
-							rule.highest = sRule.value;
-							chrome.storage.sync.set({rules : ruleList}, function(){
-								console.log(rule.id + ' - highest updated');
-							});
-						}
-						if(rule.lowest > sRule.value || rule.lowest == "N/A"){
-							rule.lowest = sRule.value;
-							chrome.storage.sync.set({rules : ruleList}, function(){
-								console.log(rule.id + ' - lowest updated');
-							});
-						}
-					}
-				}
 					
 			});
         }
@@ -96,33 +111,38 @@ chrome.storage.sync.get('rules', function(ruleData){
 				if(currentStatus.isDone || rule.isDone){
 					currentStatus.status = "Rule done";
 				}
-				else{
-					chrome.tabs.get(rule.tabId, function(tabInfo){
-						if(!chrome.runtime.lastError || tabInfo){
-							if(tabInfo.url == rule.url){
-								
-								let msSinceUpdate = (new Date()).getTime() - currentStatus.lastUpdated;
-								if(msSinceUpdate <= 20000){
-									if(currentStatus.currValue){
-										currentStatus.status = "Active";
+				else {
+					if(rule.isPaused || currentStatus.isPaused){
+						currentStatus.status = "Paused";
+					}
+					else {
+						chrome.tabs.get(rule.tabId, function(tabInfo){
+							if(!chrome.runtime.lastError || tabInfo){
+								if(tabInfo.url == rule.url){
+									
+									let msSinceUpdate = (new Date()).getTime() - currentStatus.lastUpdated;
+									if(msSinceUpdate <= 20000){
+										if(currentStatus.currValue){
+											currentStatus.status = "Active";
+										}
+										else{
+											currentStatus.status = "Unable to read value";
+										}
 									}
 									else{
-										currentStatus.status = "Unable to read value";
+										currentStatus.status = "Rule disconnected";
 									}
+									
 								}
 								else{
-									currentStatus.status = "Rule disconnected";
+									currentStatus.status = "URL changed";
 								}
-								
 							}
 							else{
-								currentStatus.status = "URL changed";
+								currentStatus.status = "Tab not found";
 							}
-						}
-						else{
-							currentStatus.status = "Tab not found";
-						}
-					});
+						});
+					}
 				}
 				
 				//Switching tabs if required
@@ -155,6 +175,7 @@ chrome.storage.sync.get('rules', function(ruleData){
 		}
 		
 		if(statusStreamPort){
+			console.log('sending opts ->' ,ruleStatus);
 			statusStreamPort.postMessage(ruleStatus);
 		}
 	}

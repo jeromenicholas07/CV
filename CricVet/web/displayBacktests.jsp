@@ -19,34 +19,47 @@
         <title>BackTest displayer</title>
     </head>
     <body>
-        <c:set var="X_A_bt" value="${requestScope[param.A_bt]}" scope="page"></c:set>
-        <c:set var="X_TA_bt" value="${requestScope[param.TA_bt]}" scope="page"></c:set>
-        <c:set var="X_B_bt" value="${requestScope[param.B_bt]}" scope="page"></c:set>
-        <c:set var="X_TB_bt" value="${requestScope[param.TB_bt]}" scope="page"></c:set>
+
         <c:set var="X_G_bt" value="${requestScope[param.G_bt]}" scope="page"></c:set>
+        <c:set var="X_TA_bt" value="${requestScope[param.TA_bt]}" scope="page"></c:set>
+
+
         <c:choose>
             <c:when test="${ !isFavChasing }">
                 <c:set var="T1" value="${teamOne}" scope="page"></c:set>
                 <c:set var="T2" value="${teamTwo}" scope="page"></c:set>
+
+                <c:set var="X_A_bt" value="${requestScope[param.A_bt]}" scope="page"></c:set>
+                <c:set var="X_B_bt" value="${requestScope[param.B_bt]}" scope="page"></c:set>
             </c:when>
             <c:when test="${ isFavChasing }">
                 <c:set var="T1" value="${teamTwo}" scope="page"></c:set>
                 <c:set var="T2" value="${teamOne}" scope="page"></c:set>
+
+                <c:set var="X_A_bt" value="${requestScope[param.B_bt]}" scope="page"></c:set>
+                <c:set var="X_B_bt" value="${requestScope[param.A_bt]}" scope="page"></c:set>
             </c:when>
         </c:choose>
 
+        <c:set var="bt5_size" value="6" scope="page"></c:set>
 
-        <c:set var="bt10_count" value="15" scope="page"></c:set>
+        <c:set var="bt5_r2_start" value="7" scope="page"></c:set>
+        <c:set var="bt5_r2_end" value="${bt5_r2_start + bt5_size - 1}" scope="page"></c:set>
+
+        <c:set var="bt5_r3_start" value="${bt5_r2_end + 1}" scope="page"></c:set>
+        <c:set var="bt5_r3_end" value="${bt5_r3_start + bt5_size - 1}" scope="page"></c:set>
+
+        <c:set var="bt10_count" value="14" scope="page"></c:set>
 
         <c:set var="row1_end" value="${bt10_count+1}" scope="page"></c:set>
 
-        <c:set var="row2_start" value="18" scope="page"></c:set>
+        <c:set var="row2_start" value="${row1_end + 1}" scope="page"></c:set>
         <c:set var="row2_end" value="${row2_start + bt10_count}" scope="page"></c:set>
 
         <c:set var="row3_start" value="${row2_end + 1}" scope="page"></c:set>
         <c:set var="row3_end" value="${row3_start + bt10_count}" scope="page"></c:set>
 
-        <c:set var="row4_start" value="${row3_end + 1}" scope="page"></c:set>
+        <c:set var="row4_start" value="${row3_end + 2}" scope="page"></c:set> <!-- Ground start -- NG value-->
         <c:set var="row4_end" value="${row4_start + bt10_count}" scope="page"></c:set>
 
         <c:set var="row5_start" value="${row4_end + 1}" scope="page"></c:set>
@@ -57,6 +70,13 @@
 
         <c:set var="row7_start" value="${row6_end + 1}" scope="page"></c:set>
         <c:set var="row7_end" value="${row7_start + bt10_count}" scope="page"></c:set>
+
+        <c:set var="row8_start" value="${row7_end + 1}" scope="page"></c:set>
+        <c:set var="row8_end" value="${row8_start + bt10_count}" scope="page"></c:set>
+
+        <c:set var="row9_start" value="${row8_end + 1}" scope="page"></c:set>
+        <c:set var="row9_end" value="${row9_start + bt10_count}" scope="page"></c:set>
+
 
 
             <table class="table table-bordered BT5">
@@ -71,87 +91,124 @@
                         </div>
                 </tr>
                 <tr>
-                    <th colspan="${fn:length(X_A_bt)}">${T1}</th>
+                    <th colspan="${bt5_size + 1}">Batting</th>
                 <th>
-                <th colspan="${fn:length(X_B_bt)}">${T2}</th>
+                <th colspan="${bt5_size + 1}">Chasing</th>
                 <th>
-                <th colspan="${fn:length(X_G_bt)}">${groundName}</th>
+                <th colspan="${bt5_size + 1}">Ground</th>
             </tr>
             <tr>
-                <c:forEach var="entry" items="${X_A_bt}">
+                <td>N: ${X_G_bt.get("N")}</td>
+                <c:forEach var="entry" items="${X_A_bt}" begin="1" end="${bt5_size}">
                     <td>
-                        ${entry.key}
+                        ${entry.key.split("---")[1]}
                     </td>
                 </c:forEach>
 
                 <td></td>
 
-                <c:forEach var="entry" items="${X_B_bt}">
+                <td>N: ${X_B_bt.get("N")}</td>
+                <c:forEach var="entry" items="${X_B_bt}" begin="1" end="${bt5_size}">
                     <td>
-                        ${entry.key}
+                        ${entry.key.split("---")[1]}
                     </td>
                 </c:forEach>
 
                 <td></td>
 
-                <c:forEach var="entry" items="${X_G_bt}">
+                <td>N: ${X_G_bt.get("N")}</td>
+                <c:forEach var="entry" items="${X_G_bt}" begin="1"  end="${bt5_size}">
                     <td>
-                        ${entry.key}
+                        ${entry.key.split("---")[1]}
                     </td>
                 </c:forEach>
             </tr>
             <tr>
-                <td>
-                    ${X_A_bt.get("N")}
-                </td>
-                <c:forEach var="entry" items="${X_A_bt}" begin="1">
+                <td > open </td>
+                <c:forEach var="entry" items="${X_A_bt}" begin="1" end="${bt5_size}">
                     <td class="bt-td">
-                        <div class="bt-num">
-                            ${entry.value}
-                        </div>
-                        <div class="bt-den">
-                            ${X_A_bt.get("N") - entry.value}
-                        </div>
+                        ${entry.value}
                     </td>
                 </c:forEach>
 
                 <td></td>
 
-                <td>
-                    ${X_B_bt.get("N")}
-                </td>
-                <c:forEach var="entry" items="${X_B_bt}" begin="1">
+                <td>open</td>
+                <c:forEach var="entry" items="${X_B_bt}" begin="1" end="${bt5_size}">
                     <td class="bt-td">
-                        <div class="bt-num">
-                            ${entry.value}
-                        </div>
-                        <div class="bt-den">
-                            ${X_B_bt.get("N") - entry.value}
-                        </div>
+                        ${entry.value}
                     </td>
                 </c:forEach>
 
                 <td></td>
 
-                <td>
-                    ${X_G_bt.get("N")}
-                </td>
-                <c:forEach var="entry" items="${X_G_bt}" begin="1">
+                <td>open</td>
+                <c:forEach var="entry" items="${X_G_bt}" begin="1" end="${bt5_size}">
                     <td class="bt-td">
-                        <div class="bt-num">
-                            ${entry.value}
-                        </div>
-                        <div class="bt-den">
-                            ${X_G_bt.get("N") - entry.value}
-                        </div>
+                        ${entry.value}
                     </td>
                 </c:forEach>
             </tr>
+
+            <tr>
+                <td>high</td>
+                <c:forEach var="entry" items="${X_A_bt}" begin="${bt5_r2_start}" end="${bt5_r2_end}">
+                    <td class="bt-td">
+                        ${entry.value}
+                    </td>
+                </c:forEach>
+
+                <td></td>
+
+                <td>high</td>
+                <c:forEach var="entry" items="${X_B_bt}" begin="${bt5_r2_start}" end="${bt5_r2_end}">
+                    <td class="bt-td">
+                        ${entry.value}
+                    </td>
+                </c:forEach>
+
+                <td></td>
+
+                <td>high</td>
+                <c:forEach var="entry" items="${X_G_bt}" begin="${bt5_r2_start}" end="${bt5_r2_end}">
+                    <td class="bt-td">
+                        ${entry.value}
+                    </td>
+                </c:forEach>
+            </tr>
+            
+            <tr>
+                <td>low</td>
+                <c:forEach var="entry" items="${X_A_bt}" begin="${bt5_r3_start}" end="${bt5_r3_end}">
+                    <td class="bt-td">
+                        ${entry.value}
+                    </td>
+                </c:forEach>
+
+                <td></td>
+
+                <td>low</td>
+                <c:forEach var="entry" items="${X_B_bt}" begin="${bt5_r3_start}" end="${bt5_r3_end}">
+                    <td class="bt-td">
+                        ${entry.value}
+                    </td>
+                </c:forEach>
+
+                <td></td>
+
+                <td>low</td>
+                <c:forEach var="entry" items="${X_G_bt}" begin="${bt5_r3_start}" end="${bt5_r3_end}">
+                    <td class="bt-td">
+                        ${entry.value}
+                    </td>
+                </c:forEach>
+            </tr>
+            
         </table>
 
         <table class="table table-bordered BT10">
             <tr>
-                <th colspan="30">${T1}</th>
+                <th colspan="30">All</th>
             </tr>
             <colgroup>
                 <col>
@@ -161,146 +218,83 @@
             </colgroup>
             <tr>
                 <td></td>
-                <c:forEach var="entry" items="${X_TA_bt}" end="${row1_end}">
+                <td>N: ${X_TA_bt.get("N")}</td>
+                <c:forEach var="entry" items="${X_TA_bt}" end="${row1_end}" begin="1">
                     <td>
-                        ${entry.key}
+                        ${entry.key.split("---")[1]}
                     </td>
                 </c:forEach>
             </tr>
             <tr>
                 <td></td>
-                <td>
-                    ${X_TA_bt.get("N")}
-                </td>
+                <td>open</td>
                 <c:forEach var="entry" items="${X_TA_bt}" end="${row1_end}" begin="1">
                     <td class="bt-td">
-                        <div class="bt-num">
-                            ${entry.value}
-                        </div>
-                        <div class="bt-den">
-                            ${X_TA_bt.get("N") - entry.value}
-                        </div>
-                    </td>
-                </c:forEach>
-            </tr>
-
-            <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 0/5" />
-                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
-                <jsp:param name="row_start" value="${row2_start}" />
-                <jsp:param name="row_end" value="${row2_end}" />
-            </jsp:include>
-
-            <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 1/4" />
-                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
-                <jsp:param name="row_start" value="${row3_start}" />
-                <jsp:param name="row_end" value="${row3_end}" />
-            </jsp:include>
-
-            <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 2/3" />
-                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
-                <jsp:param name="row_start" value="${row4_start}" />
-                <jsp:param name="row_end" value="${row4_end}" />
-            </jsp:include>
-
-            <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 3/2" />
-                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
-                <jsp:param name="row_start" value="${row5_start}" />
-                <jsp:param name="row_end" value="${row5_end}" />
-            </jsp:include>
-
-            <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 4/1" />
-                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
-                <jsp:param name="row_start" value="${row6_start}" />
-                <jsp:param name="row_end" value="${row6_end}" />
-            </jsp:include>
-
-            <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 5/0" />
-                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
-                <jsp:param name="row_start" value="${row7_start}" />
-                <jsp:param name="row_end" value="${row7_end}" />
-            </jsp:include>
-
-
-
-            <tr>
-                <td colspan="30"></td>
-            </tr>
-
-            <tr>
-                <th colspan="30">${T2}</th>
-            </tr>
-            <tr>
-                <td></td>
-                <c:forEach var="entry" items="${X_TB_bt}" end="${row1_end}">
-                    <td>
-                        ${entry.key}
+                        ${entry.value}
                     </td>
                 </c:forEach>
             </tr>
             <tr>
                 <td></td>
-                <td>
-                    ${X_A_bt.get("N")}
-                </td>
-                <c:forEach var="entry" items="${X_TB_bt}" end="${row1_end}" begin="1">
+                <td>high</td>
+                <c:forEach var="entry" items="${X_TA_bt}" end="${row2_end}" begin="${row2_start}">
                     <td class="bt-td">
-                        <div class="bt-num">
-                            ${entry.value}
-                        </div>
-                        <div class="bt-den">
-                            ${X_TB_bt.get("N") - entry.value}
-                        </div>
+                        ${entry.value}
+                    </td>
+                </c:forEach>
+            </tr>
+            <tr>
+                <td></td>
+                <td>low</td>
+                <c:forEach var="entry" items="${X_TA_bt}" end="${row3_end}" begin="${row3_start}">
+                    <td class="bt-td">
+                        ${entry.value}
                     </td>
                 </c:forEach>
             </tr>
 
             <jsp:include page="/groundBacktestRow.jsp">
                 <jsp:param name="title" value="Ground 0/5" />
-                <jsp:param name="X_T_bt" value="${param.TB_bt}" />
-                <jsp:param name="row_start" value="${row2_start}" />
-                <jsp:param name="row_end" value="${row2_end}" />
-            </jsp:include>
-
-            <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 1/4" />
-                <jsp:param name="X_T_bt" value="${param.TB_bt}" />
-                <jsp:param name="row_start" value="${row3_start}" />
-                <jsp:param name="row_end" value="${row3_end}" />
-            </jsp:include>
-
-            <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 2/3" />
-                <jsp:param name="X_T_bt" value="${param.TB_bt}" />
+                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row4_start}" />
                 <jsp:param name="row_end" value="${row4_end}" />
             </jsp:include>
 
             <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 3/2" />
-                <jsp:param name="X_T_bt" value="${param.TB_bt}" />
+                <jsp:param name="title" value="Ground 1/4" />
+                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row5_start}" />
                 <jsp:param name="row_end" value="${row5_end}" />
             </jsp:include>
 
             <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 4/1" />
-                <jsp:param name="X_T_bt" value="${param.TB_bt}" />
+                <jsp:param name="title" value="Ground 2/3" />
+                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row6_start}" />
                 <jsp:param name="row_end" value="${row6_end}" />
             </jsp:include>
 
             <jsp:include page="/groundBacktestRow.jsp">
-                <jsp:param name="title" value="Ground 5/0" />
-                <jsp:param name="X_T_bt" value="${param.TB_bt}" />
+                <jsp:param name="title" value="Ground 3/2" />
+                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
                 <jsp:param name="row_start" value="${row7_start}" />
                 <jsp:param name="row_end" value="${row7_end}" />
             </jsp:include>
+
+            <jsp:include page="/groundBacktestRow.jsp">
+                <jsp:param name="title" value="Ground 4/1" />
+                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
+                <jsp:param name="row_start" value="${row8_start}" />
+                <jsp:param name="row_end" value="${row8_end}" />
+            </jsp:include>
+
+            <jsp:include page="/groundBacktestRow.jsp">
+                <jsp:param name="title" value="Ground 5/0" />
+                <jsp:param name="X_T_bt" value="${param.TA_bt}" />
+                <jsp:param name="row_start" value="${row9_start}" />
+                <jsp:param name="row_end" value="${row9_end}" />
+            </jsp:include>
+
 
             <tr>
                 <td colspan="30"></td>

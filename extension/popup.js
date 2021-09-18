@@ -112,6 +112,8 @@
 							newRule.isActive = false;
 						}
 						
+						newRule.isPaused = false;
+						
 						alert(JSON.stringify(newRule));
 						
 						rules.push(newRule);

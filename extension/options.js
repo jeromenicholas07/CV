@@ -1,12 +1,78 @@
+
+var ruleList = [];
+
   var siteContainer = document.getElementById('site-container');
   var addSiteBtn = document.getElementById('add-site-button');
   var ruleListContainer = document.getElementById('rule-list');
+  var hostExtract = /^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)/;
+  var editModal = new bootstrap.Modal(document.getElementById('edit-modal'));
+	  var modal_ruleID = document.getElementById('rule-id');
+	  var modal_threshold = document.getElementById('threshold');
+	  var modal_amount = document.getElementById('amount');
+	  var modal_delay = document.getElementById('delay-dropdown');
+	  var modal_save = document.getElementById('save-edit');
   
   
 	document.addEventListener('click', function(event){
+
+		if(event.target == modal_save){
+			let ruleId = modal_ruleID.value;
+			let threshold = modal_threshold.value;
+			let amount = modal_amount.value;
+			let delay = modal_delay.value;
+			
+			chrome.storage.sync.get('rules' , function(data){
+				let rList = data.rules;
+				for(rule of rList){
+					if(rule.id == ruleId){
+						rule.threshold = threshold;
+						rule.amount = amount;
+						rule.delay = delay;
+					}
+				}
+				
+				chrome.storage.sync.set({rules : rList}, function(){
+					location.reload();
+				});
+			});
+		}
+		
+		
+		if(event.target.matches('span.pause-rule')){
+			let row = $(event.target).parents('tr')[0];
+			let ruleId = row.id;
+			
+			chrome.storage.sync.get('rules' , function(data){
+				let rList = data.rules;
+				for(rule of rList){
+					if(rule.id == ruleId){
+						rule.isPaused = !rule.isPaused;
+					}
+				}
+				
+				chrome.storage.sync.set({rules : rList}, function(){
+					location.reload();
+				});
+			});
+			
+		}
+		
+		if(event.target.matches('span.edit-rule')){
+			let row = $(event.target).parents('tr')[0];
+			let ruleId = row.id;
+			
+			let currRule = ruleList.find(r => r.id == ruleId);
+			modal_ruleID.value = ruleId;
+			modal_threshold.value = currRule.threshold;
+			modal_amount.value = currRule.amount;
+			modal_delay.value = currRule.delay;
+			editModal.show();
+		}
+		
+		
 		if(event.target.matches('span.delete-rule')){
-			var row = $(event.target).parents('tr');
-			var ruleId = row.children('.rule-id').text();
+			let row = $(event.target).parents('tr')[0];
+			let ruleId = row.id;
 			
 			if(confirm('Do you really want to delete this rule?')){
 				chrome.storage.sync.get('rules' , function(data){
@@ -19,115 +85,167 @@
 			}
 			
 		}
+		
+		if(event.target.matches('.close-modal')){
+			editModal.hide();
+		}
 	});
 	
 	chrome.storage.sync.get('rules', function(rulesData){
-		let rules = (rulesData.rules)? rulesData.rules :[];
+		ruleList = (rulesData.rules)? rulesData.rules :[];
+		const groupedRules = ruleList.reduce((hash, obj) => ({...hash, [obj['matchName']]:( hash[obj['matchName']] || [] ).concat(obj)}), {});
 		
-		for(var ind in rules){
-			let rule = rules[ind];
-			let row = document.createElement("tr");
-			row.setAttribute('id', rule.id);
+		for(let matchName in groupedRules){
+			let tempRule = groupedRules[matchName][0];
 			
-			var idDiv = document.createElement('td');
-			idDiv.setAttribute('class', 'rule-id');
-			idDiv.setAttribute('style', 'font-size: 12px;');
-				idDiv.appendChild(document.createTextNode(rule.id));
-			row.appendChild(idDiv);
 			
-			var th = document.createElement("th");
-				let aa = document.createElement("a");
-					aa.setAttribute('href', rule.url);
+			let gRow = document.createElement("tr");
+			var titleTH = document.createElement('th');
+			titleTH.setAttribute('class', 'market-title');
+				titleTH.setAttribute('colspan', '30');
+					let tempHost = tempRule.url.match(hostExtract);
+					let hostName = '';
+					console.log(tempHost);
+					if(tempHost && tempHost.length >= 2){
+						hostName = tempHost[1];
+					}
+					let aa = document.createElement("a");
+					aa.setAttribute('href', tempRule.url);
 					aa.setAttribute('target', '_blank');
-					aa.appendChild(document.createTextNode(rule.matchName));
-				th.appendChild(aa);
-			row.appendChild(th);
+					aa.appendChild(document.createTextNode(tempRule.matchName + ' - ' + hostName));
+				titleTH.appendChild(aa);
+			gRow.appendChild(titleTH);
+				
+			ruleListContainer.appendChild(gRow);
 			
-			var th = document.createElement("th");
-				th.appendChild(document.createTextNode(rule.marketName));
-			row.appendChild(th);
-			
-			td = document.createElement('td');
-				td.appendChild(document.createTextNode(rule.marketTitle));
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-				if(rule.amount){
-					td.appendChild(document.createTextNode(rule.amount));
-				}
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-				td.appendChild(document.createTextNode(rule.side));
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-				if(!rule.delay){
+			for(var rule of groupedRules[matchName]){
+				let row = document.createElement("tr");
+				row.setAttribute('id', rule.id);
+				
+				var th = document.createElement("th");
+					th.appendChild(document.createTextNode(rule.marketName));
+				row.appendChild(th);
+				
+				td = document.createElement('td');
+					td.appendChild(document.createTextNode(rule.marketTitle));
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+					if(rule.amount){
+						td.appendChild(document.createTextNode(rule.amount));
+					}
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+					td.appendChild(document.createTextNode(rule.side));
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+					if(!rule.delay){
+						td.appendChild(document.createTextNode(""));
+					}
+					else if( rule.delay == 1 || rule.delay == 2 ){
+						td.appendChild(document.createTextNode(rule.delay + " Ov."));
+					}
+					else{
+						td.appendChild(document.createTextNode(rule.delay + " sec."));
+					}
+					
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+					if(!rule.condition){
+						td.appendChild(document.createTextNode("Recording"));
+					}
+					else{
+						td.appendChild(document.createTextNode(
+							rule.condition + " than " + rule.threshold
+						));
+					}
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+					td.className = "low";
+					td.appendChild(document.createTextNode(rule.lowest));
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+				td.className = rule.side + " live-value";
+					//td.setAttribute('data-toggle', 'tooltip');
+					//td.setAttribute('data-placement', 'top');
+					//td.setAttribute('data-html', 'true');
+					//td.setAttribute('data-original-title', 'high: '+ rule.highest + '<br> low: ' + rule.lowest);
+					
 					td.appendChild(document.createTextNode(""));
-				}
-				else if( rule.delay == 1 || rule.delay == 2 ){
-					td.appendChild(document.createTextNode(rule.delay + " Ov."));
-				}
-				else{
-					td.appendChild(document.createTextNode(rule.delay + " sec."));
-				}
+				row.appendChild(td);
 				
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-				if(!rule.condition){
-					td.appendChild(document.createTextNode("Recording"));
-				}
-				else{
-					td.appendChild(document.createTextNode(
-						rule.condition + " than " + rule.threshold
-					));
-				}
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-			td.className = rule.side + " live-value";
-				td.setAttribute('data-toggle', 'tooltip');
-				td.setAttribute('data-placement', 'right');
-				td.setAttribute('data-html', 'true');
-				td.setAttribute('data-original-title', 'Lowest: '+ rule.lowest +
-													'<br> Highest: ' + rule.highest);
+				td = document.createElement('td');
+					td.className = "high";
+					td.appendChild(document.createTextNode(rule.highest));
+				row.appendChild(td);
 				
-				td.appendChild(document.createTextNode(""));
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-			td.className = "last-updated";
-			td.dataset.utime = 0;
-				td.appendChild(document.createTextNode(""));
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-			td.className = "status";
-				td.appendChild(document.createTextNode(""));
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-			td.className = "page-status";
-				td.appendChild(document.createTextNode(""));
-			row.appendChild(td);
-			
-			td = document.createElement('td');
-				var delBtn = document.createElement('span');
-				delBtn.setAttribute("class","delete-rule");
-				delBtn.setAttribute("type","button");
-					delBtn.appendChild(document.createTextNode(' \u2716'));
-				td.appendChild(delBtn);
-			row.appendChild(td);
-			
-			ruleListContainer.appendChild(row);
+				td = document.createElement('td');
+				td.className = "last-updated";
+				td.dataset.utime = 0;
+					td.appendChild(document.createTextNode(""));
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+				td.className = "status";
+					td.appendChild(document.createTextNode(""));
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+				td.className = "page-status";
+					td.appendChild(document.createTextNode(""));
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+					var pauseBtn = document.createElement('span');
+					pauseBtn.setAttribute("class","pause-rule");
+					pauseBtn.setAttribute("type","button");
+						if(rule.isPaused){
+							pauseBtn.appendChild(document.createTextNode('\u25B6'));
+						}
+						else{
+							pauseBtn.appendChild(document.createTextNode('\u23F8'));
+						}
+					td.appendChild(pauseBtn);
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+					var editBtn = document.createElement('span');
+					editBtn.setAttribute("class","edit-rule");
+					editBtn.setAttribute("type","button");
+						editBtn.appendChild(document.createTextNode(' \u270E'));
+					td.appendChild(editBtn);
+				row.appendChild(td);
+				
+				td = document.createElement('td');
+					var delBtn = document.createElement('span');
+					delBtn.setAttribute("class","delete-rule");
+					delBtn.setAttribute("type","button");
+						delBtn.appendChild(document.createTextNode(' \u2716'));
+					td.appendChild(delBtn);
+				row.appendChild(td);
+				
+				ruleListContainer.appendChild(row);
+			}
+		
+		
+			let lRow = document.createElement("tr");
+			var blankTH = document.createElement('th');
+				blankTH.setAttribute('class', 'market-footer');	
+				blankTH.setAttribute('colspan', '30');
+			lRow.appendChild(blankTH);
+			ruleListContainer.appendChild(lRow);
 		}
 	});
 
 	chrome.storage.onChanged.addListener(function(changes, namespace) {
         for (var key in changes) {
 			if(key === "rules"){
-				location.reload();
+				ruleList = changes[key].newValue;
 			}
         }
       });
@@ -146,11 +264,17 @@
 				let lastUpdatedTD = row.querySelector('.last-updated');
 				let statusTD = row.querySelector('.status');
 				let pageStatusTD = row.querySelector('.page-status');
+				let lowTD = row.querySelector('.low');
+				let highTD = row.querySelector('.high');
 				
 				valueTD.textContent = ruleInfo.currValue;
 				lastUpdatedTD.dataset.utime = ruleInfo.lastUpdated ? ruleInfo.lastUpdated:0;
 				statusTD.textContent = ruleInfo.status;
 				pageStatusTD.textContent = ruleInfo.pageStatus;
+				if(ruleInfo.lowest)
+					lowTD.textContent = ruleInfo.lowest;
+				if(ruleInfo.highest)
+					highTD.textContent = ruleInfo.highest;
 			}
 		}
 	});

@@ -25,9 +25,12 @@ public class dbMatch {
     private int matchId;
 
     private String favTeam;
-    private OHL ohl;
+    private String bias;
 
-    public dbMatch(int matchId, String matchDate, String team, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two, String favTeam, OHL ohl) {
+    private OHL ohl;
+    private OverallOHL overallOHL;
+
+    public dbMatch(int matchId, String matchDate, String team, String oppTeam, String toss, String BorC, String result, int totalSixes, Inning one, Inning two, String favTeam, String bias, OHL ohl, OverallOHL overallOHL) {
         this.matchId = matchId;
         this.matchDate = matchDate;
         this.team = team;
@@ -40,7 +43,9 @@ public class dbMatch {
         this.two = two;
 
         this.favTeam = favTeam;
+        this.bias = bias;
         this.ohl = ohl;
+        this.overallOHL = overallOHL;
     }
 
     public int getMatchId() {
@@ -131,6 +136,15 @@ public class dbMatch {
         this.favTeam = favTeam;
     }
 
+    public String getBias() {
+        return bias;
+    }
+
+    public void setBias(String bias) {
+        this.bias = bias;
+    }
+    
+
     public OHL getOhl() {
         return ohl;
     }
@@ -138,5 +152,13 @@ public class dbMatch {
     public void setOhl(OHL ohl) {
         this.ohl = ohl;
     }
+
+    public OverallOHL getOverallOHL() {
+        return overallOHL;
+    }
+
+    public void setOverallOHL(OverallOHL overallOHL) {
+        this.overallOHL = overallOHL;
+    }    
 
 }
