@@ -143,7 +143,6 @@ public class dbMatch {
     public void setBias(String bias) {
         this.bias = bias;
     }
-    
 
     public OHL getOhl() {
         return ohl;
@@ -159,6 +158,6 @@ public class dbMatch {
 
     public void setOverallOHL(OverallOHL overallOHL) {
         this.overallOHL = overallOHL;
-    }    
+    }
 
 }

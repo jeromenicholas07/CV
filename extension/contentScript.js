@@ -57,39 +57,12 @@ async function observeRules(){
 			let oddValue = undefined;
 			let ruleDone = false;
 			let pageStatus = "N/A";
+			
+			console.log(ruleStatus);
 				
 			if(rule.isActive){
 				if(rule.isDone){
 					ruleDone = true;
-				}
-				if(ruleStatus[rule.id]){
-					if( (rule.delay == 1 || rule.delay == 2) && (ruleStatus[rule.id].startOver != -5) ){
-						if(scorecard = document.querySelector('.match-centre-body')){
-							let overs = scorecard.querySelectorAll('.match-centre-body .overs .over');
-							for(over of overs){
-								if(overNoDiv = over.querySelector('div.over-detail>div.ng-binding')){
-									if(overNo = parseInt(overNoDiv.textContent.trim().match(/Ov(.*)\:/m)[1])){
-										if(overNo > ruleStatus[rule.id].startOver){
-											let balls = [].slice.call(over.querySelectorAll('.match-centre-body .overs .over:first-of-type .balls .ball'), 0)
-																	.map( m => m.textContent.trim());
-											
-											if(balls.includes("W") || balls.includes("1,W") || balls.includes("2,W") || balls.includes("3,W") || balls.includes("4,W") || balls.includes("5,W")){
-												ruleStatus[rule.id].startOver = overNo;
-											}
-										}
-									}
-								}
-							}
-						}
-						else{
-							if(scoreCollapseButt = document.querySelector('.match-stats-body-button')){
-								scoreCollapseButt.click()
-							}
-						}
-					}
-					if(ruleStatus[rule.id].done){
-						ruleDone = true;
-					}
 				}
 				if(renewButt = document.querySelector('.session-timeout-dialog button')){
 					pageStatus = "Need to Renew Session manually";
@@ -127,10 +100,11 @@ async function observeRules(){
 																		for(over of overs){
 																			if(overNoDiv = over.querySelector('div.over-detail>div.ng-binding')){
 																				if(overNo = parseInt(overNoDiv.textContent.trim().match(/Ov(.*)\:/m)[1])){
-																					let balls = [].slice.call(over.querySelectorAll('.match-centre-body .overs .over:first-of-type .balls .ball'), 0)
+																					let balls = [].slice.call(over.querySelectorAll('.balls .ball'), 0)
 																											.map( m => m.textContent.trim());
 																					
 																					if(balls.includes("W") || balls.includes("1,W") || balls.includes("2,W") || balls.includes("3,W") || balls.includes("4,W") || balls.includes("5,W")){
+																						console.log("balls with W"  + balls);
 																						ruleStatus[rule.id] = {
 																							startOver: overNo,
 																							betNow: false
@@ -158,33 +132,7 @@ async function observeRules(){
 																	}
 																	
 																	
-																	
-																	
-																	/*
-																	// TO only see last 2 balls
-																	let balls = [].slice.call(document.querySelectorAll('.match-centre-body .overs .over:first-of-type .balls .ball'), 0).reverse().concat([].slice.call(document.querySelectorAll('.match-centre-body .overs .over:nth-of-type(2) .balls .ball')).reverse());
-																	if(balls.length > 0){
-																		if(balls[0].textContent.trim() == "W" ||
-																			balls[1].textContent.trim() == "W"){
-																				if(overDiv = document.querySelector('div.header .toss h2')){
-																					let startOv = parseInt(overDiv.textContent.trim().match(/\((.*) (.*)\)/m)[1]);
-																					ruleStatus[rule.id] = {
-																						startOver: startOv,
-																						betNow: false
-																					};
-																				}
-																		}
-																		else{
-																			ruleStatus[rule.id] = {
-																				startOver: -5,
-																				betNow: true
-																			};
-																			
-																		}
-																	}
-																	else{
-																		pageStatus = "Unable to ball info";
-																	}*/
+															
 																}
 																else{
 																	if(scoreCollapseButt = document.querySelector('.match-stats-body-button')){
@@ -213,16 +161,49 @@ async function observeRules(){
 															if(overDiv = document.querySelector('div.header .toss h2')){
 																let currentOv = parseInt(overDiv.textContent.trim().match(/\((.*) (.*)\)/m)[1]);
 																
-																if(currentOv < ruleStatus[rule.id].startOver-1){
-																	console.log("curr over:" + currentOv );
-																	console.log("start ovr:" + ruleStatus[rule.id].startOver);
-																	ruleStatus[rule.id].done = true;
+																// update over status
+																if(scorecard = document.querySelector('.match-centre-body')){
+																	let overs = [].slice.call(scorecard.querySelectorAll('.match-centre-body .overs .over'), 0).reverse();
+																	if(overs.length > 0){
+																		for(over of overs){
+																			if(overNoDiv = over.querySelector('div.over-detail>div.ng-binding')){
+																				if(overNo = parseInt(overNoDiv.textContent.trim().match(/Ov(.*)\:/m)[1])){
+																					let balls = [].slice.call(over.querySelectorAll('.balls .ball'), 0).map( m =>m.textContent.trim());
+																					
+																					if(balls.includes("W") || balls.includes("1,W") || balls.includes("2,W") || balls.includes("3,W") || balls.includes("4,W") || balls.includes("5,W")){
+																						ruleStatus[rule.id] = {
+																							startOver: overNo,
+																							betNow: false
+																						};
+																					}
+																				}
+																				else{
+																					pageStatus = "Unable to parse overNo";
+																				}
+																			}
+																			else{
+																				pageStatus = "Unable to find overNoDiv";
+																			}
+																		}
+																	}
+																	else{
+																		pageStatus = "Unable to get ball info";
+																	}
 																}
-																else if( currentOv >= (ruleStatus[rule.id].startOver + parseInt(rule.delay)) ){
+																else{
+																	if(scoreCollapseButt = document.querySelector('.match-stats-body-button')){
+																		scoreCollapseButt.click();
+																	}
+																	pageStatus = "Unable to find scorecard";
+																}
+																
+																let overThreshold = (ruleStatus[rule.id].startOver + parseInt(rule.delay) + 1);
+																if( currentOv >=  overThreshold){
 																	delaySatisfied = true;
 																}
 																else{
-																	pageStatus = "Betting in " + (ruleStatus[rule.id].startOver + parseInt(rule.delay) - currentOv) +" Ov";
+																	delaySatisfied = false;
+																	pageStatus = "Wicket fell on " + ruleStatus[rule.id].startOver +"Ov. - Will bet on over:" + overThreshold;
 																}
 															}
 															else{
@@ -262,7 +243,13 @@ async function observeRules(){
 																if(sizeEle = valueTD.querySelector('div.size')){
 																	let sizeInt = parseInt(sizeEle.textContent.trim());
 																	
-																	if(rule.marketTitle !== "" || (sizeInt >= 90 && sizeInt <= 110) ){
+																	//trigger
+																	if(rule.amount == "N/A"){
+																		ruleStatus[rule.id].done = true;
+																		ruleDone = true;
+																		betPlacedAudio.play();
+																	}
+																	else if(rule.marketTitle !== "" || (sizeInt >= 90 && sizeInt <= 110) ){
 																
 																		ruleStatus[rule.id].betNow = true;
 																		if(!valueTD.classList.contains('betting-disabled')){
@@ -303,6 +290,7 @@ async function observeRules(){
 																										//Place bet here :
 																										placeBetsButt.click();
 																										ruleStatus[rule.id].done = true;
+																										ruleDone = true;
 																										
 																										betPlacedAudio.play();
 																									}

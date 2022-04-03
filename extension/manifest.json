@@ -1,8 +1,10 @@
   {
     "name": "CricVet",
-    "version": "1.1",
+    "version": "1.4.2",
     "description": "An extension for advanced analysis of Cricket websites.",
-	"permissions": ["tabs", "storage"],
+	"permissions": [
+		"tabs",
+		"storage"],
 	"background": {
       "scripts": ["background.js"],
       "persistent": false

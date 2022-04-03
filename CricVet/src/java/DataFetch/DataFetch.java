@@ -326,19 +326,11 @@ public class DataFetch {
                         int sixCount = 0;
                         int totalRuns;
                         if (inning == 1) {
-                            try {
-                                StringTokenizer st = new StringTokenizer(homeScore, " /");
-                                totalRuns = Integer.parseInt(st.nextToken());
-                            } catch (Exception ex) {
-                                totalRuns = -1;
-                            }
+                            StringTokenizer st = new StringTokenizer(homeScore, " /");
+                            totalRuns = Integer.parseInt(st.nextToken());
                         } else {
-                            try {
-                                StringTokenizer st = new StringTokenizer(awayScore, " /");
-                                totalRuns = Integer.parseInt(st.nextToken());
-                            } catch (Exception ex) {
-                                totalRuns = -1;
-                            }
+                            StringTokenizer st = new StringTokenizer(awayScore, " /");
+                            totalRuns = Integer.parseInt(st.nextToken());
                         }
 
                         String commentaryUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesNo + "&matchId=" + eventNo + "&inningNumber=" + inning + "&commentType=ALL";

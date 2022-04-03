@@ -44,6 +44,28 @@
 			<div class="card">
 				<div class="card-header container-fluid">
 					<div class="row">
+						<div class="col-1"></div>
+						
+						<div class="form-check col">
+						  <input class="form-check-input" type="radio" name="radio-type" id="order-radio" value="order-radio" checked>
+						  <label class="form-check-label" for="order-radio">
+							Order
+						  </label>
+						</div>
+						<div class="form-check col">
+						  <input class="form-check-input" type="radio" name="radio-type" id="record-radio" value="record-radio">
+						  <label class="form-check-label" for="record-radio">
+							Record
+						  </label>
+						</div>
+						<div class="form-check col">
+						  <input class="form-check-input" type="radio" name="radio-type" id="trigger-radio" value="trigger-radio">
+						  <label class="form-check-label" for="trigger-radio">
+							Trigger
+						  </label>
+						</div>
+						
+						<!--
 						<div class="col">
 							Add Rule
 						</div>
@@ -53,6 +75,7 @@
 								<label class="custom-control-label" for="record-switch">Record</label>
 							</div>
 						</div>
+						-->
 					</div>
 				</div>
 				<div class="card-body" style="padding: 10px">
@@ -63,7 +86,7 @@
 								<input name="match-name" id="match-name" type="text" class="form-control" placeholder="-/-" readonly style="font-size: 12px">
 							</div>
 						</div>
-						<div class="form-row no-record">
+						<div class="form-row no-record no-trigger">
 							<div class="form-group col-12">
 							  <select name="chained-parent-dropdown" id="chained-parent-dropdown" class="form-control form-control-sm">
 								<option selected value="-1">Choose chained parent</option>
@@ -86,13 +109,13 @@
 							  </select>
 							</div>
 							<div class="form-group col-5">
-							  <select name="delay-dropdown" id="delay-dropdown" class="form-control no-record" required>
+							  <select name="delay-dropdown" id="delay-dropdown" class="form-control no-record no-trigger" required>
 								<option value="1" id="ball-option-1" class="unavailable-option" disabled>+1 over</option>
 								<option value="2" id="ball-option-2" class="unavailable-option" disabled>+2 overs</option>
-								<option value="0">No delay</option>
+								<option value="0" default selected>No delay</option>
 								<option value="5">5 secs.</option>
 								<option value="7">7 secs.</option>
-								<option value="10" selected>10 secs.</option>
+								<option value="10">10 secs.</option>
 								<option value="15">15 secs.</option>
 								<option value="20">20 secs.</option>
 							  </select>
@@ -113,8 +136,8 @@
 						</div>
 						<div class="form-row">
 							<div class="form-group col input-group">
-								<input name="amount" id="amount" type="number" class="form-control no-record" placeholder="Amount" required>
-								<div class="text-success no-record input-group-append">
+								<input name="amount" id="amount" type="number" class="form-control no-record no-trigger" placeholder="Amount" required>
+								<div class="text-success no-record no-trigger input-group-append">
 									<span id="profit" class="input-group-text">Profit : NaN</span>
 								</div>
 							</div>

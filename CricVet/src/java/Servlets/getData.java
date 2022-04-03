@@ -35,6 +35,10 @@ import models.*;
 public class getData extends HttpServlet {
 
     CricDB db = new CricDB();
+    
+    boolean backtestEnabled = true;
+    
+    int FWmin = -1, FWmax = -1, FXmin = -1, FXmax = -1, LXmin = -1, LXmax = -1,TRmin = -1, TRmax = -1, FWSmin = -1, FWSmax = -1, FXSmin = -1, FXSmax = -1;
 
     private Object backTest5_Test(List<Inning> selects, int fiveWktIndex) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -70,10 +74,13 @@ public class getData extends HttpServlet {
     }
 
     private Map<String, String> backTest5(MatchProcessor type, boolean isFirstInning, int pIndex, boolean isBatting) {
+        if (!backtestEnabled) {
+            return null;
+        }
         Map<String, String> btMap = generateBt5Map();
 
         List<Match> btMatches = type.getBtMatches();
-
+       
         for (int i = 0; i < btMatches.size(); i++) {
 
             Match currMatch = btMatches.get(i);
@@ -96,13 +103,54 @@ public class getData extends HttpServlet {
             if (currHeader != null && currHeader.isEmpty()) {
                 continue;
             } else if (currHeader == null) {
-                noOhlHeader = true;
+                System.out.println("currHeader null");
+                continue;
             }
-
+           
             if (!noOhlHeader && pIndex == 2) {
-                currHeader.setOpen(curr - currHeader.getOpen());
-                currHeader.setHigh((int) (curr - currHeader.getHigh()));
-                currHeader.setLow(curr - currHeader.getLow());
+                int totalRuns = parseInt(isFirstInning ? currMatch.getInningOne().getParams().get(6) : currMatch.getInningTwo().getParams().get(6));
+                int beforeLastXScore = totalRuns - curr;
+                currHeader.setOpen(currHeader.getOpen() - beforeLastXScore);
+                currHeader.setHigh((int) (currHeader.getHigh() - beforeLastXScore));
+                currHeader.setLow(currHeader.getLow()  - beforeLastXScore);
+            }
+            
+            
+            if(FWmin >= 0 && ohl.getFW().getOpen() < FWmin){
+                continue;
+            }
+            if(FWmax >= 0 && ohl.getFW().getOpen() > FWmax){
+                continue;
+            }
+            if(FXmin >= 0 && ohl.getFX().getOpen() < FXmin){
+                continue;
+            }
+            if(FXmax >= 0 && ohl.getFX().getOpen() > FXmax){
+                continue;
+            }
+            if(LXmin >= 0 && ohl.getLX().getOpen() < LXmin){
+                continue;
+            }
+            if(LXmax >= 0 && ohl.getLX().getOpen() > LXmax){
+                continue;
+            }
+            if(TRmin >= 0 && ohl.getT().getOpen() < TRmin){
+                continue;
+            }
+            if(TRmax >= 0 && ohl.getT().getOpen() > TRmax){
+                continue;
+            }
+            if(FWSmin >= 0 && ohl.getFW2().getOpen() < FWSmin){
+                continue;
+            }
+            if(FWSmax >= 0 && ohl.getFW2().getOpen() > FWSmax){
+                continue;
+            }
+            if(FXSmin >= 0 && ohl.getFX2().getOpen() < FXSmin){
+                continue;
+            }
+            if(FXSmax >= 0 && ohl.getFX2().getOpen() > FXSmax){
+                continue;
             }
 
             List<Inning> sub = new ArrayList<>(tempInns.subList(0, 5));
@@ -209,6 +257,9 @@ public class getData extends HttpServlet {
     }
 
     private Map<String, String> backTest5_Gr(MatchProcessor type, boolean isFirstInning, int pIndex) {
+        if (!backtestEnabled) {
+            return null;
+        }
         Map<String, String> btMap = generateBt5Map();
 
         List<Match> btMatches = type.getBtMatches();
@@ -237,11 +288,50 @@ public class getData extends HttpServlet {
             } else if (currHeader == null) {
                 noOhlHeader = true;
             }
+            
+            if(FWmin >= 0 && ohl.getFW().getOpen() < FWmin){
+                continue;
+            }
+            if(FWmax >= 0 && ohl.getFW().getOpen() > FWmax){
+                continue;
+            }
+            if(FXmin >= 0 && ohl.getFX().getOpen() < FXmin){
+                continue;
+            }
+            if(FXmax >= 0 && ohl.getFX().getOpen() > FXmax){
+                continue;
+            }
+            if(LXmin >= 0 && ohl.getLX().getOpen() < LXmin){
+                continue;
+            }
+            if(LXmax >= 0 && ohl.getLX().getOpen() > LXmax){
+                continue;
+            }
+            if(TRmin >= 0 && ohl.getT().getOpen() < TRmin){
+                continue;
+            }
+            if(TRmax >= 0 && ohl.getT().getOpen() > TRmax){
+                continue;
+            }
+            if(FWSmin >= 0 && ohl.getFW2().getOpen() < FWSmin){
+                continue;
+            }
+            if(FWSmax >= 0 && ohl.getFW2().getOpen() > FWSmax){
+                continue;
+            }
+            if(FXSmin >= 0 && ohl.getFX2().getOpen() < FXSmin){
+                continue;
+            }
+            if(FXSmax >= 0 && ohl.getFX2().getOpen() > FXSmax){
+                continue;
+            }
 
             if (!noOhlHeader && pIndex == 2) {
-                currHeader.setOpen(curr - currHeader.getOpen());
-                currHeader.setHigh((int) (curr - currHeader.getHigh()));
-                currHeader.setLow(curr - currHeader.getLow());
+                int totalRuns = parseInt(isFirstInning ? currMatch.getInningOne().getParams().get(6) : currMatch.getInningTwo().getParams().get(6));
+                int beforeLastXScore = totalRuns - curr;
+                currHeader.setOpen(currHeader.getOpen() - beforeLastXScore);
+                currHeader.setHigh((int) (currHeader.getHigh() - beforeLastXScore));
+                currHeader.setLow(currHeader.getLow()  - beforeLastXScore);
             }
 
             List<Inning> sub = new ArrayList<>(tempInns.subList(0, 5));
@@ -398,16 +488,17 @@ public class getData extends HttpServlet {
         }
     }
 
-    private void fillMapBt10(Map<String, String> btMap, int curr, int pIndex, List<Inning> sub, List<Inning> subA, List<Inning> subB, List<Inning> subG, Header currHeader) {
+    private void fillMapBt10(Map<String, String> btMap, int curr, int totalRuns, int pIndex, List<Inning> sub, List<Inning> subA, List<Inning> subB, List<Inning> subG, Header currHeader) {
         boolean noOhlHeader = false;
         if (currHeader == null) {
             noOhlHeader = true;
         }
 
         if (!noOhlHeader && pIndex == 2) {
-            currHeader.setOpen(curr - currHeader.getOpen());
-            currHeader.setHigh((int) (curr - currHeader.getHigh()));
-            currHeader.setLow(curr - currHeader.getLow());
+            int beforeLastXScore = totalRuns - curr;
+            currHeader.setOpen(currHeader.getOpen() - beforeLastXScore);
+            currHeader.setHigh((int) (currHeader.getHigh() - beforeLastXScore));
+            currHeader.setLow(currHeader.getLow()  - beforeLastXScore);
         }
 
         incrementBt(btMap, "N");
@@ -679,6 +770,10 @@ public class getData extends HttpServlet {
 
     private Map<String, String> backTest10(int pIndex, MatchProcessor matchProcessor1, MatchProcessor matchProcessor2) {
 
+        if (!backtestEnabled) {
+            return null;
+        }
+        
         List<Match> btMatches = matchProcessor1.getBtMatches();
         Map<String, String> btMap = generateBtMap();
         boolean isFirstInning = true;
@@ -692,20 +787,60 @@ public class getData extends HttpServlet {
         Map<String, List<Match>> cache2 = new LinkedHashMap<>();
         Map<String, List<Match>> grCache = new LinkedHashMap<>();
 
+        int count = 0;
         for (int i = 0; i < btMatches.size(); i++) {
             Match currMatch = btMatches.get(i);
             int curr = parseInt(currMatch.getInningOne().getParams().get(pIndex));
+            int totalRuns = parseInt(isFirstInning ? currMatch.getInningOne().getParams().get(6) : currMatch.getInningTwo().getParams().get(6));
             Timestamp currDate = currMatch.getMatchDate();
             Predicate<Match> dateFilter = m -> (m.getMatchDate().after(currDate) || m.getMatchDate().equals(currDate));
-            OHL currOhl = db.getOHL(currMatch.getMatchId());
-            if (currOhl == null) {
+            OHL ohl = db.getOHL(currMatch.getMatchId());
+            if (ohl == null) {
                 continue;
             }
 
-            Header currHeader = currOhl.getHeader(isFirstInning, pIndex);
+            Header currHeader = ohl.getHeader(isFirstInning, pIndex);
             if (currHeader != null && currHeader.isEmpty()) {
                 continue;
             }
+            
+            if(FWmin >= 0 && ohl.getFW().getOpen() < FWmin){
+                continue;
+            }
+            if(FWmax >= 0 && ohl.getFW().getOpen() > FWmax){
+                continue;
+            }
+            if(FXmin >= 0 && ohl.getFX().getOpen() < FXmin){
+                continue;
+            }
+            if(FXmax >= 0 && ohl.getFX().getOpen() > FXmax){
+                continue;
+            }
+            if(LXmin >= 0 && ohl.getLX().getOpen() < LXmin){
+                continue;
+            }
+            if(LXmax >= 0 && ohl.getLX().getOpen() > LXmax){
+                continue;
+            }
+            if(TRmin >= 0 && ohl.getT().getOpen() < TRmin){
+                continue;
+            }
+            if(TRmax >= 0 && ohl.getT().getOpen() > TRmax){
+                continue;
+            }
+            if(FWSmin >= 0 && ohl.getFW2().getOpen() < FWSmin){
+                continue;
+            }
+            if(FWSmax >= 0 && ohl.getFW2().getOpen() > FWSmax){
+                continue;
+            }
+            if(FXSmin >= 0 && ohl.getFX2().getOpen() < FXSmin){
+                continue;
+            }
+            if(FXSmax >= 0 && ohl.getFX2().getOpen() > FXSmax){
+                continue;
+            }
+            
             String home = currMatch.getHomeTeam();
             String away = currMatch.getAwayTeam();
             String groundName = currMatch.getGroundName();
@@ -769,14 +904,23 @@ public class getData extends HttpServlet {
             Collections.sort(subB, innComp);
             Collections.sort(subG, innComp);
 
-            fillMapBt10(btMap, curr, pIndex, sub, subA, subB, subG, currHeader);
-
+            fillMapBt10(btMap, curr, totalRuns, pIndex, sub, subA, subB, subG, currHeader);
+            
+            count++;
+            if(count > 100){
+                break;
+            }
         }
 
         return btMap;
     }
 
     private Map<String, String> backTest10_Second(int pIndex, MatchProcessor matchProcessor1, MatchProcessor matchProcessor2) {
+        
+         if (!backtestEnabled) {
+            return null; 
+        }
+         
         Map<String, String> btMap = generateBtMap();
         List<Match> btMatches = matchProcessor1.getBtMatches();
         boolean isFirstInning = false;
@@ -790,18 +934,57 @@ public class getData extends HttpServlet {
         Map<String, List<Match>> cache2 = new LinkedHashMap<>();
         Map<String, List<Match>> grCache = new LinkedHashMap<>();
 
-        for (int i = 0; i < btMatches.size() - 6; i++) {
+        int count = 0;
+        for (int i = 0; i < btMatches.size(); i++) {
             Match currMatch = btMatches.get(i);
             int curr = parseInt(currMatch.getInningTwo().getParams().get(pIndex));
+            int totalRuns = parseInt(isFirstInning ? currMatch.getInningOne().getParams().get(6) : currMatch.getInningTwo().getParams().get(6));
             Timestamp currDate = currMatch.getMatchDate();
             Predicate<Match> dateFilter = m -> (m.getMatchDate().after(currDate) || m.getMatchDate().equals(currDate));
-            OHL currOhl = db.getOHL(currMatch.getMatchId());
-            if (currOhl == null) {
+            OHL ohl = db.getOHL(currMatch.getMatchId());
+            if (ohl == null) {
                 continue;
             }
 
-            Header currHeader = currOhl.getHeader(isFirstInning, pIndex);
+            Header currHeader = ohl.getHeader(isFirstInning, pIndex);
             if (currHeader != null && currHeader.isEmpty()) {
+                continue;
+            }
+            
+            if(FWmin >= 0 && ohl.getFW().getOpen() < FWmin){
+                continue;
+            }
+            if(FWmax >= 0 && ohl.getFW().getOpen() > FWmax){
+                continue;
+            }
+            if(FXmin >= 0 && ohl.getFX().getOpen() < FXmin){
+                continue;
+            }
+            if(FXmax >= 0 && ohl.getFX().getOpen() > FXmax){
+                continue;
+            }
+            if(LXmin >= 0 && ohl.getLX().getOpen() < LXmin){
+                continue;
+            }
+            if(LXmax >= 0 && ohl.getLX().getOpen() > LXmax){
+                continue;
+            }
+            if(TRmin >= 0 && ohl.getT().getOpen() < TRmin){
+                continue;
+            }
+            if(TRmax >= 0 && ohl.getT().getOpen() > TRmax){
+                continue;
+            }
+            if(FWSmin >= 0 && ohl.getFW2().getOpen() < FWSmin){
+                continue;
+            }
+            if(FWSmax >= 0 && ohl.getFW2().getOpen() > FWSmax){
+                continue;
+            }
+            if(FXSmin >= 0 && ohl.getFX2().getOpen() < FXSmin){
+                continue;
+            }
+            if(FXSmax >= 0 && ohl.getFX2().getOpen() > FXSmax){
                 continue;
             }
 
@@ -868,7 +1051,12 @@ public class getData extends HttpServlet {
             Collections.sort(subB, innComp);
             Collections.sort(subG, innComp);
 
-            fillMapBt10(btMap, curr, pIndex, sub, subA, subB, subG, currHeader);
+            fillMapBt10(btMap, curr, totalRuns, pIndex, sub, subA, subB, subG, currHeader);
+            
+            count++;
+            if(count > 100){
+                break;
+            }
 
         }
 
@@ -876,6 +1064,9 @@ public class getData extends HttpServlet {
     }
 
     private Map<String, String> backTest10_Test(String teamName, List<testMatch> oneMatch, int pIndex, TestProcessor testProcessor, InningCaller inningCaller, Location oppType) {
+        if (!backtestEnabled) {
+            return null;
+        }
         Map<String, String> btMap = generateBtMap();
 
 //        Collections.sort(oneMatch, new Comparator<Match>(){
@@ -940,6 +1131,15 @@ public class getData extends HttpServlet {
 
         return btMap;
     }
+    
+    private int parseIntNoErr(String str) {
+        try{
+            int x = Integer.parseInt(str);
+            return x;
+        }
+        catch(Exception e) {}
+        return -1;
+    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -991,7 +1191,31 @@ public class getData extends HttpServlet {
             }
         }
         backDate = new Date(tempDate.getTime());
+        request.setAttribute("backDate", backDate);
+        String btEnabledString = request.getParameter("backtestEnabled");
+        backtestEnabled = btEnabledString != null && btEnabledString.equals("on")? true : false;
+        
+        
+        FWmin = parseIntNoErr(request.getParameter("FW-min"));
+        FWmax = parseIntNoErr(request.getParameter("FW-max"));
+        
+        FXmin = parseIntNoErr(request.getParameter("FX-min"));
+        FXmax = parseIntNoErr(request.getParameter("FX-max"));
+        
+        LXmin = parseIntNoErr(request.getParameter("LX-min"));
+        LXmax = parseIntNoErr(request.getParameter("LX-max"));
+        
+        TRmin = parseIntNoErr(request.getParameter("TR-min"));
+        TRmax = parseIntNoErr(request.getParameter("TR-max"));
 
+        FWSmin = parseIntNoErr(request.getParameter("FWS-min"));
+        FWSmax = parseIntNoErr(request.getParameter("FWS-max"));
+        
+        FXSmin = parseIntNoErr(request.getParameter("FXS-min"));
+        FXSmax = parseIntNoErr(request.getParameter("FXS-max"));
+      
+        
+        
         if (matchType == 1) {
 //            test(request, response);
 
@@ -1746,9 +1970,9 @@ public class getData extends HttpServlet {
                     matches.removeIf(m -> {
                         String[] favDeets = db.getFavourites(m.getMatchId());
                         String chosenTeam = isFavBatting ? m.getHomeTeam() : m.getAwayTeam();
-                        return (favDeets == null || (!favDeets[0].equals(chosenTeam) && !favDeets[1].equals(biasInput)));
+                        return (favDeets == null || !chosenTeam.equals(favDeets[0]) || !biasInput.equals(favDeets[1]));
                     });
-
+                    matches.removeIf(m -> (m.getMatchDate().after(backDate)));
                     return matches;
                 }
 
@@ -1791,10 +2015,14 @@ public class getData extends HttpServlet {
                 @Override
                 public List<Match> getBtMatches() {
                     List<Match> matches = db.getAllFavMatches(matchType);
+                    
+                    matches.removeIf(m -> (m.getMatchDate().after(backDate)));
+                    
                     matches.removeIf(m -> {
                         String[] favDeets = db.getFavourites(m.getMatchId());
                         String chosenTeam = isFavBatting ? m.getHomeTeam() : m.getAwayTeam();
-                        return (favDeets == null || (!favDeets[0].equals(chosenTeam) && !favDeets[1].equals(biasInput)));
+
+                        return (favDeets == null || !chosenTeam.equals(favDeets[0]) || !biasInput.equals(favDeets[1]));
                     });
 
                     return matches;
@@ -2125,7 +2353,7 @@ public class getData extends HttpServlet {
                     List<Inning> selects = matches.stream().map(m -> m.getInningOne()).collect(Collectors.toList());
 
                     request.setAttribute("LO_A", selects);
-
+                    
                     request.setAttribute("LO_A_bt", backTest5(type1_NoMajQuit, true, pIndex, true));
                     request.setAttribute("LO_T_bt", backTest10(pIndex, type1_NoMajQuit, type2_NoMajQuit));
                 }

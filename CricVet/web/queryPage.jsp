@@ -51,7 +51,7 @@
             .inner {
                 margin-left: auto;
                 margin-right: auto;
-                width: 400px;
+                width: 500px;
                 /*whatever width you want*/
             }
         </style>
@@ -133,7 +133,88 @@
                                     <input type="date" class="form-control form-control-sm" id="backDate" name="backDate">
                                 </div>
                             </div>
-                            
+                            <div class="form-group row">
+                                <div class="col teams">
+                                    <div class="custom-control custom-switch">
+                                        <input class="custom-control-input" type="checkbox" id="backtestEnabled" checked name="backtestEnabled">
+                                        <label class="custom-control-label" for="backtestEnabled">Backtests</label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                           
+                            <div class="form-group row">
+                                <div class="col align-items-center teams">
+                                    <div class="card">
+                                        <div class="card-header" style="padding: 8px">
+                                          <div class="input-group">
+                                              <div class="input-group-prepend">
+                                                <span class="input-group-text">Open filter</span>
+                                              </div>
+                                              <input type="text" class="form-control" disabled value="Greater than or equal">
+                                              <input type="text" class="form-control" disabled value="Less than or equal">
+                                          </div>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item"  style="padding: 8px">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                      <span class="input-group-text">First Wkt.</span>
+                                                    </div>
+                                                    <input name="FW-min" type="number" class="form-control">
+                                                    <input name="FW-max" type="number" class="form-control">
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item"  style="padding: 8px">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                      <span class="input-group-text">First 6/10 Ov.</span>
+                                                    </div>
+                                                    <input name="FX-min" type="number" class="form-control">
+                                                    <input name="FX-max" type="number" class="form-control">
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item"  style="padding: 8px">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                      <span class="input-group-text">Last 5/10 Ov.</span>
+                                                    </div>
+                                                    <input name="LX-min" type="number" class="form-control">
+                                                    <input name="LX-max" type="number" class="form-control">
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item"  style="padding: 8px">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                      <span class="input-group-text">Inn. 1 Total</span>
+                                                    </div>
+                                                    <input name="TR-min" type="number" class="form-control" >
+                                                    <input name="TR-max" type="number" class="form-control" >
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item"  style="padding: 8px">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                      <span class="input-group-text">Inn. 2 First Wkt</span>
+                                                    </div>
+                                                    <input name="FWS-min" type="number" class="form-control" >
+                                                    <input name="FWS-max" type="number" class="form-control" >
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item"  style="padding: 8px">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                      <span class="input-group-text">Inn. 2 First 6/10 Ov.</span>
+                                                    </div>
+                                                    <input name="FXS-min" type="number" class="form-control">
+                                                    <input name="FXS-max" type="number" class="form-control">
+                                                </div>
+                                            </li>
+                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                             <br>
 
                             <div class="form-group row">

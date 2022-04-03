@@ -1,11 +1,6 @@
 
 
 
-- cancel and bet again if unmatched value 
-- delete rules after a day and show as rule done after ext restart
-- redo/bet again rules
-
-
 - add try/catch for better error handling and no shutdown
 - garbage collector/cleaner for ruleList and status variables
 - STRING number compare is wrong for "0001" ..handle it [check everywhere again]

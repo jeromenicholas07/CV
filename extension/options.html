@@ -19,6 +19,15 @@
 		background-color: #dfe2e4;
 		border-bottom: 1px solid #343a40;
 	}
+	.record-rule {
+		background-color: pink;
+	}
+	.trigger-rule {
+		background-color: lightgreen;
+	}
+	.paused-rule {
+		color: gray;
+	}
 	</style>
     </head>
     <body>
@@ -56,7 +65,7 @@
 				Rules
 			</div>
 			<div class="card-body">
-				<table class="table">
+				<table class="table table-bordered">
 				  <thead class="thead-dark">
 					<tr>
 					  <th scope="col">Market Name</th>
@@ -103,13 +112,13 @@
 				<div class="form-row">
 					<div class="form-group input-group">
 						<span class="input-group-text">Amount</span>
-						<input name="amount" id="amount" type="number" class="form-control no-record" placeholder="Amount" required>
+						<input name="amount" id="amount" type="number" class="form-control" placeholder="Amount" required>
 					</div>
 				</div>
 				<div class="form-row">
 					<div class="form-group input-group">
 						<span class="input-group-text" id="basic-addon1">Delay</span>
-						<select name="delay-dropdown" id="delay-dropdown" class="form-control no-record" required>
+						<select name="delay-dropdown" id="delay-dropdown" class="form-control" required>
 							<option value="1">+1 over</option>
 							<option value="2">+2 overs</option>
 							<option value="0">No delay</option>

@@ -84,6 +84,7 @@
         <nav class="navbar navbar-light bg-light">
             <a class="navbar-brand">${teamOne}(Batting) v/s ${teamTwo}(chasing)</a>
             <ul style="list-style-type: none;">
+                <li>Report date: ${backDate}</li>
                 <li class="nav-item">
                     Favorite team: ${favTeamName}
                 </li>
@@ -683,19 +684,24 @@
 
                 // highlight backtests
                 $('td.bt-td').each(function () {
-                    let num = parseInt($(this).children('.bt-num').first().text());
-                    let den = parseInt($(this).children('.bt-den').first().text());
-
-                    if (den === 0) {
-                        den++;
+                    let val = $(this).text().trim().split("/");
+                    if(val.length !== 3) {
+                        return;
                     }
-                    let ratio = num / den;
-                    if (ratio < 2) {
-                        $(this).addClass('red');
-                    } else if (ratio >= 3) {
-                        $(this).addClass('green');
-                    } else {
-                        $(this).addClass('yellow');
+                    
+                    let above = parseInt(val[0]) || 0;
+                    let equal = parseInt(val[1]) || 0;
+                    let below = parseInt(val[2]) || 0;
+                    
+
+                    if ( Math.abs(above - below) < 2 || above+below < 3) {
+                        return;
+                    }
+                    
+                    if (above >= 2*below) {
+                        $(this).addClass('red-bag');
+                    } else if (below >= 2*above) {
+                        $(this).addClass('green-bag');
                     }
                 });
 

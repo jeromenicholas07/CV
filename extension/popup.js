@@ -1,3 +1,6 @@
+	
+	var orderType;
+	
 	document.addEventListener('DOMContentLoaded', function(){
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			chrome.tabs.sendMessage(tabs[0].id, {from: "popup", subject: "market-list"}, function(response) {
@@ -91,6 +94,8 @@
 				}
 			}
 			
+			newRule.orderType = orderType;
+			
 			chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 				chrome.storage.sync.get('rules', function(rulesData){
 						var rules = (rulesData.rules)? rulesData.rules :[];
@@ -105,6 +110,11 @@
 						newRule.highest = "N/A";
 						newRule.lowest = "N/A";
 						
+						if(!newRule.amount){
+							newRule.amount = "N/A";
+						}
+						
+						
 						if(newRule.parentId == "-1"){
 							newRule.isActive = true;
 						}
@@ -114,7 +124,7 @@
 						
 						newRule.isPaused = false;
 						
-						alert(JSON.stringify(newRule));
+						//alert(JSON.stringify(newRule));
 						
 						rules.push(newRule);
 						chrome.storage.sync.set({rules : rules}, async function(){
@@ -132,21 +142,49 @@
 		}
 	});
 	
-	var recorderSwitch = document.getElementById('record-switch');
-	recorderSwitch.addEventListener('click', function(eve){
-		if(recorderSwitch.checked){
-			document.querySelectorAll('.no-record').forEach(function(ele){
-				ele.disabled = true;
-				ele.style.display = "none";
-			});
+	
+	document.getElementById("order-radio").addEventListener("click", handleOrderTypeRadio);
+	document.getElementById("record-radio").addEventListener("click", handleOrderTypeRadio);
+	document.getElementById("trigger-radio").addEventListener("click", handleOrderTypeRadio);
+	
+	function handleOrderTypeRadio(eve) {
+		let val = eve.target.value;
+		switch(val) {
+			case "order-radio":
+				orderType = 'order';
+				document.querySelectorAll('.no-record').forEach(function(ele){
+					ele.disabled = false;
+					ele.style.display = "block";
+				});
+				document.querySelectorAll('.no-trigger').forEach(function(ele){
+					ele.disabled = false;
+					ele.style.display = "block";
+				});
+			break;
+			case "record-radio":
+				orderType = 'record';
+				document.querySelectorAll('.no-trigger').forEach(function(ele){
+					ele.disabled = false;
+					ele.style.display = "block";
+				});
+				document.querySelectorAll('.no-record').forEach(function(ele){
+					ele.disabled = true;
+					ele.style.display = "none";
+				});
+			break;
+			case "trigger-radio":
+				orderType = 'trigger';
+				document.querySelectorAll('.no-record').forEach(function(ele){
+					ele.disabled = false;
+					ele.style.display = "block";
+				});
+				document.querySelectorAll('.no-trigger').forEach(function(ele){
+					ele.disabled = true;
+					ele.style.display = "none";
+				});
+			break;
 		}
-		else{
-			document.querySelectorAll('.no-record').forEach(function(ele){
-				ele.disabled = false;
-				ele.style.display = "block";
-			});
-		}
-	});
+	}
 	
 	var conditionDropdown = document.getElementById('condition-dropdown');
 	var delayDropdown = document.getElementById('delay-dropdown');

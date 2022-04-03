@@ -800,6 +800,32 @@ public class CricDB extends BaseDAO {
         ResultSet rs = null;
 
         try {
+            String sql = "ALTER TABLE \"APP\".FAVOURITES \n" +
+                "DROP COLUMN matchodds";
+
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            System.out.println("Unable to create matchoods column");
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+
+        try {
             String sql = "create table \"APP\".TEAMNAMES\n"
                     + "(\n"
                     + "	OLDNAME VARCHAR(120) not null primary key,\n"
@@ -2879,6 +2905,7 @@ public class CricDB extends BaseDAO {
 
                 Match m = new Match(matchId, homeTeam, awayTeam, matchDate, tossWinner, BCW, inningOne, inningTwo, homeScore, awayscore, result, groundName, matchType);
                 favMatches.add(m);
+              
             }
 
             con.close();

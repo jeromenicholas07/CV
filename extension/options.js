@@ -121,6 +121,21 @@ var ruleList = [];
 			for(var rule of groupedRules[matchName]){
 				let row = document.createElement("tr");
 				row.setAttribute('id', rule.id);
+				switch(rule.orderType) {
+					case 'order':
+						row.setAttribute('class', 'order-rule');
+					break;
+					case 'record':
+						row.setAttribute('class', 'record-rule');
+					break;
+					case 'trigger':
+						row.setAttribute('class', 'trigger-rule');
+					break;
+				}
+				
+				if(rule.isPaused){
+					row.classList.add('paused-rule');
+				}
 				
 				var th = document.createElement("th");
 					th.appendChild(document.createTextNode(rule.marketName));
@@ -158,9 +173,16 @@ var ruleList = [];
 						td.appendChild(document.createTextNode("Recording"));
 					}
 					else{
-						td.appendChild(document.createTextNode(
-							rule.condition + " than " + rule.threshold
-						));
+						if(rule.condition === 'market-price'){
+							td.appendChild(document.createTextNode(
+								rule.condition
+							));
+						}
+						else {
+							td.appendChild(document.createTextNode(
+								rule.condition + " than " + rule.threshold
+							));
+						}
 					}
 				row.appendChild(td);
 				

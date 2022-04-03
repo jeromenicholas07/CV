@@ -31,11 +31,11 @@ public class BaseDAO {
             Statement stmt;
             ResultSet rs;
             
-//            ctx = new InitialContext();
-//            ds = (DataSource) ctx.lookup("jdbc/jres");
-//            conn = ds.getConnection();
+            ctx = new InitialContext();
+            ds = (DataSource) ctx.lookup("jdbc/jres");
+            conn = ds.getConnection();
 
-           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
+//           conn = DriverManager.getConnection("jdbc:derby://localhost:1527/CricVetDB", "dj", "dj");
 
 //            Class.forName("com.mysql.cj.jdbc.Driver");
 //            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "");

@@ -36,24 +36,33 @@ chrome.storage.sync.get('rules', function(ruleData){
 					}
 				}
 				
-				if(sRule.isDone){
+				if(sRule.isDone || rule.isDone){
 					if(rule){
-						
+						let ruleChanged = false;
 						
 						if(!rule.isDone){
 							rule.isDone = true;
-							if(childRule = ruleList.find(r => r.parentId == rule.id)){
+							ruleChanged = true;
+						}
+						
+						if(childRule = ruleList.find(r => r.parentId == rule.id)) {
+							if(!childRule.isActive){
 								childRule.isActive = true;
+								ruleChanged = true;
 							}
-							
+						}
+						
+						if(ruleChanged) {
 							chrome.storage.sync.set({rules : ruleList}, function(){
 								console.log(rule.id + ' - Rule completed');
 							});
 						}
+						
 					}
 				}
 				
 				if(ruleStatus[sRule.id]){
+						ruleStatus[sRule.id].orderType = rule.orderType;
 						ruleStatus[sRule.id].currValue = sRule.value;
 						ruleStatus[sRule.id].lastUpdated = (new Date()).getTime();
 						ruleStatus[sRule.id].pageStatus = sRule.pageStatus;
@@ -64,6 +73,7 @@ chrome.storage.sync.get('rules', function(ruleData){
 				}
 				else{
 					ruleStatus[sRule.id] = {
+						orderType: rule.orderType,
 						currValue: sRule.value,
 						lastUpdated: (new Date()).getTime(),
 						pageStatus: sRule.pageStatus,
