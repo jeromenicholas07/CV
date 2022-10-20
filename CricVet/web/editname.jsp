@@ -89,7 +89,6 @@
                             
                     <%
                         CricDB db = new CricDB();
-                        db.initDB();
                         Map<String, String> names = db.getEditTeamNameDB();
                         
                         for(String key : names.keySet()){
@@ -97,6 +96,20 @@
                             out.println("<tr>");    
                             out.println("<td>"+key);
                             out.println("<td>"+value+"<br>");
+                            
+                            request.setAttribute("oldName", key);
+                            request.setAttribute("newName", value);
+                            
+                            %>
+                    <td>
+                        <form method="POST" action="deleteEditTeamNameEntry">
+                            <input type="hidden" name="oldName" value="${oldName}" />
+                            <input type="hidden" name="newName" value="${newName}" />
+                            <button type='submit' class='btn-close' aria-label='Close'name='delButt'></button>
+                        </form>
+                    </td><br>
+                            
+                        <%
                             out.println("</tr>");
                         }
                     %>
@@ -180,7 +193,7 @@
 
                          
                         });
-
+                       
 //                        function validate() {
 //                            var t1 = document.getElementById('teamSelect1');
 //                            $('#teamSelect1').addClass('is-invalid')

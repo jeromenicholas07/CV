@@ -39,8 +39,8 @@
                                     <span class="input-group-text" id="label3">Favourite Team</span>
                                 </div>
                                 <select type="text" class="form-control" aria-describedby="label3"
-                                        name = "favTeam" value="${favTeam}" required>
-                                    <option value="" selected disabled>Select Fav. Team</option>
+                                        name = "favTeam" value="${favTeam}">
+                                    <option value="" selected>Select Fav. Team</option>
                                     <option value="${team1}" <c:if test="${team1.equals(favTeam)}">selected</c:if> >${team1}</option>
                                     <option value="${team2}" <c:if test="${team2.equals(favTeam)}">selected</c:if>>${team2}</option>
                                     </select>
@@ -53,8 +53,8 @@
                                         <span class="input-group-text" id="label3">Bias</span>
                                     </div>
                                     <select type="text" class="form-control" aria-describedby="label3"
-                                            name = "bias" value="${bias}" required>
-                                    <option value="" selected disabled>Select Bias</option>
+                                            name = "bias" value="${bias}">
+                                    <option value="" selected>Select Bias</option>
                                     <option value="f" <c:if test='${bias.equals("f")}'>selected</c:if> >Favorite</option>
                                     <option value="nf" <c:if test='${bias.equals("nf")}'>selected</c:if>>Non-Favorite</option>
                                     </select>

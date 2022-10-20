@@ -84,6 +84,10 @@
         <servlet-name>getFavReport</servlet-name>
         <servlet-class>Servlets.getFavReport</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>deleteEditTeamNameEntry</servlet-name>
+        <servlet-class>Servlets.deleteEditTeamNameEntry</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoadAll</servlet-name>
         <url-pattern>/LoadAll</url-pattern>
@@ -167,6 +171,10 @@
     <servlet-mapping>
         <servlet-name>getFavReport</servlet-name>
         <url-pattern>/getFavReport</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>deleteEditTeamNameEntry</servlet-name>
+        <url-pattern>/deleteEditTeamNameEntry</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

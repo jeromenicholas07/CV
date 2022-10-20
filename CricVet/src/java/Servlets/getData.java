@@ -1183,7 +1183,7 @@ public class getData extends HttpServlet {
         String bdate = request.getParameter("backDate");
         if (bdate != null && !bdate.isEmpty()) {
             try {
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
                 tempDate = df.parse(bdate);
             } catch (Exception ex) {
                 System.out.println("Date parse error =======================================");

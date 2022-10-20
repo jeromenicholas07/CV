@@ -72,8 +72,9 @@ public class getDB extends HttpServlet {
                     String team;
                     String oppTeam;
                     String tossWinner;
-                    String BorC;
+                    String BorC = "B";;
                     String result;
+                    Match match = matches.get(i);
 
                     matchId = matches.get(i).getMatchId();
                     DateFormat dateFormat = new SimpleDateFormat("d/MM/yyyy HH:mm:ss");
@@ -89,7 +90,28 @@ public class getDB extends HttpServlet {
                         oppTeam = matches.get(i).getHomeTeam();
                     }
 
-                    if (matches.get(i).getTossWinner().contains(teamOne)) {
+                    if(match.getTossWinner().equals("N/A")){
+                        tossWinner = "N/A";
+                    }
+                    else if (match.getTossWinner().equalsIgnoreCase("B") || match.getTossWinner().equalsIgnoreCase("C")) {
+                        if (match.getTossWinner().equalsIgnoreCase("B")) {
+                            if (match.getHomeTeam().equalsIgnoreCase(teamOne)) {
+                                tossWinner = "W/B";
+                                BorC = "B";
+                            } else {
+                                tossWinner = "L/B";
+                                BorC = "B";
+                            }
+                        } else {
+                            if (match.getAwayTeam().equalsIgnoreCase(teamOne)) {
+                                tossWinner = "W/C";
+                                BorC = "C";
+                            } else {
+                                tossWinner = "L/C";
+                                BorC = "C";
+                            }
+                        }
+                    } else if (matches.get(i).getTossWinner().contains(teamOne)) {
                         if (matches.get(i).getTossWinner().contains("field")) {
                             tossWinner = "W/C";
                             BorC = "C";

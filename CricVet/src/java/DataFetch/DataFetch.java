@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import models.testMatch;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -106,6 +108,7 @@ public class DataFetch {
     Pattern datePattern = Pattern.compile("(?<MM>Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sep(t(ember)?)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\\s(?<dd>\\d{1,2})(\\s?-\\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sep(t(ember)?)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)?\\s?\\d{1,2})?\\s(?<yyyy>20[0-9][0-9])");
     Pattern timePattern = Pattern.compile("(?<hh>0[0-9]|1[0-9]|2[0-3])(([:.](?<mm>[0-5]\\d))|(\\s?a\\.?m\\.?|\\s?p\\.?m\\.?))");
     Pattern seriesNoPattern = Pattern.compile("\\d{5,}");
+    Pattern seriesUrlPattern = Pattern.compile(".+\\-(\\d+)");
 
     CricDB db = new CricDB();
 
@@ -186,35 +189,75 @@ public class DataFetch {
 
             MATCHLABEL:
             for (String matchLink : matchLinks) {
+                System.out.println("Loading match :" + matchLink);
                 String url = baseUrl + matchLink;
                 try {
 
-                    int mId = -1;
+                    int matchId = -1;
                     Matcher idMatcher = matchIdFinder.matcher(matchLink);
                     if (idMatcher.find()) {
                         String currId = idMatcher.group(1);
-                        mId = Integer.parseInt(currId);
+                        matchId = Integer.parseInt(currId);
                     } else {
                         throw new Exception("Couldn't extract match ID");
                     }
-                    if (mId == -1) {
+                    if (matchId == -1) {
                         throw new Exception("Couldn't extract match ID");
                     }
-
+                   
                     Document matchPage = Jsoup.connect(url).followRedirects(true).get();
                     String matchUrl = matchPage.baseUri();
                     String[] splitUrl = matchUrl.split("/");
-
-                    Element matchHeader = matchPage.getElementsByClass("match-header-container").first();
-
-                    Elements teamLinkRows = matchHeader.select(".teams .team");
-                    if (teamLinkRows.size() != 2) {
-                        throw new Exception("home/away name selector.size() did not return 2");
+                    
+                    int seriesId = -1;
+                    boolean seriesSwitch = false;
+                    for(String subUrl : splitUrl) {
+                        if(subUrl.equalsIgnoreCase("series")){
+                            seriesSwitch = true;
+                        }
+                        if(seriesSwitch) {
+                            Matcher sm = seriesUrlPattern.matcher(subUrl);
+                            if(sm.find()) {
+                                String serStrId = sm.group(1);
+                                seriesId = Integer.parseInt(serStrId);
+                            }
+                        }
                     }
-                    Element home = teamLinkRows.first();
-                    Element away = teamLinkRows.last();
-                    String homeTeamName = home.select("a.name-link").text();
-                    String awayTeamName = away.select("a.name-link").text();
+                    if(seriesId == -1) {
+                        throw new Exception("Couldn't extract series ID");
+                    }
+                    
+                    
+                    String scorecardUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/scorecard?lang=en&seriesId="+seriesId+"&matchId="+matchId;
+                    String scorecardStr;
+                    try {
+                        scorecardStr = Jsoup.connect(scorecardUrl).ignoreContentType(true).execute().body();
+                    } catch (Exception ex) {
+                        throw new Exception("Unable to access page", new Exception(scorecardUrl));
+                    }
+                    JSONObject scorecardJson = new JSONObject(scorecardStr);
+                    
+                    
+                    JSONObject matchJson = scorecardJson.getJSONObject("match");
+                    if(!matchJson.getString("stage").equalsIgnoreCase("FINISHED")) {
+                        continue;
+                    }
+
+                    JSONObject homeJson, awayJson;
+                    if(matchJson.getJSONArray("teams").length() != 2){
+                        throw new Exception("teams length != 2");
+                    }
+                    if(matchJson.getJSONArray("teams").getJSONObject(0).getBoolean("isHome")){
+                        homeJson = matchJson.getJSONArray("teams").getJSONObject(0);
+                        awayJson = matchJson.getJSONArray("teams").getJSONObject(1);
+                    }
+                    else {
+                        homeJson = matchJson.getJSONArray("teams").getJSONObject(1);
+                        awayJson = matchJson.getJSONArray("teams").getJSONObject(0);
+                    }
+                    String homeTeamName = homeJson.getJSONObject("team").getString("longName");
+                    String awayTeamName = awayJson.getJSONObject("team").getString("longName");
+                    
 
                     if (matchType == 2 || matchType == 3) {
                         if (!impTeams.contains(homeTeamName) || !impTeams.contains(awayTeamName)) {
@@ -222,84 +265,37 @@ public class DataFetch {
                         }
                     }
 
-                    Elements topTabs = matchPage.getElementsByClass("widget-tab-link");
-                    List<String> tabTexts = topTabs.eachText();
+                    
+                    String homeScore = homeJson.getString("score");
+                    String awayScore = awayJson.getString("score");
+                    
+                    int homeTeamId = homeJson.getJSONObject("team").getInt("id");
+                    int awayTeamId = awayJson.getJSONObject("team").getInt("id");
+                    
 
-                    Elements liveStatusLabel = matchHeader.getElementsByClass("status");
-                    if (tabTexts.contains("Live") || liveStatusLabel.text().trim().equalsIgnoreCase("live")) {
-                        throw new Exception("Live match");
-                    }
+                    String summaryText = matchJson.getString("statusText");
 
-                    String homeScore = home.select("span.score").text();
-                    String awayScore = away.select("span.score").text();
-
-                    String summaryText = matchHeader.getElementsByClass("status-text").first().text();
-
-                    Elements homewinnerIcon = home.select("i");
-                    Elements awaywinnerIcon = away.select("i");
+                    
 
                     String BCW;
-                    if (homewinnerIcon.size() > 0) {
-                        BCW = "B";
-                    } else if (awaywinnerIcon.size() > 0) {
-                        BCW = "C";
+                    String tossResult = "N/A";
+                    if (!matchJson.isNull("winnerTeamId")) {
+                        int winnerTeamId = matchJson.getInt("winnerTeamId");
+                        BCW = winnerTeamId == homeTeamId ? "B" : "C";
+                        
+                        int tossWinnerId = matchJson.getInt("tossWinnerTeamId");
+                        tossResult = tossWinnerId == homeTeamId ? "B" : "C";
                     } else if (summaryText.contains(" tie") || summaryText.contains(" draw")) {
                         BCW = "T";
                     } else {
                         BCW = "--";
                     }
 
-                    Elements detailsTable = matchPage.getElementsByClass("w-100 table match-details-table");
-                    String tossResult = "N/A";
+                    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
 
-                    LocalDateTime matchDateTime = null;
-
-                    LocalDate matchDate;
-                    DateTimeFormatter df = DateTimeFormatter.ofPattern("d MMM yyyy");
-                    String resultTitle = matchHeader.getElementsByClass("description").first().text();
-                    Matcher dm = datePattern.matcher(resultTitle);
-                    if (dm.find()) {
-                        String parsedDate = dm.group("dd") + " " + dm.group("MM") + " " + dm.group("yyyy");
-                        matchDate = LocalDate.parse(parsedDate, df);
-                    } else {
-                        throw new Exception("Couldn't parse date in: " + resultTitle);
-                    }
-
-                    String timeString = "";
-                    LocalTime time = LocalTime.MIDNIGHT;
-                    DateTimeFormatter tf = DateTimeFormatter.ofPattern("H:m");
-
-                    String seriesNo = null;
-                    String eventNo = String.valueOf(mId);
-
-                    for (int i = 0; i < detailsTable.select("tr").size(); i++) {
-                        if (detailsTable.select("tr").get(i).text().contains("Hours of play")) {
-                            timeString = detailsTable.select("tr").get(i).text().trim();
-                        }
-                        if (detailsTable.select("tr").get(i).text().contains("Toss")) {
-                            tossResult = detailsTable.select("tr").get(i).text();
-                        }
-                        if (detailsTable.select("tr").get(i).selectFirst("td").text().trim().equalsIgnoreCase("series")) {
-                            String seriesLink = detailsTable.select("tr").get(i).selectFirst("a").attr("href");
-
-                            Matcher sm = seriesNoPattern.matcher(seriesLink);
-                            if (sm.find()) {
-                                seriesNo = sm.group();
-                            }
-                        }
-                    }
-
-                    if (seriesNo == null) {
-                        throw new Exception("Cant parse series no.");
-                    }
-
-                    Matcher tm = timePattern.matcher(timeString);
-                    if (tm.find()) {
-                        String parsedTime = tm.group("hh") + ":" + tm.group("mm");
-                        time = LocalTime.parse(parsedTime, tf);
-                    }
-
-                    matchDateTime = matchDate.atTime(time);
+                    String dateTimeString = matchJson.getString("startTime");
+                    LocalDateTime matchDateTime = LocalDateTime.parse(dateTimeString, inputFormatter);
+                    LocalDateTime matchDateTimeIST = matchDateTime.atZone(ZoneId.of("Z")).withZoneSameInstant(ZoneId.of("Asia/Kolkata")).toLocalDateTime();
 
                     Inning one = null;
                     Inning two = null;
@@ -333,7 +329,7 @@ public class DataFetch {
                             totalRuns = Integer.parseInt(st.nextToken());
                         }
 
-                        String commentaryUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesNo + "&matchId=" + eventNo + "&inningNumber=" + inning + "&commentType=ALL";
+                        String commentaryUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesId + "&matchId=" + matchId + "&inningNumber=" + inning + "&commentType=ALL";
                         String json;
                         try {
                             json = Jsoup.connect(commentaryUrl).ignoreContentType(true).execute().body();
@@ -349,9 +345,9 @@ public class DataFetch {
                             String currentPageUrl;
                             if (firstCommentFlag) {
                                 firstCommentFlag = false;
-                                currentPageUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesNo + "&matchId=" + eventNo + "&inningNumber=" + inning + "&commentType=ALL";
+                                currentPageUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesId + "&matchId=" + matchId + "&inningNumber=" + inning + "&commentType=ALL";
                             } else {
-                                currentPageUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesNo + "&matchId=" + eventNo + "&inningNumber=" + inning + "&commentType=ALL&fromInningOver=" + nextOverNumber;
+                                currentPageUrl = "https://hs-consumer-api.espncricinfo.com/v1/pages/match/comments?seriesId=" + seriesId + "&matchId=" + matchId + "&inningNumber=" + inning + "&commentType=ALL&fromInningOver=" + nextOverNumber;
                             }
 
                             String body;
@@ -443,14 +439,14 @@ public class DataFetch {
                         summaryText = summaryText.concat(" MAJ_QUIT");
                     }
 
-                    String groundName = detailsTable.select("tr").get(0).text();
-                    String groundLink = matchPage.getElementsByClass("font-weight-bold match-venue").select("a").attr("href");
+                    String groundName = matchJson.getJSONObject("ground").getString("name");
 
-                    Match m = new Match(Integer.parseInt(eventNo), homeTeamName, awayTeamName, Timestamp.valueOf(matchDateTime), tossResult, BCW, one, two, homeScore, awayScore, summaryText, groundName, matchType);
+                    Match m = new Match(matchId, homeTeamName, awayTeamName, Timestamp.valueOf(matchDateTimeIST), tossResult, BCW, one, two, homeScore, awayScore, summaryText, groundName, matchType);
                     db.addMatch(m);
                     reports.add(new MatchReport(url, MatchStatus.LOADED, null));
 
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     reports.add(new MatchReport(url, MatchStatus.UNLOADED, ex));
                 } catch (Throwable th) {
                     reports.add(new MatchReport(url, MatchStatus.UNLOADED, new Exception(th)));
@@ -486,7 +482,7 @@ public class DataFetch {
 
                     String matchLink = cols.last().attr("href");
                     String url = baseUrl + matchLink;
-                    Matcher idMatcher = matchIdFinder.matcher(matchLink);
+                    Matcher idMatcher = matchIdFinder.matcher(matchLink); 
                     if (idMatcher.find()) {
                         String currId = idMatcher.group(1);
                         if (loadedMatchIDs.contains(currId)) {

@@ -68,9 +68,7 @@ public class editFavourites extends HttpServlet {
 
                 OverallOHL O_OHL = new OverallOHL(inning1, inning2);
 
-                if (!StringUtils.isNullOrEmpty(favTeam) && !StringUtils.isNullOrEmpty(bias)) {
-                    favSuccess = db.updateFavourites(matchID, favTeam, bias, O_OHL);
-                }
+                favSuccess = db.updateFavourites(matchID, favTeam, bias, O_OHL);
 
                 open = parseInt(request.getParameter("FW_O"));
                 high = parseInt(request.getParameter("FW_H"));

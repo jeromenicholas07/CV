@@ -101,23 +101,23 @@
                             <span class="input-group-text" id="label2">Match Type</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label2"
-                               name = "matchType" value="${match.getMatchType()}">
+                               name = "matchType" value="${match.getMatchType()}" required>
                     </div>
 
                     <div class="input-group col">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="label3">Home team</span>
+                            <span class="input-group-text" id="label3">Batting team</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label3"
-                               name = "homeTeam" value="${match.getHomeTeam()}">
+                               name = "homeTeam" value="${match.getHomeTeam()}" required>
                     </div>
 
                     <div class="input-group col">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="label4">Away team</span>
+                            <span class="input-group-text" id="label4">Bowling team</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label4"
-                               name = "awayTeam" value="${match.getAwayTeam()}">
+                               name = "awayTeam" value="${match.getAwayTeam()}" required>
                     </div>
 
                     <div class="input-group col">
@@ -125,7 +125,7 @@
                             <span class="input-group-text" id="label5">Date</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label5"
-                               name = "matchDate" value="${match.getMatchDate()}">
+                               name = "matchDate" value="${match.getMatchDate()}" required>
                     </div>
                 </div>
                 <br>
@@ -135,7 +135,7 @@
                             <span class="input-group-text" id="label6">Toss</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label6"
-                               name = "tossWinner" value="${match.getTossWinner()}">
+                               name = "tossWinner" value="${match.getTossWinner()}" required>
                     </div>
 
                     <div class="input-group col">
@@ -143,7 +143,7 @@
                             <span class="input-group-text" id="label7">B/C Winner</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label7"
-                               name = "BCW" value="${match.getBCW()}">
+                               name = "BCW" value="${match.getBCW()}" required>
                     </div>
 
                     <div class="input-group col">
@@ -151,7 +151,7 @@
                             <span class="input-group-text" id="label8">Home score</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label8"
-                               name = "homeScore" value="${match.getHomeScore()}">
+                               name = "homeScore" value="${match.getHomeScore()}" required>
                     </div>
 
                     <div class="input-group col">
@@ -159,7 +159,7 @@
                             <span class="input-group-text" id="label9">Away score</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label9"
-                               name = "awayScore" value="${match.getAwayScore()}">
+                               name = "awayScore" value="${match.getAwayScore()}" required>
                     </div>
 
                     <div class="input-group col-4">
@@ -167,7 +167,7 @@
                             <span class="input-group-text" id="label10">Ground</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label10"
-                               name = "groundName" value="${match.getGroundName()}">
+                               name = "groundName" value="${match.getGroundName()}" required>
                     </div>
                 </div>
                 <br>
@@ -178,7 +178,7 @@
                             <span class="input-group-text" id="label11">Result</span>
                         </div>
                         <input type="text" class="form-control" aria-describedby="label11"
-                               name = "result" value="${match.getResult()}">
+                               name = "result" value="${match.getResult()}" required>
                     </div>
 
                 </div>

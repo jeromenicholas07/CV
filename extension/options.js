@@ -21,7 +21,7 @@ var ruleList = [];
 			let amount = modal_amount.value;
 			let delay = modal_delay.value;
 			
-			chrome.storage.sync.get('rules' , function(data){
+			chrome.storage.local.get('rules' , function(data){
 				let rList = data.rules;
 				for(rule of rList){
 					if(rule.id == ruleId){
@@ -31,18 +31,18 @@ var ruleList = [];
 					}
 				}
 				
-				chrome.storage.sync.set({rules : rList}, function(){
+				chrome.storage.local.set({rules : rList}, function(){
 					location.reload();
 				});
 			});
 		}
 		
 		
-		if(event.target.matches('span.pause-rule')){
+		if(event.target.matches('button.pause-rule')){
 			let row = $(event.target).parents('tr')[0];
 			let ruleId = row.id;
 			
-			chrome.storage.sync.get('rules' , function(data){
+			chrome.storage.local.get('rules' , function(data){
 				let rList = data.rules;
 				for(rule of rList){
 					if(rule.id == ruleId){
@@ -50,7 +50,7 @@ var ruleList = [];
 					}
 				}
 				
-				chrome.storage.sync.set({rules : rList}, function(){
+				chrome.storage.local.set({rules : rList}, function(){
 					location.reload();
 				});
 			});
@@ -75,10 +75,10 @@ var ruleList = [];
 			let ruleId = row.id;
 			
 			if(confirm('Do you really want to delete this rule?')){
-				chrome.storage.sync.get('rules' , function(data){
+				chrome.storage.local.get('rules' , function(data){
 					let rList = data.rules;
 					rList = rList.filter(function(ele){return ele.id != ruleId});
-					chrome.storage.sync.set({rules : rList}, function(){
+					chrome.storage.local.set({rules : rList}, function(){
 						location.reload();
 					});
 				});
@@ -91,7 +91,7 @@ var ruleList = [];
 		}
 	});
 	
-	chrome.storage.sync.get('rules', function(rulesData){
+	chrome.storage.local.get('rules', function(rulesData){
 		ruleList = (rulesData.rules)? rulesData.rules :[];
 		const groupedRules = ruleList.reduce((hash, obj) => ({...hash, [obj['matchName']]:( hash[obj['matchName']] || [] ).concat(obj)}), {});
 		
@@ -223,9 +223,11 @@ var ruleList = [];
 				row.appendChild(td);
 				
 				td = document.createElement('td');
-					var pauseBtn = document.createElement('span');
+					var pauseBtn = document.createElement('button');
 					pauseBtn.setAttribute("class","pause-rule");
-					pauseBtn.setAttribute("type","button");
+					if(rule.isDone){
+						pauseBtn.setAttribute("disabled", "true");
+					}
 						if(rule.isPaused){
 							pauseBtn.appendChild(document.createTextNode('\u25B6'));
 						}
@@ -267,7 +269,12 @@ var ruleList = [];
 	chrome.storage.onChanged.addListener(function(changes, namespace) {
         for (var key in changes) {
 			if(key === "rules"){
+
+				let currRuleSize = ruleList.length;
 				ruleList = changes[key].newValue;
+				if(ruleList.length != currRuleSize){
+					location.reload();
+				}
 			}
         }
       });

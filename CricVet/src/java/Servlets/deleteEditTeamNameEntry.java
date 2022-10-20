@@ -8,7 +8,6 @@ package Servlets;
 import Database.CricDB;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Jerome Nicholas
+ * @author j
  */
-public class deleteMatch extends HttpServlet {
+public class deleteEditTeamNameEntry extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,23 +33,17 @@ public class deleteMatch extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
 
-            int matchID = Integer.parseInt(request.getParameter("matchID"));
-            System.out.println("Deleting" + matchID);
-            boolean isTest = Boolean.parseBoolean(request.getParameter("isTest"));
-            if (matchID <= 0) {
-                out.println("Invalid matchID");
-                return;
-            }
-            String redirUrl = request.getParameter("redirUrl");
-            request.setAttribute("redirUrl", redirUrl);
+            String oldName = request.getParameter("oldName");
+            String newName = request.getParameter("newName");
+            
+            System.out.println("Deleting Edit team name DB; OldName:" + oldName +" , NewName: " + newName);
+            
             CricDB db = new CricDB();
 
-            System.out.println(redirUrl);
-            if (db.deleteMatch(matchID, isTest)) {
-                response.sendRedirect(redirUrl);
-//                RequestDispatcher dispatcher = request.getRequestDispatcher(redirUrl);
-//                dispatcher.forward(request, response);
+            if(db.removeEntryFromEditTeamNameDB(oldName, newName)) {
+                response.sendRedirect(request.getContextPath() + "/editname.jsp");
             }
+            
         }
     }
 

@@ -130,13 +130,13 @@
 
                             <div class="form-group row">
                                 <div class="col-12 teams">
-                                    <input type="date" class="form-control form-control-sm" id="backDate" name="backDate">
+                                    <input type="datetime-local" class="form-control form-control-sm" id="backDate" name="backDate">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col teams">
                                     <div class="custom-control custom-switch">
-                                        <input class="custom-control-input" type="checkbox" id="backtestEnabled" checked name="backtestEnabled">
+                                        <input class="custom-control-input" type="checkbox" id="backtestEnabled" name="backtestEnabled">
                                         <label class="custom-control-label" for="backtestEnabled">Backtests</label>
                                     </div>
                                 </div>

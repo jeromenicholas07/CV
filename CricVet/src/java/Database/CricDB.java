@@ -799,16 +799,17 @@ public class CricDB extends BaseDAO {
         Statement stmt = null;
         ResultSet rs = null;
 
-        try {
-            String sql = "ALTER TABLE \"APP\".FAVOURITES \n" +
-                "DROP COLUMN matchodds";
 
+        try {
+            String sql = "ALTER TABLE APP.FAVOURITES ADD BIAS varchar(120)";
+                                                                                                                                                                                                                                                                   
+            
             con = getConnection();
             stmt = con.createStatement();
             stmt.execute(sql);
             con.close();
         } catch (SQLException ex) {
-            System.out.println("Unable to create matchoods column");
+            System.out.println("Unable to add BIAS in fav");
             ex.printStackTrace();
         } finally {
             try {
@@ -824,7 +825,33 @@ public class CricDB extends BaseDAO {
             } catch (Exception e) {
             }
         }
-
+        
+        try {
+            String sql = "ALTER TABLE APP.FAVOURITES ADD OVERALLOHL blob";
+                                                                                                                                                                                                                                                                   
+            
+            con = getConnection();
+            stmt = con.createStatement();
+            stmt.execute(sql);
+            con.close();
+        } catch (SQLException ex) {
+            System.out.println("Unable to add OVERALLOHL in fav");
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+        
         try {
             String sql = "create table \"APP\".TEAMNAMES\n"
                     + "(\n"
@@ -1335,8 +1362,8 @@ public class CricDB extends BaseDAO {
             s = con.createStatement();
             r = s.executeQuery(sq);
             if (r.next()) {
-                System.out.println("Match " + String.valueOf(match.getMatchId()) + " already exists in DB");
-                return;
+                throw new Exception("Match " + String.valueOf(match.getMatchId()) + " already exists in DB");
+                
             }
 
             int inn1 = addInning(match.getInningOne());
@@ -1389,7 +1416,7 @@ public class CricDB extends BaseDAO {
         ResultSet rs = null;
         Statement s2 = null;
         Statement s3 = null;
-
+        
         try {
             con = getConnection();
             String sq0 = "update APP.MATCHES SET HOMETEAM=?, AWAYTEAM=?, MATCHDATE=?, TOSSWINNER=?, BCW=?, HOMESCORE=?, AWAYSCORE=?, RESULT=?, GROUNDNAME=?, MATCHTYPE=? WHERE MATCHID=" + matchID;
@@ -1796,6 +1823,47 @@ public class CricDB extends BaseDAO {
                 break;
         }
         return testmatches;
+    }
+    
+    private Timestamp get110thTimestamp(int matchType) {
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        
+        try {
+            con = getConnection();
+            String sql = "select * from APP.MATCHES where matchtype = " + matchType + " order by MATCHDATE DESC OFFSET 100 ROWS FETCH FIRST 1 ROWS ONLY";
+
+            stmt = con.prepareStatement(sql);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                Timestamp matchDate = rs.getTimestamp("matchdate");
+                if (matchDate != null) {
+                    return matchDate;
+                }
+            }
+
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* ignored */ }
+        }
+        return new Timestamp(1990, 1, 1, 1, 1, 1, 1);
     }
 
     public List<Match> getMatches(String teamName, int matchType, int type) {
@@ -2418,6 +2486,45 @@ public class CricDB extends BaseDAO {
         }
         return true;
     }
+    
+    public boolean removeEntryFromEditTeamNameDB(String oldName, String newName) {
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        String sql;
+
+        System.out.println("Deleting Edit team name DB; OldName:" + oldName +" , NewName: " + newName);
+        if (oldName == null || oldName.trim().isEmpty() || newName == null || newName.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            con = getConnection();
+
+            sql = "DELETE FROM APP.TEAMNAMES where OLDNAME='" + oldName + "' AND NEWNAME='"+ newName +"' ";
+            stmt = con.createStatement();
+            stmt.execute(sql);
+
+            con.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+            try {
+                con.close();
+            } catch (Exception e) {
+            }
+        }
+        return true;
+    }
 
     public boolean updateNameDB(String oldName, String newName) {
         Connection con = null;
@@ -2602,6 +2709,7 @@ public class CricDB extends BaseDAO {
             nr = ps.executeUpdate();
 
             con.close();
+            return true;
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
             return false;
@@ -2619,7 +2727,6 @@ public class CricDB extends BaseDAO {
             } catch (Exception e) {
                 /* ignored */ }
         }
-        return nr > 0;
     }
 
     public boolean deleteMatch(int matchID, boolean isTest) {

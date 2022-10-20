@@ -2,4 +2,32 @@
 
 
 
-1.4.2
+1.4.3
+- Fixed over delay issue where delay was 1 over extra
+
+1.4.4
+- Refresh options page command when rule added
+- disable pause button when rule done
+
+1.4.5
+- Options/rule list page will be refreshed if a new rule is added
+- fixing minor betting bug
+
+
+1.4.6
+- Updated ext. with new scorecard design
+
+1.4.7
+- Updated over parsing
+
+
+1.4.8
+- Removing maximum rules limitation
+
+1.4.9
+- Adding default 5 sec. delay to orders with over based delay
+- Added experimental keep-alive feature
+- Enabled chained parent for triggers
+
+1.4.10
+- Shows correct delay status for Overs

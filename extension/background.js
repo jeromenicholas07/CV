@@ -2,7 +2,7 @@
   var ruleStatus = {};
   var statusStreamPort = undefined;
   
-chrome.storage.sync.get('rules', function(ruleData){
+chrome.storage.local.get('rules', function(ruleData){
 	ruleList = (ruleData.rules)? ruleData.rules :[];
 });
   
@@ -30,7 +30,7 @@ chrome.storage.sync.get('rules', function(ruleData){
 						}
 					}
 					if(isUpdated){
-						chrome.storage.sync.set({rules : ruleList}, function(){
+						chrome.storage.local.set({rules : ruleList}, function(){
 							console.log('Rule high-low updated');
 						});
 					}
@@ -53,7 +53,7 @@ chrome.storage.sync.get('rules', function(ruleData){
 						}
 						
 						if(ruleChanged) {
-							chrome.storage.sync.set({rules : ruleList}, function(){
+							chrome.storage.local.set({rules : ruleList}, function(){
 								console.log(rule.id + ' - Rule completed');
 							});
 						}
@@ -166,7 +166,7 @@ chrome.storage.sync.get('rules', function(ruleData){
 								if(tab.url == rule.url && tab.status == "complete"){
 									rule.tabId = tab.id;
 									
-									chrome.storage.sync.set({rules : ruleList}, function(){
+									chrome.storage.local.set({rules : ruleList}, function(){
 										console.log("Tab switched for url:" + rule.url + " ."); 
 									});
 									

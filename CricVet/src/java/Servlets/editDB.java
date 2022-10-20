@@ -158,22 +158,22 @@ public class editDB extends HttpServlet {
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
                 LocalDateTime matchDate = LocalDateTime.parse(matchDateString.trim(), df);
 
-                int firstOver1 = Integer.parseInt(request.getParameter("firstOver1"));
-                int first61 = Integer.parseInt(request.getParameter("first61"));
-                int last51 = Integer.parseInt(request.getParameter("last51"));
-                int firstWicket1 = Integer.parseInt(request.getParameter("firstWicket1"));
-                int fours1 = Integer.parseInt(request.getParameter("fours1"));
-                int sixes1 = Integer.parseInt(request.getParameter("sixes1"));
-                int totalRuns1 = Integer.parseInt(request.getParameter("totalRuns1"));
+                int firstOver1 = parseIntNoErr(request.getParameter("firstOver1"));
+                int first61 = parseIntNoErr(request.getParameter("first61"));
+                int last51 = parseIntNoErr(request.getParameter("last51"));
+                int firstWicket1 = parseIntNoErr(request.getParameter("firstWicket1"));
+                int fours1 = parseIntNoErr(request.getParameter("fours1"));
+                int sixes1 = parseIntNoErr(request.getParameter("sixes1"));
+                int totalRuns1 = parseIntNoErr(request.getParameter("totalRuns1"));
                 String winner1 = BCW;
 
-                int firstOver2 = Integer.parseInt(request.getParameter("firstOver2"));
-                int first62 = Integer.parseInt(request.getParameter("first62"));
-                int last52 = Integer.parseInt(request.getParameter("last52"));
-                int firstWicket2 = Integer.parseInt(request.getParameter("firstWicket2"));
-                int fours2 = Integer.parseInt(request.getParameter("fours2"));
-                int sixes2 = Integer.parseInt(request.getParameter("sixes2"));
-                int totalRuns2 = Integer.parseInt(request.getParameter("totalRuns2"));
+                int firstOver2 = parseIntNoErr(request.getParameter("firstOver2"));
+                int first62 = parseIntNoErr(request.getParameter("first62"));
+                int last52 = parseIntNoErr(request.getParameter("last52"));
+                int firstWicket2 = parseIntNoErr(request.getParameter("firstWicket2"));
+                int fours2 = parseIntNoErr(request.getParameter("fours2"));
+                int sixes2 = parseIntNoErr(request.getParameter("sixes2"));
+                int totalRuns2 = parseIntNoErr(request.getParameter("totalRuns2"));
                 String winner2 = BCW;
 
                 List<String> params = new ArrayList<>();
@@ -200,22 +200,41 @@ public class editDB extends HttpServlet {
                 Inning two = new Inning(params2);
 
                 Match m = new Match(matchId, homeTeam, awayTeam, Timestamp.valueOf(matchDate), tossWinner, BCW, one, two, homeScore, awayScore, result, groundName, matchType);
+                
+                try {
+                    db.addMatch(m);
+                    out.println("<script type=\"text/javascript\">");
+                        out.println("alert('Match added successfully!');");
+                    out.println("</script>");
+                } catch (Exception ex) {
+                    isSuccess = db.updateMatch(matchId, m);
+                    if (isSuccess) {
+                        out.println("<script type=\"text/javascript\">");
+                            out.println("alert('Match edited successfully!');");
+                        out.println("</script>");
+                    } else {
+                        out.println("<script type=\"text/javascript\">");
+                            out.println("alert('Match add/edit FAILED!');");
 
-                isSuccess = db.updateMatch(matchId, m);
+                }
+
+                
             }
 
-            if (isSuccess) {
-                out.println("<script type=\"text/javascript\">");
-                    out.println("alert('Match edited successfully!');");
-                out.println("</script>");
-            } else {
-                out.println("<script type=\"text/javascript\">");
-                    out.println("alert('Match edit FAILED!');");
-                out.println("</script>");
+             out.println("</script>");
             }
 
             out.print("<meta http-equiv=\"refresh\" content=\"0;url=/CricVet/editMatch?matchID="+matchId+"&isTest="+isTest+"\" />");
         }
+    }
+    
+    private int parseIntNoErr(String str) {
+        try{
+            int x = Integer.parseInt(str);
+            return x;
+        }
+        catch(Exception e) {}
+        return -1;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
