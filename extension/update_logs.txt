@@ -31,3 +31,11 @@
 
 1.4.10
 - Shows correct delay status for Overs
+
+1.4.11
+- No 10% tolerance for triggers
+- Display version number in the settings page
+
+1.4.12
+- display chained parents properly
+- no 10% buffer for triggers, only for 1/2 Ov. delay orders

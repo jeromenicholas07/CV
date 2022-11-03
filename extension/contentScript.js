@@ -92,7 +92,7 @@ async function observeRules() {
                                                     if (rule.condition == "market-price") {
                                                         conditionSatisfied = true;
                                                     } else {
-                                                        if (rule.delay == 1 || rule.delay == 2) {
+                                                        if (rule.orderType != "trigger" && (rule.delay == 1 || rule.delay == 2)) {
                                                             if ((rule.condition == "greater" && oddValue >= (parseFloat(rule.threshold) * 0.9))
                                                                 || (rule.condition == "lesser" && oddValue <= (parseFloat(rule.threshold) * 1.1))) {
                                                                 conditionSatisfied = true;

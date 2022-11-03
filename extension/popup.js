@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         chrome.tabs.sendMessage(tabs[0].id, {from: "popup", subject: "available-parents"}, function (response) {
 
-            if (chrome.runtime.lastError || !response) {
+            if (!response) {
                 return;
             }
 

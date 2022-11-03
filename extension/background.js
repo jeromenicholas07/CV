@@ -17,51 +17,51 @@ chrome.storage.local.get('rules', function(ruleData){
 				
 				let rule = ruleList.find(r => r.id == sRule.id);
 				
-				if(rule){
-					if(sRule.value){
-							
-						if(rule.highest < sRule.value || rule.highest == "N/A"){
+				if(rule) {
+					if (sRule.value) {
+
+						if (rule.highest < sRule.value || rule.highest == "N/A") {
 							rule.highest = sRule.value;
 							isUpdated = true;
 						}
-						if(rule.lowest > sRule.value || rule.lowest == "N/A"){
+						if (rule.lowest > sRule.value || rule.lowest == "N/A") {
 							rule.lowest = sRule.value;
 							isUpdated = true;
 						}
 					}
-					if(isUpdated){
-						chrome.storage.local.set({rules : ruleList}, function(){
+					if (isUpdated) {
+						chrome.storage.local.set({rules: ruleList}, function () {
 							console.log('Rule high-low updated');
 						});
 					}
-				}
-				
-				if(sRule.isDone || rule.isDone){
-					if(rule){
+
+
+					if (sRule.isDone || rule.isDone) {
 						let ruleChanged = false;
-						
-						if(!rule.isDone){
+
+						if (!rule.isDone) {
 							rule.isDone = true;
 							ruleChanged = true;
 						}
-						
-						if(childRule = ruleList.find(r => r.parentId == rule.id)) {
-							if(!childRule.isActive){
-								childRule.isActive = true;
-								ruleChanged = true;
-							}
+
+						if (childRules = ruleList.filter(r => r.parentId == rule.id)) {
+							childRules.forEach(childRule => {
+								if (!childRule.isActive) {
+									childRule.isActive = true;
+									ruleChanged = true;
+								}
+							})
 						}
-						
-						if(ruleChanged) {
-							chrome.storage.local.set({rules : ruleList}, function(){
+
+						if (ruleChanged) {
+							chrome.storage.local.set({rules: ruleList}, function () {
 								console.log(rule.id + ' - Rule completed');
 							});
 						}
-						
+
 					}
-				}
-				
-				if(ruleStatus[sRule.id]){
+
+					if (ruleStatus[sRule.id]) {
 						ruleStatus[sRule.id].orderType = rule.orderType;
 						ruleStatus[sRule.id].currValue = sRule.value;
 						ruleStatus[sRule.id].lastUpdated = (new Date()).getTime();
@@ -70,18 +70,21 @@ chrome.storage.local.get('rules', function(ruleData){
 						ruleStatus[sRule.id].lowest = rule.lowest;
 						ruleStatus[sRule.id].highest = rule.highest;
 						ruleStatus[sRule.id].isPaused = rule.isPaused;
-				}
-				else{
-					ruleStatus[sRule.id] = {
-						orderType: rule.orderType,
-						currValue: sRule.value,
-						lastUpdated: (new Date()).getTime(),
-						pageStatus: sRule.pageStatus,
-						isDone: sRule.isDone,
-						lowest: rule.lowest,
-						highest: rule.highest,
-						isPaused: rule.isPaused
-					};
+					} else {
+						ruleStatus[sRule.id] = {
+							orderType: rule.orderType,
+							currValue: sRule.value,
+							lastUpdated: (new Date()).getTime(),
+							pageStatus: sRule.pageStatus,
+							isDone: sRule.isDone,
+							lowest: rule.lowest,
+							highest: rule.highest,
+							isPaused: rule.isPaused
+						};
+					}
+
+				} else {
+					console.log("Error fetching rule on status update:" + sRule.id);
 				}
 				
 					
@@ -185,13 +188,9 @@ chrome.storage.local.get('rules', function(ruleData){
 		}
 		
 		if(statusStreamPort){
-			console.log('sending opts ->' ,ruleStatus);
+			console.log('RULE_STATUS_OBJECT ->' ,ruleStatus);
 			statusStreamPort.postMessage(ruleStatus);
 		}
-	}
-	
-	function applyChainedBets(betList){
-		
 	}
 	
 	
@@ -199,8 +198,13 @@ chrome.storage.local.get('rules', function(ruleData){
 	//async loop - status updates
 	let run = async ()=>{
 		await delay(5000);
+		let i = 0;
 		while(true){
-			console.log(JSON.stringify(ruleList));
+			if(i%100 === 0){
+				console.log("RULE_LIST_OJECT: " + JSON.stringify(ruleList));
+			} else if( i === 1000000) {
+				i = 1;
+			}
 			await updateStatus();
 			await delay(100);
 		}
